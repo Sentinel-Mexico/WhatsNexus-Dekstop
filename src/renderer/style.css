@@ -196,17 +196,26 @@ body {
   flex-grow: 1;
   position: relative;
   background-color: var(--whatsapp-bg);
-  transition: background-color var(--transition-speed);
+  overflow: hidden;
 }
 
 .account-container {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
-  position: relative;
+  visibility: visible;
+  opacity: 1;
+  pointer-events: auto;
+  z-index: 1;
 }
 
 .account-container.hidden {
-  display: none;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  z-index: -1 !important;
 }
 
 webview {
@@ -255,11 +264,17 @@ webview {
   flex-direction: column;
   z-index: 10;
   overflow: hidden;
-  animation: fadeInView 0.2s ease-out;
+  visibility: visible;
+  opacity: 1;
+  pointer-events: auto;
+  transition: opacity 0.15s ease;
 }
 
 .settings-view.hidden {
-  display: none;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  z-index: -1 !important;
 }
 
 @keyframes fadeInView {
@@ -530,6 +545,11 @@ select:focus, input[type="text"]:focus {
   border-radius: 8px;
   margin-bottom: 10px;
   gap: 15px;
+  background-color: var(--bg-sidebar);
+}
+
+.settings-account-item .account-name-input {
+  background-color: var(--bg-hover);
 }
 
 .settings-account-item .account-avatar {

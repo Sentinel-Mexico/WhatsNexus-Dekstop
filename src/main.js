@@ -3,13 +3,9 @@ const path = require('path');
 
 // 3. Flags de optimización de Chromium
 app.commandLine.appendSwitch('disable-features', 'HardwareMediaKeyHandling,MediaSessionService,WaylandWpColorManagerV1');
-app.commandLine.appendSwitch('disable-site-isolation-trials'); // Reduce overhead de memoria
+app.commandLine.appendSwitch('disable-site-isolation-trials'); // Reduce overhead de memoria entre orígenes
 app.commandLine.appendSwitch('disable-background-networking');
 app.commandLine.appendSwitch('disable-ipc-flooding-protection');
-app.commandLine.appendSwitch('enable-low-end-device-mode'); // Fuerte reducción de VRAM/RAM
-app.commandLine.appendSwitch('renderer-process-limit', '2'); // Limitamos agresivamente
-app.commandLine.appendSwitch('js-flags', '--optimize_for_size --max-old-space-size=128'); // Heap V8 compacto
-app.commandLine.appendSwitch('disable-gpu-shader-disk-cache'); // Reduce I/O en disco
 
 // 1. Single Instance Lock
 const gotTheLock = app.requestSingleInstanceLock();

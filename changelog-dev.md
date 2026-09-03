@@ -4,6 +4,16 @@ This changelog records all granular updates, bug fixes, refactorings, and featur
 
 ---
 
+## [0.5.6] - 2026-09-03
+### Fixed
+- **Rendering Artifacts & Black/Beige Tile Corruption:** Resolved missing/stale rectangular tiles caused by GPU tile cache starvation and compositor surface detachment.
+  - Replaced `display: none` tab toggling on `<webview>` containers with GPU-safe `visibility: hidden; opacity: 0; pointer-events: none;` and absolute positioning, keeping the Chromium guest renderer surfaces intact.
+  - Removed `--enable-low-end-device-mode`, artificial `--renderer-process-limit=2`, `--disable-gpu-shader-disk-cache`, and overly restrictive V8 heap limits in `src/main.js` that starved Chromium's tile rasterizer on high-resolution/Wayland desktop environments.
+  - Added card background and input contrast styling to `.settings-account-item` for visual consistency across themes.
+- **Documentation:** Updated `docs/memory-and-performance.md` to detail viewport visibility management and remove deprecated low-end flags.
+
+---
+
 ## [0.5.5] - 2026-09-03
 ### Added
 - **Agent Rules Index (`.agents/README.md`):** Created a centralized index and reference guide for all active agent governance rules in `.agents/rules/`.
