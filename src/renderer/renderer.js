@@ -32,61 +32,61 @@ const i18n = {
     tooltip_back: "Back to chats", settings_subtitle: "Global preferences & account management", desc_accounts: "Manage your WhatsApp accounts, rename them, or toggle Do Not Disturb.", desc_appearance: "Customize visual theme and interface language.", desc_notifications: "Control content privacy for system notifications.", hint_theme: "Choose your preferred color scheme", hint_language: "Select interface language",
     tooltip_add_account: "Add Account", tooltip_report_bug: "Report Bug", tooltip_settings: "Settings", welcome: "Welcome to WhatsNexus", welcome_desc: "Select an account or add a new one.", settings_title: "Settings", tab_accounts: "Accounts", tab_appearance: "Appearance", tab_notifications: "Notifications", heading_accounts: "Account Management", label_theme: "Theme", theme_auto: "Auto (System)", theme_light: "Light", theme_dark: "Dark", label_language: "Language", label_privacy: "Privacy Profile", privacy_broad: "Broad", privacy_broad_desc: "Photo, name, message preview, and sound.", privacy_medium: "Medium", privacy_medium_desc: "Photo, name, 'Hidden message', and sound.", privacy_strict: "Strict", privacy_strict_desc: "App icon, 'Hidden contact', 'Hidden message', no sound.", tooltip_dnd: "Do Not Disturb", tooltip_delete: "Delete Account", default_account_name: "Account",
     lang_en: "English", lang_es: "Spanish", lang_hi: "Hindi", lang_ar: "Arabic", lang_bn: "Bengali", lang_pt: "Portuguese", lang_ru: "Russian", lang_ur: "Urdu", lang_id: "Indonesian", lang_fr: "French",
-    hibernation_title: "Account in Hibernation", hibernation_desc: "This session has been paused to free up RAM.", wake_button: "Wake Up", btn_edit: "Edit", btn_delete: "Delete", account_status_title: "Account status", account_status_desc: "Deactivated accounts remain saved, but are not loaded nor receive notifications.", status_active: "Active", status_inactive: "Deactivated", dnd_title: "Do not disturb", dnd_desc: "Mute notifications for this account.", untitled_account: "Untitled Account"
+    hibernation_title: "Account in Hibernation", hibernation_desc: "This session has been paused to free up RAM.", wake_button: "Wake Up", btn_edit: "Edit", btn_delete: "Delete", account_status_title: "Account status", account_status_desc: "Deactivated accounts remain saved, but are not loaded nor receive notifications.", status_active: "Active", status_inactive: "Deactivated", dnd_title: "Do not disturb", dnd_desc: "Mute notifications for this account.", untitled_account: "Untitled Account", card_theme_title: "Themes & Visual Style", label_palette: "Color Palette", palette_whatsapp: "WhatsApp (Emerald)", palette_messenger: "Messenger (Meta Blue)", palette_telegram: "Telegram (Cyan Blue)", palette_signal: "Signal (Royal Blue)", palette_forest: "Forest (Olive & Earth)", card_language_title: "Interface Language", card_tray_title: "System Tray (Status Icon)", hint_tray: "Configure tray presence and style on system taskbar.", label_tray_style: "Tray Icon Style", tray_style_auto: "Default / Brand", tray_style_light: "Light (Monochrome white)", tray_style_dark: "Dark (Monochrome black)", label_tray_badge: "Unread Message Counter", hint_tray_badge: "Show numerical badge on tray icon"
   },
   es: {
     tooltip_back: "Volver a los chats", settings_subtitle: "Preferencias globales y gestión de cuentas", desc_accounts: "Administra tus perfiles de WhatsApp, cambia sus nombres o activa el modo No Molestar.", desc_appearance: "Personaliza el tema visual y el idioma de la aplicación.", desc_notifications: "Controla la privacidad del contenido en las notificaciones del sistema.", hint_theme: "Elige la combinación de colores que prefieras", hint_language: "Selecciona el idioma de la interfaz",
     tooltip_add_account: "Añadir Cuenta", tooltip_report_bug: "Reportar Error", tooltip_settings: "Configuración", welcome: "Bienvenido a WhatsNexus", welcome_desc: "Selecciona una cuenta en la barra lateral o añade una nueva para comenzar.", settings_title: "Configuración", tab_accounts: "Cuentas", tab_appearance: "Apariencia", tab_notifications: "Notificaciones", heading_accounts: "Gestión de Cuentas", label_theme: "Tema", theme_auto: "Automático (Sistema)", theme_light: "Claro", theme_dark: "Oscuro", label_language: "Idioma", label_privacy: "Perfil de Privacidad", privacy_broad: "Amplio", privacy_broad_desc: "Foto, nombre, vista previa del mensaje y sonido.", privacy_medium: "Medio", privacy_medium_desc: "Foto, nombre, 'Mensaje oculto' y sonido.", privacy_strict: "Estricto", privacy_strict_desc: "Icono de app, 'Contacto oculto', 'Mensaje oculto', sin sonido.", tooltip_dnd: "No Molestar", tooltip_delete: "Eliminar Cuenta", default_account_name: "Cuenta",
     lang_en: "Inglés", lang_es: "Español", lang_hi: "Hindi", lang_ar: "Árabe", lang_bn: "Bengalí", lang_pt: "Portugués", lang_ru: "Ruso", lang_ur: "Urdu", lang_id: "Indonesio", lang_fr: "Francés",
-    hibernation_title: "Cuenta en Hibernación", hibernation_desc: "Esta sesión se ha pausado para liberar memoria RAM.", wake_button: "Despertar", btn_edit: "Editar", btn_delete: "Eliminar", account_status_title: "Estado de la cuenta", account_status_desc: "Las cuentas desactivadas permanecen guardadas, pero no se cargan ni reciben notificaciones.", status_active: "Activada", status_inactive: "Desactivada", dnd_title: "No molestar", dnd_desc: "Silencia las notificaciones de esta cuenta.", untitled_account: "Cuenta sin nombre"
+    hibernation_title: "Cuenta en Hibernación", hibernation_desc: "Esta sesión se ha pausado para liberar memoria RAM.", wake_button: "Despertar", btn_edit: "Editar", btn_delete: "Eliminar", account_status_title: "Estado de la cuenta", account_status_desc: "Las cuentas desactivadas permanecen guardadas, pero no se cargan ni reciben notificaciones.", status_active: "Activada", status_inactive: "Desactivada", dnd_title: "No molestar", dnd_desc: "Silencia las notificaciones de esta cuenta.", untitled_account: "Cuenta sin nombre", card_theme_title: "Temas y Estilo Visual", label_palette: "Paleta de Color", palette_whatsapp: "WhatsApp (Esmeralda)", palette_messenger: "Messenger (Azul Eléctrico)", palette_telegram: "Telegram (Celeste Ciano)", palette_signal: "Signal (Azul Real)", palette_forest: "Bosque (Oliva y Tierra)", card_language_title: "Idioma de la Interfaz", card_tray_title: "Bandeja del Sistema (Icono de Estado)", hint_tray: "Configura la presencia y estilo del icono en la barra de tareas o panel de notificaciones.", label_tray_style: "Estilo del Icono en Bandeja", tray_style_auto: "Predeterminado / Marca", tray_style_light: "Claro (Monocromático blanco)", tray_style_dark: "Oscuro (Monocromático negro)", label_tray_badge: "Contador de mensajes no leídos", hint_tray_badge: "Mostrar badge numérico en el icono"
   },
   hi: {
     tooltip_back: "चैट पर वापस जाएं", settings_subtitle: "वैश्विक प्राथमिकताएं और खाता प्रबंधन", desc_accounts: "अपने खातों का प्रबंधन करें या डू नॉट डिस्टर्ब चालू करें।", desc_appearance: "थीम और इंटरफ़ेस भाषा अनुकूलित करें।", desc_notifications: "सिस्टम सूचनाओं की गोपनीयता नियंत्रित करें।", hint_theme: "रंग योजना चुनें", hint_language: "इंटरफ़ेस भाषा चुनें",
     tooltip_add_account: "खाता जोड़ें", tooltip_report_bug: "बग रिपोर्ट करें", tooltip_settings: "सेटिंग्स", welcome: "WhatsNexus में आपका स्वागत है", welcome_desc: "एक खाता चुनें या नया जोड़ें।", settings_title: "सेटिंग्स", tab_accounts: "खाते", tab_appearance: "दिखावट", tab_notifications: "सूचनाएं", heading_accounts: "खाता प्रबंधन", label_theme: "थीम", theme_auto: "ऑटो (सिस्टम)", theme_light: "हल्का", theme_dark: "गहरा", label_language: "भाषा", label_privacy: "गोपनीयता प्रोफ़ाइल", privacy_broad: "विस्तृत", privacy_broad_desc: "फोटो, नाम, संदेश पूर्वावलोकन और ध्वनि।", privacy_medium: "मध्यम", privacy_medium_desc: "फोटो, नाम, 'छिपा संदेश' और ध्वनि।", privacy_strict: "सख्त", privacy_strict_desc: "ऐप आइकन, 'छिपा संपर्क', 'छिपा संदेश', कोई ध्वनि नहीं।", tooltip_dnd: "परेशान न करें", tooltip_delete: "खाता हटाएं", default_account_name: "खाता",
     lang_en: "अंग्रेज़ी", lang_es: "स्पेनिश", lang_hi: "हिन्दी", lang_ar: "अरबी", lang_bn: "बंगाली", lang_pt: "पुर्तगाली", lang_ru: "रूसी", lang_ur: "उर्दू", lang_id: "इंडोनेशियाई", lang_fr: "फ्रेंच",
-    hibernation_title: "खाता हाइबरनेशन में", hibernation_desc: "रैम खाली करने के लिए यह सत्र रोका गया है।", wake_button: "जागना", btn_edit: "संपादित करें", btn_delete: "हटाएं", account_status_title: "खाते की स्थिति", account_status_desc: "निष्क्रिय खाते सुरक्षित रहते हैं, लेकिन लोड नहीं होते और सूचनाएं नहीं मिलतीं।", status_active: "सक्रिय", status_inactive: "निष्क्रिय", dnd_title: "परेशान न करें", dnd_desc: "इस खाते की सूचनाएं म्यूट करें।", untitled_account: "अनाम खाता"
+    hibernation_title: "खाता हाइबरनेशन में", hibernation_desc: "रैम खाली करने के लिए यह सत्र रोका गया है।", wake_button: "जागना", btn_edit: "संपादित करें", btn_delete: "हटाएं", account_status_title: "खाते की स्थिति", account_status_desc: "निष्क्रिय खाते सुरक्षित रहते हैं, लेकिन लोड नहीं होते और सूचनाएं नहीं मिलतीं।", status_active: "सक्रिय", status_inactive: "निष्क्रिय", dnd_title: "परेशान न करें", dnd_desc: "इस खाते की सूचनाएं म्यूट करें।", untitled_account: "अनाम खाता", card_theme_title: "थीम और दृश्य शैली", label_palette: "रंग पैलेट", palette_whatsapp: "WhatsApp (एमराल्ड)", palette_messenger: "Messenger (मेटा ब्लू)", palette_telegram: "Telegram (सियान ब्लू)", palette_signal: "Signal (रॉयल ब्लू)", palette_forest: "वन (ऑलिव और मिट्टी)", card_language_title: "इंटरफ़ेस भाषा", card_tray_title: "सिस्टम ट्रे (स्थिति आइकन)", hint_tray: "सिस्टम ट्रे आइकन कॉन्फ़िगर करें।", label_tray_style: "ट्रे आइकन शैली", tray_style_auto: "डिफ़ॉल्ट / ब्रांड", tray_style_light: "हल्का (सफेद)", tray_style_dark: "गहरा (काला)", label_tray_badge: "अपठित संदेश काउंटर", hint_tray_badge: "आइकन पर बैज दिखाएं"
   },
   ar: {
     tooltip_back: "العودة إلى الدردشات", settings_subtitle: "التفضيلات العامة وإدارة الحسابات", desc_accounts: "إدارة حسابات واتساب الخاصة بك وتبديل عدم الإزعاج.", desc_appearance: "تخصيص المظهر المرئي ولغة الواجهة.", desc_notifications: "التحكم في خصوصية محتوى إشعارات النظام.", hint_theme: "اختر نسق الألوان المفضل لديك", hint_language: "حدد لغة الواجهة",
     tooltip_add_account: "إضافة حساب", tooltip_report_bug: "الإبلاغ عن خطأ", tooltip_settings: "الإعدادات", welcome: "مرحبًا بك في WhatsNexus", welcome_desc: "حدد حسابًا أو أضف حسابًا جديدًا.", settings_title: "الإعدادات", tab_accounts: "الحسابات", tab_appearance: "المظهر", tab_notifications: "الإشعارات", heading_accounts: "إدارة الحسابات", label_theme: "السمة", theme_auto: "تلقائي (النظام)", theme_light: "فاتح", theme_dark: "داكن", label_language: "اللغة", label_privacy: "ملف الخصوصية", privacy_broad: "واسع", privacy_broad_desc: "صورة، اسم، معاينة رسالة، وصوت.", privacy_medium: "متوسط", privacy_medium_desc: "صورة، اسم، 'رسالة مخفية'، وصوت.", privacy_strict: "صارم", privacy_strict_desc: "أيقونة التطبيق، 'جهة اتصال مخفية'، 'رسالة مخفية'، بدون صوت.", tooltip_dnd: "عدم الإزعاج", tooltip_delete: "حذف الحساب", default_account_name: "حساب",
     lang_en: "الإنجليزية", lang_es: "الإسبانية", lang_hi: "الهندية", lang_ar: "العربية", lang_bn: "البنغالية", lang_pt: "البرتغالية", lang_ru: "الروسية", lang_ur: "الأردية", lang_id: "الإندونيسية", lang_fr: "الفرنسية",
-    hibernation_title: "حساب في وضع الإسبات", hibernation_desc: "تم إيقاف هذه الجلسة لتحرير ذاكرة الوصول العشوائي.", wake_button: "استيقاظ", btn_edit: "تعديل", btn_delete: "حذف", account_status_title: "حالة الحساب", account_status_desc: "تبقى الحسابات المعطلة محفوظة، ولكن لا يتم تحميلها أو استلام إشعارات.", status_active: "مفعل", status_inactive: "معطل", dnd_title: "عدم الإزعاج", dnd_desc: "كتم إشعارات هذا الحساب.", untitled_account: "حساب بدون اسم"
+    hibernation_title: "حساب في وضع الإسبات", hibernation_desc: "تم إيقاف هذه الجلسة لتحرير ذاكرة الوصول العشوائي.", wake_button: "استيقاظ", btn_edit: "تعديل", btn_delete: "حذف", account_status_title: "حالة الحساب", account_status_desc: "تبقى الحسابات المعطلة محفوظة، ولكن لا يتم تحميلها أو استلام إشعارات.", status_active: "مفعل", status_inactive: "معطل", dnd_title: "عدم الإزعاج", dnd_desc: "كتم إشعارات هذا الحساب.", untitled_account: "حساب بدون اسم", card_theme_title: "السمات والمظهر المرئي", label_palette: "لوحة الألوان", palette_whatsapp: "WhatsApp (زمردي)", palette_messenger: "Messenger (أزرق ميتا)", palette_telegram: "Telegram (أزرق سماوي)", palette_signal: "Signal (أزرق ملكي)", palette_forest: "الغابة (زيتوني وترابي)", card_language_title: "لغة الواجهة", card_tray_title: "صينية النظام (أيقونة الحالة)", hint_tray: "تكوين مظهر أيقونة شريط المهام.", label_tray_style: "نمط أيقونة الصينية", tray_style_auto: "افتراضي / العلامة التجارية", tray_style_light: "فاتح (أبيض)", tray_style_dark: "داكن (أسود)", label_tray_badge: "عداد الرسائل غير المقروءة", hint_tray_badge: "إظهار شارة رقمية على الأيقونة"
   },
   bn: {
     tooltip_back: "চ্যাটে ফিরে যান", settings_subtitle: "গ্লোবাল পছন্দ এবং অ্যাকাউন্ট ব্যবস্থাপনা", desc_accounts: "আপনার হোয়াটসঅ্যাপ অ্যাকাউন্ট পরিচালনা করুন।", desc_appearance: "ভিজ্যুয়াল থিম এবং ইন্টারফেসের ভাষা কাস্টমাইজ করুন।", desc_notifications: "বিজ্ঞপ্তি গোপনীয়তা নিয়ন্ত্রণ করুন।", hint_theme: "রঙের স্কিম নির্বাচন করুন", hint_language: "ইন্টারফেসের ভাষা নির্বাচন করুন",
     tooltip_add_account: "অ্যাকাউন্ট যোগ করুন", tooltip_report_bug: "বাগ রিপোর্ট করুন", tooltip_settings: "সেটিংস", welcome: "WhatsNexus এ স্বাগতম", welcome_desc: "একটি অ্যাকাউন্ট নির্বাচন করুন বা একটি নতুন যোগ করুন।", settings_title: "সেটিংস", tab_accounts: "অ্যাকাউন্ট", tab_appearance: "উপস্থিতি", tab_notifications: "বিজ্ঞপ্তি", heading_accounts: "অ্যাকাউন্ট পরিচালনা", label_theme: "থিম", theme_auto: "অটো (সিস্টেম)", theme_light: "হালকা", theme_dark: "অন্ধকার", label_language: "ভাষা", label_privacy: "গোপনীয়তা প্রোফাইল", privacy_broad: "বিস্তৃত", privacy_broad_desc: "ছবি, নাম, বার্তা প্রাকদর্শন এবং শব্দ।", privacy_medium: "মাঝারি", privacy_medium_desc: "ছবি, নাম, 'লুকানো বার্তা' এবং শব্দ।", privacy_strict: "কঠোর", privacy_strict_desc: "অ্যাপ আইকন, 'লুকানো পরিচিতি', 'লুকানো বার্তা', কোনো শব্দ নেই।", tooltip_dnd: "বিরক্ত করবেন না", tooltip_delete: "অ্যাকাউন্ট মুছুন", default_account_name: "অ্যাকাউন্ট",
     lang_en: "ইংরেজি", lang_es: "স্প্যানিশ", lang_hi: "হিন্দি", lang_ar: "আরবি", lang_bn: "বাংলা", lang_pt: "পর্তুগিজ", lang_ru: "রাশিয়ান", lang_ur: "উর্দু", lang_id: "ইন্দোনেশিয়ান", lang_fr: "ফরাসি",
-    hibernation_title: "অ্যাকাউন্ট হাইবারনেশনে", hibernation_desc: "র‍্যাম খালি করতে এই সেশনটি পজ করা হয়েছে।", wake_button: "জাগ্রত করুন", btn_edit: "সম্পাদনা", btn_delete: "মুছুন", account_status_title: "অ্যাকাউন্টের অবস্থা", account_status_desc: "নিষ্ক্রিয় অ্যাকাউন্ট সংরক্ষিত থাকে, কিন্তু লোড বা বিজ্ঞপ্তি পায় না।", status_active: "সক্রিয়", status_inactive: "নিষ্ক্রিয়", dnd_title: "বিরক্ত করবেন না", dnd_desc: "এই অ্যাকাউন্টের বিজ্ঞপ্তি নীরব করুন।", untitled_account: "নামহীন অ্যাকাউন্ট"
+    hibernation_title: "অ্যাকাউন্ট হাইবারনেশনে", hibernation_desc: "র‍্যাম খালি করতে এই সেশনটি পজ করা হয়েছে।", wake_button: "জাগ্রত করুন", btn_edit: "সম্পাদনা", btn_delete: "মুছুন", account_status_title: "অ্যাকাউন্টের অবস্থা", account_status_desc: "নিষ্ক্রিয় অ্যাকাউন্ট সংরক্ষিত থাকে, কিন্তু লোড বা বিজ্ঞপ্তি পায় না।", status_active: "সক্রিয়", status_inactive: "নিষ্ক্রিয়", dnd_title: "বিরক্ত করবেন না", dnd_desc: "এই অ্যাকাউন্টের বিজ্ঞপ্তি নীরব করুন।", untitled_account: "নামহীন অ্যাকাউন্ট", card_theme_title: "থিম এবং ভিজ্যুয়াল শৈলী", label_palette: "রঙের প্যালেট", palette_whatsapp: "হোয়াটসঅ্যাপ (পান্না)", palette_messenger: "মেসেঞ্জার (মেটা ব্লু)", palette_telegram: "টেলিগ্রাম (সায়ান ব্লু)", palette_signal: "সিগন্যাল (রয়্যাল ব্লু)", palette_forest: "বন (জলপাই ও মাটি)", card_language_title: "ইন্টারফেস ভাষা", card_tray_title: "সিস্টেম ট্রে (স্ট্যাটাস আইকন)", hint_tray: "টাস্কবারে আইকন কনফিগার করুন।", label_tray_style: "ট্রে আইকন শৈলী", tray_style_auto: "ডিফল্ট / ব্র্যান্ড", tray_style_light: "হালকা (সাদা)", tray_style_dark: "অন্ধকার (কালো)", label_tray_badge: "অপঠিত বার্তা কাউন্টার", hint_tray_badge: "আইকনে ব্যাজ দেখান"
   },
   pt: {
     tooltip_back: "Voltar para as conversas", settings_subtitle: "Preferências globais e gestão de contas", desc_accounts: "Gerencie suas contas do WhatsApp e alterne Não Incomodar.", desc_appearance: "Personalize o tema visual e o idioma da interface.", desc_notifications: "Controle a privacidade das notificações do sistema.", hint_theme: "Escolha o esquema de cores", hint_language: "Selecione o idioma da interface",
     tooltip_add_account: "Adicionar Conta", tooltip_report_bug: "Reportar Erro", tooltip_settings: "Configurações", welcome: "Bem-vindo ao WhatsNexus", welcome_desc: "Selecione uma conta ou adicione uma nova.", settings_title: "Configurações", tab_accounts: "Contas", tab_appearance: "Aparência", tab_notifications: "Notificações", heading_accounts: "Gestão de Contas", label_theme: "Tema", theme_auto: "Automático (Sistema)", theme_light: "Claro", theme_dark: "Escuro", label_language: "Idioma", label_privacy: "Perfil de Privacidade", privacy_broad: "Amplo", privacy_broad_desc: "Foto, nome, pré-visualização da mensagem e som.", privacy_medium: "Médio", privacy_medium_desc: "Foto, nome, 'Mensagem oculta' e som.", privacy_strict: "Rigoroso", privacy_strict_desc: "Ícone da app, 'Contato oculto', 'Mensagem oculta', sem som.", tooltip_dnd: "Não Incomodar", tooltip_delete: "Excluir Conta", default_account_name: "Conta",
     lang_en: "Inglês", lang_es: "Espanhol", lang_hi: "Hindi", lang_ar: "Árabe", lang_bn: "Bengali", lang_pt: "Português", lang_ru: "Russo", lang_ur: "Urdu", lang_id: "Indonésio", lang_fr: "Francês",
-    hibernation_title: "Conta em Hibernação", hibernation_desc: "Esta sessão foi pausada para liberar memória RAM.", wake_button: "Despertar", btn_edit: "Editar", btn_delete: "Excluir", account_status_title: "Status da conta", account_status_desc: "Contas desativadas permanecem salvas, mas não carregam nem recebem notificações.", status_active: "Ativada", status_inactive: "Desativada", dnd_title: "Não incomodar", dnd_desc: "Silencie as notificações desta conta.", untitled_account: "Conta sem nome"
+    hibernation_title: "Conta em Hibernação", hibernation_desc: "Esta sessão foi pausada para liberar memória RAM.", wake_button: "Despertar", btn_edit: "Editar", btn_delete: "Excluir", account_status_title: "Status da conta", account_status_desc: "Contas desativadas permanecem salvas, mas não carregam nem recebem notificações.", status_active: "Ativada", status_inactive: "Desativada", dnd_title: "Não incomodar", dnd_desc: "Silencie as notificações desta conta.", untitled_account: "Conta sem nome", card_theme_title: "Temas e Estilo Visual", label_palette: "Paleta de Cores", palette_whatsapp: "WhatsApp (Esmeralda)", palette_messenger: "Messenger (Meta Azul)", palette_telegram: "Telegram (Azul Ciano)", palette_signal: "Signal (Azul Real)", palette_forest: "Floresta (Oliva e Terra)", card_language_title: "Idioma da Interface", card_tray_title: "Bandeja do Sistema (Ícone de Status)", hint_tray: "Configure a presença e estilo do ícone na barra de tarefas.", label_tray_style: "Estilo do Ícone da Bandeja", tray_style_auto: "Padrão / Marca", tray_style_light: "Claro (Branco monocromático)", tray_style_dark: "Escuro (Preto monocromático)", label_tray_badge: "Contador de mensagens não lidas", hint_tray_badge: "Exibir selo numérico no ícone"
   },
   ru: {
     tooltip_back: "Назад к чатам", settings_subtitle: "Глобальные настройки и управление аккаунтами", desc_accounts: "Управляйте аккаунтами WhatsApp и режимом «Не беспокоить».", desc_appearance: "Настройте тему и язык интерфейса.", desc_notifications: "Управляйте приватностью уведомлений.", hint_theme: "Выберите цветовую схему", hint_language: "Выберите язык интерфейса",
     tooltip_add_account: "Добавить аккаунт", tooltip_report_bug: "Сообщить об ошибке", tooltip_settings: "Настройки", welcome: "Добро пожаловать в WhatsNexus", welcome_desc: "Выберите учетную запись или добавьте новую.", settings_title: "Настройки", tab_accounts: "Аккаунты", tab_appearance: "Внешний вид", tab_notifications: "Уведомления", heading_accounts: "Управление аккаунтами", label_theme: "Тема", theme_auto: "Авто (Система)", theme_light: "Светлая", theme_dark: "Темная", label_language: "Язык", label_privacy: "Профиль конфиденциальности", privacy_broad: "Широкий", privacy_broad_desc: "Фото, имя, предпросмотр сообщения и звук.", privacy_medium: "Средний", privacy_medium_desc: "Фото, имя, 'Скрытое сообщение' и звук.", privacy_strict: "Строгий", privacy_strict_desc: "Иконка приложения, 'Скрытый контакт', 'Скрытое сообщение', без звука.", tooltip_dnd: "Не беспокоить", tooltip_delete: "Удалить аккаунт", default_account_name: "Аккаунт",
     lang_en: "Английский", lang_es: "Испанский", lang_hi: "Хинди", lang_ar: "Арабский", lang_bn: "Бенгальский", lang_pt: "Португальский", lang_ru: "Русский", lang_ur: "Урду", lang_id: "Индонезийский", lang_fr: "Французский",
-    hibernation_title: "Аккаунт в спящем режиме", hibernation_desc: "Этот сеанс приостановлен для освобождения ОЗУ.", wake_button: "Пробудить", btn_edit: "Редактировать", btn_delete: "Удалить", account_status_title: "Статус аккаунта", account_status_desc: "Отключенные аккаунты сохраняются, но не загружаются и не получают уведомления.", status_active: "Активен", status_inactive: "Отключен", dnd_title: "Не беспокоить", dnd_desc: "Отключить уведомления для этого аккаунта.", untitled_account: "Безымянный аккаунт"
+    hibernation_title: "Аккаунт в спящем режиме", hibernation_desc: "Этот сеанс приостановлен для освобождения ОЗУ.", wake_button: "Пробудить", btn_edit: "Редактировать", btn_delete: "Удалить", account_status_title: "Статус аккаунта", account_status_desc: "Отключенные аккаунты сохраняются, но не загружаются и не получают уведомления.", status_active: "Активен", status_inactive: "Отключен", dnd_title: "Не беспокоить", dnd_desc: "Отключить уведомления для этого аккаунта.", untitled_account: "Безымянный аккаунт", card_theme_title: "Темы и визуальный стиль", label_palette: "Цветовая палитра", palette_whatsapp: "WhatsApp (Изумрудный)", palette_messenger: "Messenger (Синий Meta)", palette_telegram: "Telegram (Голубой)", palette_signal: "Signal (Королевский синий)", palette_forest: "Лес (Оливковый и земляной)", card_language_title: "Язык интерфейса", card_tray_title: "Системный трей (Иконка статуса)", hint_tray: "Настройка значка в области уведомлений.", label_tray_style: "Стиль значка в трее", tray_style_auto: "По умолчанию / Бренд", tray_style_light: "Светлый (Белый)", tray_style_dark: "Темный (Черный)", label_tray_badge: "Счетчик непрочитанных сообщений", hint_tray_badge: "Показывать бейдж с числом на иконке"
   },
   ur: {
     tooltip_back: "چیٹس پر واپس جائیں", settings_subtitle: "عالمی ترجیحات اور اکاؤنٹ کا نظم", desc_accounts: "اپنے اکاؤنٹس کا انتظام کریں اور پریشان نہ کریں موڈ تبدیل کریں۔", desc_appearance: "تھیم اور زبان تبدیل کریں۔", desc_notifications: "اطلاعات کی رازداری کا انتظام کریں۔", hint_theme: "رنگین تھیم منتخب کریں", hint_language: "زبان منتخب کریں",
     tooltip_add_account: "اکاؤنٹ شامل کریں", tooltip_report_bug: "خرابی کی اطلاع دیں", tooltip_settings: "ترتیبات", welcome: "WhatsNexus میں خوش آمدید", welcome_desc: "ایک اکاؤنٹ منتخب کریں یا نیا شامل کریں۔", settings_title: "ترتیبات", tab_accounts: "اکاؤنٹس", tab_appearance: "ظاہری شکل", tab_notifications: "اطلاعات", heading_accounts: "اکاؤنٹ مینجمنٹ", label_theme: "تھیم", theme_auto: "آٹو (سسٹم)", theme_light: "روشنی", theme_dark: "تاریک", label_language: "زبان", label_privacy: "رازداری پروفائل", privacy_broad: "وسیع", privacy_broad_desc: "تصویر، نام، پیغام کا پیش نظارہ، اور آواز۔", privacy_medium: "درمیانہ", privacy_medium_desc: "تصویر، نام، 'پوشیدہ پیغام'، اور آواز۔", privacy_strict: "سخت", privacy_strict_desc: "ایپ آئیکن، 'پوشیدہ رابطہ'، 'پوشیدہ پیغام'، کوئی آواز نہیں۔", tooltip_dnd: "پریشان نہ کریں", tooltip_delete: "اکاؤنٹ حذف کریں", default_account_name: "اکاؤنٹ",
     lang_en: "انگریزی", lang_es: "ہسپانوی", lang_hi: "ہندی", lang_ar: "عربی", lang_bn: "بنگالی", lang_pt: "پرتگالی", lang_ru: "روسی", lang_ur: "اردو", lang_id: "انڈونیشیائی", lang_fr: "فرانسیسی",
-    hibernation_title: "اکاؤنٹ ہائبرنیشن میں", hibernation_desc: "RAM خالی کرنے کے لیے اس سیشن کو روک دیا گیا ہے۔", wake_button: "جاگیں", btn_edit: "ترمیم کریں", btn_delete: "حذف کریں", account_status_title: "اکاؤنٹ کی حیثیت", account_status_desc: "غیر فعال اکاؤنٹس محفوظ رہتے ہیں، لیکن لوڈ یا اطلاعات موصول نہیں کرتے۔", status_active: "فعال", status_inactive: "غیر فعال", dnd_title: "پریشان نہ کریں", dnd_desc: "اس اکاؤنٹ کی اطلاعات کو خاموش کریں۔", untitled_account: "بے نام اکاؤنٹ"
+    hibernation_title: "اکاؤنٹ ہائبرنیشن میں", hibernation_desc: "RAM خالی کرنے کے لیے اس سیشن کو روک دیا گیا ہے۔", wake_button: "جاگیں", btn_edit: "ترمیم کریں", btn_delete: "حذف کریں", account_status_title: "اکاؤنٹ کی حیثیت", account_status_desc: "غیر فعال اکاؤنٹس محفوظ رہتے ہیں، لیکن لوڈ یا اطلاعات موصول نہیں کرتے۔", status_active: "فعال", status_inactive: "غیر فعال", dnd_title: "پریشان نہ کریں", dnd_desc: "اس اکاؤنٹ کی اطلاعات کو خاموش کریں۔", untitled_account: "بے نام اکاؤنٹ", card_theme_title: "تھیمز اور بصری انداز", label_palette: "رنگین پیلیٹ", palette_whatsapp: "WhatsApp (زمرد)", palette_messenger: "Messenger (میٹا نیلا)", palette_telegram: "Telegram (سیان نیلا)", palette_signal: "Signal (شاہی نیلا)", palette_forest: "جنگل (زیتون اور مٹی)", card_language_title: "انٹرفیس زبان", card_tray_title: "سسٹم ٹرے (حیثیت کا آئیکن)", hint_tray: "ٹاسک بار پر آئیکن کی ترتیبات۔", label_tray_style: "ٹرے آئیکن کا انداز", tray_style_auto: "طے شدہ / برانڈ", tray_style_light: "روشنی (سفید)", tray_style_dark: "تاریک (سیاہ)", label_tray_badge: "نہ پڑھے گئے پیغامات کا کاؤنٹر", hint_tray_badge: "آئیکن پر نمبر دکھائیں"
   },
   id: {
     tooltip_back: "Kembali ke obrolan", settings_subtitle: "Preferensi global dan manajemen akun", desc_accounts: "Kelola akun WhatsApp Anda dan mode Jangan Ganggu.", desc_appearance: "Sesuaikan tema dan bahasa antarmuka.", desc_notifications: "Kontrol privasi notifikasi sistem.", hint_theme: "Pilih skema warna", hint_language: "Pilih bahasa antarmuka",
     tooltip_add_account: "Tambah Akun", tooltip_report_bug: "Laporkan Bug", tooltip_settings: "Pengaturan", welcome: "Selamat datang di WhatsNexus", welcome_desc: "Pilih akun atau tambahkan yang baru.", settings_title: "Pengaturan", tab_accounts: "Akun", tab_appearance: "Tampilan", tab_notifications: "Notifikasi", heading_accounts: "Manajemen Akun", label_theme: "Tema", theme_auto: "Otomatis (Sistem)", theme_light: "Terang", theme_dark: "Gelap", label_language: "Bahasa", label_privacy: "Profil Privasi", privacy_broad: "Luas", privacy_broad_desc: "Foto, nama, pratinjau pesan, dan suara.", privacy_medium: "Sedang", privacy_medium_desc: "Foto, nama, 'Pesan tersembunyi', dan suara.", privacy_strict: "Ketat", privacy_strict_desc: "Ikon aplikasi, 'Kontak tersembunyi', 'Pesan tersembunyi', tanpa suara.", tooltip_dnd: "Jangan Ganggu", tooltip_delete: "Hapus Akun", default_account_name: "Akun",
     lang_en: "Inggris", lang_es: "Spanyol", lang_hi: "Hindi", lang_ar: "Arab", lang_bn: "Bengali", lang_pt: "Portugis", lang_ru: "Rusia", lang_ur: "Urdu", lang_id: "Bahasa Indonesia", lang_fr: "Prancis",
-    hibernation_title: "Akun dalam Hibernasi", hibernation_desc: "Sesi ini telah dijeda untuk membebaskan RAM.", wake_button: "Bangunkan", btn_edit: "Edit", btn_delete: "Hapus", account_status_title: "Status akun", account_status_desc: "Akun nonaktif tetap tersimpan, tetapi tidak dimuat atau menerima notifikasi.", status_active: "Aktif", status_inactive: "Nonaktif", dnd_title: "Jangan ganggu", dnd_desc: "Bisukan notifikasi untuk akun ini.", untitled_account: "Akun tanpa nama"
+    hibernation_title: "Akun dalam Hibernasi", hibernation_desc: "Sesi ini telah dijeda untuk membebaskan RAM.", wake_button: "Bangunkan", btn_edit: "Edit", btn_delete: "Hapus", account_status_title: "Status akun", account_status_desc: "Akun nonaktif tetap tersimpan, tetapi tidak dimuat atau menerima notifikasi.", status_active: "Aktif", status_inactive: "Nonaktif", dnd_title: "Jangan ganggu", dnd_desc: "Bisukan notifikasi untuk akun ini.", untitled_account: "Akun tanpa nama", card_theme_title: "Tema & Gaya Visual", label_palette: "Palet Warna", palette_whatsapp: "WhatsApp (Zamrud)", palette_messenger: "Messenger (Biru Meta)", palette_telegram: "Telegram (Biru Sian)", palette_signal: "Signal (Biru Royal)", palette_forest: "Hutan (Zaitun & Tanah)", card_language_title: "Bahasa Antarmuka", card_tray_title: "Baki Sistem (Ikon Status)", hint_tray: "Konfigurasikan ikon di bilah tugas atau baki sistem.", label_tray_style: "Gaya Ikon Baki", tray_style_auto: "Standar / Merek", tray_style_light: "Terang (Putih monokrom)", tray_style_dark: "Gelap (Hitam monokrom)", label_tray_badge: "Penghitung pesan belum dibaca", hint_tray_badge: "Tampilkan lencana numerik pada ikon"
   },
   fr: {
     tooltip_back: "Retour aux discussions", settings_subtitle: "Préférences globales et gestion des comptes", desc_accounts: "Gérez vos comptes WhatsApp et le mode Ne pas déranger.", desc_appearance: "Personnalisez le thème et la langue de l'interface.", desc_notifications: "Contrôlez la confidentialité des notifications.", hint_theme: "Choisissez le thème de couleur", hint_language: "Sélectionnez la langue de l'interface",
     tooltip_add_account: "Ajouter un compte", tooltip_report_bug: "Signaler un bug", tooltip_settings: "Paramètres", welcome: "Bienvenue sur WhatsNexus", welcome_desc: "Sélectionnez un compte ou ajoutez-en un nouveau.", settings_title: "Paramètres", tab_accounts: "Comptes", tab_appearance: "Apparence", tab_notifications: "Notifications", heading_accounts: "Gestion des comptes", label_theme: "Thème", theme_auto: "Auto (Système)", theme_light: "Clair", theme_dark: "Sombre", label_language: "Langue", label_privacy: "Profil de confidentialité", privacy_broad: "Large", privacy_broad_desc: "Photo, nom, aperçu du message et son.", privacy_medium: "Moyen", privacy_medium_desc: "Photo, nom, 'Message masqué' et son.", privacy_strict: "Strict", privacy_strict_desc: "Icône de l'application, 'Contact masqué', 'Message masqué', pas de son.", tooltip_dnd: "Ne pas déranger", tooltip_delete: "Supprimer le compte", default_account_name: "Compte",
     lang_en: "Anglais", lang_es: "Espagnol", lang_hi: "Hindi", lang_ar: "Arabe", lang_bn: "Bengali", lang_pt: "Portugais", lang_ru: "Russe", lang_ur: "Ourdou", lang_id: "Indonésien", lang_fr: "Français",
-    hibernation_title: "Compte en Hibernation", hibernation_desc: "Cette session a été mise en pause pour libérer de la RAM.", wake_button: "Réveiller", btn_edit: "Modifier", btn_delete: "Supprimer", account_status_title: "Statut du compte", account_status_desc: "Les comptes désactivés restent enregistrés, mais ne sont pas chargés et ne reçoivent pas de notifications.", status_active: "Activé", status_inactive: "Désactivé", dnd_title: "Ne pas déranger", dnd_desc: "Désactiver les notifications de ce compte.", untitled_account: "Compte sans nom"
+    hibernation_title: "Compte en Hibernation", hibernation_desc: "Cette session a été mise en pause pour libérer de la RAM.", wake_button: "Réveiller", btn_edit: "Modifier", btn_delete: "Supprimer", account_status_title: "Statut du compte", account_status_desc: "Les comptes désactivés restent enregistrés, mais ne sont pas chargés et ne reçoivent pas de notifications.", status_active: "Activé", status_inactive: "Désactivé", dnd_title: "Ne pas déranger", dnd_desc: "Désactiver les notifications de ce compte.", untitled_account: "Compte sans nom", card_theme_title: "Thèmes et style visuel", label_palette: "Palette de couleurs", palette_whatsapp: "WhatsApp (Émeraude)", palette_messenger: "Messenger (Bleu Meta)", palette_telegram: "Telegram (Bleu Cyan)", palette_signal: "Signal (Bleu Royal)", palette_forest: "Forêt (Olive & Terre)", card_language_title: "Langue de l'interface", card_tray_title: "Barre d'état système (Tray)", hint_tray: "Configurer l'icône dans la zone de notification.", label_tray_style: "Style d'icône de la barre", tray_style_auto: "Par défaut / Marque", tray_style_light: "Clair (Blanc monochrome)", tray_style_dark: "Sombre (Noir monochrome)", label_tray_badge: "Compteur de messages non lus", hint_tray_badge: "Afficher le badge numérique sur l'icône"
   }
 };
 
@@ -141,8 +141,24 @@ const settingsPanels = document.querySelectorAll('.settings-panel');
 const settingsAccountList = document.getElementById('settings-account-list');
 
 const themeSelect = document.getElementById('theme-select');
+const paletteSelect = document.getElementById('palette-select');
 const languageSelect = document.getElementById('language-select');
+const trayStyleSelect = document.getElementById('tray-style-select');
+const trayBadgeToggle = document.getElementById('tray-badge-toggle');
 const privacyRadios = document.querySelectorAll('input[name="privacy-profile"]');
+
+// Rastreo de mensajes no leídos por cuenta para el System Tray
+const accountUnreadCounts = {};
+
+function updateTotalUnread() {
+  let total = 0;
+  accounts.forEach(acc => {
+    if (acc.enabled !== false && !acc.dnd) {
+      total += (accountUnreadCounts[acc.id] || 0);
+    }
+  });
+  ipcRenderer.send('update-tray-badge', total);
+}
 
 function init() {
   applySettings();
@@ -203,17 +219,31 @@ function saveSettings() {
 }
 
 function applySettings() {
-  if (settings.theme === 'theme-auto') {
-    const isDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-    document.body.className = isDark ? 'theme-dark' : 'theme-light';
-  } else {
-    document.body.className = settings.theme;
-  }
+  const isDark = (settings.theme === 'theme-auto' || !settings.theme)
+    ? (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches)
+    : (settings.theme === 'theme-dark');
+
+  const palette = settings.themePalette || 'whatsapp';
   
-  themeSelect.value = settings.theme;
-  document.querySelector(`input[name="privacy-profile"][value="${settings.privacy}"]`).checked = true;
+  // Establecer paleta y modo de luz/oscuridad en el body
+  document.body.className = `palette-${palette} ${isDark ? 'theme-dark' : 'theme-light'}`;
+  
+  if (themeSelect) themeSelect.value = settings.theme || 'theme-auto';
+  if (paletteSelect) paletteSelect.value = palette;
+  if (trayStyleSelect) trayStyleSelect.value = settings.trayStyle || 'auto';
+  if (trayBadgeToggle) trayBadgeToggle.checked = settings.trayShowBadge !== false;
+
+  const privacyEl = document.querySelector(`input[name="privacy-profile"][value="${settings.privacy}"]`);
+  if (privacyEl) privacyEl.checked = true;
+
+  // Sincronizar apariencia de la bandeja con el proceso principal
+  ipcRenderer.send('update-tray-settings', {
+    style: settings.trayStyle || 'auto',
+    showBadge: settings.trayShowBadge !== false
+  });
   
   updateTranslations();
+  updateTotalUnread();
 }
 
 function addAccount(name = null) {
@@ -336,6 +366,14 @@ function buildWebviewDOM(account, parentContainer) {
   webview.setAttribute('useragent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36');
   webview.className = 'webview-active';
 
+  // Detección reactiva de mensajes no leídos mediante el título de la página
+  webview.addEventListener('page-title-updated', (e) => {
+    const match = e.title.match(/\((\d+)\)/);
+    const unread = match ? parseInt(match[1], 10) : 0;
+    accountUnreadCounts[account.id] = unread;
+    updateTotalUnread();
+  });
+
   webview.addEventListener('ipc-message', (event) => {
     if (event.channel === 'profile-picture-updated') {
       const imgUrl = event.args[0];
@@ -370,6 +408,8 @@ function hibernateWebview(id) {
   if (webview) {
     webview.remove(); // DESTRUCCIÓN TOTAL: Libera RAM.
   }
+  accountUnreadCounts[id] = 0;
+  updateTotalUnread();
   
   const overlay = document.getElementById(`hibernation_${id}`);
   if (overlay) {
@@ -518,6 +558,7 @@ window.setAccountStatus = function(id, enabled) {
 
   renderAllSidebarAccounts();
   renderSettingsAccounts();
+  updateTotalUnread();
 };
 
 window.toggleEditAccountName = function(id) {
@@ -592,9 +633,35 @@ function renderSettingsAccounts() {
     const accountTitle = acc.name || lang.untitled_account || 'Cuenta sin nombre';
 
     const card = document.createElement('li');
-    card.className = `settings-account-card ${!isEnabled ? 'account-disabled' : ''}`;
     card.dataset.id = acc.id;
     
+    // Si la cuenta está DESACTIVADA: tarjeta compacta mostrando solo avatar, nombre y switch de activación
+    if (!isEnabled) {
+      card.className = 'settings-account-card account-disabled account-compact';
+      card.innerHTML = `
+        <div class="account-card-header">
+          <div class="account-card-identity">
+            <div class="account-avatar">${getAvatarHtml(acc)}</div>
+            <div class="account-name-container">
+              <span class="account-name-display">${accountTitle}</span>
+            </div>
+          </div>
+          <div class="segmented-control">
+            <button class="segmented-btn status-active-btn" onclick="setAccountStatus('${acc.id}', true)">
+              ${lang.status_active}
+            </button>
+            <button class="segmented-btn status-inactive-btn active" onclick="setAccountStatus('${acc.id}', false)">
+              ${lang.status_inactive}
+            </button>
+          </div>
+        </div>
+      `;
+      settingsAccountList.appendChild(card);
+      return;
+    }
+
+    // Cuenta ACTIVADA: Tarjeta completa con Editar, Eliminar, Estado y No Molestar
+    card.className = 'settings-account-card';
     card.innerHTML = `
       <div class="account-card-header">
         <div class="account-card-identity">
@@ -621,10 +688,10 @@ function renderSettingsAccounts() {
           <p class="account-row-desc">${lang.account_status_desc}</p>
         </div>
         <div class="segmented-control">
-          <button class="segmented-btn status-active-btn ${isEnabled ? 'active' : ''}" onclick="setAccountStatus('${acc.id}', true)">
+          <button class="segmented-btn status-active-btn active" onclick="setAccountStatus('${acc.id}', true)">
             ${lang.status_active}
           </button>
-          <button class="segmented-btn status-inactive-btn ${!isEnabled ? 'active' : ''}" onclick="setAccountStatus('${acc.id}', false)">
+          <button class="segmented-btn status-inactive-btn" onclick="setAccountStatus('${acc.id}', false)">
             ${lang.status_inactive}
           </button>
         </div>
@@ -671,15 +738,39 @@ window.toggleDND = (id) => {
     acc.dnd = !acc.dnd;
     saveAccounts();
     renderSettingsAccounts();
+    updateTotalUnread();
   }
 };
 
 window.deleteAccount = deleteAccount;
 
-themeSelect.addEventListener('change', (e) => {
-  settings.theme = e.target.value;
-  saveSettings();
-});
+if (themeSelect) {
+  themeSelect.addEventListener('change', (e) => {
+    settings.theme = e.target.value;
+    saveSettings();
+  });
+}
+
+if (paletteSelect) {
+  paletteSelect.addEventListener('change', (e) => {
+    settings.themePalette = e.target.value;
+    saveSettings();
+  });
+}
+
+if (trayStyleSelect) {
+  trayStyleSelect.addEventListener('change', (e) => {
+    settings.trayStyle = e.target.value;
+    saveSettings();
+  });
+}
+
+if (trayBadgeToggle) {
+  trayBadgeToggle.addEventListener('change', (e) => {
+    settings.trayShowBadge = e.target.checked;
+    saveSettings();
+  });
+}
 
 languageSelect.addEventListener('change', (e) => {
   settings.language = e.target.value;

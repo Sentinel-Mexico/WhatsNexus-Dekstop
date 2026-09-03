@@ -45,7 +45,12 @@ The main process acts as the supervisor for the entire operating system interfac
   1. Instantiates a transparent, frameless splash window with an emerald loading animation.
   2. Concurrently instantiates the main application window with `{ show: false }` to pre-warm the DOM, load local stylesheets, and initialize local account metadata in the background.
   3. Listens for the `splash-finished` IPC event from the splash renderer, subsequently displaying and focusing the main window while destroying the splash window.
-- **Tray Management:** Creates the system tray icon with background minimize/restore behavior.
+- **Tray Management & Minimize-to-Tray Lifecycle:**
+  - Instantiates a persistent system tray icon with an SVG vector emblem rendered dynamically via `nativeImage`.
+  - Intercepts window `close` events, redirecting them to `mainWindow.hide()` so that WhatsNexus remains running in the background without losing session state or missing incoming messages.
+  - Dynamically synthesizes unread notification count badges directly on the tray icon when messages arrive on non-muted, active accounts.
+  - Exposes context menu actions ("Mostrar WhatsNexus", "Salir") and toggles visibility upon tray icon clicks.
+  - Responds to `update-tray-badge` and `update-tray-settings` IPC events from the renderer.
 
 ### 2.2 Main Renderer (`src/renderer/`)
 The primary UI layer consists of vanilla HTML5, CSS3, and modern JavaScript:

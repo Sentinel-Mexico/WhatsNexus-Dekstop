@@ -4,6 +4,26 @@ This changelog records all granular updates, bug fixes, refactorings, and featur
 
 ---
 
+## [0.7.0] - 2026-09-03
+### Added
+- **Compact Cards for Deactivated Accounts:** When an account is deactivated, its settings card automatically collapses into a compact view displaying solely the avatar, account name, and activation toggle. Actions ("Editar", "Eliminar") and "No molestar" are hidden until the account is reactivated.
+- **5 Multi-Palette Themes (Light & Dark Modes):**
+  - **WhatsApp:** Emerald `#00a884`, `#202c33` / `#f0f2f5`.
+  - **Messenger:** Meta Blue `#0084ff`, `#242526` / `#f0f2f5`.
+  - **Telegram:** Telegram Cyan-Blue `#24a1de`, `#17212b` / `#f4f4f5`.
+  - **Signal:** Signal Royal Blue `#2c6bed`, `#1b1c1e` / `#f6f7f9`.
+  - **Bosque (Forest):** Dark Olive & Kombu `#606c38`, `#283618`, `#bc6c25`, `#fefae0`.
+- **System Tray Integration:**
+  - Close-to-tray behavior: Closing the main window minimizes to the tray, keeping sessions alive in the background without dropping notifications.
+  - Clicking the tray icon restores or hides the application window.
+  - Context menu with "Mostrar WhatsNexus" and "Salir" (clean app shutdown).
+  - Dynamic unread message counter badge synthesized directly on the tray icon when unread messages arrive on active, non-muted accounts.
+- **Appearance Settings Restructuring:**
+  - Organized `#tab-appearance` into distinct, elevated `.setting-card` containers for: **Temas y Estilo Visual** (palette + mode), **Idioma de la Interfaz**, and **Bandeja del Sistema (Tray)** (icon style + unread badge toggle).
+- **Internationalization:** Added 16 new localization keys across all 10 supported languages (`en`, `es`, `hi`, `ar`, `bn`, `pt`, `ru`, `ur`, `id`, `fr`).
+
+---
+
 ## [0.6.0] - 2026-09-03
 ### Added
 - **Account Activation & Deactivation System:** Added toggle to activate or deactivate individual WhatsApp accounts.

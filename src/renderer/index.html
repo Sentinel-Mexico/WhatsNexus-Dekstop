@@ -90,28 +90,79 @@
             <div id="tab-appearance" class="settings-panel">
               <div class="panel-header">
                 <h3 data-i18n="tab_appearance">Apariencia</h3>
-                <p class="panel-desc" data-i18n="desc_appearance">Personaliza el tema visual y el idioma de la aplicación.</p>
+                <p class="panel-desc" data-i18n="desc_appearance">Personaliza los temas visuales, el idioma y la integración con la bandeja del sistema.</p>
               </div>
+
+              <!-- Bloque 1: Temas y Estilo Visual -->
               <div class="setting-card">
-                <div class="setting-group">
-                  <div class="setting-text">
-                    <label data-i18n="label_theme">Tema</label>
-                    <span class="setting-hint" data-i18n="hint_theme">Elige la combinación de colores que prefieras</span>
-                  </div>
-                  <select id="theme-select" class="styled-select">
-                    <option value="theme-auto" data-i18n="theme_auto">Automático (Sistema)</option>
-                    <option value="theme-light" data-i18n="theme_light">Claro</option>
-                    <option value="theme-dark" data-i18n="theme_dark">Oscuro</option>
-                  </select>
+                <div class="setting-text">
+                  <h4 data-i18n="card_theme_title">Temas y Estilo Visual</h4>
+                  <p class="setting-hint" data-i18n="hint_theme">Elige la paleta de colores y el modo de iluminación preferido.</p>
                 </div>
-                <div class="setting-group">
-                  <div class="setting-text">
-                    <label data-i18n="label_language">Idioma</label>
-                    <span class="setting-hint" data-i18n="hint_language">Selecciona el idioma de la interfaz</span>
+                
+                <div class="setting-row-double">
+                  <div class="setting-subgroup">
+                    <label for="palette-select" data-i18n="label_palette">Paleta de Color</label>
+                    <select id="palette-select" class="styled-select">
+                      <option value="whatsapp" data-i18n="palette_whatsapp">WhatsApp (Esmeralda)</option>
+                      <option value="messenger" data-i18n="palette_messenger">Messenger (Azul Eléctrico)</option>
+                      <option value="telegram" data-i18n="palette_telegram">Telegram (Celeste Ciano)</option>
+                      <option value="signal" data-i18n="palette_signal">Signal (Azul Real)</option>
+                      <option value="forest" data-i18n="palette_forest">Bosque (Oliva y Tierra)</option>
+                    </select>
                   </div>
+
+                  <div class="setting-subgroup">
+                    <label for="theme-select" data-i18n="label_theme">Modo de Apariencia</label>
+                    <select id="theme-select" class="styled-select">
+                      <option value="theme-auto" data-i18n="theme_auto">Automático (Sistema)</option>
+                      <option value="theme-light" data-i18n="theme_light">Claro</option>
+                      <option value="theme-dark" data-i18n="theme_dark">Oscuro</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Bloque 2: Idioma de la Aplicación -->
+              <div class="setting-card">
+                <div class="setting-text">
+                  <h4 data-i18n="card_language_title">Idioma de la Interfaz</h4>
+                  <p class="setting-hint" data-i18n="hint_language">Selecciona el idioma principal de WhatsNexus.</p>
+                </div>
+                <div class="setting-group" style="margin-bottom: 0;">
                   <select id="language-select" class="styled-select">
                     <!-- Se llenará dinámicamente desde JS -->
                   </select>
+                </div>
+              </div>
+
+              <!-- Bloque 3: Bandeja del Sistema (Tray) -->
+              <div class="setting-card">
+                <div class="setting-text">
+                  <h4 data-i18n="card_tray_title">Bandeja del Sistema (Icono de Estado)</h4>
+                  <p class="setting-hint" data-i18n="hint_tray">Configura la presencia y estilo del icono en la barra de tareas o panel de notificaciones.</p>
+                </div>
+
+                <div class="setting-row-double">
+                  <div class="setting-subgroup">
+                    <label for="tray-style-select" data-i18n="label_tray_style">Estilo del Icono en Bandeja</label>
+                    <select id="tray-style-select" class="styled-select">
+                      <option value="auto" data-i18n="tray_style_auto">Predeterminado / Marca</option>
+                      <option value="light" data-i18n="tray_style_light">Claro (Monocromático blanco)</option>
+                      <option value="dark" data-i18n="tray_style_dark">Oscuro (Monocromático negro)</option>
+                    </select>
+                  </div>
+
+                  <div class="setting-subgroup">
+                    <label for="tray-badge-toggle" data-i18n="label_tray_badge">Contador de mensajes no leídos</label>
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 8px;">
+                      <span class="setting-hint" style="margin: 0;" data-i18n="hint_tray_badge">Mostrar badge numérico en el icono</span>
+                      <label class="switch">
+                        <input type="checkbox" id="tray-badge-toggle" checked>
+                        <span class="switch-slider"></span>
+                      </label>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
