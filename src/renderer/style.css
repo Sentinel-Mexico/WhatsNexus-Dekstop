@@ -661,6 +661,114 @@ select:focus, input[type="text"]:focus {
   border-color: var(--bg-active);
 }
 
+/* Custom Select with Strict Height Limit (Max 10 items before scroll) */
+.custom-select-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 400px;
+}
+
+.custom-select-trigger {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 10px 15px;
+  border-radius: 8px;
+  background-color: var(--bg-hover);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  font-size: 0.95rem;
+  cursor: pointer;
+  user-select: none;
+  transition: border-color 0.2s, background-color 0.2s;
+  outline: none;
+}
+
+.custom-select-trigger:hover {
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+body.theme-light .custom-select-trigger:hover {
+  border-color: rgba(0, 0, 0, 0.2);
+}
+
+.custom-select-trigger.open,
+.custom-select-trigger:focus-visible {
+  border-color: var(--bg-active);
+}
+
+.custom-select-trigger .select-chevron {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  transition: transform 0.2s ease;
+}
+
+.custom-select-trigger.open .select-chevron {
+  transform: rotate(180deg);
+}
+
+.custom-select-options {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  z-index: 9999;
+  background-color: var(--bg-sidebar);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+  /* Exactly 10 items visible before scroll */
+  max-height: 380px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: none;
+  padding: 4px 0;
+}
+
+.custom-select-options.open {
+  display: block;
+}
+
+.custom-select-options::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-select-options::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-select-options::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+}
+
+body.theme-light .custom-select-options::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+.custom-option {
+  padding: 9px 15px;
+  font-size: 0.92rem;
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: background-color 0.15s, color 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  user-select: none;
+}
+
+.custom-option:hover {
+  background-color: var(--bg-hover);
+}
+
+.custom-option.selected {
+  background-color: var(--bg-active);
+  color: #ffffff;
+  font-weight: 500;
+}
+
 /* ========================================================
    Notificaciones: Estilo de Secciones y Filas de Opciones
    ======================================================== */

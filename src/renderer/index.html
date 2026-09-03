@@ -134,9 +134,18 @@
                   <p class="setting-hint" data-i18n="hint_language">Selecciona el idioma principal de WhatsNexus.</p>
                 </div>
                 <div class="setting-group" style="margin-bottom: 0;">
-                  <select id="language-select" class="styled-select">
-                    <!-- Se llenará dinámicamente desde JS -->
-                  </select>
+                  <div class="custom-select-wrapper" id="custom-language-select-wrapper">
+                    <div class="custom-select-trigger" id="language-select-trigger" tabindex="0">
+                      <span id="language-select-label">Español (Español)</span>
+                      <i class="fa-solid fa-chevron-down select-chevron"></i>
+                    </div>
+                    <div class="custom-select-options" id="language-select-options">
+                      <!-- Se llenará dinámicamente con las 25 opciones -->
+                    </div>
+                    <select id="language-select" class="styled-select" style="display: none;">
+                      <!-- Se mantiene para compatibilidad -->
+                    </select>
+                  </div>
                 </div>
               </div>
 

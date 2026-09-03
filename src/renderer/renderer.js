@@ -3135,7 +3135,12 @@ const i18n = {
 
 function populateLanguageSelect() {
   const langSelect = document.getElementById('language-select');
-  langSelect.innerHTML = '';
+  const customOptions = document.getElementById('language-select-options');
+  const triggerLabel = document.getElementById('language-select-label');
+  const trigger = document.getElementById('language-select-trigger');
+  
+  if (langSelect) langSelect.innerHTML = '';
+  if (customOptions) customOptions.innerHTML = '';
   
   const currentLangCode = settings.language || 'en';
   const dict = i18n[currentLangCode] || i18n['en'];
@@ -3143,13 +3148,41 @@ function populateLanguageSelect() {
   supportedLanguages.forEach(code => {
     const translatedName = dict[`lang_${code}`] || nativeNames[code];
     const nativeName = nativeNames[code];
-    const option = document.createElement('option');
-    option.value = code;
-    option.innerText = `${translatedName} (${nativeName})`;
-    langSelect.appendChild(option);
+    const displayText = `${translatedName} (${nativeName})`;
+
+    // Select nativo oculto
+    if (langSelect) {
+      const option = document.createElement('option');
+      option.value = code;
+      option.innerText = displayText;
+      langSelect.appendChild(option);
+    }
+
+    // Selector visual personalizado
+    if (customOptions) {
+      const customOpt = document.createElement('div');
+      customOpt.className = 'custom-option' + (code === currentLangCode ? ' selected' : '');
+      customOpt.innerText = displayText;
+      customOpt.dataset.value = code;
+
+      customOpt.addEventListener('click', (e) => {
+        e.stopPropagation();
+        settings.language = code;
+        saveSettings();
+        if (customOptions) customOptions.classList.remove('open');
+        if (trigger) trigger.classList.remove('open');
+      });
+
+      customOptions.appendChild(customOpt);
+    }
   });
   
-  langSelect.value = currentLangCode;
+  if (langSelect) langSelect.value = currentLangCode;
+  if (triggerLabel) {
+    const activeTranslated = dict[`lang_${currentLangCode}`] || nativeNames[currentLangCode];
+    const activeNative = nativeNames[currentLangCode];
+    triggerLabel.innerText = `${activeTranslated} (${activeNative})`;
+  }
 }
 
 function updateTranslations() {
@@ -3990,10 +4023,39 @@ if (trayBadgeToggle) {
   });
 }
 
-languageSelect.addEventListener('change', (e) => {
-  settings.language = e.target.value;
-  saveSettings();
-});
+if (languageSelect) {
+  languageSelect.addEventListener('change', (e) => {
+    settings.language = e.target.value;
+    saveSettings();
+  });
+}
+
+// Manejo del selector de idioma personalizado con scroll limitado a 10 elementos
+const langTrigger = document.getElementById('language-select-trigger');
+const langOptions = document.getElementById('language-select-options');
+
+if (langTrigger && langOptions) {
+  langTrigger.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const isOpen = langOptions.classList.contains('open');
+    if (isOpen) {
+      langOptions.classList.remove('open');
+      langTrigger.classList.remove('open');
+    } else {
+      langOptions.classList.add('open');
+      langTrigger.classList.add('open');
+      const selected = langOptions.querySelector('.custom-option.selected');
+      if (selected) {
+        selected.scrollIntoView({ block: 'nearest' });
+      }
+    }
+  });
+
+  document.addEventListener('click', () => {
+    langOptions.classList.remove('open');
+    langTrigger.classList.remove('open');
+  });
+}
 
 // Manejo de Plantillas de Privacidad (Amplio, Medio, Estricto, Personalizado)
 if (privacyPresetSelect) {

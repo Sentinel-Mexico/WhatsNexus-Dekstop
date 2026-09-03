@@ -4,6 +4,15 @@ This changelog records all granular updates, bug fixes, refactorings, and featur
 
 ---
 
+## [0.12.2] - 2026-09-03
+### Fixed
+- **Language Selector Dropdown Viewport Height (10 Items Max):**
+  - Replaced native unconstrained OS `<select>` popup with a styled custom dropdown component (`.custom-select-wrapper`).
+  - Constrained popup height strictly to `max-height: 380px` (`overflow-y: auto`), ensuring exactly 10 language options are visible at a time before vertical scrolling.
+  - Added smooth scroll-to-selected behavior on open, click-outside auto-dismiss, and theme-adaptive scrollbar styling.
+
+---
+
 ## [0.12.1] - 2026-09-03
 ### Fixed
 - **Language Selector Population:**
