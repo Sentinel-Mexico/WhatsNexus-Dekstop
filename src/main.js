@@ -26,12 +26,43 @@ if (!gotTheLock) {
 }
 
 let mainWindow;
+let splashWindow = null;
 let tray = null;
+
+function createSplashWindow() {
+  splashWindow = new BrowserWindow({
+    width: 480,
+    height: 300,
+    frame: false,
+    resizable: false,
+    transparent: true,
+    alwaysOnTop: true,
+    center: true,
+    show: false,
+    webPreferences: {
+      nodeIntegration: true,
+      contextIsolation: false
+    }
+  });
+
+  splashWindow.loadFile(path.join(__dirname, 'splash', 'splash.html'));
+
+  splashWindow.once('ready-to-show', () => {
+    if (splashWindow && !splashWindow.isDestroyed()) {
+      splashWindow.show();
+    }
+  });
+
+  splashWindow.on('closed', () => {
+    splashWindow = null;
+  });
+}
 
 function createWindow() {
   mainWindow = new BrowserWindow({
     width: 1200,
     height: 800,
+    show: false, // Preloaded in background while splash is animating
     title: 'WhatsNexus',
     icon: path.join(__dirname, 'assets', 'icon.png'), // Placeholder icon path
     webPreferences: {
@@ -57,6 +88,17 @@ function createWindow() {
   });
 }
 
+// Handle transition from splash screen to main window
+ipcMain.on('splash-finished', () => {
+  if (mainWindow && !mainWindow.isDestroyed()) {
+    mainWindow.show();
+    mainWindow.focus();
+  }
+  if (splashWindow && !splashWindow.isDestroyed()) {
+    splashWindow.close();
+  }
+});
+
 function createTray() {
   // Use a placeholder or a simple system icon for the tray
   // In a real app, use a proper .ico (Windows) or .png (macOS/Linux)
@@ -79,14 +121,29 @@ function createTray() {
 }
 
 app.whenReady().then(() => {
+  createSplashWindow();
   createWindow();
-  // createTray(); // Uncomment when an icon is added
+
+  // Safety fallback: if splash hangs for more than 4s, reveal mainWindow
+  setTimeout(() => {
+    if (mainWindow && !mainWindow.isDestroyed() && !mainWindow.isVisible()) {
+      mainWindow.show();
+      mainWindow.focus();
+      if (splashWindow && !splashWindow.isDestroyed()) {
+        splashWindow.close();
+      }
+    }
+  }, 4000);
   
   app.on('activate', function () {
-    if (BrowserWindow.getAllWindows().length === 0) createWindow();
+    if (BrowserWindow.getAllWindows().length === 0) {
+      createWindow();
+      if (mainWindow) mainWindow.show();
+    }
   });
 });
 
 app.on('window-all-closed', function () {
   if (process.platform !== 'darwin') app.quit();
 });
+

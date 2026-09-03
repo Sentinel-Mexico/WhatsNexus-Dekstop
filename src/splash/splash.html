@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WhatsNexus - Loading</title>
+  <link rel="stylesheet" href="splash.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="splash-card">
+    <div class="splash-brand">
+      <div class="logo-wrapper">
+        <svg class="brand-logo" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="24" cy="24" r="22" fill="url(#brandGrad)" />
+          <path d="M35 23.5C35 29.299 30.299 34 24.5 34C22.65 34 20.91 33.52 19.39 32.68L14 34.5L15.86 29.23C14.7 27.56 14 25.53 14 23.5C14 17.701 18.701 13 24.5 13C30.299 13 35 17.701 35 23.5Z" fill="white" />
+          <path d="M21.2 18.5C20.8 17.6 20.4 17.6 20 17.6C19.7 17.6 19.3 17.6 19 18C18.6 18.4 17.6 19.4 17.6 21.4C17.6 23.4 19 25.3 19.2 25.6C19.4 25.9 22 30 26 31.7C29.3 33.1 30 32.8 30.7 32.7C31.4 32.6 33 31.7 33.3 30.8C33.7 29.8 33.7 29 33.6 28.8C33.5 28.6 33.1 28.5 32.5 28.2C31.9 27.9 29 26.5 28.5 26.3C27.9 26.1 27.6 26 27.2 26.6C26.8 27.2 25.7 28.5 25.4 28.9C25.1 29.2 24.7 29.3 24.1 29C23.5 28.7 21.6 28.1 19.4 26.1C17.7 24.5 16.5 22.6 16.2 22C15.9 21.4 16.2 21.1 16.5 20.8C16.7 20.5 17.1 20.1 17.4 19.7C17.7 19.3 17.8 19 18 18.6C18.2 18.2 18.1 17.9 17.9 17.6C17.8 17.3 17 15.3 16.7 14.5C16.3 13.7 16 13.8 15.6 13.8C15.3 13.8 15 13.8 14.6 13.8C14.3 13.8 13.8 14 13.4 14.4C13 14.8 12 15.8 12 17.8C12 19.8 13.5 21.7 13.7 22" fill="#25D366"/>
+          <defs>
+            <linearGradient id="brandGrad" x1="6" y1="6" x2="42" y2="42" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#25D366" />
+              <stop offset="1" stop-color="#128C7E" />
+            </linearGradient>
+          </defs>
+        </svg>
+        <div class="logo-pulse"></div>
+      </div>
+      <div class="brand-text">
+        <div class="brand-title-row">
+          <h1 class="brand-title">WhatsNexus</h1>
+          <span class="version-badge" id="version-badge">v0.5.0</span>
+        </div>
+        <p class="brand-tagline">Multi-Session WhatsApp Desktop</p>
+      </div>
+    </div>
+
+    <div class="splash-progress-section">
+      <div class="status-row">
+        <span class="status-text" id="status-text">Initializing application components...</span>
+        <span class="percentage-text" id="percentage-text">0%</span>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill" id="progress-fill"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="splash.js"></script>
+</body>
+</html>

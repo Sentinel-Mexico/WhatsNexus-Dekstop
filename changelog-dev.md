@@ -4,6 +4,14 @@ This changelog records all granular updates, bug fixes, refactorings, and featur
 
 ---
 
+## [0.5.0] - 2026-09-03
+### Added
+- **Stacer-Inspired Loading Splash Screen:** Introduced a dedicated frameless splash screen displayed on application startup. Features an emerald glowing WhatsApp emblem, dynamic startup stage messages, and a smooth ~1.8s progress bar.
+- **Pre-warmed Window Transition:** The main window initializes with hidden rendering in the background while the splash screen animates, ensuring an instantaneous, flicker-free presentation upon launch completion.
+- **IPC Lifecycle Synchronization:** Coordinated IPC signaling between splash renderer and Electron main process with a 4-second safety fallback.
+
+---
+
 ## [0.4.0] - 2026-09-03
 ### Added
 - **Bug Reporting System:** Automated bug report button in the titlebar opening a prefilled GitHub issue template with OS diagnostics, app version, Electron version, and active partition metadata.
