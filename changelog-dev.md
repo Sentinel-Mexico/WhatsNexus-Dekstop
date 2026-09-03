@@ -4,6 +4,13 @@ This changelog records all granular updates, bug fixes, refactorings, and featur
 
 ---
 
+## [0.5.5] - 2026-09-03
+### Added
+- **Agent Rules Index (`.agents/README.md`):** Created a centralized index and reference guide for all active agent governance rules in `.agents/rules/`.
+- **Rule Index Governance Requirement:** Updated `.agents/rules/documentation.md` (Section 5) to mandate immediate updates to `.agents/README.md` whenever rules are created, modified, or removed.
+
+---
+
 ## [0.5.4] - 2026-09-03
 ### Added
 - **Documentation Synchronization Rule (`.agents/rules/documentation.md`):** Mandated continuous synchronization of the `docs/` technical documentation whenever code changes, refactors, or feature additions impact documented behavior.
