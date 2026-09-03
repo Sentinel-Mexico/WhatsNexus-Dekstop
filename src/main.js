@@ -2,7 +2,7 @@ const { app, BrowserWindow, Menu, Tray, ipcMain } = require('electron');
 const path = require('path');
 
 // 3. Flags de optimización de Chromium
-app.commandLine.appendSwitch('disable-features', 'HardwareMediaKeyHandling,MediaSessionService');
+app.commandLine.appendSwitch('disable-features', 'HardwareMediaKeyHandling,MediaSessionService,WaylandWpColorManagerV1');
 app.commandLine.appendSwitch('disable-site-isolation-trials'); // Reduce overhead de memoria
 app.commandLine.appendSwitch('disable-background-networking');
 app.commandLine.appendSwitch('disable-ipc-flooding-protection');

@@ -1,9 +1,9 @@
-## WhatsNexus ⚡
+# WhatsNexus ⚡
 
 ![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey)
 ![License](https://img.shields.io/badge/license-MIT-blue)
 
-**WhatsNexus** is a cross-platform desktop application designed to manage multiple WhatsApp Web accounts simultaneously. Inspired by projects like ZapZap, WhatsNexus goes a step further by offering strict session isolation, allowing you to keep your personal and work accounts active in a single, tab-organized interface.
+**WhatsNexus** is a cross-platform desktop application designed to manage multiple WhatsApp Web accounts simultaneously. It goes a step further by offering strict session isolation, allowing you to keep your personal and work accounts active in a single, tab-organized interface without data crossover.
 
 ## ✨ Key Features
 
@@ -39,6 +39,12 @@
 ## 🛠️ Tech Stack
 *   **Core:** Electron.js
 *   **Frontend:** HTML, CSS, JavaScript
+
+## 💡 Inspiration & Acknowledgements
+
+The graphical user interface, layout, and core functional concept of WhatsNexus were deeply inspired by the excellent work done by [Rafael Tosta](https://github.com/rafatosta) on the [ZapZap](https://github.com/rafatosta/zapzap) project. We want to express our gratitude and give full credit to the creator of ZapZap for paving the way and providing the vision for a better desktop messaging experience.
+
+*Please note: While WhatsNexus draws significant UI/UX inspiration from ZapZap, our codebase is a completely independent implementation. Built from the ground up, WhatsNexus utilizes a different technological stack and does not incorporate or reuse any source code from the original ZapZap repository.*
 
 ## 🤝 Contributing
 Contributions, issue reports, and feature requests are welcome! Feel free to check the [issues](https://github.com/Sentinel-Mexico/WhatsNexus-Dekstop/issues) page.

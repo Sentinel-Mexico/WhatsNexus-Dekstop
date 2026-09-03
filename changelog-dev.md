@@ -4,6 +4,12 @@ This changelog records all granular updates, bug fixes, refactorings, and featur
 
 ---
 
+## [0.5.2] - 2026-09-03
+### Fixed
+- **Wayland Color Management Error:** Disabled Chromium's `WaylandWpColorManagerV1` feature flag in `src/main.js` to eliminate `wayland_wp_color_manager` image transfer and color space description errors on Linux Wayland environments (such as KDE Plasma and GNOME).
+
+---
+
 ## [0.5.1] - 2026-09-03
 ### Changed
 - **Full-Window Settings Redesign:** Transformed the Settings interface from a floating modal pop-up into a dedicated full-window view inside the main content area (`.main-content`), integrating it directly alongside WhatsApp webview containers.
