@@ -4,6 +4,12 @@ This changelog records all granular updates, bug fixes, refactorings, and featur
 
 ---
 
+## [0.7.2] - 2026-09-03
+### Fixed
+- **GLib Context Pop Assertion Warning on Shutdown:** Handled the `before-quit` application lifecycle event to explicitly destroy the System Tray (`tray.destroy()`) and release DBus/StatusNotifierItem bindings before Chromium dismantles the GLib main event loop, preventing `assertion 'stack != NULL' failed` warnings on Linux.
+
+---
+
 ## [0.7.1] - 2026-09-03
 ### Fixed
 - **System Tray Blank/Invisible Icon on Linux:** Fixed issue where in-memory SVG data URLs produced transparent or missing pixmaps on Linux `libappindicator`. The main process now directly serves disk-backed PNG icons (`tray-green.png`, `tray-light.png`, `tray-dark.png`, and their corresponding badge variants), ensuring 100% visibility and compatibility across GNOME, KDE, XFCE, Windows, and macOS.

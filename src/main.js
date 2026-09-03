@@ -205,6 +205,14 @@ app.whenReady().then(() => {
   });
 });
 
+app.on('before-quit', () => {
+  app.isQuitting = true;
+  if (tray) {
+    tray.destroy();
+    tray = null;
+  }
+});
+
 app.on('window-all-closed', function () {
   if (process.platform !== 'darwin') {
     // Si no se está forzando salida, la app permanece viva en segundo plano en la bandeja
