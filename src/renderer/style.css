@@ -1707,5 +1707,104 @@ body.theme-light .permissions-notice-box {
   margin-top: 6px;
 }
 
+/* ==========================================================================
+   Pestaña Acerca de (About)
+   ========================================================================== */
+.about-header-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 32px 20px 28px;
+  background-color: var(--bg-sidebar);
+  border: 1px solid var(--border-color);
+  border-radius: var(--shape-lg);
+  margin-bottom: 22px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+.about-logo-wrapper {
+  width: 76px;
+  height: 76px;
+  border-radius: 20px;
+  background: rgba(37, 211, 102, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 14px;
+  border: 1px solid rgba(37, 211, 102, 0.2);
+  box-shadow: 0 4px 14px rgba(37, 211, 102, 0.15);
+}
+
+.about-app-logo {
+  width: 52px;
+  height: 52px;
+  object-fit: contain;
+}
+
+.about-app-title {
+  font-size: 1.85rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 6px 0;
+  letter-spacing: -0.02em;
+}
+
+.about-app-version {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--accent-color);
+  background: rgba(37, 211, 102, 0.12);
+  border: 1px solid rgba(37, 211, 102, 0.25);
+  padding: 4px 14px;
+  border-radius: 9999px;
+  margin: 0 0 10px 0;
+  display: inline-block;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+.about-app-tagline {
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.about-specs-card {
+  padding: 16px !important;
+}
+
+.about-specs-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+}
+
+.about-spec-item {
+  background: var(--bg-hover);
+  padding: 12px 16px;
+  border-radius: var(--shape-md);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  border: 1px solid var(--border-color);
+}
+
+.about-spec-label {
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.about-spec-value {
+  font-size: 0.88rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  color: var(--text-primary);
+  font-weight: 500;
+  word-break: break-all;
+}
+
 
 

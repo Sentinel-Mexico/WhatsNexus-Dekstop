@@ -57,9 +57,10 @@ The main process acts as the supervisor for the entire operating system interfac
 - **Native Chromium Spellchecking:** Manages multi-session spellchecking across all active and dynamically created guest sessions via `session.setSpellCheckerLanguages()`, mapping interface language codes to Chromium `.bdic` dictionaries locally.
 - **Multi-Session Proxy Engine & Strict Isolation:** Dynamically provisions HTTP/SOCKS5 proxy rules or system proxy discovery across `session.defaultSession` and all partitioned sessions (`persist:acc_*`) via `session.setProxy()`. When Strict Proxy Isolation is enabled, local bypass rules are removed (`proxyBypassRules: ''`) to ensure no direct network connections evade the tunnel. Reverts to direct connections on demand (`{ mode: 'direct' }`).
 - **WebRTC IP Leak Mitigation:** Enforces `session.setWebRTCIPHandlingPolicy('disable-non-proxied-udp')` at the Chromium networking layer across all sessions when WebRTC protection is enabled, preventing local and public IP disclosures over non-proxied UDP.
+- **Real-Time System Diagnostics & Engine Introspection:** Exposes dynamic runtime parameters via IPC (`get-system-info`), sourcing live metrics directly from `app.getVersion()`, `process.versions` (Electron, Chromium, Node.js, V8), and Node's native `os` module (`os.type()`, `os.release()`, `os.arch()`).
 
 ### 2.2 Secure Preloads (`src/preload-main.js` & `src/splash/splash-preload.js`)
-- **Main Preload (`src/preload-main.js`):** Securely bridges IPC channels, platform diagnostics, webview preload paths, native notification dispatchers, download folder selectors, spellchecker configuration, network/proxy/WebRTC settings, and external browser link dispatchers to `window.electronAPI` via `contextBridge.exposeInMainWorld()`.
+- **Main Preload (`src/preload-main.js`):** Securely bridges IPC channels, platform diagnostics, webview preload paths, native notification dispatchers, download folder selectors, spellchecker configuration, network/proxy/WebRTC settings, system info introspection (`getSystemInfo`), and external browser link dispatchers to `window.electronAPI` via `contextBridge.exposeInMainWorld()`.
 - **Splash Preload (`src/splash/splash-preload.js`):** Exposes `window.splashAPI` for querying SemVer application versions and signaling transition completion.
 
 ### 2.3 Main Renderer (`src/renderer/`)
@@ -104,7 +105,7 @@ Instead of relying on pop-up dialogs or modal windows that obstruct the interfac
 
 ## 4. Global Configuration Model (Universal Settings Enforcement)
 
-All preferences defined in the Settings panels (**Apariencia**, **Notificaciones**, **Permisos**, and **Privacidad y Red**) operate under a **Global Enforcement Architecture**:
+All preferences defined in the Settings panels (**Apariencia**, **Notificaciones**, **Permisos**, **Privacidad y Red**, and **Acerca de**) operate under a **Global Enforcement Architecture**:
 
 1. **Universal Scope:** Configuration parameters are global application policies stored in `settings` (`localStorage`) and mirrored to the Electron main process via IPC (`permissions.json`, `system_settings.json`, and `network_settings.json`).
 2. **Present Accounts:** Modifications made in Settings are reactively broadcast to all active `<webview>` instances, Chromium sessions, download interceptors, spellcheckers, network proxy tunnels, and audio outputs in real time.

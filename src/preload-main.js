@@ -26,6 +26,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   setSpellcheckerLanguage: (lang) => ipcRenderer.invoke('set-spellchecker-language', lang),
   updateNetworkSettings: (settings) => ipcRenderer.invoke('update-network-settings', settings),
   getNetworkSettings: () => ipcRenderer.invoke('get-network-settings'),
+  getSystemInfo: () => ipcRenderer.invoke('get-system-info'),
   onSelectAccount: (callback) => {
     if (typeof callback !== 'function') return;
     const handler = (_event, accountId) => callback(accountId);

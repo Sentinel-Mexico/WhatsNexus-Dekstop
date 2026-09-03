@@ -80,6 +80,10 @@
               <i class="fa-solid fa-network-wired"></i>
               <span data-i18n="tab_network">Privacidad y red</span>
             </button>
+            <button class="tab-btn" data-tab="tab-about">
+              <i class="fa-solid fa-circle-info"></i>
+              <span data-i18n="tab_about">Acerca de</span>
+            </button>
           </nav>
 
           <!-- Panels Area -->
@@ -532,6 +536,104 @@
                     <input type="checkbox" id="network-webrtc-toggle">
                     <span class="switch-slider"></span>
                   </label>
+                </div>
+              </div>
+            </div>
+
+            <!-- Pestaña Acerca de -->
+            <div id="tab-about" class="settings-panel">
+              <div class="panel-header">
+                <h3 data-i18n="heading_about">Acerca de</h3>
+                <p class="panel-subtitle" data-i18n="subtitle_about">Detalles técnicos, licencia y créditos del proyecto.</p>
+              </div>
+
+              <!-- Cabecera de la App (Centrado) -->
+              <div class="about-header-card">
+                <div class="about-logo-wrapper">
+                  <img src="../assets/icon.png" alt="WhatsNexus" class="about-app-logo">
+                </div>
+                <h2 class="about-app-title">WhatsNexus</h2>
+                <p class="about-app-version" id="about-app-version">Cargando versión...</p>
+                <p class="about-app-tagline" data-i18n="about_tagline">Cliente de escritorio multi-cuenta para WhatsApp Web</p>
+              </div>
+
+              <!-- Tarjeta 1: Detalles Técnicos -->
+              <h4 class="perm-group-title" data-i18n="about_technical_details">Detalles Técnicos</h4>
+              <div class="perm-card about-specs-card">
+                <div class="about-specs-grid">
+                  <div class="about-spec-item">
+                    <span class="about-spec-label" data-i18n="about_spec_os">Sistema Operativo</span>
+                    <span class="about-spec-value" id="about-spec-os">—</span>
+                  </div>
+                  <div class="about-spec-item">
+                    <span class="about-spec-label" data-i18n="about_spec_arch">Arquitectura</span>
+                    <span class="about-spec-value" id="about-spec-arch">—</span>
+                  </div>
+                  <div class="about-spec-item">
+                    <span class="about-spec-label">Electron</span>
+                    <span class="about-spec-value" id="about-spec-electron">—</span>
+                  </div>
+                  <div class="about-spec-item">
+                    <span class="about-spec-label">Chromium</span>
+                    <span class="about-spec-value" id="about-spec-chromium">—</span>
+                  </div>
+                  <div class="about-spec-item">
+                    <span class="about-spec-label">Node.js</span>
+                    <span class="about-spec-value" id="about-spec-node">—</span>
+                  </div>
+                  <div class="about-spec-item">
+                    <span class="about-spec-label">V8</span>
+                    <span class="about-spec-value" id="about-spec-v8">—</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Tarjeta 2: Licencia y Enlaces -->
+              <h4 class="perm-group-title" data-i18n="about_license_links">Licencia y Enlaces</h4>
+              <div class="perm-card">
+                <div class="perm-row">
+                  <div class="perm-info">
+                    <h4 data-i18n="about_license_title">Licencia</h4>
+                    <p data-i18n="about_license_desc">Software libre y de código abierto distribuido bajo la Licencia MIT.</p>
+                  </div>
+                  <span class="webrtc-badge" style="background: rgba(37, 211, 102, 0.12); color: var(--accent-color); font-weight: 600; border-color: rgba(37, 211, 102, 0.25);">MIT License</span>
+                </div>
+                <div class="perm-row">
+                  <div class="perm-info">
+                    <h4 data-i18n="about_repo_title">Repositorio Oficial</h4>
+                    <p data-i18n="about_repo_desc">Código fuente, lanzamientos y documentación oficial del proyecto.</p>
+                  </div>
+                  <button type="button" class="btn-primary" id="btn-about-repo" style="display: inline-flex; align-items: center; gap: 8px; font-size: 0.88rem; padding: 9px 18px; cursor: pointer; border-radius: var(--shape-sm);">
+                    <i class="fa-brands fa-github"></i>
+                    <span data-i18n="about_btn_repo">Visitar repositorio en GitHub</span>
+                  </button>
+                </div>
+                <div class="perm-row">
+                  <div class="perm-info">
+                    <h4 data-i18n="about_issues_title">Reportar un problema</h4>
+                    <p data-i18n="about_issues_desc">¿Encontraste un fallo o tienes una sugerencia? Crea un issue en GitHub.</p>
+                  </div>
+                  <button type="button" class="btn-secondary" id="btn-about-issues" style="display: inline-flex; align-items: center; gap: 8px; font-size: 0.88rem; padding: 9px 18px; cursor: pointer; border-radius: var(--shape-sm);">
+                    <i class="fa-solid fa-bug"></i>
+                    <span data-i18n="about_btn_issues">Reportar en GitHub Issues</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Tarjeta 3: Créditos y Agradecimientos -->
+              <h4 class="perm-group-title" data-i18n="about_credits_title">Créditos y Agradecimientos</h4>
+              <div class="perm-card">
+                <div class="perm-row">
+                  <div class="perm-info">
+                    <h4 data-i18n="about_dev_title">Desarrollo</h4>
+                    <p data-i18n="about_dev_desc">WhatsNexus es mantenido por la comunidad (Sentinel-Mexico / elChauriMx).</p>
+                  </div>
+                </div>
+                <div class="perm-row">
+                  <div class="perm-info">
+                    <h4 data-i18n="about_inspiration_title">Inspiración</h4>
+                    <p data-i18n="about_inspiration_desc">El diseño y concepto original fueron profundamente inspirados por el proyecto ZapZap creado por Rafael Tosta.</p>
+                  </div>
                 </div>
               </div>
             </div>

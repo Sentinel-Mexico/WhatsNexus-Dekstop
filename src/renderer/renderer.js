@@ -265,6 +265,27 @@ const i18n = {
     "network_webrtc_title": "WebRTC Protection",
     "network_webrtc_desc": "Blocks WebRTC APIs in page scripts. This is independent from strict proxy isolation.",
     "network_webrtc_badge": "Legacy script-based protection",
+    "tab_about": "About",
+    "heading_about": "About",
+    "subtitle_about": "Technical specifications, licensing, and project credits.",
+    "about_tagline": "Multi-Account WhatsApp Desktop Client",
+    "about_technical_details": "Technical Details",
+    "about_spec_os": "Operating System",
+    "about_spec_arch": "Architecture",
+    "about_license_links": "License & Links",
+    "about_license_title": "License",
+    "about_license_desc": "Free and open source software distributed under the MIT License.",
+    "about_repo_title": "Official Repository",
+    "about_repo_desc": "Source code, releases, and documentation on GitHub.",
+    "about_btn_repo": "Visit GitHub repository",
+    "about_issues_title": "Report an Issue",
+    "about_issues_desc": "Found a bug or have a suggestion? Open an issue on GitHub.",
+    "about_btn_issues": "Report on GitHub Issues",
+    "about_credits_title": "Credits & Acknowledgments",
+    "about_dev_title": "Development",
+    "about_dev_desc": "WhatsNexus is maintained by the community (Sentinel-Mexico / elChauriMx).",
+    "about_inspiration_title": "Inspiration",
+    "about_inspiration_desc": "The original concept and design were deeply inspired by the ZapZap project created by Rafael Tosta.",
     "lang_en": "English",
     "lang_zh": "Mandarin Chinese",
     "lang_hi": "Hindi",
@@ -672,6 +693,27 @@ const i18n = {
     "network_webrtc_title": "Protección WebRTC",
     "network_webrtc_desc": "Blocks WebRTC APIs in page scripts. This is independent from strict proxy isolation.",
     "network_webrtc_badge": "Legacy script-based protection",
+    "tab_about": "Acerca de",
+    "heading_about": "Acerca de",
+    "subtitle_about": "Detalles técnicos, licencia y créditos del proyecto.",
+    "about_tagline": "Cliente de escritorio multi-cuenta para WhatsApp Web",
+    "about_technical_details": "Detalles Técnicos",
+    "about_spec_os": "Sistema Operativo",
+    "about_spec_arch": "Arquitectura",
+    "about_license_links": "Licencia y Enlaces",
+    "about_license_title": "Licencia",
+    "about_license_desc": "Software libre y de código abierto distribuido bajo la Licencia MIT.",
+    "about_repo_title": "Repositorio Oficial",
+    "about_repo_desc": "Código fuente, lanzamientos y documentación oficial del proyecto.",
+    "about_btn_repo": "Visitar repositorio en GitHub",
+    "about_issues_title": "Reportar un problema",
+    "about_issues_desc": "¿Encontraste un fallo o tienes una sugerencia? Crea un issue en GitHub.",
+    "about_btn_issues": "Reportar en GitHub Issues",
+    "about_credits_title": "Créditos y Agradecimientos",
+    "about_dev_title": "Desarrollo",
+    "about_dev_desc": "WhatsNexus es mantenido por la comunidad (Sentinel-Mexico / elChauriMx).",
+    "about_inspiration_title": "Inspiración",
+    "about_inspiration_desc": "El diseño y concepto original fueron profundamente inspirados por el proyecto ZapZap creado por Rafael Tosta.",
     "lang_en": "Inglés",
     "lang_zh": "Chino Mandarín",
     "lang_hi": "Hindi",
@@ -3396,6 +3438,9 @@ function updateTranslations() {
   if (typeof updateNetworkUI === 'function') {
     updateNetworkUI();
   }
+  if (typeof loadAboutInfo === 'function') {
+    loadAboutInfo();
+  }
   if (typeof refreshAllCustomDropdowns === 'function') {
     refreshAllCustomDropdowns();
   }
@@ -3563,6 +3608,7 @@ function init() {
   applySettings();
   initDownloadPathUI();
   populateSpellcheckSelect();
+  loadAboutInfo();
   if (electronAPI.setSpellcheckerLanguage) {
     electronAPI.setSpellcheckerLanguage(settings.spellcheckLanguage || 'es');
   }
@@ -4700,6 +4746,89 @@ if (networkWebrtcToggle) {
     if (!settings.network) settings.network = {};
     settings.network.webrtcProtection = networkWebrtcToggle.checked;
     saveSettings();
+  });
+}
+
+// ========================================================
+// Manejadores y Funciones de la Pestaña Acerca de
+// ========================================================
+async function loadAboutInfo() {
+  const versionEl = document.getElementById('about-app-version');
+  const osEl = document.getElementById('about-spec-os');
+  const archEl = document.getElementById('about-spec-arch');
+  const electronEl = document.getElementById('about-spec-electron');
+  const chromeEl = document.getElementById('about-spec-chromium');
+  const nodeEl = document.getElementById('about-spec-node');
+  const v8El = document.getElementById('about-spec-v8');
+
+  let sysInfo = null;
+  if (electronAPI && electronAPI.getSystemInfo) {
+    try {
+      sysInfo = await electronAPI.getSystemInfo();
+    } catch (_) {}
+  }
+
+  if (!sysInfo && electronAPI && electronAPI.appInfo) {
+    sysInfo = {
+      version: electronAPI.appInfo.version,
+      electron: electronAPI.appInfo.electronVersion,
+      chrome: electronAPI.appInfo.chromeVersion,
+      node: 'N/A',
+      v8: 'N/A',
+      osType: electronAPI.appInfo.platform,
+      osRelease: '',
+      osArch: electronAPI.appInfo.arch
+    };
+  }
+
+  if (sysInfo) {
+    if (versionEl) {
+      versionEl.innerText = `Versión ${sysInfo.version || '0.17.0'}`;
+    }
+    if (osEl) {
+      const release = sysInfo.osRelease ? ` ${sysInfo.osRelease}` : '';
+      osEl.innerText = `${sysInfo.osType || sysInfo.platform || 'Linux'}${release}`;
+    }
+    if (archEl) {
+      archEl.innerText = sysInfo.osArch || sysInfo.arch || 'x64';
+    }
+    if (electronEl) {
+      electronEl.innerText = sysInfo.electron || 'N/A';
+    }
+    if (chromeEl) {
+      chromeEl.innerText = sysInfo.chrome || 'N/A';
+    }
+    if (nodeEl) {
+      nodeEl.innerText = sysInfo.node || 'N/A';
+    }
+    if (v8El) {
+      v8El.innerText = sysInfo.v8 || 'N/A';
+    }
+  }
+}
+
+const btnAboutRepo = document.getElementById('btn-about-repo');
+const btnAboutIssues = document.getElementById('btn-about-issues');
+
+if (btnAboutRepo) {
+  btnAboutRepo.addEventListener('click', () => {
+    const repoUrl = 'https://github.com/Sentinel-Mexico/WhatsNexus-Dekstop';
+    if (electronAPI && electronAPI.openExternalUrl) {
+      electronAPI.openExternalUrl(repoUrl);
+    } else if (electronAPI && electronAPI.openExternal) {
+      electronAPI.openExternal(repoUrl);
+    }
+  });
+}
+
+if (btnAboutIssues) {
+  btnAboutIssues.addEventListener('click', () => {
+    const issuesUrl = 'https://github.com/Sentinel-Mexico/WhatsNexus-Dekstop/issues';
+    if (electronAPI && electronAPI.openExternalUrl) {
+      electronAPI.openExternalUrl(issuesUrl);
+    } else if (electronAPI && electronAPI.openExternal) {
+      electronAPI.openExternal(issuesUrl);
+    }
   });
 }
 

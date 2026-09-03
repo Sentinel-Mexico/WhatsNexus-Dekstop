@@ -1,6 +1,7 @@
 const { app, BrowserWindow, Menu, Tray, ipcMain, nativeImage, nativeTheme, Notification, session, dialog, shell } = require('electron');
 const path = require('path');
 const fs = require('fs');
+const os = require('os');
 
 // 3. Flags de optimización de Chromium
 app.commandLine.appendSwitch('disable-features', 'HardwareMediaKeyHandling,MediaSessionService,WaylandWpColorManagerV1');
@@ -542,6 +543,20 @@ ipcMain.handle('update-network-settings', (event, newSettings) => {
     updateNetworkAllSessions();
   }
   return currentNetworkSettings;
+});
+
+ipcMain.handle('get-system-info', () => {
+  return {
+    version: app.getVersion(),
+    electron: process.versions.electron || 'N/A',
+    chrome: process.versions.chrome || 'N/A',
+    node: process.versions.node || 'N/A',
+    v8: process.versions.v8 || 'N/A',
+    osType: os.type(),
+    osRelease: os.release(),
+    osArch: os.arch(),
+    platform: process.platform
+  };
 });
 
 function configureSessionPermissions(ses) {

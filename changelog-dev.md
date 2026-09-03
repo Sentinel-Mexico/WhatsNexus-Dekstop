@@ -4,6 +4,31 @@ This changelog records all granular updates, bug fixes, refactorings, and featur
 
 ---
 
+## [0.17.0] - 2026-09-03
+### Added
+- **"Acerca de" (About) Settings Section (UI/UX):**
+  - Integrated a new settings tab "Acerca de" positioned strictly below "Privacidad y Red", with tab button (`data-tab="tab-about"`), info icon (`fa-solid fa-circle-info`), and full i18n support across 25 interface languages.
+  - Centered App Header card with official WhatsNexus emblem, prominent title, tagline, and real-time version pill (`#about-app-version`).
+  - **Technical Details Card:** Displays an elegant, monospace-styled grid of core system and runtime metrics:
+    - Operating System (`os.type()` and `os.release()`).
+    - CPU Architecture (`os.arch()`).
+    - Electron version (`process.versions.electron`).
+    - Chromium engine version (`process.versions.chrome`).
+    - Node.js runtime version (`process.versions.node`).
+    - V8 JavaScript engine version (`process.versions.v8`).
+  - **License & Links Card:**
+    - MIT License declaration with accent badge.
+    - "Visitar repositorio en GitHub" primary button opening `https://github.com/Sentinel-Mexico/WhatsNexus-Dekstop` safely in the external OS browser via `openExternalUrl`.
+    - "Reportar en GitHub Issues" secondary action button navigating directly to project issues.
+  - **Credits & Acknowledgments Card:**
+    - Community development attribution (Sentinel-Mexico / elChauriMx).
+    - Design and concept acknowledgment crediting the original ZapZap project by Rafael Tosta.
+- **Real-Time System Diagnostics IPC Bridge:**
+  - Implemented `get-system-info` IPC handler in `src/main.js` importing native `os` and returning accurate runtime diagnostics.
+  - Exposed `electronAPI.getSystemInfo()` in `src/preload-main.js` via `contextBridge.exposeInMainWorld()`.
+
+---
+
 ## [0.16.0] - 2026-09-03
 ### Added
 - **Privacy & Network Settings Section (UI/UX):**
