@@ -231,7 +231,6 @@ ipcMain.on('show-native-notification', (event, data) => {
 let currentPermissions = {
   microphone: true,
   camera: false,
-  cameraAndMic: false,
   location: false,
   screenShare: true,
   screenShareAudio: false
@@ -256,7 +255,7 @@ function configureSessionPermissions(ses) {
       const wantsVideo = mediaTypes.includes('video');
 
       if (wantsAudio && wantsVideo) {
-        return callback(!!currentPermissions.cameraAndMic || (!!currentPermissions.camera && !!currentPermissions.microphone));
+        return callback(!!currentPermissions.camera && !!currentPermissions.microphone);
       } else if (wantsAudio) {
         return callback(!!currentPermissions.microphone);
       } else if (wantsVideo) {
@@ -287,7 +286,7 @@ function configureSessionPermissions(ses) {
       const wantsVideo = mediaTypes.includes('video');
 
       if (wantsAudio && wantsVideo) {
-        return !!currentPermissions.cameraAndMic || (!!currentPermissions.camera && !!currentPermissions.microphone);
+        return !!currentPermissions.camera && !!currentPermissions.microphone;
       } else if (wantsAudio) {
         return !!currentPermissions.microphone;
       } else if (wantsVideo) {

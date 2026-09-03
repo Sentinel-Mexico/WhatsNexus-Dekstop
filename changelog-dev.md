@@ -4,6 +4,45 @@ This changelog records all granular updates, bug fixes, refactorings, and featur
 
 ---
 
+## [0.12.0] - 2026-09-03
+### Added
+- **Top 25 Worldwide Languages Localization:**
+  - Expanded internationalization from 10 to the 25 most spoken languages in the world according to global speaker demographics (Ethnologue standard), sorted strictly in proportional order of total speakers:
+    1. English (`en`)
+    2. Mandarin Chinese (`zh`)
+    3. Hindi (`hi`)
+    4. Spanish (`es`)
+    5. French (`fr`)
+    6. Modern Standard Arabic (`ar`)
+    7. Bengali (`bn`)
+    8. Portuguese (`pt`)
+    9. Russian (`ru`)
+    10. Urdu (`ur`)
+    11. Indonesian (`id`)
+    12. German (`de`)
+    13. Japanese (`ja`)
+    14. Marathi (`mr`)
+    15. Telugu (`te`)
+    16. Turkish (`tr`)
+    17. Tamil (`ta`)
+    18. Cantonese (`yue`)
+    19. Vietnamese (`vi`)
+    20. Filipino / Tagalog (`fil`)
+    21. Korean (`ko`)
+    22. Persian / Farsi (`fa`)
+    23. Hausa (`ha`)
+    24. Swahili (`sw`)
+    25. Italian (`it`)
+  - All 25 languages feature complete UI dictionaries translating every interface string across all settings tabs, alerts, sidebar components, and empty states.
+
+### Changed
+- **Permissions Section Refinement:**
+  - Removed combined "Cámara y micrófono" option from the Device Access block in `#tab-permissions`.
+  - Permissions are now purely granular and independent: Microphone, Camera, Location, Screen sharing, and Screen sharing with audio.
+  - Native session handler in `src/main.js` now evaluates simultaneous media access (audio + video) by checking both independent permissions (`camera && microphone`).
+
+---
+
 ## [0.11.0] - 2026-09-03
 ### Added
 - **Permissions Management Section in Settings:**
