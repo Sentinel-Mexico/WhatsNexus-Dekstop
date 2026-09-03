@@ -1,0 +1,14 @@
+{
+  "name": "whatsnexus",
+  "version": "1.0.0",
+  "description": "Multi-account WhatsApp Web client using Electron",
+  "main": "src/main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "author": "Antigravity",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^29.1.0"
+  }
+}

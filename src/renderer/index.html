@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WhatsNexus</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Sidebar para la gestión de cuentas -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <h2>WhatsNexus</h2>
+      </div>
+      
+      <ul id="account-list" class="account-list">
+        <!-- Las cuentas se añadirán aquí dinámicamente -->
+      </ul>
+      
+      <button id="add-account-btn" class="add-btn">
+        <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" class="css-i6dzq1"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+        Añadir Cuenta
+      </button>
+    </aside>
+
+    <!-- Contenedor principal donde se renderizarán los webviews -->
+    <main id="webview-container" class="main-content">
+      <!-- Los <webview> se inyectarán aquí. Se usa 'partition="persist:ID"' para aislarlos -->
+      <div class="empty-state" id="empty-state">
+        <div class="empty-icon">💬</div>
+        <h3>Bienvenido a WhatsNexus</h3>
+        <p>Selecciona una cuenta en la barra lateral o añade una nueva para comenzar.</p>
+      </div>
+    </main>
+  </div>
+
+  <script src="renderer.js"></script>
+</body>
+</html>
