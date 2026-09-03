@@ -3,46 +3,45 @@
 ![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey)
 ![License](https://img.shields.io/badge/license-MIT-blue)
 
-**WhatsNexus** es una aplicación de escritorio multiplataforma diseñada para gestionar múltiples cuentas de WhatsApp Web de manera simultánea. Inspirada en proyectos como ZapZap, WhatsNexus va un paso más allá ofreciendo un aislamiento estricto de sesiones, permitiéndote mantener tus cuentas personales y de trabajo activas en una sola interfaz organizada en pestañas.
+**WhatsNexus** is a cross-platform desktop application designed to manage multiple WhatsApp Web accounts simultaneously. Inspired by projects like ZapZap, WhatsNexus goes a step further by offering strict session isolation, allowing you to keep your personal and work accounts active in a single, tab-organized interface.
 
-## ✨ Características Principales
+## ✨ Key Features
 
-*   **Soporte Multicuenta:** Ejecuta múltiples cuentas de WhatsApp en pestañas separadas.
-*   **Aislamiento de Sesiones:** Cada pestaña opera en un entorno completamente encapsulado (diferentes cookies, caché y local storage) para evitar cruces de datos.
-*   **Sesiones Persistentes:** Las sesiones se guardan de forma segura. Solo necesitas escanear el código QR la primera vez que agregas una cuenta.
-*   **Multiplataforma:** Experiencia fluida en Windows, macOS y distribuciones de Linux.
-*   **Integración en la Bandeja del Sistema (System Tray):** Mantenla en segundo plano y recibe notificaciones sin saturar tu barra de tareas.
-*   **Notificaciones Nativas:** Totalmente integrada con el sistema de notificaciones de tu sistema operativo.
+*   **Multi-Account Support:** Run multiple WhatsApp accounts in separate tabs.
+*   **Session Isolation:** Each tab operates in a completely encapsulated environment (different cookies, cache, and local storage) to prevent data crossover.
+*   **Persistent Sessions:** Sessions are saved securely. You only need to scan the QR code the first time you add an account.
+*   **Cross-Platform:** Seamless experience on Windows, macOS, and Linux distributions.
+*   **System Tray Integration:** Keep it running in the background and receive notifications without cluttering your taskbar.
+*   **Native Notifications:** Fully integrated with your operating system's notification system.
 
-## 🚀 Comenzando
+## 🚀 Getting Started
 
-### Requisitos Previos
-*   Node.js o Python 3.10+ (dependiendo del framework elegido para el desarrollo)
+### Prerequisites
+*   Node.js or Python 3.10+ (depending on the chosen development framework)
 *   Git
 
-### Instalación
+### Installation
 
-1.  **Clona el repositorio:**
+1.  **Clone the repository:**
     ```bash
     git clone [https://github.com/Sentinel-Mexico/WhatsNexus-Dekstop.git](https://github.com/Sentinel-Mexico/WhatsNexus-Dekstop.git)
     cd WhatsNexus-Dekstop
     ```
 
-2.  **Instala las dependencias y ejecuta:**
-    *(Los comandos exactos dependerán del framework final)*
+2.  **Install dependencies and run:**
+    *(Exact commands will depend on the final framework)*
     ```bash
-    # Ejemplo para Node.js / Electron:
+    # Example for Node.js / Electron:
     npm install
     npm start
     ```
 
-## 🛠️ Stack Tecnológico
-*   **Core:** (Por definir - ej. Electron.js / PyQt6)
-*   **Frontend:** HTML, CSS, JavaScript / QWebEngine
+## 🛠️ Tech Stack
+*   **Core:** Electron.js
+*   **Frontend:** HTML, CSS, JavaScript
 
-## 🤝 Contribuciones
-¡Las contribuciones, reportes de problemas y solicitudes de nuevas características son bienvenidas! Siéntete libre de revisar la página de [issues](https://github.com/Sentinel-Mexico/WhatsNexus-Dekstop/issues).
+## 🤝 Contributing
+Contributions, issue reports, and feature requests are welcome! Feel free to check the [issues](https://github.com/Sentinel-Mexico/WhatsNexus-Dekstop/issues) page.
 
-## 📝 Licencia
-Este proyecto está bajo la Licencia [MIT](https://choosealicense.com/licenses/mit/).
-"""
+## 📝 License
+This project is licensed under the [MIT](https://choosealicense.com/licenses/mit/) License.
