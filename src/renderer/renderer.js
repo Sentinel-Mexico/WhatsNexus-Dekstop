@@ -1,5 +1,5 @@
 const path = require('path');
-const { shell } = require('electron');
+const { shell, ipcRenderer } = require('electron');
 
 // Idiomas soportados
 const supportedLanguages = ['en', 'es', 'hi', 'ar', 'bn', 'pt', 'ru', 'ur', 'id', 'fr'];
@@ -646,13 +646,12 @@ function renderSettingsAccounts() {
               <span class="account-name-display">${accountTitle}</span>
             </div>
           </div>
-          <div class="segmented-control">
-            <button class="segmented-btn status-active-btn" onclick="setAccountStatus('${acc.id}', true)">
-              ${lang.status_active}
-            </button>
-            <button class="segmented-btn status-inactive-btn active" onclick="setAccountStatus('${acc.id}', false)">
-              ${lang.status_inactive}
-            </button>
+          <div class="account-card-actions" style="display: flex; align-items: center; gap: 12px;">
+            <span class="account-status-badge badge-inactive">${lang.status_inactive}</span>
+            <label class="switch">
+              <input type="checkbox" onchange="setAccountStatus('${acc.id}', this.checked)">
+              <span class="switch-slider"></span>
+            </label>
           </div>
         </div>
       `;
@@ -687,13 +686,12 @@ function renderSettingsAccounts() {
           <h4 class="account-row-title">${lang.account_status_title}</h4>
           <p class="account-row-desc">${lang.account_status_desc}</p>
         </div>
-        <div class="segmented-control">
-          <button class="segmented-btn status-active-btn active" onclick="setAccountStatus('${acc.id}', true)">
-            ${lang.status_active}
-          </button>
-          <button class="segmented-btn status-inactive-btn" onclick="setAccountStatus('${acc.id}', false)">
-            ${lang.status_inactive}
-          </button>
+        <div class="account-row-control" style="display: flex; align-items: center; gap: 12px;">
+          <span class="account-status-badge badge-active">${lang.status_active}</span>
+          <label class="switch">
+            <input type="checkbox" checked onchange="setAccountStatus('${acc.id}', this.checked)">
+            <span class="switch-slider"></span>
+          </label>
         </div>
       </div>
 

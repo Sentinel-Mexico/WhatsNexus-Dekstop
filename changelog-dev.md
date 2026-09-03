@@ -4,6 +4,16 @@ This changelog records all granular updates, bug fixes, refactorings, and featur
 
 ---
 
+## [0.7.1] - 2026-09-03
+### Fixed
+- **System Tray Blank/Invisible Icon on Linux:** Fixed issue where in-memory SVG data URLs produced transparent or missing pixmaps on Linux `libappindicator`. The main process now directly serves disk-backed PNG icons (`tray-green.png`, `tray-light.png`, `tray-dark.png`, and their corresponding badge variants), ensuring 100% visibility and compatibility across GNOME, KDE, XFCE, Windows, and macOS.
+- **Language Selector Empty / Unpopulated:** Resolved `ReferenceError: ipcRenderer is not defined` in `src/renderer/renderer.js` that interrupted renderer startup during `applySettings()`, allowing `updateTranslations()` and `populateLanguageSelect()` to execute and populate the language dropdown with all 10 supported languages.
+- **Account Activation Switch Unresponsive / Stuck:**
+  - Resolved `ipcRenderer is not defined` exception triggered upon toggling account status.
+  - Upgraded the account activation control to an interactive modern switch toggle (`<label class="switch">`) with colored status badges (`Activada` / `Desactivada`) in both full and compact deactivated cards.
+
+---
+
 ## [0.7.0] - 2026-09-03
 ### Added
 - **Compact Cards for Deactivated Accounts:** When an account is deactivated, its settings card automatically collapses into a compact view displaying solely the avatar, account name, and activation toggle. Actions ("Editar", "Eliminar") and "No molestar" are hidden until the account is reactivated.

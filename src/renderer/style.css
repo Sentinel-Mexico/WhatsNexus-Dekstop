@@ -955,6 +955,28 @@ body.theme-light .segmented-btn.active.status-inactive-btn {
   background-color: #ffffff;
 }
 
+/* Account Status Badges */
+.account-status-badge {
+  font-size: 0.82rem;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 12px;
+  letter-spacing: 0.2px;
+  user-select: none;
+}
+
+.account-status-badge.badge-active {
+  background-color: rgba(0, 168, 132, 0.15);
+  color: var(--bg-active);
+  border: 1px solid var(--bg-active);
+}
+
+.account-status-badge.badge-inactive {
+  background-color: rgba(134, 150, 160, 0.15);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-color);
+}
+
 /* Hibernation Overlay */
 .hibernation-overlay {
   position: absolute;
