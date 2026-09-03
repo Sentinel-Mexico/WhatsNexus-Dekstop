@@ -4,6 +4,18 @@ This changelog records all granular updates, bug fixes, refactorings, and featur
 
 ---
 
+## [0.13.0] - 2026-09-03
+### Added
+- **Material 3 Expressive (M3 Expressive) Design System:**
+  - Modernized the overall graphical environment and component construction to adhere to Google's **Material 3 Expressive** design principles while maintaining 100% fidelity to all 5 color palettes (WhatsApp Emerald, Messenger, Telegram, Signal, Forest) in both Dark and Light modes.
+  - **Navigation Rail:** Upgraded sidebar into an M3 Navigation Rail (`76px`) featuring responsive pill-shaped active rail indicators, squircle FAB for `#add-account-btn` with hover rotation, and full pill badges.
+  - **M3 Expressive Switches:** Re-engineered toggle switches to the official M3 standard (`52x32px` pill track, dynamic thumb scaling from `16px` unchecked to `24px` checked, and spring morphing to `28px` on active press with `cubic-bezier(0.2, 0, 0, 1)`).
+  - **Expressive Containers & Cards:** Applied M3 Large shape scale (`border-radius: 24px`) with soft ambient shadows and tonal hover transitions to `.setting-card`, `.notif-card`, `.perm-card`, and `.settings-account-card`.
+  - **Pill-shaped Segmented Tabs:** Redesigned settings navigation tabs into expressive pill buttons (`border-radius: 9999px`) with tactile active feedback.
+  - **Inputs, Buttons, and Selects:** Upgraded all text fields, select triggers, back buttons, and permission actions to M3 Medium/Full shape scales (`16px` to `9999px`) with expressive focus outlines.
+
+---
+
 ## [0.12.5] - 2026-09-03
 ### Fixed
 - **Dynamic Splash Screen Version Display:**
