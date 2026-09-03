@@ -4,6 +4,92 @@ This changelog records all granular updates, bug fixes, refactorings, and featur
 
 ---
 
+## [0.16.0] - 2026-09-03
+### Added
+- **Privacy & Network Settings Section (UI/UX):**
+  - Integrated a new settings tab "Privacidad y Red" placed strictly below "Permisos", with tab navigation (`data-tab="tab-network"`), shield icon (`fa-solid fa-shield-halved`), and full i18n translation across 25 interface languages.
+  - Added **Proxy Configuration Module**:
+    - "Usar proxy" primary toggle (`#network-use-proxy-toggle`) routing traffic through the configured proxy.
+    - Custom styled dropdown (`#proxy-type-select`) supporting "Sin proxy", "HTTP", "SOCKS5", and "Sistema".
+    - Dynamic Server/Host (`#proxy-host-input`) and Port (`#proxy-port-input`) input fields shown only when HTTP or SOCKS5 is selected.
+    - "Strict proxy isolation" toggle (`#network-strict-proxy-toggle`) with dynamic status text (`#strict-proxy-status-text`) stating "Available only while an HTTP or SOCKS5 proxy is enabled" or "No hay proxy configurado", automatically disabled when direct connection is selected.
+    - "Restaurar proxy..." action button (`#btn-restore-proxy`) resetting proxy settings to "Sin proxy" and disabling proxy toggles.
+  - Added **WebRTC Privacy & Protection Module**:
+    - "Protección WebRTC" toggle (`#network-webrtc-toggle`) with secondary description and "Legacy script-based protection" badge.
+- **Multi-Session Proxy Routing & Strict Isolation (Main Process):**
+  - Implemented `session.setProxy()` routing across `session.defaultSession` and all current and future partitioned guest sessions (`persist:acc_*`).
+  - Added proxy configuration builder for HTTP (`http=...;https=...`), SOCKS5 (`socks5://...`), and System (`mode: 'auto_detect'`).
+  - Strict Proxy Isolation eliminates bypass rules (`proxyBypassRules: ''`), enforcing all traffic through the proxy tunnel.
+  - Clean proxy teardown via `{ mode: 'direct' }` upon restore or selection of "Sin proxy".
+  - Persisted network configuration in `userData/network_settings.json`.
+- **Multi-Layer WebRTC Leak Prevention:**
+  - **Chromium Network Layer:** Configured `session.setWebRTCIPHandlingPolicy('disable-non-proxied-udp')` on all sessions to eliminate public IP leakage over non-proxied UDP interfaces.
+  - **Guest Preload Layer (`src/preload.js`):** Intercepts and blocks `window.RTCPeerConnection`, `window.webkitRTCPeerConnection`, `window.RTCSessionDescription`, and `window.RTCIceCandidate` within WhatsApp Web guest pages, preventing scripts from establishing unauthorized P2P connections.
+  - **Reactive Webview IPC Synchronization:** Webviews receive real-time `update-network-settings` IPC events upon settings modification and upon `dom-ready`.
+- **Context Isolation & Preload APIs:**
+  - Securely exposed `electronAPI.getNetworkSettings()` and `electronAPI.updateNetworkSettings()` in `src/preload-main.js` via `contextBridge.exposeInMainWorld()`.
+
+---
+
+## [0.15.0] - 2026-09-03
+### Added
+- **Donations Module (UI/UX):**
+  - Integrated a new sidebar action button with heart icon (`fa-solid fa-heart`) positioned strictly between "Report Bug" and "Settings", equipped with unified tooltip positioning.
+  - Implemented a full-window Donations view (`#donations-view`) inside `<main id="webview-container">` featuring a responsive CSS card grid for support platforms (GitHub Sponsors, PayPal, Ko-fi).
+  - Configured each donation card with platform icon, descriptive copy, an external navigation indicator, and a green primary "Donate" button.
+  - Centralized donation URLs in a configurable `DONATION_URLS` object in `renderer.js` for maintainability.
+- **Secure External URL IPC Dispatch:**
+  - Implemented `open-external-url` IPC handler in `src/main.js` and exposed `openExternalUrl` via `src/preload-main.js` to dispatch support links safely to the OS default browser with protocol validation.
+- **System Downloads Management:**
+  - Added a dedicated "Download Management" block in the Permissions/System settings panel featuring a read-only input, "Select Folder" button, and "Reset to Default" button.
+  - Initialized default download path to the system native downloads directory (`app.getPath('downloads')`).
+  - Integrated `dialog.showOpenDialog` folder picker via IPC, persisting user folder choice in `userData/system_settings.json`.
+  - Intercepted `will-download` on `session.defaultSession` and all partitioned guest sessions (`persist:acc_*`), applying `item.setSavePath()` to automatically save incoming WhatsApp Web files in the designated directory.
+- **Native Chromium Spellchecker Integration:**
+  - Added a custom dropdown selector in the Permissions/System tab dynamically populated with the 25 interface languages.
+  - Integrated Chromium's native Electron spellchecking engine without external APIs.
+  - Mapped interface language codes to corresponding Chromium `.bdic` dictionary tags (e.g., `es-MX`, `en-US`, `pt-BR`, `de-DE`, `fr-FR`).
+  - Automatically applied `session.setSpellCheckerLanguages()` across `session.defaultSession` and all current and future partitioned sessions.
+
+---
+
+## [0.14.0] - 2026-09-03
+### Security
+- **Strict Context Isolation & Node Integration Disabled (S-01):**
+  - Enforced `contextIsolation: true` and `nodeIntegration: false` across all application windows (`mainWindow` and `splashWindow`).
+  - Created secure preload scripts (`src/preload-main.js` and `src/splash/splash-preload.js`) exposing minimal, validated APIs via `contextBridge.exposeInMainWorld()`.
+  - Refactored `renderer.js` and `splash.js` to eliminate all direct usages of `require()`, `process`, `ipcRenderer`, and `shell`.
+- **Content Security Policy (S-02):**
+  - Added strict CSP meta tags in `src/renderer/index.html` and `src/splash/splash.html` preventing execution of unauthorized remote scripts and objects.
+- **XSS Prevention on InnerHTML (S-03):**
+  - Implemented `escapeHtml(str)` utility in `renderer.js` to sanitize dynamic account names, IDs, status labels, and avatar URLs prior to DOM interpolation.
+- **Dangerous Chromium Flag Cleanup (S-05, S-06):**
+  - Removed `disable-site-isolation-trials` and `disable-ipc-flooding-protection` from `main.js`.
+- **Safe External Link Dispatch (S-08):**
+  - Intercepted external URL opening in `main.js` via IPC with strict protocol verification restricted to `http:` and `https:`.
+
+### Added
+- **Global Hardware Permissions Engine:**
+  - Implemented centralized session permission control using `session.setPermissionRequestHandler` and `session.setPermissionCheckHandler` in `main.js` for Microphone, Camera, Location, and Screen Sharing (with audio detection).
+  - Persisted user permission preferences to `userData/permissions.json` and automatically applied them across all partitioned sessions (`persist:acc_*`).
+- **Unified Sidebar Floating Tooltip System:**
+  - Decoupled tooltips from transformed action buttons by attaching a single `floatingTooltip` element to `document.body`.
+  - Unified vertical tooltip positioning to an exact 8px offset from the right boundary of the sidebar for accounts, add account, report bug, and settings.
+
+### Changed
+- **Account Do Not Disturb (DND) Full Lockdown:**
+  - Enhanced DND toggle to completely suppress native OS notifications and sound alerts at the guest preload layer and renderer dispatcher.
+- **Global Notification Customization Strings:**
+  - Standardized privacy replacements: contact name is overridden with `"Nombre oculto"`, message preview with `"Mensaje oculto"`, and contact photo falls back to local WhatsNexus branding when disabled.
+  - Implemented `silent: true` native notification dispatching when notification sounds are disabled.
+- **Zero-Mute Chat Multimedia Architecture:**
+  - Completely removed `webContents.setAudioMuted(true)` from the codebase, guaranteeing that voice messages, videos, and media playback in chat tabs remain fully audible even when notifications are muted or DND is active.
+  - Implemented selective `HTMLAudioElement.prototype.play` suppression in `preload.js` targeting solely automated alert chimes without affecting user-initiated media.
+- **Sidebar Action Button Alignment:**
+  - Removed unwanted hover rotation and custom background overrides from `#add-account-btn`, harmonizing its design with the standard M3 `.icon-btn` system.
+
+---
+
 ## [0.13.1] - 2026-09-03
 ### Changed
 - **Inline Theme & Color Palette Layout:**

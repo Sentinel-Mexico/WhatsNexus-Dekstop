@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com data:; img-src 'self' data: blob: https:; connect-src 'self';">
   <title>WhatsNexus</title>
   <link rel="stylesheet" href="style.css">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
@@ -18,17 +19,17 @@
       </ul>
       
       <div class="sidebar-bottom">
-        <button id="add-account-btn" class="icon-btn tooltip-container">
+        <button id="add-account-btn" class="icon-btn" aria-label="Añadir Cuenta">
           <i class="fa-solid fa-user-plus"></i>
-          <span class="tooltip-text" data-i18n="tooltip_add_account">Añadir Cuenta</span>
         </button>
-        <button id="report-bug-btn" class="icon-btn tooltip-container">
+        <button id="report-bug-btn" class="icon-btn" aria-label="Reportar Error">
           <i class="fa-solid fa-bug"></i>
-          <span class="tooltip-text" data-i18n="tooltip_report_bug">Reportar Error</span>
         </button>
-        <button id="settings-btn" class="icon-btn tooltip-container">
+        <button id="donate-btn" class="icon-btn" aria-label="Donaciones">
+          <i class="fa-solid fa-heart"></i>
+        </button>
+        <button id="settings-btn" class="icon-btn" aria-label="Configuración">
           <i class="fa-solid fa-gear"></i>
-          <span class="tooltip-text" data-i18n="tooltip_settings">Configuración</span>
         </button>
       </div>
     </aside>
@@ -74,6 +75,10 @@
             <button class="tab-btn" data-tab="tab-permissions">
               <i class="fa-solid fa-shield-halved"></i>
               <span data-i18n="tab_permissions">Permisos</span>
+            </button>
+            <button class="tab-btn" data-tab="tab-network">
+              <i class="fa-solid fa-network-wired"></i>
+              <span data-i18n="tab_network">Privacidad y red</span>
             </button>
           </nav>
 
@@ -380,6 +385,220 @@
                   </label>
                 </div>
               </div>
+
+              <!-- Bloque 3: Gestión de Descargas -->
+              <h4 class="perm-group-title" data-i18n="perm_group_downloads">Gestión de Descargas</h4>
+              <div class="perm-card">
+                <div class="perm-row download-management-row">
+                  <div class="perm-info">
+                    <h4 data-i18n="perm_downloads_title">Carpeta de Descargas</h4>
+                    <p data-i18n="perm_downloads_desc">Los archivos y documentos recibidos en WhatsApp Web se guardarán automáticamente en esta ubicación.</p>
+                    <div class="download-path-container">
+                      <input type="text" id="download-path-input" class="download-path-input" readonly placeholder="Cargando ruta de descargas...">
+                      <div class="download-path-actions">
+                        <button id="btn-select-download-dir" class="btn-primary-action" type="button">
+                          <i class="fa-solid fa-folder-open"></i> <span data-i18n="btn_select_folder">Seleccionar Carpeta</span>
+                        </button>
+                        <button id="btn-reset-download-dir" class="btn-secondary-action" type="button">
+                          <i class="fa-solid fa-rotate-left"></i> <span data-i18n="btn_reset_default">Restablecer por Defecto</span>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Bloque 4: Corrector Ortográfico Nativo -->
+              <h4 class="perm-group-title" data-i18n="perm_group_spellcheck">Corrector Ortográfico</h4>
+              <div class="perm-card">
+                <div class="perm-row">
+                  <div class="perm-info">
+                    <h4 data-i18n="perm_spellcheck_title">Idioma del Corrector Ortográfico</h4>
+                    <p data-i18n="perm_spellcheck_desc">Corrección ortográfica nativa de Chromium en tiempo real para todos los chats.</p>
+                  </div>
+                  <div class="custom-select-wrapper" id="custom-spellcheck-select-wrapper">
+                    <div class="custom-select-trigger" id="spellcheck-select-trigger" tabindex="0">
+                      <span id="spellcheck-select-label">Español (Español)</span>
+                      <i class="fa-solid fa-chevron-down select-chevron"></i>
+                    </div>
+                    <div class="custom-select-options" id="spellcheck-select-options">
+                      <!-- Se llenará dinámicamente con los 25 idiomas -->
+                    </div>
+                    <select id="spellcheck-select" class="styled-select" style="display: none;">
+                      <!-- Se mantiene para compatibilidad -->
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Pestaña Privacidad y Red -->
+            <div id="tab-network" class="settings-panel">
+              <div class="panel-header">
+                <h3 data-i18n="heading_network">Privacidad y red</h3>
+                <p class="panel-desc" data-i18n="desc_network">Configure las opciones de red, protección de privacidad y proxy.</p>
+              </div>
+
+              <!-- Módulo 1: Proxy -->
+              <h4 class="perm-group-title" data-i18n="network_group_proxy">Proxy</h4>
+              <p class="setting-hint" data-i18n="network_proxy_desc" style="margin-bottom: 12px;">Route WhatsApp Web traffic through a proxy server. Existing connections may require reloading.</p>
+              <div class="perm-card">
+                <!-- Fila 1: Usar proxy (Toggle) -->
+                <div class="perm-row">
+                  <div class="perm-info">
+                    <h4 data-i18n="network_use_proxy_title">Usar proxy</h4>
+                    <p data-i18n="network_use_proxy_desc">Enrute el tráfico a través del proxy configurado a continuación.</p>
+                  </div>
+                  <label class="switch">
+                    <input type="checkbox" id="network-use-proxy-toggle">
+                    <span class="switch-slider"></span>
+                  </label>
+                </div>
+
+                <!-- Fila 2: Tipo (Dropdown/Select) -->
+                <div class="perm-row">
+                  <div class="perm-info">
+                    <h4 data-i18n="network_proxy_type_title">Tipo</h4>
+                    <p data-i18n="network_proxy_type_desc">Seleccione el modo proxy.</p>
+                  </div>
+                  <div class="custom-select-wrapper" id="custom-proxy-type-select-wrapper">
+                    <div class="custom-select-trigger" id="proxy-type-select-trigger" tabindex="0">
+                      <span id="proxy-type-select-label">Sin proxy</span>
+                      <i class="fa-solid fa-chevron-down select-chevron"></i>
+                    </div>
+                    <div class="custom-select-options" id="proxy-type-select-options">
+                      <!-- Renderizado por initCustomDropdown -->
+                    </div>
+                    <select id="proxy-type-select" class="styled-select" style="display: none;">
+                      <option value="direct">Sin proxy</option>
+                      <option value="http">HTTP</option>
+                      <option value="socks5">SOCKS5</option>
+                      <option value="system">Sistema</option>
+                    </select>
+                  </div>
+                </div>
+
+                <!-- Fila 3: Campos dinámicos (Servidor/Host y Puerto) -->
+                <div class="perm-row dynamic-proxy-fields hidden" id="dynamic-proxy-fields">
+                  <div class="proxy-inputs-container">
+                    <div class="proxy-input-group">
+                      <label for="proxy-host-input" data-i18n="proxy_host_label">Servidor / Host</label>
+                      <input type="text" id="proxy-host-input" class="download-path-input" placeholder="ej. 127.0.0.1 o proxy.ejemplo.com">
+                    </div>
+                    <div class="proxy-input-group proxy-port-group">
+                      <label for="proxy-port-input" data-i18n="proxy_port_label">Puerto</label>
+                      <input type="text" id="proxy-port-input" class="download-path-input" placeholder="ej. 8080" maxlength="5">
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Fila 4: Strict proxy isolation (Toggle) -->
+                <div class="perm-row">
+                  <div class="perm-info">
+                    <h4 data-i18n="network_strict_isolation_title">Strict proxy isolation</h4>
+                    <p data-i18n="network_strict_isolation_desc">Prevent direct network connections when an explicit proxy is configured.</p>
+                    <span class="strict-proxy-status-text" id="strict-proxy-status-text" data-i18n="strict_proxy_disabled_hint">No hay proxy configurado</span>
+                  </div>
+                  <label class="switch">
+                    <input type="checkbox" id="network-strict-proxy-toggle" disabled>
+                    <span class="switch-slider"></span>
+                  </label>
+                </div>
+
+                <!-- Fila 5: Restaurar proxy... (Botón) -->
+                <div class="perm-row">
+                  <div class="perm-info">
+                    <h4 data-i18n="network_restore_proxy_title">Restaurar proxy...</h4>
+                    <p data-i18n="network_restore_proxy_desc">Remove the global proxy settings and restore defaults.</p>
+                  </div>
+                  <button id="btn-restore-proxy" class="btn-secondary-action" type="button">
+                    <i class="fa-solid fa-rotate-left"></i> <span data-i18n="btn_restore_proxy">Restaurar proxy</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Módulo 2: Privacidad -->
+              <h4 class="perm-group-title" data-i18n="network_group_privacy">Privacidad</h4>
+              <p class="setting-hint" data-i18n="network_privacy_desc" style="margin-bottom: 12px;">Reducir la exposición de la información de la red.</p>
+              <div class="perm-card">
+                <!-- Fila 1: Protección WebRTC (Toggle) -->
+                <div class="perm-row">
+                  <div class="perm-info">
+                    <h4 data-i18n="network_webrtc_title">Protección WebRTC</h4>
+                    <p data-i18n="network_webrtc_desc">Blocks WebRTC APIs in page scripts. This is independent from strict proxy isolation.</p>
+                    <span class="webrtc-badge" data-i18n="network_webrtc_badge">Legacy script-based protection</span>
+                  </div>
+                  <label class="switch">
+                    <input type="checkbox" id="network-webrtc-toggle">
+                    <span class="switch-slider"></span>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Donations Full-Window View -->
+      <section id="donations-view" class="donations-view hidden">
+        <header class="donations-header">
+          <div class="donations-header-left">
+            <button id="back-from-donations-btn" class="back-btn tooltip-container">
+              <i class="fa-solid fa-arrow-left"></i>
+              <span class="tooltip-text" data-i18n="tooltip_back">Volver a los chats</span>
+            </button>
+            <div class="donations-title-group">
+              <h2><i class="fa-solid fa-heart" style="color: #e25555;"></i> <span data-i18n="donations_title">Ayuda a mantener WhatsNexus vivo</span></h2>
+              <p class="donations-subtitle" data-i18n="donations_subtitle">WhatsNexus es una aplicación gratuita y de código abierto. Tu apoyo nos ayuda a seguir manteniendo el desarrollo activo.</p>
+            </div>
+          </div>
+        </header>
+
+        <div class="donations-content">
+          <div class="donations-grid">
+            <!-- Tarjeta GitHub Sponsors -->
+            <div class="donation-card">
+              <div class="donation-card-header">
+                <div class="donation-icon github-icon">
+                  <i class="fa-brands fa-github"></i>
+                </div>
+                <h3 class="donation-platform-title">GitHub Sponsors</h3>
+              </div>
+              <p class="donation-desc" data-i18n="donation_github_desc">Patrocina el desarrollo directamente en GitHub de forma mensual o como contribución única.</p>
+              <span class="donation-note" data-i18n="opens_in_browser"><i class="fa-solid fa-arrow-up-right-from-square"></i> Se abre en el navegador</span>
+              <button class="btn-donate" data-platform="github" type="button">
+                <i class="fa-solid fa-heart"></i> <span data-i18n="btn_donate">Donar</span>
+              </button>
+            </div>
+
+            <!-- Tarjeta PayPal -->
+            <div class="donation-card">
+              <div class="donation-card-header">
+                <div class="donation-icon paypal-icon">
+                  <i class="fa-brands fa-paypal"></i>
+                </div>
+                <h3 class="donation-platform-title">PayPal</h3>
+              </div>
+              <p class="donation-desc" data-i18n="donation_paypal_desc">Realiza un aporte económico directo y seguro a través de tu cuenta o tarjeta vía PayPal.</p>
+              <span class="donation-note" data-i18n="opens_in_browser"><i class="fa-solid fa-arrow-up-right-from-square"></i> Se abre en el navegador</span>
+              <button class="btn-donate" data-platform="paypal" type="button">
+                <i class="fa-solid fa-heart"></i> <span data-i18n="btn_donate">Donar</span>
+              </button>
+            </div>
+
+            <!-- Tarjeta Ko-fi -->
+            <div class="donation-card">
+              <div class="donation-card-header">
+                <div class="donation-icon kofi-icon">
+                  <i class="fa-solid fa-mug-hot"></i>
+                </div>
+                <h3 class="donation-platform-title">Ko-fi</h3>
+              </div>
+              <p class="donation-desc" data-i18n="donation_kofi_desc">Cómpranos un café o aporta una donación rápida sin comisiones para apoyar el proyecto.</p>
+              <span class="donation-note" data-i18n="opens_in_browser"><i class="fa-solid fa-arrow-up-right-from-square"></i> Se abre en el navegador</span>
+              <button class="btn-donate" data-platform="kofi" type="button">
+                <i class="fa-solid fa-heart"></i> <span data-i18n="btn_donate">Donar</span>
+              </button>
             </div>
           </div>
         </div>

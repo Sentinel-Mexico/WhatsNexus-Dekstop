@@ -1,5 +1,26 @@
-const path = require('path');
-const { shell, ipcRenderer } = require('electron');
+// Electron API exposed via contextBridge (src/preload-main.js)
+const electronAPI = window.electronAPI || {
+  appInfo: { version: '0.13.1', platform: 'linux', arch: 'x64', electronVersion: 'N/A', chromeVersion: 'N/A' },
+  webviewPreloadPath: '',
+  updateTrayBadge: () => {},
+  setThemeMode: () => {},
+  updatePermissionSettings: () => {},
+  updateTraySettings: () => {},
+  showNativeNotification: () => {},
+  openExternal: (url) => window.open(url, '_blank'),
+  onSelectAccount: () => {}
+};
+
+// S-03: Sanitization helper to prevent XSS via innerHTML
+function escapeHtml(str) {
+  if (typeof str !== 'string') return str == null ? '' : String(str);
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
 
 // Idiomas soportados (Los 25 más hablados del mundo en orden proporcional)
 const supportedLanguages = [
@@ -78,6 +99,32 @@ if (!settings.permissions) {
     screenShareAudio: false
   };
 }
+
+if (settings.downloadPath === undefined) {
+  settings.downloadPath = '';
+}
+
+if (settings.spellcheckLanguage === undefined) {
+  settings.spellcheckLanguage = settings.language || 'es';
+}
+
+if (!settings.network) {
+  settings.network = {
+    useProxy: false,
+    proxyType: 'direct',
+    proxyHost: '',
+    proxyPort: '',
+    strictProxyIsolation: false,
+    webrtcProtection: false
+  };
+}
+
+// URLs para donaciones y apoyo externo (reemplazar con los enlaces deseados)
+const DONATION_URLS = {
+  github: 'https://github.com/sponsors/Sentinel-Mexico', // Reemplazar con tu enlace de GitHub Sponsors
+  paypal: 'https://www.paypal.me/SentinelMexico',       // Reemplazar con tu enlace de PayPal
+  kofi:   'https://ko-fi.com/sentinelmexico'            // Reemplazar con tu enlace de Ko-fi
+};
 
 // Diccionario de Traducciones
 const i18n = {
@@ -177,6 +224,47 @@ const i18n = {
     "perm_screen_desc": "Automatically allow sharing screen content.",
     "perm_screen_audio_title": "Screen with audio",
     "perm_screen_audio_desc": "Automatically allow screen sharing with audio.",
+    "tooltip_donations": "Donations",
+    "donations_title": "Help keep WhatsNexus alive",
+    "donations_subtitle": "WhatsNexus is a free and open-source application. Your support helps us keep development active.",
+    "donation_github_desc": "Sponsor development directly on GitHub monthly or as a one-time contribution.",
+    "donation_paypal_desc": "Make a direct and secure financial contribution via PayPal.",
+    "donation_kofi_desc": "Buy us a coffee or send a fast donation without fees to support the project.",
+    "opens_in_browser": "Opens in browser",
+    "btn_donate": "Donate",
+    "perm_group_downloads": "Download Management",
+    "perm_downloads_title": "Downloads Folder",
+    "perm_downloads_desc": "Files and documents received in WhatsApp Web will be automatically saved here.",
+    "btn_select_folder": "Select Folder",
+    "btn_reset_default": "Reset to Default",
+    "perm_group_spellcheck": "Spellchecker",
+    "perm_spellcheck_title": "Spellchecker Language",
+    "perm_spellcheck_desc": "Chromium native real-time spellchecking for all chats.",
+    "tab_network": "Privacy & Network",
+    "heading_network": "Privacy & network",
+    "desc_network": "Configure network options, privacy protection, and proxy settings.",
+    "network_group_proxy": "Proxy",
+    "network_proxy_desc": "Route WhatsApp Web traffic through a proxy server. Existing connections may require reloading.",
+    "network_use_proxy_title": "Use proxy",
+    "network_use_proxy_desc": "Route traffic through the proxy configured below.",
+    "network_proxy_type_title": "Type",
+    "network_proxy_type_desc": "Select proxy mode.",
+    "proxy_type_none": "No proxy",
+    "proxy_type_system": "System",
+    "proxy_host_label": "Server / Host",
+    "proxy_port_label": "Port",
+    "network_strict_isolation_title": "Strict proxy isolation",
+    "network_strict_isolation_desc": "Prevent direct network connections when an explicit proxy is configured.",
+    "strict_proxy_disabled_hint": "No proxy configured",
+    "strict_proxy_enabled_hint": "Available only while an HTTP or SOCKS5 proxy is enabled",
+    "network_restore_proxy_title": "Restore proxy...",
+    "network_restore_proxy_desc": "Remove the global proxy settings and restore defaults.",
+    "btn_restore_proxy": "Restore proxy",
+    "network_group_privacy": "Privacy",
+    "network_privacy_desc": "Reduce network information exposure.",
+    "network_webrtc_title": "WebRTC Protection",
+    "network_webrtc_desc": "Blocks WebRTC APIs in page scripts. This is independent from strict proxy isolation.",
+    "network_webrtc_badge": "Legacy script-based protection",
     "lang_en": "English",
     "lang_zh": "Mandarin Chinese",
     "lang_hi": "Hindi",
@@ -543,6 +631,47 @@ const i18n = {
     "perm_screen_desc": "Permitir automáticamente compartir contenidos de la pantalla.",
     "perm_screen_audio_title": "Pantalla con audio",
     "perm_screen_audio_desc": "Permitir automáticamente compartir pantalla con audio.",
+    "tooltip_donations": "Donaciones",
+    "donations_title": "Ayuda a mantener WhatsNexus vivo",
+    "donations_subtitle": "WhatsNexus es una aplicación gratuita y de código abierto. Tu apoyo nos ayuda a seguir manteniendo el desarrollo activo.",
+    "donation_github_desc": "Patrocina el desarrollo directamente en GitHub de forma mensual o como contribución única.",
+    "donation_paypal_desc": "Realiza un aporte económico directo y seguro a través de tu cuenta o tarjeta vía PayPal.",
+    "donation_kofi_desc": "Cómpranos un café o aporta una donación rápida sin comisiones para apoyar el proyecto.",
+    "opens_in_browser": "Se abre en el navegador",
+    "btn_donate": "Donar",
+    "perm_group_downloads": "Gestión de Descargas",
+    "perm_downloads_title": "Carpeta de Descargas",
+    "perm_downloads_desc": "Los archivos y documentos recibidos en WhatsApp Web se guardarán automáticamente en esta ubicación.",
+    "btn_select_folder": "Seleccionar Carpeta",
+    "btn_reset_default": "Restablecer por Defecto",
+    "perm_group_spellcheck": "Corrector Ortográfico",
+    "perm_spellcheck_title": "Idioma del Corrector Ortográfico",
+    "perm_spellcheck_desc": "Corrección ortográfica nativa de Chromium en tiempo real para todos los chats.",
+    "tab_network": "Privacidad y red",
+    "heading_network": "Privacidad y red",
+    "desc_network": "Configure las opciones de red, protección de privacidad y proxy.",
+    "network_group_proxy": "Proxy",
+    "network_proxy_desc": "Route WhatsApp Web traffic through a proxy server. Existing connections may require reloading.",
+    "network_use_proxy_title": "Usar proxy",
+    "network_use_proxy_desc": "Enrute el tráfico a través del proxy configurado a continuación.",
+    "network_proxy_type_title": "Tipo",
+    "network_proxy_type_desc": "Seleccione el modo proxy.",
+    "proxy_type_none": "Sin proxy",
+    "proxy_type_system": "Sistema",
+    "proxy_host_label": "Servidor / Host",
+    "proxy_port_label": "Puerto",
+    "network_strict_isolation_title": "Strict proxy isolation",
+    "network_strict_isolation_desc": "Prevent direct network connections when an explicit proxy is configured.",
+    "strict_proxy_disabled_hint": "No hay proxy configurado",
+    "strict_proxy_enabled_hint": "Available only while an HTTP or SOCKS5 proxy is enabled",
+    "network_restore_proxy_title": "Restaurar proxy...",
+    "network_restore_proxy_desc": "Remove the global proxy settings and restore defaults.",
+    "btn_restore_proxy": "Restaurar proxy",
+    "network_group_privacy": "Privacidad",
+    "network_privacy_desc": "Reducir la exposición de la información de la red.",
+    "network_webrtc_title": "Protección WebRTC",
+    "network_webrtc_desc": "Blocks WebRTC APIs in page scripts. This is independent from strict proxy isolation.",
+    "network_webrtc_badge": "Legacy script-based protection",
     "lang_en": "Inglés",
     "lang_zh": "Chino Mandarín",
     "lang_hi": "Hindi",
@@ -3177,7 +3306,69 @@ function populateLanguageSelect() {
     }
   });
   
-  if (langSelect) langSelect.value = currentLangCode;
+    if (langSelect) langSelect.value = currentLangCode;
+    if (triggerLabel) {
+      const activeTranslated = dict[`lang_${currentLangCode}`] || nativeNames[currentLangCode];
+      const activeNative = nativeNames[currentLangCode];
+      triggerLabel.innerText = `${activeTranslated} (${activeNative})`;
+    }
+  }
+
+function populateSpellcheckSelect() {
+  const spSelect = document.getElementById('spellcheck-select');
+  const customOptions = document.getElementById('spellcheck-select-options');
+  const triggerLabel = document.getElementById('spellcheck-select-label');
+  const trigger = document.getElementById('spellcheck-select-trigger');
+  
+  if (spSelect) spSelect.innerHTML = '';
+  if (customOptions) customOptions.innerHTML = '';
+  
+  const currentLangCode = settings.spellcheckLanguage || settings.language || 'es';
+  const dict = i18n[settings.language] || i18n['en'];
+  
+  supportedLanguages.forEach(code => {
+    const translatedName = dict[`lang_${code}`] || nativeNames[code];
+    const nativeName = nativeNames[code];
+    const displayText = `${translatedName} (${nativeName})`;
+
+    // Select nativo oculto
+    if (spSelect) {
+      const option = document.createElement('option');
+      option.value = code;
+      option.innerText = displayText;
+      spSelect.appendChild(option);
+    }
+
+    // Selector visual personalizado
+    if (customOptions) {
+      const customOpt = document.createElement('div');
+      customOpt.className = 'custom-option' + (code === currentLangCode ? ' selected' : '');
+      customOpt.innerText = displayText;
+      customOpt.dataset.value = code;
+
+      customOpt.addEventListener('click', (e) => {
+        e.stopPropagation();
+        settings.spellcheckLanguage = code;
+        saveSettings();
+        if (electronAPI.setSpellcheckerLanguage) {
+          electronAPI.setSpellcheckerLanguage(code);
+        }
+        if (spSelect) spSelect.value = code;
+        if (triggerLabel) {
+          triggerLabel.innerText = displayText;
+        }
+        customOptions.querySelectorAll('.custom-option').forEach(opt => {
+          opt.classList.toggle('selected', opt.dataset.value === code);
+        });
+        if (customOptions) customOptions.classList.remove('open');
+        if (trigger) trigger.classList.remove('open');
+      });
+
+      customOptions.appendChild(customOpt);
+    }
+  });
+  
+  if (spSelect) spSelect.value = currentLangCode;
   if (triggerLabel) {
     const activeTranslated = dict[`lang_${currentLangCode}`] || nativeNames[currentLangCode];
     const activeNative = nativeNames[currentLangCode];
@@ -3200,7 +3391,11 @@ function updateTranslations() {
   });
 
   populateLanguageSelect();
+  populateSpellcheckSelect();
   renderSettingsAccounts();
+  if (typeof updateNetworkUI === 'function') {
+    updateNetworkUI();
+  }
   if (typeof refreshAllCustomDropdowns === 'function') {
     refreshAllCustomDropdowns();
   }
@@ -3209,12 +3404,15 @@ function updateTranslations() {
 const accountList = document.getElementById('account-list');
 const addAccountBtn = document.getElementById('add-account-btn');
 const reportBugBtn = document.getElementById('report-bug-btn');
+const donateBtn = document.getElementById('donate-btn');
 const settingsBtn = document.getElementById('settings-btn');
 const webviewContainer = document.getElementById('webview-container');
 const emptyState = document.getElementById('empty-state');
 
 const settingsView = document.getElementById('settings-view');
 const backToChatsBtn = document.getElementById('back-to-chats-btn');
+const donationsView = document.getElementById('donations-view');
+const backFromDonationsBtn = document.getElementById('back-from-donations-btn');
 const tabBtns = document.querySelectorAll('.tab-btn');
 const settingsPanels = document.querySelectorAll('.settings-panel');
 const settingsAccountList = document.getElementById('settings-account-list');
@@ -3232,7 +3430,7 @@ const notifNameToggle = document.getElementById('notif-name-toggle');
 const notifPreviewToggle = document.getElementById('notif-preview-toggle');
 const notifSoundToggle = document.getElementById('notif-sound-toggle');
 
-// Elementos de la Pestaña Permisos
+// Elementos de la Pestaña Permisos / Sistema
 const permAllowAllBtn = document.getElementById('perm-allow-all-btn');
 const permDenyAllBtn = document.getElementById('perm-deny-all-btn');
 const permMicToggle = document.getElementById('perm-mic-toggle');
@@ -3240,6 +3438,86 @@ const permCameraToggle = document.getElementById('perm-camera-toggle');
 const permLocationToggle = document.getElementById('perm-location-toggle');
 const permScreenToggle = document.getElementById('perm-screen-toggle');
 const permScreenAudioToggle = document.getElementById('perm-screen-audio-toggle');
+
+const downloadPathInput = document.getElementById('download-path-input');
+const btnSelectDownloadDir = document.getElementById('btn-select-download-dir');
+const btnResetDownloadDir = document.getElementById('btn-reset-download-dir');
+const spellcheckSelect = document.getElementById('spellcheck-select');
+const spellcheckTrigger = document.getElementById('spellcheck-select-trigger');
+const spellcheckOptions = document.getElementById('spellcheck-select-options');
+const spellcheckLabel = document.getElementById('spellcheck-select-label');
+
+// Elementos de la Pestaña Privacidad y Red
+const networkUseProxyToggle = document.getElementById('network-use-proxy-toggle');
+const proxyTypeSelect = document.getElementById('proxy-type-select');
+const dynamicProxyFields = document.getElementById('dynamic-proxy-fields');
+const proxyHostInput = document.getElementById('proxy-host-input');
+const proxyPortInput = document.getElementById('proxy-port-input');
+const networkStrictProxyToggle = document.getElementById('network-strict-proxy-toggle');
+const strictProxyStatusText = document.getElementById('strict-proxy-status-text');
+const btnRestoreProxy = document.getElementById('btn-restore-proxy');
+const networkWebrtcToggle = document.getElementById('network-webrtc-toggle');
+
+function updateNetworkUI() {
+  if (!settings.network) {
+    settings.network = {
+      useProxy: false,
+      proxyType: 'direct',
+      proxyHost: '',
+      proxyPort: '',
+      strictProxyIsolation: false,
+      webrtcProtection: false
+    };
+  }
+
+  const net = settings.network;
+  const lang = i18n[settings.language] || i18n['en'];
+
+  if (networkUseProxyToggle) {
+    networkUseProxyToggle.checked = !!net.useProxy;
+  }
+  if (proxyTypeSelect) {
+    proxyTypeSelect.value = net.proxyType || 'direct';
+    const label = document.getElementById('proxy-type-select-label');
+    if (label) {
+      const selectedOpt = proxyTypeSelect.options[proxyTypeSelect.selectedIndex];
+      if (selectedOpt) label.innerText = selectedOpt.innerText;
+    }
+  }
+  if (proxyHostInput) {
+    proxyHostInput.value = net.proxyHost || '';
+  }
+  if (proxyPortInput) {
+    proxyPortInput.value = net.proxyPort || '';
+  }
+
+  const isExplicitProxy = net.proxyType === 'http' || net.proxyType === 'socks5';
+  if (dynamicProxyFields) {
+    if (isExplicitProxy) {
+      dynamicProxyFields.classList.remove('hidden');
+    } else {
+      dynamicProxyFields.classList.add('hidden');
+    }
+  }
+
+  if (networkStrictProxyToggle) {
+    const canEnableStrict = !!net.useProxy && isExplicitProxy;
+    networkStrictProxyToggle.disabled = !canEnableStrict || net.proxyType === 'direct';
+    networkStrictProxyToggle.checked = canEnableStrict && !!net.strictProxyIsolation;
+  }
+
+  if (strictProxyStatusText) {
+    if (net.proxyType === 'direct') {
+      strictProxyStatusText.innerText = lang.strict_proxy_status_none || 'No hay proxy configurado';
+    } else {
+      strictProxyStatusText.innerText = lang.strict_proxy_status_available || 'Available only while an HTTP or SOCKS5 proxy is enabled';
+    }
+  }
+
+  if (networkWebrtcToggle) {
+    networkWebrtcToggle.checked = !!net.webrtcProtection;
+  }
+}
 
 // Rastreo de mensajes no leídos por cuenta para el System Tray
 const accountUnreadCounts = {};
@@ -3251,11 +3529,43 @@ function updateTotalUnread() {
       total += (accountUnreadCounts[acc.id] || 0);
     }
   });
-  ipcRenderer.send('update-tray-badge', total);
+  electronAPI.updateTrayBadge(total);
+}
+
+async function initDownloadPathUI() {
+  if (!downloadPathInput) return;
+
+  if (electronAPI.getSystemSettings) {
+    try {
+      const sys = await electronAPI.getSystemSettings();
+      if (sys && sys.downloadPath) {
+        settings.downloadPath = sys.downloadPath;
+        downloadPathInput.value = sys.downloadPath;
+      }
+      if (sys && sys.spellcheckLanguage) {
+        settings.spellcheckLanguage = sys.spellcheckLanguage;
+      }
+    } catch (_) {}
+  }
+
+  if (!downloadPathInput.value && electronAPI.getDefaultDownloadsPath) {
+    try {
+      const defPath = await electronAPI.getDefaultDownloadsPath();
+      if (defPath) {
+        settings.downloadPath = defPath;
+        downloadPathInput.value = defPath;
+      }
+    } catch (_) {}
+  }
 }
 
 function init() {
   applySettings();
+  initDownloadPathUI();
+  populateSpellcheckSelect();
+  if (electronAPI.setSpellcheckerLanguage) {
+    electronAPI.setSpellcheckerLanguage(settings.spellcheckLanguage || 'es');
+  }
   
   // Garantizar propiedad enabled en cuentas existentes
   accounts.forEach(acc => {
@@ -3347,11 +3657,14 @@ function applySettings() {
       }
     });
 
-    // Enviar configuración a las webviews activas y sincronizar estado de audio
+    // Enviar configuración a las webviews activas
     document.querySelectorAll('webview').forEach(wv => {
       try {
         wv.send('update-notification-settings', settings.notifications);
         wv.send('set-dark-mode', isDark);
+        if (settings.network) {
+          wv.send('update-network-settings', settings.network);
+        }
       } catch (_) {}
     });
 
@@ -3359,15 +3672,22 @@ function applySettings() {
       const wv = document.getElementById(`webview_${acc.id}`);
       if (wv) {
         try {
-          const isMuted = !!acc.dnd || (settings.notifications && settings.notifications.notificationSound === false);
-          wv.setAudioMuted(isMuted);
+          wv.send('update-account-settings', { dnd: !!acc.dnd });
         } catch (_) {}
       }
     });
   }
 
+  // Sincronizar UI y proceso principal de Privacidad y Red
+  if (settings.network) {
+    updateNetworkUI();
+    if (electronAPI.updateNetworkSettings) {
+      electronAPI.updateNetworkSettings(settings.network);
+    }
+  }
+
   // Sincronizar modo oscuro/claro a nivel global de Chromium
-  ipcRenderer.send('set-theme-mode', isDark ? 'dark' : 'light');
+  electronAPI.setThemeMode(isDark ? 'dark' : 'light');
 
   if (typeof refreshAllCustomDropdowns === 'function') {
     refreshAllCustomDropdowns();
@@ -3382,11 +3702,11 @@ function applySettings() {
     if (permScreenAudioToggle) permScreenAudioToggle.checked = !!settings.permissions.screenShareAudio;
 
     // Sincronizar permisos con el proceso principal
-    ipcRenderer.send('update-permission-settings', settings.permissions);
+    electronAPI.updatePermissionSettings(settings.permissions);
   }
 
   // Sincronizar apariencia de la bandeja con el proceso principal
-  ipcRenderer.send('update-tray-settings', {
+  electronAPI.updateTraySettings({
     style: settings.trayStyle || 'auto',
     showBadge: settings.trayShowBadge !== false
   });
@@ -3424,8 +3744,8 @@ function addAccount(name = null) {
 }
 
 function getAvatarHtml(account) {
-  if (account.avatarUrl) {
-    return `<img src="${account.avatarUrl}" alt="Avatar">`;
+  if (account && account.avatarUrl) {
+    return `<img src="${escapeHtml(account.avatarUrl)}" alt="Avatar">`;
   }
   return `<i class="fa-solid fa-circle-user"></i>`;
 }
@@ -3451,19 +3771,54 @@ const floatingTooltip = document.createElement('div');
 floatingTooltip.className = 'sidebar-floating-tooltip';
 document.body.appendChild(floatingTooltip);
 
-function attachSidebarTooltip(el, account) {
+// Posición unificada: exactamente a 8px del límite derecho de la sidebar
+const TOOLTIP_GAP = 8; // px desde el borde derecho de la sidebar
+
+function getSidebarRight() {
+  const sidebar = document.querySelector('.sidebar');
+  return sidebar ? sidebar.getBoundingClientRect().right : 76;
+}
+
+function attachSidebarTooltip(el, getTooltipText) {
   el.addEventListener('mouseenter', () => {
     const rect = el.getBoundingClientRect();
-    const currentAcc = accounts.find(a => a.id === account.id) || account;
-    floatingTooltip.innerText = currentAcc.name;
+    const text = typeof getTooltipText === 'function' ? getTooltipText() : getTooltipText;
+    floatingTooltip.innerText = text;
     floatingTooltip.style.top = `${rect.top + rect.height / 2}px`;
-    floatingTooltip.style.left = `${rect.right + 12}px`;
+    floatingTooltip.style.left = `${getSidebarRight() + TOOLTIP_GAP}px`;
     floatingTooltip.classList.add('visible');
   });
   el.addEventListener('mouseleave', () => {
     floatingTooltip.classList.remove('visible');
   });
 }
+
+// Inicializar tooltips unificados para los botones inferiores de la sidebar
+function initSidebarBottomTooltips() {
+  const addBtn = document.getElementById('add-account-btn');
+  const bugBtn = document.getElementById('report-bug-btn');
+  const setBtn = document.getElementById('settings-btn');
+
+  if (addBtn) {
+    attachSidebarTooltip(addBtn, () => (i18n[settings.language] || i18n['es'])?.tooltip_add_account || 'Añadir Cuenta');
+    addBtn.addEventListener('click', () => floatingTooltip.classList.remove('visible'));
+  }
+  if (bugBtn) {
+    attachSidebarTooltip(bugBtn, () => (i18n[settings.language] || i18n['es'])?.tooltip_report_bug || 'Reportar Error');
+    bugBtn.addEventListener('click', () => floatingTooltip.classList.remove('visible'));
+  }
+  const donBtn = document.getElementById('donate-btn');
+  if (donBtn) {
+    attachSidebarTooltip(donBtn, () => (i18n[settings.language] || i18n['es'])?.tooltip_donations || 'Donaciones');
+    donBtn.addEventListener('click', () => floatingTooltip.classList.remove('visible'));
+  }
+  if (setBtn) {
+    attachSidebarTooltip(setBtn, () => (i18n[settings.language] || i18n['es'])?.tooltip_settings || 'Configuración');
+    setBtn.addEventListener('click', () => floatingTooltip.classList.remove('visible'));
+  }
+}
+
+initSidebarBottomTooltips();
 
 function renderAccountSidebarItem(account) {
   const li = document.createElement('li');
@@ -3477,7 +3832,10 @@ function renderAccountSidebarItem(account) {
     </div>
   `;
 
-  attachSidebarTooltip(li, account);
+  attachSidebarTooltip(li, () => {
+    const currentAcc = accounts.find(a => a.id === account.id) || account;
+    return currentAcc.name || 'WhatsApp';
+  });
   
   li.addEventListener('click', () => {
     floatingTooltip.classList.remove('visible');
@@ -3511,9 +3869,9 @@ function createWebviewContainer(account, startHibernated = false) {
   overlay.id = `hibernation_${account.id}`;
   overlay.innerHTML = `
     <i class="fa-solid fa-moon hibernation-icon"></i>
-    <h3 data-i18n="hibernation_title">${lang.hibernation_title}</h3>
-    <p data-i18n="hibernation_desc">${lang.hibernation_desc}</p>
-    <button class="wake-btn" onclick="wakeWebview('${account.id}')" data-i18n="wake_button">${lang.wake_button}</button>
+    <h3 data-i18n="hibernation_title">${escapeHtml(lang.hibernation_title)}</h3>
+    <p data-i18n="hibernation_desc">${escapeHtml(lang.hibernation_desc)}</p>
+    <button class="wake-btn" onclick="wakeWebview('${escapeHtml(account.id)}')" data-i18n="wake_button">${escapeHtml(lang.wake_button)}</button>
   `;
   
   container.appendChild(overlay);
@@ -3532,8 +3890,10 @@ function buildWebviewDOM(account, parentContainer) {
   webview.setAttribute('partition', account.partition);
   webview.setAttribute('webpreferences', 'backgroundThrottling=yes, contextIsolation=no'); // CRITICO: Throttling de memoria y acceso a contexto principal
   
-  const preloadPath = path.join(__dirname, '..', 'preload.js');
-  webview.setAttribute('preload', `file://${preloadPath}`);
+  const preloadPath = electronAPI.webviewPreloadPath || '';
+  if (preloadPath) {
+    webview.setAttribute('preload', preloadPath);
+  }
   webview.setAttribute('useragent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36');
   webview.className = 'webview-active';
 
@@ -3546,9 +3906,11 @@ function buildWebviewDOM(account, parentContainer) {
       if (settings && settings.notifications) {
         webview.send('update-notification-settings', settings.notifications);
       }
+      if (settings && settings.network) {
+        webview.send('update-network-settings', settings.network);
+      }
       webview.send('update-account-settings', { dnd: !!account.dnd });
       webview.send('set-dark-mode', isDark);
-      webview.setAudioMuted(!!account.dnd || (settings.notifications && settings.notifications.notificationSound === false));
     } catch (_) {}
   });
 
@@ -3609,12 +3971,12 @@ function buildWebviewDOM(account, parentContainer) {
 
       // Nombre de contacto
       if (settings.notifications.contactName === false) {
-        title = 'WhatsNexus';
+        title = 'Nombre oculto';
       }
 
       // Vista previa del mensaje
       if (settings.notifications.messagePreview === false) {
-        body = '•••';
+        body = 'Mensaje oculto';
       }
 
       // Foto de contacto
@@ -3628,7 +3990,7 @@ function buildWebviewDOM(account, parentContainer) {
       }
 
       // Despachar la notificación nativa con avatar circular al proceso principal
-      ipcRenderer.send('show-native-notification', {
+      electronAPI.showNativeNotification({
         title,
         body,
         iconDataUrl,
@@ -3694,7 +4056,25 @@ function closeSettingsView() {
   if (settingsBtn) settingsBtn.classList.remove('active');
 }
 
+function closeDonationsView() {
+  if (donationsView) donationsView.classList.add('hidden');
+  if (donateBtn) donateBtn.classList.remove('active');
+}
+
+function openDonationsView() {
+  closeSettingsView();
+  // Deactivate active account tab in sidebar and hide webviews
+  document.querySelectorAll('.account-item').forEach(item => item.classList.remove('active'));
+  document.querySelectorAll('.account-container').forEach(container => container.classList.add('hidden'));
+  emptyState.classList.add('hidden');
+
+  // Activate donations button in sidebar
+  if (donateBtn) donateBtn.classList.add('active');
+  if (donationsView) donationsView.classList.remove('hidden');
+}
+
 function openSettingsView() {
+  closeDonationsView();
   // Deactivate active account tab in sidebar and hide webviews
   document.querySelectorAll('.account-item').forEach(item => item.classList.remove('active'));
   document.querySelectorAll('.account-container').forEach(container => container.classList.add('hidden'));
@@ -3709,6 +4089,7 @@ function openSettingsView() {
 
 function activateAccount(id) {
   closeSettingsView();
+  closeDonationsView();
 
   if (!id) {
     activeAccountId = null;
@@ -3759,18 +4140,19 @@ function deleteAccount(id) {
   renderAllSidebarAccounts();
   
   const isSettingsOpen = settingsView && !settingsView.classList.contains('hidden');
+  const isDonationsOpen = donationsView && !donationsView.classList.contains('hidden');
   if (activeAccountId === id) {
     const enabledAccounts = accounts.filter(a => a.enabled !== false);
     if (enabledAccounts.length > 0) {
       activeAccountId = enabledAccounts[0].id;
       localStorage.setItem('whatsNexusActiveAccount', activeAccountId);
-      if (!isSettingsOpen) {
+      if (!isSettingsOpen && !isDonationsOpen) {
         activateAccount(activeAccountId);
       }
     } else {
       activeAccountId = null;
       localStorage.removeItem('whatsNexusActiveAccount');
-      if (!isSettingsOpen) {
+      if (!isSettingsOpen && !isDonationsOpen) {
         emptyState.classList.remove('hidden');
       }
     }
@@ -3882,7 +4264,9 @@ function renderSettingsAccounts() {
   accounts.forEach(acc => {
     const isEnabled = acc.enabled !== false;
     const isDnd = !!acc.dnd;
-    const accountTitle = acc.name || lang.untitled_account || 'Cuenta sin nombre';
+    const rawAccountTitle = acc.name || lang.untitled_account || 'Cuenta sin nombre';
+    const accountTitle = escapeHtml(rawAccountTitle);
+    const safeId = escapeHtml(acc.id);
 
     const card = document.createElement('li');
     card.dataset.id = acc.id;
@@ -3899,9 +4283,9 @@ function renderSettingsAccounts() {
             </div>
           </div>
           <div class="account-card-actions" style="display: flex; align-items: center; gap: 12px;">
-            <span class="account-status-badge badge-inactive">${lang.status_inactive}</span>
+            <span class="account-status-badge badge-inactive">${escapeHtml(lang.status_inactive)}</span>
             <label class="switch">
-              <input type="checkbox" onchange="setAccountStatus('${acc.id}', this.checked)">
+              <input type="checkbox" onchange="setAccountStatus('${safeId}', this.checked)">
               <span class="switch-slider"></span>
             </label>
           </div>
@@ -3918,16 +4302,16 @@ function renderSettingsAccounts() {
         <div class="account-card-identity">
           <div class="account-avatar">${getAvatarHtml(acc)}</div>
           <div class="account-name-container">
-            <span class="account-name-display" id="name_display_${acc.id}">${accountTitle}</span>
-            <input type="text" class="account-name-input hidden" id="name_input_${acc.id}" value="${accountTitle}">
+            <span class="account-name-display" id="name_display_${safeId}">${accountTitle}</span>
+            <input type="text" class="account-name-input hidden" id="name_input_${safeId}" value="${accountTitle}">
           </div>
         </div>
         <div class="account-card-actions">
-          <button class="btn-card-action edit-btn" onclick="toggleEditAccountName('${acc.id}')">
-            <span>${lang.btn_edit}</span>
+          <button class="btn-card-action edit-btn" onclick="toggleEditAccountName('${safeId}')">
+            <span>${escapeHtml(lang.btn_edit)}</span>
           </button>
-          <button class="btn-card-action delete-btn" onclick="deleteAccount('${acc.id}')">
-            <span>${lang.btn_delete}</span>
+          <button class="btn-card-action delete-btn" onclick="deleteAccount('${safeId}')">
+            <span>${escapeHtml(lang.btn_delete)}</span>
           </button>
         </div>
       </div>
@@ -3935,13 +4319,13 @@ function renderSettingsAccounts() {
       <!-- Fila: Estado de la cuenta -->
       <div class="account-card-row">
         <div class="account-row-info">
-          <h4 class="account-row-title">${lang.account_status_title}</h4>
-          <p class="account-row-desc">${lang.account_status_desc}</p>
+          <h4 class="account-row-title">${escapeHtml(lang.account_status_title)}</h4>
+          <p class="account-row-desc">${escapeHtml(lang.account_status_desc)}</p>
         </div>
         <div class="account-row-control" style="display: flex; align-items: center; gap: 12px;">
-          <span class="account-status-badge badge-active">${lang.status_active}</span>
+          <span class="account-status-badge badge-active">${escapeHtml(lang.status_active)}</span>
           <label class="switch">
-            <input type="checkbox" checked onchange="setAccountStatus('${acc.id}', this.checked)">
+            <input type="checkbox" checked onchange="setAccountStatus('${safeId}', this.checked)">
             <span class="switch-slider"></span>
           </label>
         </div>
@@ -3950,12 +4334,12 @@ function renderSettingsAccounts() {
       <!-- Fila: No molestar -->
       <div class="account-card-row">
         <div class="account-row-info">
-          <h4 class="account-row-title">${lang.dnd_title}</h4>
-          <p class="account-row-desc">${lang.dnd_desc}</p>
+          <h4 class="account-row-title">${escapeHtml(lang.dnd_title)}</h4>
+          <p class="account-row-desc">${escapeHtml(lang.dnd_desc)}</p>
         </div>
         <div class="account-row-control">
           <label class="switch">
-            <input type="checkbox" id="dnd_switch_${acc.id}" ${isDnd ? 'checked' : ''} onchange="toggleDND('${acc.id}')">
+            <input type="checkbox" id="dnd_switch_${safeId}" ${isDnd ? 'checked' : ''} onchange="toggleDND('${safeId}')">
             <span class="switch-slider"></span>
           </label>
         </div>
@@ -3994,7 +4378,6 @@ window.toggleDND = (id) => {
     if (wv) {
       try {
         wv.send('update-account-settings', { dnd: !!acc.dnd });
-        wv.setAudioMuted(!!acc.dnd || (settings.notifications && settings.notifications.notificationSound === false));
       } catch (_) {}
     }
   }
@@ -4121,6 +4504,7 @@ initCustomDropdown('palette-select');
 initCustomDropdown('theme-select');
 initCustomDropdown('tray-style-select');
 initCustomDropdown('privacy-preset-select');
+initCustomDropdown('proxy-type-select');
 
 // Manejo del selector de idioma personalizado con scroll limitado a 10 elementos
 const langTrigger = document.getElementById('language-select-trigger');
@@ -4251,15 +4635,83 @@ if (permDenyAllBtn) {
   });
 }
 
+// ========================================================
+// Manejadores de la Pestaña Privacidad y Red
+// ========================================================
+if (networkUseProxyToggle) {
+  networkUseProxyToggle.addEventListener('change', () => {
+    if (!settings.network) settings.network = {};
+    settings.network.useProxy = networkUseProxyToggle.checked;
+    saveSettings();
+  });
+}
+
+if (proxyTypeSelect) {
+  proxyTypeSelect.addEventListener('change', () => {
+    if (!settings.network) settings.network = {};
+    settings.network.proxyType = proxyTypeSelect.value;
+    saveSettings();
+  });
+}
+
+if (proxyHostInput) {
+  proxyHostInput.addEventListener('input', () => {
+    if (!settings.network) settings.network = {};
+    settings.network.proxyHost = proxyHostInput.value.trim();
+    saveSettings();
+  });
+}
+
+if (proxyPortInput) {
+  proxyPortInput.addEventListener('input', () => {
+    if (!settings.network) settings.network = {};
+    settings.network.proxyPort = proxyPortInput.value.trim();
+    saveSettings();
+  });
+}
+
+if (networkStrictProxyToggle) {
+  networkStrictProxyToggle.addEventListener('change', () => {
+    if (!settings.network) settings.network = {};
+    settings.network.strictProxyIsolation = networkStrictProxyToggle.checked;
+    saveSettings();
+  });
+}
+
+if (btnRestoreProxy) {
+  btnRestoreProxy.addEventListener('click', () => {
+    settings.network = {
+      useProxy: false,
+      proxyType: 'direct',
+      proxyHost: '',
+      proxyPort: '',
+      strictProxyIsolation: false,
+      webrtcProtection: settings.network ? !!settings.network.webrtcProtection : false
+    };
+    saveSettings();
+    if (typeof refreshAllCustomDropdowns === 'function') {
+      refreshAllCustomDropdowns();
+    }
+  });
+}
+
+if (networkWebrtcToggle) {
+  networkWebrtcToggle.addEventListener('change', () => {
+    if (!settings.network) settings.network = {};
+    settings.network.webrtcProtection = networkWebrtcToggle.checked;
+    saveSettings();
+  });
+}
+
 addAccountBtn.addEventListener('click', () => addAccount());
 
 if (reportBugBtn) {
   reportBugBtn.addEventListener('click', () => {
-    let currentVer = '0.5.1';
-    try { currentVer = require('../../package.json').version || '0.5.1'; } catch (_) {}
-    const osInfo = `${process.platform} ${process.arch}`;
-    const electronVer = process.versions.electron || 'N/A';
-    const chromeVer = process.versions.chrome || 'N/A';
+    const appInfo = electronAPI.appInfo || {};
+    const currentVer = appInfo.version || '0.13.1';
+    const osInfo = `${appInfo.platform || ''} ${appInfo.arch || ''}`.trim() || 'N/A';
+    const electronVer = appInfo.electronVersion || 'N/A';
+    const chromeVer = appInfo.chromeVersion || 'N/A';
     const lang = settings.language || 'es';
     const theme = settings.theme || 'theme-dark';
     const totalAccounts = accounts.length;
@@ -4293,7 +4745,101 @@ if (reportBugBtn) {
     );
 
     const url = `https://github.com/Sentinel-Mexico/WhatsNexus-Dekstop/issues/new?title=${issueTitle}&body=${issueBody}`;
-    shell.openExternal(url);
+    electronAPI.openExternal(url);
+  });
+}
+
+// Controladores de la Vista de Donaciones
+if (donateBtn) {
+  donateBtn.addEventListener('click', () => {
+    openDonationsView();
+  });
+}
+
+if (backFromDonationsBtn) {
+  backFromDonationsBtn.addEventListener('click', () => {
+    if (activeAccountId) {
+      activateAccount(activeAccountId);
+    } else {
+      closeDonationsView();
+      emptyState.classList.remove('hidden');
+    }
+  });
+}
+
+// Enlaces seguros de Donaciones vía IPC
+document.querySelectorAll('.btn-donate').forEach(btn => {
+  btn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const platform = btn.dataset.platform;
+    const url = DONATION_URLS[platform];
+    if (url) {
+      if (electronAPI.openExternalUrl) {
+        electronAPI.openExternalUrl(url);
+      } else if (electronAPI.openExternal) {
+        electronAPI.openExternal(url);
+      }
+    }
+  });
+});
+
+// Desplegable personalizado para Corrector Ortográfico
+const spTrigger = document.getElementById('spellcheck-select-trigger');
+const spOptions = document.getElementById('spellcheck-select-options');
+
+if (spTrigger && spOptions) {
+  spTrigger.addEventListener('click', (e) => {
+    e.stopPropagation();
+    document.querySelectorAll('.custom-select-options.open').forEach(el => {
+      if (el !== spOptions) el.classList.remove('open');
+    });
+    document.querySelectorAll('.custom-select-trigger.open').forEach(el => {
+      if (el !== spTrigger) el.classList.remove('open');
+    });
+
+    const isOpen = spOptions.classList.contains('open');
+    if (isOpen) {
+      spOptions.classList.remove('open');
+      spTrigger.classList.remove('open');
+    } else {
+      spOptions.classList.add('open');
+      spTrigger.classList.add('open');
+      const selected = spOptions.querySelector('.custom-option.selected');
+      if (selected) {
+        selected.scrollIntoView({ block: 'nearest' });
+      }
+    }
+  });
+}
+
+// Botones de Gestión de Descargas
+if (btnSelectDownloadDir) {
+  btnSelectDownloadDir.addEventListener('click', async () => {
+    if (electronAPI.selectDownloadDirectory) {
+      try {
+        const chosen = await electronAPI.selectDownloadDirectory();
+        if (chosen) {
+          settings.downloadPath = chosen;
+          saveSettings();
+          if (downloadPathInput) downloadPathInput.value = chosen;
+        }
+      } catch (_) {}
+    }
+  });
+}
+
+if (btnResetDownloadDir) {
+  btnResetDownloadDir.addEventListener('click', async () => {
+    if (electronAPI.resetDownloadDirectory) {
+      try {
+        const def = await electronAPI.resetDownloadDirectory();
+        if (def) {
+          settings.downloadPath = def;
+          saveSettings();
+          if (downloadPathInput) downloadPathInput.value = def;
+        }
+      } catch (_) {}
+    }
   });
 }
 
@@ -4304,8 +4850,11 @@ window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () 
 document.addEventListener('DOMContentLoaded', init);
 
 // Enfocar cuenta al hacer click en una notificación nativa
-ipcRenderer.on('select-account', (event, accountId) => {
-  if (accountId) {
-    activateAccount(accountId);
-  }
-});
+if (electronAPI.onSelectAccount) {
+  electronAPI.onSelectAccount((accountId) => {
+    if (accountId) {
+      activateAccount(accountId);
+    }
+  });
+}
+

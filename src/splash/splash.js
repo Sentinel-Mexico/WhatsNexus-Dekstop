@@ -1,22 +1,14 @@
-const { ipcRenderer } = require('electron');
-
 document.addEventListener('DOMContentLoaded', () => {
   const statusText = document.getElementById('status-text');
   const percentageText = document.getElementById('percentage-text');
   const progressFill = document.getElementById('progress-fill');
   const versionBadge = document.getElementById('version-badge');
 
-  // Query dynamic application version from main process or package.json
+  // Query dynamic application version from main process via preload API
   try {
-    let currentVersion = null;
-    try {
-      currentVersion = ipcRenderer.sendSync('get-app-version');
-    } catch (_) {}
-
-    if (!currentVersion) {
-      const pkg = require('../../package.json');
-      currentVersion = pkg && pkg.version;
-    }
+    const currentVersion = window.splashAPI && window.splashAPI.getAppVersion
+      ? window.splashAPI.getAppVersion()
+      : null;
 
     if (currentVersion && versionBadge) {
       versionBadge.textContent = `v${currentVersion}`;
@@ -59,7 +51,9 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
       // Completed, give a 150ms grace period for visual feedback then signal main process
       setTimeout(() => {
-        ipcRenderer.send('splash-finished');
+        if (window.splashAPI && window.splashAPI.finishSplash) {
+          window.splashAPI.finishSplash();
+        }
       }, 150);
     }
   }
