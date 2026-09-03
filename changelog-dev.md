@@ -4,6 +4,13 @@ This changelog records all granular updates, bug fixes, refactorings, and featur
 
 ---
 
+## [0.5.4] - 2026-09-03
+### Added
+- **Documentation Synchronization Rule (`.agents/rules/documentation.md`):** Mandated continuous synchronization of the `docs/` technical documentation whenever code changes, refactors, or feature additions impact documented behavior.
+- **Relative Path Enforcement:** Converted all Markdown documentation links in `docs/README.md` to relative repository paths to ensure full portability on GitHub and local environments.
+
+---
+
 ## [0.5.3] - 2026-09-03
 ### Added
 - **Comprehensive Technical Documentation (`docs/`):** Established dedicated technical documentation covering Application Architecture (`architecture.md`), Commit & Release Conventions (`commit-convention.md`), Session Isolation & Partitions (`session-isolation.md`), Memory Management & Hibernation (`memory-and-performance.md`), Diagnostics & Bug Reporting (`reporting.md`), Development & Maintenance (`maintenance.md`), and Testing & QA (`testing.md`).

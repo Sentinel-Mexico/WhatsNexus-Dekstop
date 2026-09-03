@@ -10,13 +10,13 @@ This directory serves as the definitive reference for architects, maintainers, a
 
 | Document | Purpose & Scope |
 | :--- | :--- |
-| **[Architecture](file:///home/chauri/Drives/HDD-2/github/WhatsNexus-Desktop/WhatsNexus-Dekstop/docs/architecture.md)** | Application architecture, multi-process lifecycle, IPC protocols, and splash screen pre-warming pipeline. |
-| **[Commit & Release Conventions](file:///home/chauri/Drives/HDD-2/github/WhatsNexus-Desktop/WhatsNexus-Dekstop/docs/commit-convention.md)** | SemVer versioning rules, commit message formatting, Git branching strategy (`Dev` vs `main`), and changelog maintenance. |
-| **[Session Isolation](file:///home/chauri/Drives/HDD-2/github/WhatsNexus-Desktop/WhatsNexus-Dekstop/docs/session-isolation.md)** | Persistent partition storage (`persist:acc_<id>`), cookie/cache isolation, and multi-profile security model. |
-| **[Memory & Performance](file:///home/chauri/Drives/HDD-2/github/WhatsNexus-Desktop/WhatsNexus-Dekstop/docs/memory-and-performance.md)** | Tab hibernation lifecycle, complete DOM destruction, lazy loading, debounced preload observers, and Chromium flags. |
-| **[Bug Reporting & Diagnostics](file:///home/chauri/Drives/HDD-2/github/WhatsNexus-Desktop/WhatsNexus-Dekstop/docs/reporting.md)** | In-app automated bug reporting workflow, client-side diagnostics aggregation, and notification privacy profiles. |
-| **[Maintenance & Development](file:///home/chauri/Drives/HDD-2/github/WhatsNexus-Desktop/WhatsNexus-Dekstop/docs/maintenance.md)** | Local environment setup, dependencies, packaging, version synchronization workflows, and codebase guidelines. |
-| **[Testing & Verification](file:///home/chauri/Drives/HDD-2/github/WhatsNexus-Desktop/WhatsNexus-Dekstop/docs/testing.md)** | Automated syntax checks, regression testing checklists, hibernation verification, and platform-specific tests. |
+| **[Architecture](architecture.md)** | Application architecture, multi-process lifecycle, IPC protocols, and splash screen pre-warming pipeline. |
+| **[Commit & Release Conventions](commit-convention.md)** | SemVer versioning rules, commit message formatting, Git branching strategy (`Dev` vs `main`), and changelog maintenance. |
+| **[Session Isolation](session-isolation.md)** | Persistent partition storage (`persist:acc_<id>`), cookie/cache isolation, and multi-profile security model. |
+| **[Memory & Performance](memory-and-performance.md)** | Tab hibernation lifecycle, complete DOM destruction, lazy loading, debounced preload observers, and Chromium flags. |
+| **[Bug Reporting & Diagnostics](reporting.md)** | In-app automated bug reporting workflow, client-side diagnostics aggregation, and notification privacy profiles. |
+| **[Maintenance & Development](maintenance.md)** | Local environment setup, dependencies, packaging, version synchronization workflows, and codebase guidelines. |
+| **[Testing & Verification](testing.md)** | Automated syntax checks, regression testing checklists, hibernation verification, and platform-specific tests. |
 
 ---
 
