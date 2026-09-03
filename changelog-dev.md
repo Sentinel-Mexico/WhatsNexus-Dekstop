@@ -4,6 +4,24 @@ This changelog records all granular updates, bug fixes, refactorings, and featur
 
 ---
 
+## [0.8.0] - 2026-09-03
+### Added
+- **Notifications Panel Redesign & Custom Privacy Engine:**
+  - Redesigned the `#tab-notifications` interface according to the user reference mockup.
+  - Implemented Privacy Presets (**Amplio**, **Medio**, **Estricto**, and **Personalizado**) in an elevated dropdown selector.
+  - Added granular switch toggles for individual control over:
+    - **Notificaciones de escritorio:** Master switch with reactive dimming/disabling of secondary options.
+    - **Foto de contacto:** Toggle sender profile avatar visibility.
+    - **Nombre de contacto:** Toggle sender or group title visibility.
+    - **Vista previa del mensaje:** Toggle incoming message snippet visibility.
+    - **Sonido de notificación:** Toggle system sound alert.
+  - Added secondary setting container: **Mensajes de WhatsNexus** $\rightarrow$ **Recordatorios de apoyo**.
+  - **Dynamic Preset Sync:** Selecting a preset applies its switch configuration immediately; manually toggling any switch automatically transitions the active preset to **Personalizado**.
+  - **In-flight Notification Interception:** `src/preload.js` dynamically wraps HTML5 `window.Notification` inside WhatsApp Web guest sessions, filtering sender metadata, avatars, message bodies, and alert sounds in real-time via IPC without requiring session reloads.
+  - **Internationalization:** Added 21 new localization keys across all 10 supported languages.
+
+---
+
 ## [0.7.2] - 2026-09-03
 ### Fixed
 - **GLib Context Pop Assertion Warning on Shutdown:** Handled the `before-quit` application lifecycle event to explicitly destroy the System Tray (`tray.destroy()`) and release DBus/StatusNotifierItem bindings before Chromium dismantles the GLib main event loop, preventing `assertion 'stack != NULL' failed` warnings on Linux.

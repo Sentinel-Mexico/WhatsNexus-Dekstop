@@ -64,3 +64,60 @@ window.addEventListener('load', () => {
     }
   }, 10000);
 });
+
+// ========================================================
+// Interceptación de Privacidad en Notificaciones
+// ========================================================
+let notificationSettings = {
+  desktopNotifications: true,
+  contactPhoto: true,
+  contactName: true,
+  messagePreview: true,
+  notificationSound: true
+};
+
+ipcRenderer.on('update-notification-settings', (event, newSettings) => {
+  if (newSettings) {
+    notificationSettings = { ...notificationSettings, ...newSettings };
+  }
+});
+
+const OriginalNotification = window.Notification;
+
+if (OriginalNotification) {
+  function CustomNotification(title, options = {}) {
+    if (!notificationSettings.desktopNotifications) {
+      return {};
+    }
+
+    let finalTitle = title;
+    const finalOptions = { ...options };
+
+    // 1. Nombre de contacto
+    if (!notificationSettings.contactName) {
+      finalTitle = 'WhatsNexus';
+    }
+
+    // 2. Foto de contacto
+    if (!notificationSettings.contactPhoto) {
+      delete finalOptions.icon;
+    }
+
+    // 3. Vista previa del mensaje
+    if (!notificationSettings.messagePreview) {
+      finalOptions.body = '•••';
+    }
+
+    // 4. Sonido de alerta
+    if (!notificationSettings.notificationSound) {
+      finalOptions.silent = true;
+    }
+
+    return new OriginalNotification(finalTitle, finalOptions);
+  }
+
+  CustomNotification.permission = OriginalNotification.permission;
+  CustomNotification.requestPermission = OriginalNotification.requestPermission.bind(OriginalNotification);
+
+  window.Notification = CustomNotification;
+}

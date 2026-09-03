@@ -657,42 +657,80 @@ select:focus, input[type="text"]:focus {
   border-color: var(--bg-active);
 }
 
-/* Privacy Options */
-.privacy-options {
+/* ========================================================
+   Notificaciones: Estilo de Secciones y Filas de Opciones
+   ======================================================== */
+.notifications-section-header {
   display: flex;
-  flex-direction: column;
-  gap: 15px;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 12px;
+  gap: 16px;
 }
 
-.radio-label {
+.privacy-preset-container {
   display: flex;
-  align-items: flex-start;
-  gap: 15px;
-  cursor: pointer;
-  padding: 15px;
-  border-radius: 8px;
-  border: 1px solid var(--border-color);
-  transition: border-color 0.2s, background-color 0.2s;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
 }
 
-.radio-label:hover {
-  background-color: var(--bg-hover);
-}
-
-.radio-label input[type="radio"] {
-  margin-top: 5px;
-  accent-color: var(--bg-active);
-}
-
-.radio-content h4 {
-  margin-bottom: 5px;
-  color: var(--text-primary);
-}
-
-.radio-content p {
+.privacy-preset-container label {
+  font-size: 0.88rem;
+  font-weight: 500;
   color: var(--text-secondary);
-  font-size: 0.9rem;
-  line-height: 1.4;
+}
+
+.privacy-preset-container select.preset-select {
+  padding: 6px 12px;
+  font-size: 0.88rem;
+  font-weight: 500;
+  border-radius: 8px;
+  background-color: var(--bg-hover);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  cursor: pointer;
+  outline: none;
+}
+
+.notif-card {
+  padding: 4px 0 !important;
+}
+
+.notif-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 24px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  gap: 20px;
+  transition: opacity 0.2s;
+}
+
+body.theme-light .notif-row {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.notif-row:last-child {
+  border-bottom: none;
+}
+
+.notif-info h4 {
+  font-size: 0.96rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+
+.notif-info p {
+  font-size: 0.83rem;
+  color: var(--text-secondary);
+  line-height: 1.35;
+}
+
+.notif-row.dimmed {
+  opacity: 0.42;
+  pointer-events: none;
 }
 
 /* Listado de Cuentas en Ajustes (Estilo Tarjetas) */

@@ -171,34 +171,106 @@
             <div id="tab-notifications" class="settings-panel">
               <div class="panel-header">
                 <h3 data-i18n="tab_notifications">Notificaciones</h3>
-                <p class="panel-desc" data-i18n="desc_notifications">Controla la privacidad del contenido en las notificaciones del sistema.</p>
+                <p class="panel-desc" data-i18n="desc_notifications">Configura notificaciones, privacidad y mensajes de WhatsNexus.</p>
               </div>
-              <div class="setting-card">
-                <div class="setting-group">
-                  <label data-i18n="label_privacy">Perfil de Privacidad</label>
-                  <div class="privacy-options">
-                    <label class="radio-label">
-                      <input type="radio" name="privacy-profile" value="broad" checked>
-                      <div class="radio-content">
-                        <h4 data-i18n="privacy_broad">Amplio</h4>
-                        <p data-i18n="privacy_broad_desc">Foto, nombre, vista previa del mensaje y sonido.</p>
-                      </div>
-                    </label>
-                    <label class="radio-label">
-                      <input type="radio" name="privacy-profile" value="medium">
-                      <div class="radio-content">
-                        <h4 data-i18n="privacy_medium">Medio</h4>
-                        <p data-i18n="privacy_medium_desc">Foto, nombre, "Mensaje oculto" y sonido.</p>
-                      </div>
-                    </label>
-                    <label class="radio-label">
-                      <input type="radio" name="privacy-profile" value="strict">
-                      <div class="radio-content">
-                        <h4 data-i18n="privacy_strict">Estricto</h4>
-                        <p data-i18n="privacy_strict_desc">Icono de app, "Contacto oculto", "Mensaje oculto", sin sonido.</p>
-                      </div>
-                    </label>
+
+              <!-- Bloque 1: Configuración de Privacidad en Notificaciones -->
+              <div class="notifications-section-header">
+                <div class="setting-text">
+                  <h4 data-i18n="heading_notifications_privacy">Notificaciones</h4>
+                  <p class="setting-hint" data-i18n="desc_notifications_privacy">Elige qué información puede aparecer en las notificaciones.</p>
+                </div>
+                <div class="privacy-preset-container">
+                  <label for="privacy-preset-select" data-i18n="label_privacy_preset">Privacidad</label>
+                  <select id="privacy-preset-select" class="styled-select preset-select">
+                    <option value="broad" data-i18n="preset_broad">Amplio</option>
+                    <option value="medium" data-i18n="preset_medium">Medio</option>
+                    <option value="strict" data-i18n="preset_strict">Estricto</option>
+                    <option value="custom" data-i18n="preset_custom">Personalizado</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="setting-card notif-card">
+                <!-- Fila 1: Notificaciones de escritorio -->
+                <div class="notif-row">
+                  <div class="notif-info">
+                    <h4 data-i18n="notif_desktop_title">Notificaciones de escritorio</h4>
+                    <p data-i18n="notif_desktop_desc">Muestra notificaciones de WhatsApp usando el sistema de notificaciones de escritorio.</p>
                   </div>
+                  <label class="switch">
+                    <input type="checkbox" id="notif-desktop-toggle" checked>
+                    <span class="switch-slider"></span>
+                  </label>
+                </div>
+
+                <!-- Fila 2: Foto de contacto -->
+                <div class="notif-row notif-sub-option">
+                  <div class="notif-info">
+                    <h4 data-i18n="notif_photo_title">Foto de contacto</h4>
+                    <p data-i18n="notif_photo_desc">Muestra la foto del remitente cuando esté disponible.</p>
+                  </div>
+                  <label class="switch">
+                    <input type="checkbox" id="notif-photo-toggle" checked>
+                    <span class="switch-slider"></span>
+                  </label>
+                </div>
+
+                <!-- Fila 3: Nombre de contacto -->
+                <div class="notif-row notif-sub-option">
+                  <div class="notif-info">
+                    <h4 data-i18n="notif_name_title">Nombre de contacto</h4>
+                    <p data-i18n="notif_name_desc">Muestra el remitente o el nombre del grupo.</p>
+                  </div>
+                  <label class="switch">
+                    <input type="checkbox" id="notif-name-toggle" checked>
+                    <span class="switch-slider"></span>
+                  </label>
+                </div>
+
+                <!-- Fila 4: Vista previa del mensaje -->
+                <div class="notif-row notif-sub-option">
+                  <div class="notif-info">
+                    <h4 data-i18n="notif_preview_title">Vista previa del mensaje</h4>
+                    <p data-i18n="notif_preview_desc">Muestra el contenido del mensaje recibido.</p>
+                  </div>
+                  <label class="switch">
+                    <input type="checkbox" id="notif-preview-toggle" checked>
+                    <span class="switch-slider"></span>
+                  </label>
+                </div>
+
+                <!-- Fila 5: Sonido de notificación -->
+                <div class="notif-row notif-sub-option">
+                  <div class="notif-info">
+                    <h4 data-i18n="notif_sound_title">Sonido de notificación</h4>
+                    <p data-i18n="notif_sound_desc">Permite que el escritorio reproduzca un sonido de alerta para los mensajes nuevos.</p>
+                  </div>
+                  <label class="switch">
+                    <input type="checkbox" id="notif-sound-toggle" checked>
+                    <span class="switch-slider"></span>
+                  </label>
+                </div>
+              </div>
+
+              <!-- Bloque 2: Mensajes de WhatsNexus -->
+              <div class="notifications-section-header" style="margin-top: 25px;">
+                <div class="setting-text">
+                  <h4 data-i18n="heading_app_messages">Mensajes de WhatsNexus</h4>
+                  <p class="setting-hint" data-i18n="desc_app_messages">Controlar los mensajes ocasionales que muestra la propia aplicación.</p>
+                </div>
+              </div>
+
+              <div class="setting-card notif-card">
+                <div class="notif-row">
+                  <div class="notif-info">
+                    <h4 data-i18n="notif_support_title">Recordatorios de apoyo</h4>
+                    <p data-i18n="notif_support_desc">Ocasionalmente muestra mensajes que respaldan el desarrollo de WhatsNexus.</p>
+                  </div>
+                  <label class="switch">
+                    <input type="checkbox" id="notif-support-toggle" checked>
+                    <span class="switch-slider"></span>
+                  </label>
                 </div>
               </div>
             </div>
