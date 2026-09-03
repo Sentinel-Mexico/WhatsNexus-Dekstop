@@ -4,6 +4,13 @@ This changelog records all granular updates, bug fixes, refactorings, and featur
 
 ---
 
+## [0.5.3] - 2026-09-03
+### Added
+- **Comprehensive Technical Documentation (`docs/`):** Established dedicated technical documentation covering Application Architecture (`architecture.md`), Commit & Release Conventions (`commit-convention.md`), Session Isolation & Partitions (`session-isolation.md`), Memory Management & Hibernation (`memory-and-performance.md`), Diagnostics & Bug Reporting (`reporting.md`), Development & Maintenance (`maintenance.md`), and Testing & QA (`testing.md`).
+- **Main Documentation Index:** Added `docs/README.md` and linked documentation in root `README.md`.
+
+---
+
 ## [0.5.2] - 2026-09-03
 ### Fixed
 - **Wayland Color Management Error:** Disabled Chromium's `WaylandWpColorManagerV1` feature flag in `src/main.js` to eliminate `wayland_wp_color_manager` image transfer and color space description errors on Linux Wayland environments (such as KDE Plasma and GNOME).

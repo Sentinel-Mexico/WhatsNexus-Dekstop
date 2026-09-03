@@ -40,6 +40,17 @@
 *   **Core:** Electron.js
 *   **Frontend:** HTML, CSS, JavaScript
 
+## 📖 Documentation
+
+Comprehensive technical documentation is available in the [`docs/`](docs/README.md) directory:
+*   [Architecture Overview](docs/architecture.md)
+*   [Commit & Release Conventions](docs/commit-convention.md)
+*   [Session Isolation & Multi-Account](docs/session-isolation.md)
+*   [Memory Management & Tab Hibernation](docs/memory-and-performance.md)
+*   [Diagnostics & Bug Reporting](docs/reporting.md)
+*   [Development & Maintenance Guide](docs/maintenance.md)
+*   [Testing & QA Guide](docs/testing.md)
+
 ## 💡 Inspiration & Acknowledgements
 
 The graphical user interface, layout, and core functional concept of WhatsNexus were deeply inspired by the excellent work done by [Rafael Tosta](https://github.com/rafatosta) on the [ZapZap](https://github.com/rafatosta/zapzap) project. We want to express our gratitude and give full credit to the creator of ZapZap for paving the way and providing the vision for a better desktop messaging experience.
