@@ -4,6 +4,18 @@ This changelog records all granular updates, bug fixes, refactorings, and featur
 
 ---
 
+## [0.10.1] - 2026-09-03
+### Fixed
+- **Authoritative Notification Interception Architecture:**
+  - Injected an inline main-world bridge script at document start to intercept `window.Notification` and `ServiceWorkerRegistration.prototype.showNotification` inside WhatsApp Web's execution context, eliminating context isolation bypass.
+  - Intercepted notifications are routed to the host renderer (`src/renderer/renderer.js`), where account-level **Do Not Disturb (DND)** and privacy filters (**contact name**, **contact photo**, **message preview**, **notification sound**) are applied authoritatively before any alert reaches the operating system.
+  - Notifications for accounts with DND enabled are dropped completely at the host layer.
+- **Disk-Backed Circular Notification Avatars:**
+  - Guest `<canvas>` circular-clipped PNG data is sent via IPC to the main process (`src/main.js`), where it is cached on disk and passed directly to Electron's native `Notification({ icon })` API.
+  - Guaranteed 100% circular profile avatar rendering on Linux (`libnotify`), Windows, and macOS.
+
+---
+
 ## [0.10.0] - 2026-09-03
 ### Added
 - **Automatic Account Name Synchronization:** Automatically detects and syncs the user's authentic WhatsApp display name (`pushname` and profile drawer DOM) upon login, updating the account name in WhatsNexus without requiring manual typing (while gracefully preserving custom user renames).

@@ -1,5 +1,6 @@
-const { app, BrowserWindow, Menu, Tray, ipcMain, nativeImage, nativeTheme } = require('electron');
+const { app, BrowserWindow, Menu, Tray, ipcMain, nativeImage, nativeTheme, Notification } = require('electron');
 const path = require('path');
+const fs = require('fs');
 
 // 3. Flags de optimización de Chromium
 app.commandLine.appendSwitch('disable-features', 'HardwareMediaKeyHandling,MediaSessionService,WaylandWpColorManagerV1');
@@ -186,6 +187,45 @@ ipcMain.on('set-theme-mode', (event, mode) => {
   if (mode === 'dark' || mode === 'light') {
     nativeTheme.themeSource = mode;
   }
+});
+
+// IPC para emitir notificaciones nativas con avatar circular respaldado en disco
+ipcMain.on('show-native-notification', (event, data) => {
+  if (!Notification.isSupported()) return;
+
+  let iconPath = path.join(__dirname, 'assets', 'icon.png');
+
+  // Si se envió un avatar circular en base64, guardarlo en caché en disco
+  if (data.iconDataUrl && data.iconDataUrl.startsWith('data:image/png;base64,')) {
+    try {
+      const base64Data = data.iconDataUrl.replace(/^data:image\/png;base64,/, '');
+      const tempAvatarPath = path.join(app.getPath('userData'), `avatar_notif_${Date.now() % 10}.png`);
+      fs.writeFileSync(tempAvatarPath, base64Data, 'base64');
+      iconPath = tempAvatarPath;
+    } catch (e) {
+      console.error('Error saving notification circular avatar:', e);
+    }
+  }
+
+  const notification = new Notification({
+    title: data.title || 'WhatsNexus',
+    body: data.body || '',
+    icon: iconPath,
+    silent: !!data.silent
+  });
+
+  notification.on('click', () => {
+    if (mainWindow) {
+      if (mainWindow.isMinimized()) mainWindow.restore();
+      mainWindow.show();
+      mainWindow.focus();
+      if (data.accountId) {
+        mainWindow.webContents.send('select-account', data.accountId);
+      }
+    }
+  });
+
+  notification.show();
 });
 
 app.whenReady().then(() => {

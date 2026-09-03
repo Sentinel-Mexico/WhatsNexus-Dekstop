@@ -429,7 +429,7 @@ function buildWebviewDOM(account, parentContainer) {
   webview.id = `webview_${account.id}`;
   webview.setAttribute('src', 'https://web.whatsapp.com/');
   webview.setAttribute('partition', account.partition);
-  webview.setAttribute('webpreferences', 'backgroundThrottling=yes'); // CRITICO: Throttling de memoria
+  webview.setAttribute('webpreferences', 'backgroundThrottling=yes, contextIsolation=no'); // CRITICO: Throttling de memoria y acceso a contexto principal
   
   const preloadPath = path.join(__dirname, '..', 'preload.js');
   webview.setAttribute('preload', `file://${preloadPath}`);
@@ -486,6 +486,54 @@ function buildWebviewDOM(account, parentContainer) {
           renderSettingsAccounts();
         }
       }
+    } else if (event.channel === 'guest-notification') {
+      const notifData = event.args[0] || {};
+      const acc = accounts.find(a => a.id === account.id);
+
+      // 1. REGLA AUTORITARIA: Si la cuenta está en NO MOLESTAR o desactivada, descartar de raíz
+      if (!acc || acc.dnd || acc.enabled === false) {
+        return;
+      }
+
+      // 2. Si las notificaciones de escritorio están apagadas globalmente, descartar
+      if (!settings.notifications || settings.notifications.desktopNotifications === false) {
+        return;
+      }
+
+      // 3. Aplicar filtros de privacidad de forma estricta
+      let title = notifData.title || 'WhatsApp';
+      let body = notifData.body || '';
+      let iconDataUrl = notifData.iconDataUrl || null;
+      let silent = false;
+
+      // Nombre de contacto
+      if (settings.notifications.contactName === false) {
+        title = 'WhatsNexus';
+      }
+
+      // Vista previa del mensaje
+      if (settings.notifications.messagePreview === false) {
+        body = '•••';
+      }
+
+      // Foto de contacto
+      if (settings.notifications.contactPhoto === false) {
+        iconDataUrl = null;
+      }
+
+      // Sonido de notificación
+      if (settings.notifications.notificationSound === false) {
+        silent = true;
+      }
+
+      // Despachar la notificación nativa con avatar circular al proceso principal
+      ipcRenderer.send('show-native-notification', {
+        title,
+        body,
+        iconDataUrl,
+        silent,
+        accountId: account.id
+      });
     }
   });
 
@@ -987,3 +1035,10 @@ window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () 
 });
 
 document.addEventListener('DOMContentLoaded', init);
+
+// Enfocar cuenta al hacer click en una notificación nativa
+ipcRenderer.on('select-account', (event, accountId) => {
+  if (accountId) {
+    activateAccount(accountId);
+  }
+});

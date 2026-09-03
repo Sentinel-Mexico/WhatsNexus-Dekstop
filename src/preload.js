@@ -8,7 +8,68 @@ let attempts = 0;
 const MAX_ATTEMPTS = 30; // Máximo ~5 minutos de reintentos lentos
 
 // ========================================================
-// 1. Extracción de Foto y Nombre de Perfil (Filtrando Meta AI)
+// 1. Puente de Interceptación en el Contexto Principal (Main World)
+// ========================================================
+function injectMainWorldNotificationBridge() {
+  try {
+    const script = document.createElement('script');
+    script.textContent = `
+(function() {
+  function dispatchToHost(title, options) {
+    try {
+      window.dispatchEvent(new CustomEvent('whats-nexus-notification', {
+        detail: {
+          title: title || 'WhatsApp',
+          options: options ? {
+            body: options.body,
+            icon: options.icon,
+            tag: options.tag,
+            silent: options.silent
+          } : {}
+        }
+      }));
+    } catch(e) {}
+  }
+
+  // Interceptar window.Notification
+  const OrigNotification = window.Notification;
+  window.Notification = function(title, options) {
+    dispatchToHost(title, options);
+    return {
+      onclick: null,
+      onclose: null,
+      onerror: null,
+      onshow: null,
+      addEventListener: function() {},
+      removeEventListener: function() {},
+      close: function() {}
+    };
+  };
+  window.Notification.permission = 'granted';
+  window.Notification.requestPermission = function() { return Promise.resolve('granted'); };
+
+  // Interceptar ServiceWorkerRegistration.prototype.showNotification
+  if (window.ServiceWorkerRegistration && window.ServiceWorkerRegistration.prototype.showNotification) {
+    window.ServiceWorkerRegistration.prototype.showNotification = function(title, options) {
+      dispatchToHost(title, options);
+      return Promise.resolve();
+    };
+  }
+})();
+`;
+    (document.head || document.documentElement).appendChild(script);
+    script.remove();
+  } catch (e) {
+    console.error('Error injecting notification bridge:', e);
+  }
+}
+
+// Inyectar de inmediato y reforzar en DOMContentLoaded
+injectMainWorldNotificationBridge();
+window.addEventListener('DOMContentLoaded', injectMainWorldNotificationBridge);
+
+// ========================================================
+// 2. Extracción de Foto y Nombre de Perfil (Filtrando Meta AI)
 // ========================================================
 function isMetaAiElement(el) {
   if (!el) return false;
@@ -58,13 +119,11 @@ function extractProfilePicture() {
 
 function extractProfileName() {
   try {
-    // 1. Intentar desde pushname en localStorage de WhatsApp Web
     const pushname = window.localStorage.getItem('pushname');
     if (pushname && pushname.trim() && !pushname.toLowerCase().includes('meta ai')) {
       return pushname.trim();
     }
 
-    // 2. Intentar desde aria-label o título del botón de perfil en el header
     const profileBtns = document.querySelectorAll('button[aria-label*="Profile" i], button[aria-label*="Perfil" i], header div[role="button"]');
     for (const btn of profileBtns) {
       const label = btn.getAttribute('aria-label') || btn.getAttribute('title') || '';
@@ -74,7 +133,6 @@ function extractProfileName() {
       }
     }
 
-    // 3. Intentar desde el drawer o panel de perfil si está abierto/cargado en DOM
     const drawerInput = document.querySelector('[data-testid="profile-name-input"] input, [data-testid="drawer-left"] span[title]');
     if (drawerInput) {
       const val = drawerInput.value || drawerInput.innerText || drawerInput.getAttribute('title');
@@ -83,7 +141,6 @@ function extractProfileName() {
       }
     }
 
-    // 4. Fallback al número de teléfono desde last-wid-md
     const lastWid = window.localStorage.getItem('last-wid-md');
     if (lastWid) {
       const numMatch = lastWid.match(/^(\d+)@/);
@@ -146,7 +203,7 @@ window.addEventListener('load', () => {
 });
 
 // ========================================================
-// 2. Sincronización de Tema (Claro / Oscuro) en WhatsApp Web
+// 3. Sincronización de Tema (Claro / Oscuro) en WhatsApp Web
 // ========================================================
 let isDarkMode = true;
 
@@ -180,7 +237,6 @@ ipcRenderer.on('set-dark-mode', (event, dark) => {
   applyThemeToGuest(dark);
 });
 
-// Engañar a WhatsApp Web haciendo que window.matchMedia retorne el tema del usuario
 const originalMatchMedia = window.matchMedia;
 window.matchMedia = function(query) {
   if (typeof query === 'string' && query.includes('prefers-color-scheme')) {
@@ -204,43 +260,13 @@ window.addEventListener('DOMContentLoaded', () => {
 });
 
 // ========================================================
-// 3. Control de Notificaciones, DND y Avatares Circulares
+// 4. Procesamiento de Notificaciones y Recorte Circular
 // ========================================================
-let notificationSettings = {
-  desktopNotifications: true,
-  contactPhoto: true,
-  contactName: true,
-  messagePreview: true,
-  notificationSound: true
-};
-let isDnd = false;
-
-ipcRenderer.on('update-notification-settings', (event, newSettings) => {
-  if (newSettings) {
-    notificationSettings = { ...notificationSettings, ...newSettings };
-  }
-});
-
-ipcRenderer.on('update-account-settings', (event, data) => {
-  if (data && data.dnd !== undefined) {
-    isDnd = !!data.dnd;
-  }
-});
-
-// Silenciar audio si la cuenta está en DND o el sonido de notificación está desactivado
-const origAudioPlay = HTMLAudioElement.prototype.play;
-HTMLAudioElement.prototype.play = function() {
-  if (isDnd || !notificationSettings.notificationSound) {
-    return Promise.resolve();
-  }
-  return origAudioPlay.apply(this, arguments);
-};
-
 function makeCircularAvatar(src, callback) {
-  if (!src) return callback(src);
+  if (!src) return callback(null);
   try {
     const img = new Image();
-    // CRÍTICO: NUNCA asignar crossOrigin en blob: o data: URLs (provoca fallo de CORS y canvas tainted)
+    // NUNCA asignar crossOrigin en blob: o data: URLs
     if (src.startsWith('http://') || src.startsWith('https://')) {
       img.crossOrigin = 'anonymous';
     }
@@ -256,136 +282,37 @@ function makeCircularAvatar(src, callback) {
         ctx.closePath();
         ctx.clip();
         ctx.drawImage(img, 0, 0, size, size);
-        canvas.toBlob((blob) => {
-          if (blob) {
-            callback(URL.createObjectURL(blob));
-          } else {
-            callback(canvas.toDataURL('image/png'));
-          }
-        }, 'image/png');
-      } catch (_) {
-        callback(src);
-      }
-    };
-    img.onerror = () => callback(src);
-    img.src = src;
-  } catch (_) {
-    callback(src);
-  }
-}
-
-function processNotificationOptions(title, options = {}) {
-  let finalTitle = title;
-  const finalOptions = { ...options };
-
-  // 1. Nombre de contacto
-  if (!notificationSettings.contactName) {
-    finalTitle = 'WhatsNexus';
-  }
-
-  // 2. Foto de contacto
-  if (!notificationSettings.contactPhoto) {
-    delete finalOptions.icon;
-  }
-
-  // 3. Vista previa del mensaje
-  if (!notificationSettings.messagePreview) {
-    finalOptions.body = '•••';
-  }
-
-  // 4. Sonido de alerta
-  if (!notificationSettings.notificationSound) {
-    finalOptions.silent = true;
-  }
-
-  return { finalTitle, finalOptions };
-}
-
-// 1. Interceptar window.Notification
-const OriginalNotification = window.Notification;
-
-if (OriginalNotification) {
-  function CustomNotification(title, options = {}) {
-    // Si la cuenta está en No Molestar o las notificaciones de escritorio están apagadas
-    if (isDnd || !notificationSettings.desktopNotifications) {
-      return {
-        addEventListener: () => {},
-        removeEventListener: () => {},
-        dispatchEvent: () => false,
-        close: () => {}
-      };
-    }
-
-    const { finalTitle, finalOptions } = processNotificationOptions(title, options);
-
-    const proxy = {
-      onclick: null,
-      onclose: null,
-      onerror: null,
-      onshow: null,
-      instance: null,
-      addEventListener: function(type, listener) {
-        if (this.instance) this.instance.addEventListener(type, listener);
-      },
-      removeEventListener: function(type, listener) {
-        if (this.instance) this.instance.removeEventListener(type, listener);
-      },
-      close: function() {
-        if (this.instance) this.instance.close();
-      }
-    };
-
-    const emitNotification = (opts) => {
-      try {
-        const notif = new OriginalNotification(finalTitle, opts);
-        proxy.instance = notif;
-        ['click', 'close', 'error', 'show'].forEach(evt => {
-          notif.addEventListener(evt, (e) => {
-            if (typeof proxy['on' + evt] === 'function') proxy['on' + evt](e);
-          });
-        });
+        callback(canvas.toDataURL('image/png'));
       } catch (err) {
-        console.error('Error dispatching native notification:', err);
+        callback(null);
       }
     };
-
-    if (finalOptions.icon) {
-      makeCircularAvatar(finalOptions.icon, (circularIcon) => {
-        finalOptions.icon = circularIcon;
-        emitNotification(finalOptions);
-      });
-    } else {
-      emitNotification(finalOptions);
-    }
-
-    return proxy;
+    img.onerror = () => callback(null);
+    img.src = src;
+  } catch (err) {
+    callback(null);
   }
-
-  CustomNotification.permission = OriginalNotification.permission;
-  CustomNotification.requestPermission = OriginalNotification.requestPermission.bind(OriginalNotification);
-
-  window.Notification = CustomNotification;
 }
 
-// 2. Interceptar ServiceWorkerRegistration.prototype.showNotification (empleado por WhatsApp Web)
-if (window.ServiceWorkerRegistration && window.ServiceWorkerRegistration.prototype.showNotification) {
-  const origShowNotification = ServiceWorkerRegistration.prototype.showNotification;
-  ServiceWorkerRegistration.prototype.showNotification = function(title, options = {}) {
-    if (isDnd || !notificationSettings.desktopNotifications) {
-      return Promise.resolve();
-    }
+// Escuchar el evento de notificación proveniente del contexto principal
+window.addEventListener('whats-nexus-notification', (event) => {
+  const detail = event.detail || {};
+  const rawTitle = detail.title || 'WhatsApp';
+  const rawOptions = detail.options || {};
 
-    const { finalTitle, finalOptions } = processNotificationOptions(title, options);
-
-    if (finalOptions.icon) {
-      return new Promise((resolve) => {
-        makeCircularAvatar(finalOptions.icon, (circularIcon) => {
-          finalOptions.icon = circularIcon;
-          origShowNotification.call(this, finalTitle, finalOptions).then(resolve).catch(resolve);
-        });
+  if (rawOptions.icon) {
+    makeCircularAvatar(rawOptions.icon, (circularIcon) => {
+      ipcRenderer.sendToHost('guest-notification', {
+        title: rawTitle,
+        body: rawOptions.body || '',
+        iconDataUrl: circularIcon
       });
-    }
-
-    return origShowNotification.call(this, finalTitle, finalOptions);
-  };
-}
+    });
+  } else {
+    ipcRenderer.sendToHost('guest-notification', {
+      title: rawTitle,
+      body: rawOptions.body || '',
+      iconDataUrl: null
+    });
+  }
+});
