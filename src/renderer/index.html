@@ -33,92 +33,128 @@
       </div>
     </aside>
 
-    <!-- Contenedor principal donde se renderizarán los webviews -->
+    <!-- Main content area where webviews and full-screen views live -->
     <main id="webview-container" class="main-content">
       <div class="empty-state" id="empty-state">
         <div class="empty-icon"><i class="fa-brands fa-whatsapp"></i></div>
         <h3 data-i18n="welcome">Bienvenido a WhatsNexus</h3>
         <p data-i18n="welcome_desc">Selecciona una cuenta en la barra lateral o añade una nueva para comenzar.</p>
       </div>
-    </main>
-  </div>
 
-  <!-- Modal de Configuración -->
-  <div id="settings-modal" class="modal-overlay hidden">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h2><i class="fa-solid fa-gear"></i> <span data-i18n="settings_title">Configuración</span></h2>
-        <button id="close-settings-btn" class="close-btn"><i class="fa-solid fa-xmark"></i></button>
-      </div>
-      
-      <div class="modal-body">
-        <!-- Pestañas de configuración -->
-        <div class="settings-tabs">
-          <button class="tab-btn active" data-tab="tab-accounts" data-i18n="tab_accounts">Cuentas</button>
-          <button class="tab-btn" data-tab="tab-appearance" data-i18n="tab_appearance">Apariencia</button>
-          <button class="tab-btn" data-tab="tab-notifications" data-i18n="tab_notifications">Notificaciones</button>
-        </div>
-        
-        <!-- Contenido de las pestañas -->
-        <div class="settings-panels">
-          <!-- Pestaña Cuentas -->
-          <div id="tab-accounts" class="settings-panel active">
-            <h3 data-i18n="heading_accounts">Gestión de Cuentas</h3>
-            <ul id="settings-account-list" class="settings-accounts">
-              <!-- Renderizado dinámico -->
-            </ul>
-          </div>
-          
-          <!-- Pestaña Apariencia -->
-          <div id="tab-appearance" class="settings-panel">
-            <div class="setting-group">
-              <label data-i18n="label_theme">Tema</label>
-              <select id="theme-select">
-                <option value="theme-auto" data-i18n="theme_auto">Automático (Sistema)</option>
-                <option value="theme-light" data-i18n="theme_light">Claro</option>
-                <option value="theme-dark" data-i18n="theme_dark">Oscuro</option>
-              </select>
-            </div>
-            <div class="setting-group">
-              <label data-i18n="label_language">Idioma</label>
-              <select id="language-select">
-                <!-- Se llenará dinámicamente desde JS -->
-              </select>
+      <!-- Settings Full-Window View -->
+      <section id="settings-view" class="settings-view hidden">
+        <header class="settings-header">
+          <div class="settings-header-left">
+            <button id="back-to-chats-btn" class="back-btn tooltip-container">
+              <i class="fa-solid fa-arrow-left"></i>
+              <span class="tooltip-text" data-i18n="tooltip_back">Volver a los chats</span>
+            </button>
+            <div class="settings-title-group">
+              <h2><i class="fa-solid fa-gear"></i> <span data-i18n="settings_title">Configuración</span></h2>
+              <p class="settings-subtitle" data-i18n="settings_subtitle">Preferencias globales y gestión de cuentas</p>
             </div>
           </div>
-          
-          <!-- Pestaña Notificaciones -->
-          <div id="tab-notifications" class="settings-panel">
-            <div class="setting-group">
-              <label data-i18n="label_privacy">Perfil de Privacidad</label>
-              <div class="privacy-options">
-                <label class="radio-label">
-                  <input type="radio" name="privacy-profile" value="broad" checked>
-                  <div class="radio-content">
-                    <h4 data-i18n="privacy_broad">Amplio</h4>
-                    <p data-i18n="privacy_broad_desc">Foto, nombre, vista previa del mensaje y sonido.</p>
+        </header>
+
+        <div class="settings-layout">
+          <!-- Navigation Tabs -->
+          <nav class="settings-nav">
+            <button class="tab-btn active" data-tab="tab-accounts">
+              <i class="fa-solid fa-users"></i>
+              <span data-i18n="tab_accounts">Cuentas</span>
+            </button>
+            <button class="tab-btn" data-tab="tab-appearance">
+              <i class="fa-solid fa-palette"></i>
+              <span data-i18n="tab_appearance">Apariencia</span>
+            </button>
+            <button class="tab-btn" data-tab="tab-notifications">
+              <i class="fa-solid fa-bell"></i>
+              <span data-i18n="tab_notifications">Notificaciones</span>
+            </button>
+          </nav>
+
+          <!-- Panels Area -->
+          <div class="settings-panels-container">
+            <!-- Pestaña Cuentas -->
+            <div id="tab-accounts" class="settings-panel active">
+              <div class="panel-header">
+                <h3 data-i18n="heading_accounts">Gestión de Cuentas</h3>
+                <p class="panel-desc" data-i18n="desc_accounts">Administra tus perfiles de WhatsApp, cambia sus nombres o activa el modo No Molestar.</p>
+              </div>
+              <ul id="settings-account-list" class="settings-accounts">
+                <!-- Renderizado dinámico -->
+              </ul>
+            </div>
+            
+            <!-- Pestaña Apariencia -->
+            <div id="tab-appearance" class="settings-panel">
+              <div class="panel-header">
+                <h3 data-i18n="tab_appearance">Apariencia</h3>
+                <p class="panel-desc" data-i18n="desc_appearance">Personaliza el tema visual y el idioma de la aplicación.</p>
+              </div>
+              <div class="setting-card">
+                <div class="setting-group">
+                  <div class="setting-text">
+                    <label data-i18n="label_theme">Tema</label>
+                    <span class="setting-hint" data-i18n="hint_theme">Elige la combinación de colores que prefieras</span>
                   </div>
-                </label>
-                <label class="radio-label">
-                  <input type="radio" name="privacy-profile" value="medium">
-                  <div class="radio-content">
-                    <h4 data-i18n="privacy_medium">Medio</h4>
-                    <p data-i18n="privacy_medium_desc">Foto, nombre, "Mensaje oculto" y sonido.</p>
+                  <select id="theme-select" class="styled-select">
+                    <option value="theme-auto" data-i18n="theme_auto">Automático (Sistema)</option>
+                    <option value="theme-light" data-i18n="theme_light">Claro</option>
+                    <option value="theme-dark" data-i18n="theme_dark">Oscuro</option>
+                  </select>
+                </div>
+                <div class="setting-group">
+                  <div class="setting-text">
+                    <label data-i18n="label_language">Idioma</label>
+                    <span class="setting-hint" data-i18n="hint_language">Selecciona el idioma de la interfaz</span>
                   </div>
-                </label>
-                <label class="radio-label">
-                  <input type="radio" name="privacy-profile" value="strict">
-                  <div class="radio-content">
-                    <h4 data-i18n="privacy_strict">Estricto</h4>
-                    <p data-i18n="privacy_strict_desc">Icono de app, "Contacto oculto", "Mensaje oculto", sin sonido.</p>
+                  <select id="language-select" class="styled-select">
+                    <!-- Se llenará dinámicamente desde JS -->
+                  </select>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Pestaña Notificaciones -->
+            <div id="tab-notifications" class="settings-panel">
+              <div class="panel-header">
+                <h3 data-i18n="tab_notifications">Notificaciones</h3>
+                <p class="panel-desc" data-i18n="desc_notifications">Controla la privacidad del contenido en las notificaciones del sistema.</p>
+              </div>
+              <div class="setting-card">
+                <div class="setting-group">
+                  <label data-i18n="label_privacy">Perfil de Privacidad</label>
+                  <div class="privacy-options">
+                    <label class="radio-label">
+                      <input type="radio" name="privacy-profile" value="broad" checked>
+                      <div class="radio-content">
+                        <h4 data-i18n="privacy_broad">Amplio</h4>
+                        <p data-i18n="privacy_broad_desc">Foto, nombre, vista previa del mensaje y sonido.</p>
+                      </div>
+                    </label>
+                    <label class="radio-label">
+                      <input type="radio" name="privacy-profile" value="medium">
+                      <div class="radio-content">
+                        <h4 data-i18n="privacy_medium">Medio</h4>
+                        <p data-i18n="privacy_medium_desc">Foto, nombre, "Mensaje oculto" y sonido.</p>
+                      </div>
+                    </label>
+                    <label class="radio-label">
+                      <input type="radio" name="privacy-profile" value="strict">
+                      <div class="radio-content">
+                        <h4 data-i18n="privacy_strict">Estricto</h4>
+                        <p data-i18n="privacy_strict_desc">Icono de app, "Contacto oculto", "Mensaje oculto", sin sonido.</p>
+                      </div>
+                    </label>
                   </div>
-                </label>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-    </div>
+      </section>
+    </main>
   </div>
 
   <script src="renderer.js"></script>

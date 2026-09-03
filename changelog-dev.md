@@ -4,6 +4,15 @@ This changelog records all granular updates, bug fixes, refactorings, and featur
 
 ---
 
+## [0.5.1] - 2026-09-03
+### Changed
+- **Full-Window Settings Redesign:** Transformed the Settings interface from a floating modal pop-up into a dedicated full-window view inside the main content area (`.main-content`), integrating it directly alongside WhatsApp webview containers.
+- **Tab-like Navigation Flow:** Sidebar Settings button now acts as a workspace tab with active indicator state, smoothly hiding active account webviews and presenting settings across the entire workspace. Selecting any account or clicking the "Back to chats" header button immediately restores the WhatsApp session.
+- **Modern Settings Dashboard:** Structured settings into clean card-based groupings with dedicated sidebar navigation for Accounts, Appearance, and Notifications.
+- **Internationalization (i18n) Expansion:** Added localized translations for all new full-window settings labels, hints, and navigation headers across all 10 supported languages.
+
+---
+
 ## [0.5.0] - 2026-09-03
 ### Added
 - **Stacer-Inspired Loading Splash Screen:** Introduced a dedicated frameless splash screen displayed on application startup. Features an emerald glowing WhatsApp emblem, dynamic startup stage messages, and a smooth ~1.8s progress bar.
