@@ -1,4 +1,4 @@
-const { app, BrowserWindow, Menu, Tray, ipcMain, nativeImage } = require('electron');
+const { app, BrowserWindow, Menu, Tray, ipcMain, nativeImage, nativeTheme } = require('electron');
 const path = require('path');
 
 // 3. Flags de optimización de Chromium
@@ -178,6 +178,13 @@ ipcMain.on('update-tray-settings', (event, settings) => {
     if (settings.style !== undefined) currentTraySettings.style = settings.style;
     if (settings.showBadge !== undefined) currentTraySettings.showBadge = settings.showBadge;
     updateTrayImage();
+  }
+});
+
+// IPC para sincronizar el modo de tema (dark/light) a nivel de sistema Chromium
+ipcMain.on('set-theme-mode', (event, mode) => {
+  if (mode === 'dark' || mode === 'light') {
+    nativeTheme.themeSource = mode;
   }
 });
 

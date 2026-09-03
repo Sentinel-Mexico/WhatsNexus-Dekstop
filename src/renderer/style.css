@@ -1,19 +1,23 @@
-/* Default variables (WhatsApp Dark Theme) */
+/* ========================================================
+   Paletas de Color Optimizadas: Alto Contraste y Confort Visual
+   ======================================================== */
+
+/* WhatsApp (Esmeralda) - Modo Oscuro */
 :root {
-  --bg-primary: #121212;
+  --bg-primary: #111b21;
   --bg-sidebar: #202c33;
   --bg-hover: #2a3942;
   --bg-active: #00a884;
   --bg-modal: #111b21;
   --bg-modal-overlay: rgba(11, 20, 26, 0.85);
   --text-primary: #e9edef;
-  --text-secondary: #8696a0;
-  --border-color: #222d34;
+  --text-secondary: #94a3b8;
+  --border-color: #2a3942;
   --whatsapp-bg: #0b141a;
   --transition-speed: 0.25s;
 }
 
-/* WhatsApp Light Theme */
+/* WhatsApp (Esmeralda) - Modo Claro */
 body.theme-light {
   --bg-primary: #f0f2f5;
   --bg-sidebar: #ffffff;
@@ -22,13 +26,13 @@ body.theme-light {
   --bg-modal: #ffffff;
   --bg-modal-overlay: rgba(255, 255, 255, 0.85);
   --text-primary: #111b21;
-  --text-secondary: #667781;
-  --border-color: #e9edef;
-  --whatsapp-bg: #eae6df;
+  --text-secondary: #54656f;
+  --border-color: #e2e8f0;
+  --whatsapp-bg: #efeae2;
 }
 
 /* ========================================================
-   Paleta: Messenger (Meta Blue)
+   Paleta: Messenger (Azul Eléctrico)
    ======================================================== */
 body.palette-messenger {
   --bg-primary: #18191a;
@@ -37,7 +41,7 @@ body.palette-messenger {
   --bg-active: #0084ff;
   --bg-modal: #242526;
   --bg-modal-overlay: rgba(24, 25, 26, 0.85);
-  --text-primary: #e4e6eb;
+  --text-primary: #f0f2f5;
   --text-secondary: #b0b3b8;
   --border-color: #393a3b;
   --whatsapp-bg: #18191a;
@@ -51,23 +55,23 @@ body.palette-messenger.theme-light {
   --bg-modal: #ffffff;
   --bg-modal-overlay: rgba(255, 255, 255, 0.85);
   --text-primary: #050505;
-  --text-secondary: #65676b;
+  --text-secondary: #54575c;
   --border-color: #ced0d4;
   --whatsapp-bg: #f0f2f5;
 }
 
 /* ========================================================
-   Paleta: Telegram (Telegram Blue)
+   Paleta: Telegram (Celeste Ciano)
    ======================================================== */
 body.palette-telegram {
   --bg-primary: #0e1621;
   --bg-sidebar: #17212b;
   --bg-hover: #202b36;
-  --bg-active: #24a1de;
+  --bg-active: #2ba6e1;
   --bg-modal: #17212b;
   --bg-modal-overlay: rgba(14, 22, 33, 0.85);
-  --text-primary: #f5f5f5;
-  --text-secondary: #7f91a4;
+  --text-primary: #f8fafc;
+  --text-secondary: #8da2b5;
   --border-color: #242f3d;
   --whatsapp-bg: #0e1621;
 }
@@ -80,23 +84,23 @@ body.palette-telegram.theme-light {
   --bg-modal: #ffffff;
   --bg-modal-overlay: rgba(255, 255, 255, 0.85);
   --text-primary: #1c1c1e;
-  --text-secondary: #707579;
+  --text-secondary: #5c6267;
   --border-color: #dfe2e5;
   --whatsapp-bg: #f4f4f5;
 }
 
 /* ========================================================
-   Paleta: Signal (Signal Blue)
+   Paleta: Signal (Azul Real)
    ======================================================== */
 body.palette-signal {
   --bg-primary: #121315;
   --bg-sidebar: #1b1c1e;
   --bg-hover: #282a2d;
-  --bg-active: #2c6bed;
+  --bg-active: #3a76f0;
   --bg-modal: #1b1c1e;
   --bg-modal-overlay: rgba(18, 19, 21, 0.85);
   --text-primary: #f0f2f4;
-  --text-secondary: #8c9096;
+  --text-secondary: #9ea4af;
   --border-color: #2b2e33;
   --whatsapp-bg: #121315;
 }
@@ -109,36 +113,36 @@ body.palette-signal.theme-light {
   --bg-modal: #ffffff;
   --bg-modal-overlay: rgba(255, 255, 255, 0.85);
   --text-primary: #1b1c1e;
-  --text-secondary: #6e737c;
+  --text-secondary: #585c64;
   --border-color: #e2e5ea;
   --whatsapp-bg: #f6f7f9;
 }
 
 /* ========================================================
-   Paleta: Bosque (Forest: Kombu, Olive, Cornsilk, Amber)
+   Paleta: Bosque (Forest: Oliva, Kombu, Ámbar)
    ======================================================== */
 body.palette-forest {
-  --bg-primary: #192210;
-  --bg-sidebar: #283618;
-  --bg-hover: #374922;
+  --bg-primary: #161e10;
+  --bg-sidebar: #222e15;
+  --bg-hover: #2f3e1d;
   --bg-active: #bc6c25;
-  --bg-modal: #283618;
-  --bg-modal-overlay: rgba(25, 34, 16, 0.85);
+  --bg-modal: #222e15;
+  --bg-modal-overlay: rgba(22, 30, 16, 0.85);
   --text-primary: #fefae0;
-  --text-secondary: #dda15e;
-  --border-color: #3f5228;
-  --whatsapp-bg: #192210;
+  --text-secondary: #c5cdb8;
+  --border-color: #384924;
+  --whatsapp-bg: #161e10;
 }
 
 body.palette-forest.theme-light {
   --bg-primary: #f7f5dc;
   --bg-sidebar: #fefae0;
   --bg-hover: #ede7c4;
-  --bg-active: #606c38;
+  --bg-active: #535e30;
   --bg-modal: #fefae0;
   --bg-modal-overlay: rgba(254, 250, 224, 0.85);
-  --text-primary: #283618;
-  --text-secondary: #606c38;
+  --text-primary: #1f2a13;
+  --text-secondary: #4a542a;
   --border-color: #d8d3b3;
   --whatsapp-bg: #ede7c4;
 }

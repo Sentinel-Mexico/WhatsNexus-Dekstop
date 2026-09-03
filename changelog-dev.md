@@ -4,6 +4,21 @@ This changelog records all granular updates, bug fixes, refactorings, and featur
 
 ---
 
+## [0.9.0] - 2026-09-03
+### Added
+- **WhatsApp Web Theme Synchronization:** WhatsApp Web now automatically adopts dark or light mode based on WhatsNexus's active visual theme, combining Chromium-level `nativeTheme.themeSource`, guest DOM class injection, and `window.matchMedia` query mocking.
+- **Account-level Do Not Disturb (DND) Enforcement:** When DND is toggled on an account, its guest `<webview>` actively suppresses and silences all desktop notifications dispatched by that specific WhatsApp account.
+- **Circular Notification Avatars:** Contact profile photos attached to desktop notifications are dynamically clipped to a perfect circle via an HTML5 offscreen canvas prior to dispatch.
+- **Enhanced Theme Contrast & Eye Comfort:** Optimized color palettes across all 10 theme variants (WhatsApp, Messenger, Telegram, Signal, Forest in dark and light modes), ensuring WCAG AAA compliant text contrast and soothing background luminance to minimize eye fatigue during extended use.
+
+### Fixed
+- **Profile Picture Extraction Filtering Meta AI:** Resolved an issue where the Meta AI header button was mistakenly extracted as the account's profile photo. Extraction now prioritizes authenticated user avatars (`pps.whatsapp.net` and profile header buttons) while explicitly rejecting Meta AI elements.
+
+### Removed
+- **Support Reminders Section:** Removed "Recordatorios de apoyo" from `#tab-notifications`.
+
+---
+
 ## [0.8.0] - 2026-09-03
 ### Added
 - **Notifications Panel Redesign & Custom Privacy Engine:**

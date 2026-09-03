@@ -61,8 +61,9 @@ The primary UI layer consists of vanilla HTML5, CSS3, and modern JavaScript:
 
 ### 2.3 Guest Preload Script (`src/preload.js`)
 Injected directly into each WhatsApp Web `<webview>` tag:
-- **Profile Avatar Extraction:** Monitors WhatsApp Web's header DOM to retrieve the user's active profile picture and passes it back to the host via `ipcRenderer.sendToHost('profile-picture-updated', avatarUrl)`.
-- **Notification Privacy Interception:** Wraps the native `window.Notification` API inside the guest page to enforce user privacy preferences (Broad, Medium, Strict) before alerting the desktop environment.
+- **Profile Avatar Extraction:** Monitors WhatsApp Web DOM to retrieve the user's active profile picture (filtering out Meta AI icons/buttons) and passes it back to the host via `ipcRenderer.sendToHost('profile-picture-updated', avatarUrl)`.
+- **Notification Privacy & DND Interception:** Wraps the native `window.Notification` API inside the guest page to enforce granular user privacy preferences (contact photo, name, preview, sound), account-specific Do Not Disturb (DND) silencing, and dynamic circular avatar clipping.
+- **Theme Synchronization:** Intercepts `window.matchMedia('(prefers-color-scheme: dark)')` and DOM classes to seamlessly synchronize WhatsApp Web's dark/light interface with WhatsNexus's active visual theme.
 - **Title Observer:** Watches WhatsApp Web title mutations to detect unread message badges `(n) WhatsApp`.
 
 ---

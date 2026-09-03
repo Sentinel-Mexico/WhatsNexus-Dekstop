@@ -165,7 +165,6 @@ const notifPhotoToggle = document.getElementById('notif-photo-toggle');
 const notifNameToggle = document.getElementById('notif-name-toggle');
 const notifPreviewToggle = document.getElementById('notif-preview-toggle');
 const notifSoundToggle = document.getElementById('notif-sound-toggle');
-const notifSupportToggle = document.getElementById('notif-support-toggle');
 
 // Rastreo de mensajes no leídos por cuenta para el System Tray
 const accountUnreadCounts = {};
@@ -261,7 +260,6 @@ function applySettings() {
     if (notifNameToggle) notifNameToggle.checked = settings.notifications.contactName !== false;
     if (notifPreviewToggle) notifPreviewToggle.checked = settings.notifications.messagePreview !== false;
     if (notifSoundToggle) notifSoundToggle.checked = settings.notifications.notificationSound !== false;
-    if (notifSupportToggle) notifSupportToggle.checked = settings.notifications.supportReminders !== false;
 
     // Atenuar controles secundarios si las notificaciones de escritorio están apagadas
     const isDesktopEnabled = settings.notifications.desktopNotifications !== false;
@@ -277,9 +275,13 @@ function applySettings() {
     document.querySelectorAll('webview').forEach(wv => {
       try {
         wv.send('update-notification-settings', settings.notifications);
+        wv.send('set-dark-mode', isDark);
       } catch (_) {}
     });
   }
+
+  // Sincronizar modo oscuro/claro a nivel global de Chromium
+  ipcRenderer.send('set-theme-mode', isDark ? 'dark' : 'light');
 
   // Sincronizar apariencia de la bandeja con el proceso principal
   ipcRenderer.send('update-tray-settings', {
@@ -411,13 +413,18 @@ function buildWebviewDOM(account, parentContainer) {
   webview.setAttribute('useragent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36');
   webview.className = 'webview-active';
 
-  // Sincronizar configuración de notificaciones al cargar la sesión
+  // Sincronizar configuración de notificaciones, DND y tema al cargar la sesión
   webview.addEventListener('dom-ready', () => {
-    if (settings && settings.notifications) {
-      try {
+    const isDark = (settings.theme === 'theme-auto' || !settings.theme)
+      ? (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches)
+      : (settings.theme === 'theme-dark');
+    try {
+      if (settings && settings.notifications) {
         webview.send('update-notification-settings', settings.notifications);
-      } catch (_) {}
-    }
+      }
+      webview.send('update-account-settings', { dnd: !!account.dnd });
+      webview.send('set-dark-mode', isDark);
+    } catch (_) {}
   });
 
   // Detección reactiva de mensajes no leídos mediante el título de la página
@@ -791,6 +798,13 @@ window.toggleDND = (id) => {
     saveAccounts();
     renderSettingsAccounts();
     updateTotalUnread();
+
+    const wv = document.getElementById(`webview_${acc.id}`);
+    if (wv) {
+      try {
+        wv.send('update-account-settings', { dnd: !!acc.dnd });
+      } catch (_) {}
+    }
   }
 };
 
@@ -875,13 +889,6 @@ function handleIndividualNotificationToggle() {
 if (notifDesktopToggle) {
   notifDesktopToggle.addEventListener('change', () => {
     settings.notifications.desktopNotifications = notifDesktopToggle.checked;
-    saveSettings();
-  });
-}
-
-if (notifSupportToggle) {
-  notifSupportToggle.addEventListener('change', () => {
-    settings.notifications.supportReminders = notifSupportToggle.checked;
     saveSettings();
   });
 }
