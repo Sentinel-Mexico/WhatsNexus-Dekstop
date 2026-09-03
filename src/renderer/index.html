@@ -20,11 +20,11 @@
       <div class="sidebar-bottom">
         <button id="add-account-btn" class="icon-btn tooltip-container">
           <i class="fa-solid fa-user-plus"></i>
-          <span class="tooltip-text">Añadir Cuenta</span>
+          <span class="tooltip-text" data-i18n="tooltip_add_account">Añadir Cuenta</span>
         </button>
         <button id="settings-btn" class="icon-btn tooltip-container">
           <i class="fa-solid fa-user-gear"></i>
-          <span class="tooltip-text">Configuración</span>
+          <span class="tooltip-text" data-i18n="tooltip_settings">Configuración</span>
         </button>
       </div>
     </aside>
@@ -43,23 +43,23 @@
   <div id="settings-modal" class="modal-overlay hidden">
     <div class="modal-content">
       <div class="modal-header">
-        <h2><i class="fa-solid fa-gear"></i> Configuración</h2>
+        <h2><i class="fa-solid fa-gear"></i> <span data-i18n="settings_title">Configuración</span></h2>
         <button id="close-settings-btn" class="close-btn"><i class="fa-solid fa-xmark"></i></button>
       </div>
       
       <div class="modal-body">
         <!-- Pestañas de configuración -->
         <div class="settings-tabs">
-          <button class="tab-btn active" data-tab="tab-accounts">Cuentas</button>
-          <button class="tab-btn" data-tab="tab-appearance">Apariencia</button>
-          <button class="tab-btn" data-tab="tab-notifications">Notificaciones</button>
+          <button class="tab-btn active" data-tab="tab-accounts" data-i18n="tab_accounts">Cuentas</button>
+          <button class="tab-btn" data-tab="tab-appearance" data-i18n="tab_appearance">Apariencia</button>
+          <button class="tab-btn" data-tab="tab-notifications" data-i18n="tab_notifications">Notificaciones</button>
         </div>
         
         <!-- Contenido de las pestañas -->
         <div class="settings-panels">
           <!-- Pestaña Cuentas -->
           <div id="tab-accounts" class="settings-panel active">
-            <h3>Gestión de Cuentas</h3>
+            <h3 data-i18n="heading_accounts">Gestión de Cuentas</h3>
             <ul id="settings-account-list" class="settings-accounts">
               <!-- Renderizado dinámico -->
             </ul>
@@ -68,15 +68,15 @@
           <!-- Pestaña Apariencia -->
           <div id="tab-appearance" class="settings-panel">
             <div class="setting-group">
-              <label>Tema</label>
+              <label data-i18n="label_theme">Tema</label>
               <select id="theme-select">
-                <option value="theme-auto">Automático (Sistema)</option>
-                <option value="theme-light">Claro</option>
-                <option value="theme-dark">Oscuro</option>
+                <option value="theme-auto" data-i18n="theme_auto">Automático (Sistema)</option>
+                <option value="theme-light" data-i18n="theme_light">Claro</option>
+                <option value="theme-dark" data-i18n="theme_dark">Oscuro</option>
               </select>
             </div>
             <div class="setting-group">
-              <label>Idioma</label>
+              <label data-i18n="label_language">Idioma</label>
               <select id="language-select">
                 <option value="en">English (Inglés)</option>
                 <option value="es">Español</option>
@@ -95,27 +95,27 @@
           <!-- Pestaña Notificaciones -->
           <div id="tab-notifications" class="settings-panel">
             <div class="setting-group">
-              <label>Perfil de Privacidad</label>
+              <label data-i18n="label_privacy">Perfil de Privacidad</label>
               <div class="privacy-options">
                 <label class="radio-label">
                   <input type="radio" name="privacy-profile" value="broad" checked>
                   <div class="radio-content">
-                    <h4>Amplio</h4>
-                    <p>Foto, nombre, vista previa del mensaje y sonido.</p>
+                    <h4 data-i18n="privacy_broad">Amplio</h4>
+                    <p data-i18n="privacy_broad_desc">Foto, nombre, vista previa del mensaje y sonido.</p>
                   </div>
                 </label>
                 <label class="radio-label">
                   <input type="radio" name="privacy-profile" value="medium">
                   <div class="radio-content">
-                    <h4>Medio</h4>
-                    <p>Foto, nombre, "Mensaje oculto" y sonido.</p>
+                    <h4 data-i18n="privacy_medium">Medio</h4>
+                    <p data-i18n="privacy_medium_desc">Foto, nombre, "Mensaje oculto" y sonido.</p>
                   </div>
                 </label>
                 <label class="radio-label">
                   <input type="radio" name="privacy-profile" value="strict">
                   <div class="radio-content">
-                    <h4>Estricto</h4>
-                    <p>Icono de app, "Contacto oculto", "Mensaje oculto", sin sonido.</p>
+                    <h4 data-i18n="privacy_strict">Estricto</h4>
+                    <p data-i18n="privacy_strict_desc">Icono de app, "Contacto oculto", "Mensaje oculto", sin sonido.</p>
                   </div>
                 </label>
               </div>
