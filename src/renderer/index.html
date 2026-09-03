@@ -104,25 +104,39 @@
                   <p class="setting-hint" data-i18n="hint_theme">Elige la paleta de colores y el modo de iluminación preferido.</p>
                 </div>
                 
-                <div class="setting-row-double">
-                  <div class="setting-subgroup">
-                    <label for="palette-select" data-i18n="label_palette">Paleta de Color</label>
-                    <select id="palette-select" class="styled-select">
-                      <option value="whatsapp" data-i18n="palette_whatsapp">WhatsApp (Esmeralda)</option>
-                      <option value="messenger" data-i18n="palette_messenger">Messenger (Azul Eléctrico)</option>
-                      <option value="telegram" data-i18n="palette_telegram">Telegram (Celeste Ciano)</option>
-                      <option value="signal" data-i18n="palette_signal">Signal (Azul Real)</option>
-                      <option value="forest" data-i18n="palette_forest">Bosque (Oliva y Tierra)</option>
-                    </select>
+                <div class="setting-row-inline-pair">
+                  <div class="setting-inline-item">
+                    <label class="setting-inline-label" for="palette-select" data-i18n="label_palette">Paleta de Color</label>
+                    <div class="custom-select-wrapper" id="custom-palette-select-wrapper">
+                      <div class="custom-select-trigger" id="palette-select-trigger" tabindex="0">
+                        <span id="palette-select-label">WhatsApp (Esmeralda)</span>
+                        <i class="fa-solid fa-chevron-down select-chevron"></i>
+                      </div>
+                      <div class="custom-select-options" id="palette-select-options"></div>
+                      <select id="palette-select" class="styled-select" style="display: none;">
+                        <option value="whatsapp" data-i18n="palette_whatsapp">WhatsApp (Esmeralda)</option>
+                        <option value="messenger" data-i18n="palette_messenger">Messenger (Azul Eléctrico)</option>
+                        <option value="telegram" data-i18n="palette_telegram">Telegram (Celeste Ciano)</option>
+                        <option value="signal" data-i18n="palette_signal">Signal (Azul Real)</option>
+                        <option value="forest" data-i18n="palette_forest">Bosque (Oliva y Tierra)</option>
+                      </select>
+                    </div>
                   </div>
 
-                  <div class="setting-subgroup">
-                    <label for="theme-select" data-i18n="label_theme">Modo de Apariencia</label>
-                    <select id="theme-select" class="styled-select">
-                      <option value="theme-auto" data-i18n="theme_auto">Automático (Sistema)</option>
-                      <option value="theme-light" data-i18n="theme_light">Claro</option>
-                      <option value="theme-dark" data-i18n="theme_dark">Oscuro</option>
-                    </select>
+                  <div class="setting-inline-item">
+                    <label class="setting-inline-label" for="theme-select" data-i18n="label_theme">Modo de Apariencia</label>
+                    <div class="custom-select-wrapper" id="custom-theme-select-wrapper">
+                      <div class="custom-select-trigger" id="theme-select-trigger" tabindex="0">
+                        <span id="theme-select-label">Oscuro</span>
+                        <i class="fa-solid fa-chevron-down select-chevron"></i>
+                      </div>
+                      <div class="custom-select-options" id="theme-select-options"></div>
+                      <select id="theme-select" class="styled-select" style="display: none;">
+                        <option value="theme-auto" data-i18n="theme_auto">Automático (Sistema)</option>
+                        <option value="theme-light" data-i18n="theme_light">Claro</option>
+                        <option value="theme-dark" data-i18n="theme_dark">Oscuro</option>
+                      </select>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -159,11 +173,18 @@
                 <div class="setting-row-double">
                   <div class="setting-subgroup">
                     <label for="tray-style-select" data-i18n="label_tray_style">Estilo del Icono en Bandeja</label>
-                    <select id="tray-style-select" class="styled-select">
-                      <option value="auto" data-i18n="tray_style_auto">Predeterminado / Marca</option>
-                      <option value="light" data-i18n="tray_style_light">Claro (Monocromático blanco)</option>
-                      <option value="dark" data-i18n="tray_style_dark">Oscuro (Monocromático negro)</option>
-                    </select>
+                    <div class="custom-select-wrapper" id="custom-tray-style-select-wrapper">
+                      <div class="custom-select-trigger" id="tray-style-select-trigger" tabindex="0">
+                        <span id="tray-style-select-label">Predeterminado / Marca</span>
+                        <i class="fa-solid fa-chevron-down select-chevron"></i>
+                      </div>
+                      <div class="custom-select-options" id="tray-style-select-options"></div>
+                      <select id="tray-style-select" class="styled-select" style="display: none;">
+                        <option value="auto" data-i18n="tray_style_auto">Predeterminado / Marca</option>
+                        <option value="light" data-i18n="tray_style_light">Claro (Monocromático blanco)</option>
+                        <option value="dark" data-i18n="tray_style_dark">Oscuro (Monocromático negro)</option>
+                      </select>
+                    </div>
                   </div>
 
                   <div class="setting-subgroup">
@@ -195,12 +216,19 @@
                 </div>
                 <div class="privacy-preset-container">
                   <label for="privacy-preset-select" data-i18n="label_privacy_preset">Privacidad</label>
-                  <select id="privacy-preset-select" class="styled-select preset-select">
-                    <option value="broad" data-i18n="preset_broad">Amplio</option>
-                    <option value="medium" data-i18n="preset_medium">Medio</option>
-                    <option value="strict" data-i18n="preset_strict">Estricto</option>
-                    <option value="custom" data-i18n="preset_custom">Personalizado</option>
-                  </select>
+                  <div class="custom-select-wrapper" id="custom-privacy-preset-select-wrapper" style="min-width: 170px;">
+                    <div class="custom-select-trigger" id="privacy-preset-select-trigger" tabindex="0">
+                      <span id="privacy-preset-select-label">Amplio</span>
+                      <i class="fa-solid fa-chevron-down select-chevron"></i>
+                    </div>
+                    <div class="custom-select-options" id="privacy-preset-select-options"></div>
+                    <select id="privacy-preset-select" class="styled-select preset-select" style="display: none;">
+                      <option value="broad" data-i18n="preset_broad">Amplio</option>
+                      <option value="medium" data-i18n="preset_medium">Medio</option>
+                      <option value="strict" data-i18n="preset_strict">Estricto</option>
+                      <option value="custom" data-i18n="preset_custom">Personalizado</option>
+                    </select>
+                  </div>
                 </div>
               </div>
 

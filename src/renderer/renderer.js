@@ -3200,7 +3200,10 @@ function updateTranslations() {
   });
 
   populateLanguageSelect();
-  renderSettingsAccounts(); 
+  renderSettingsAccounts();
+  if (typeof refreshAllCustomDropdowns === 'function') {
+    refreshAllCustomDropdowns();
+  }
 }
 
 const accountList = document.getElementById('account-list');
@@ -3365,6 +3368,10 @@ function applySettings() {
 
   // Sincronizar modo oscuro/claro a nivel global de Chromium
   ipcRenderer.send('set-theme-mode', isDark ? 'dark' : 'light');
+
+  if (typeof refreshAllCustomDropdowns === 'function') {
+    refreshAllCustomDropdowns();
+  }
 
   // Sincronizar UI de Permisos
   if (settings.permissions) {
@@ -4030,6 +4037,91 @@ if (languageSelect) {
   });
 }
 
+// ========================================================
+// Gestor Universal de Menús Desplegables Personalizados (M3 Expressive)
+// ========================================================
+const customDropdowns = {};
+
+function initCustomDropdown(selectId) {
+  const select = document.getElementById(selectId);
+  const wrapper = document.getElementById(`custom-${selectId}-wrapper`);
+  if (!select || !wrapper) return null;
+
+  const trigger = wrapper.querySelector('.custom-select-trigger');
+  const label = trigger ? trigger.querySelector('span') : null;
+  const optionsContainer = wrapper.querySelector('.custom-select-options');
+  if (!trigger || !optionsContainer || !label) return null;
+
+  function render() {
+    optionsContainer.innerHTML = '';
+    const currentVal = select.value;
+    Array.from(select.options).forEach(opt => {
+      const item = document.createElement('div');
+      item.className = 'custom-option' + (opt.value === currentVal ? ' selected' : '');
+      item.innerText = opt.innerText;
+      item.dataset.value = opt.value;
+
+      item.addEventListener('click', (e) => {
+        e.stopPropagation();
+        select.value = opt.value;
+        label.innerText = opt.innerText;
+        optionsContainer.querySelectorAll('.custom-option').forEach(el => el.classList.remove('selected'));
+        item.classList.add('selected');
+        optionsContainer.classList.remove('open');
+        trigger.classList.remove('open');
+        select.dispatchEvent(new Event('change', { bubbles: true }));
+      });
+
+      optionsContainer.appendChild(item);
+    });
+
+    const selectedOpt = select.options[select.selectedIndex] || select.options[0];
+    if (selectedOpt) {
+      label.innerText = selectedOpt.innerText;
+    }
+  }
+
+  trigger.addEventListener('click', (e) => {
+    e.stopPropagation();
+    // Cerrar cualquier otro dropdown abierto
+    document.querySelectorAll('.custom-select-options.open').forEach(el => {
+      if (el !== optionsContainer) el.classList.remove('open');
+    });
+    document.querySelectorAll('.custom-select-trigger.open').forEach(el => {
+      if (el !== trigger) el.classList.remove('open');
+    });
+
+    const isOpen = optionsContainer.classList.contains('open');
+    if (isOpen) {
+      optionsContainer.classList.remove('open');
+      trigger.classList.remove('open');
+    } else {
+      optionsContainer.classList.add('open');
+      trigger.classList.add('open');
+      const selected = optionsContainer.querySelector('.custom-option.selected');
+      if (selected) {
+        selected.scrollIntoView({ block: 'nearest' });
+      }
+    }
+  });
+
+  render();
+  customDropdowns[selectId] = render;
+  return render;
+}
+
+function refreshAllCustomDropdowns() {
+  Object.values(customDropdowns).forEach(renderFn => {
+    if (typeof renderFn === 'function') renderFn();
+  });
+}
+
+// Inicializar todos los selectores personalizados
+initCustomDropdown('palette-select');
+initCustomDropdown('theme-select');
+initCustomDropdown('tray-style-select');
+initCustomDropdown('privacy-preset-select');
+
 // Manejo del selector de idioma personalizado con scroll limitado a 10 elementos
 const langTrigger = document.getElementById('language-select-trigger');
 const langOptions = document.getElementById('language-select-options');
@@ -4037,6 +4129,13 @@ const langOptions = document.getElementById('language-select-options');
 if (langTrigger && langOptions) {
   langTrigger.addEventListener('click', (e) => {
     e.stopPropagation();
+    document.querySelectorAll('.custom-select-options.open').forEach(el => {
+      if (el !== langOptions) el.classList.remove('open');
+    });
+    document.querySelectorAll('.custom-select-trigger.open').forEach(el => {
+      if (el !== langTrigger) el.classList.remove('open');
+    });
+
     const isOpen = langOptions.classList.contains('open');
     if (isOpen) {
       langOptions.classList.remove('open');
@@ -4050,12 +4149,12 @@ if (langTrigger && langOptions) {
       }
     }
   });
-
-  document.addEventListener('click', () => {
-    langOptions.classList.remove('open');
-    langTrigger.classList.remove('open');
-  });
 }
+
+document.addEventListener('click', () => {
+  document.querySelectorAll('.custom-select-options.open').forEach(el => el.classList.remove('open'));
+  document.querySelectorAll('.custom-select-trigger.open').forEach(el => el.classList.remove('open'));
+});
 
 // Manejo de Plantillas de Privacidad (Amplio, Medio, Estricto, Personalizado)
 if (privacyPresetSelect) {
@@ -4091,7 +4190,11 @@ function handleIndividualNotificationToggle() {
 
   // Si el usuario mueve una de las opciones manualmente, automáticamente cambia a 'personalizado'
   settings.notifications.preset = 'custom';
+  if (privacyPresetSelect) privacyPresetSelect.value = 'custom';
   saveSettings();
+  if (typeof refreshAllCustomDropdowns === 'function') {
+    refreshAllCustomDropdowns();
+  }
 }
 
 [notifPhotoToggle, notifNameToggle, notifPreviewToggle, notifSoundToggle].forEach(toggle => {

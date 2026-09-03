@@ -4,6 +4,16 @@ This changelog records all granular updates, bug fixes, refactorings, and featur
 
 ---
 
+## [0.13.1] - 2026-09-03
+### Changed
+- **Inline Theme & Color Palette Layout:**
+  - Aligned "Paleta de Color" and "Modo de Apariencia" controls side-by-side on a single cohesive horizontal line (`.setting-row-inline-pair`), eliminating fragmented multi-line stacking in the Appearance panel.
+- **Universal Material 3 Expressive Custom Dropdowns:**
+  - Migrated every select element across the entire application (`#palette-select`, `#theme-select`, `#tray-style-select`, and `#privacy-preset-select`) to the unified, rounded custom dropdown component previously designed for the language selector.
+  - Implemented dynamic label and active state synchronization through `initCustomDropdown` and `refreshAllCustomDropdowns()`, ensuring mutual exclusivity upon open, click-outside auto-dismiss, and theme-adaptive scrollbars.
+
+---
+
 ## [0.13.0] - 2026-09-03
 ### Added
 - **Material 3 Expressive (M3 Expressive) Design System:**
