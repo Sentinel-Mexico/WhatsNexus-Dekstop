@@ -3,6 +3,20 @@ const path = require('path');
 // Idiomas soportados
 const supportedLanguages = ['en', 'es', 'hi', 'ar', 'bn', 'pt', 'ru', 'ur', 'id', 'fr'];
 
+// Nombres nativos de cada idioma
+const nativeNames = {
+  en: "English",
+  es: "Español",
+  hi: "हिन्दी",
+  ar: "العربية",
+  bn: "বাংলা",
+  pt: "Português",
+  ru: "Русский",
+  ur: "اردو",
+  id: "Bahasa Indonesia",
+  fr: "Français"
+};
+
 // Detectar idioma del SO
 function getOSLanguage() {
   const lang = navigator.language.split('-')[0];
@@ -23,82 +37,66 @@ let settings = JSON.parse(localStorage.getItem('whatsNexusSettings')) || {
 // Diccionario de Traducciones
 const i18n = {
   en: {
-    tooltip_add_account: "Add Account",
-    tooltip_settings: "Settings",
-    welcome: "Welcome to WhatsNexus",
-    welcome_desc: "Select an account or add a new one.",
-    settings_title: "Settings",
-    tab_accounts: "Accounts",
-    tab_appearance: "Appearance",
-    tab_notifications: "Notifications",
-    heading_accounts: "Account Management",
-    label_theme: "Theme",
-    theme_auto: "Auto (System)",
-    theme_light: "Light",
-    theme_dark: "Dark",
-    label_language: "Language",
-    label_privacy: "Privacy Profile",
-    privacy_broad: "Broad",
-    privacy_broad_desc: "Photo, name, message preview, and sound.",
-    privacy_medium: "Medium",
-    privacy_medium_desc: "Photo, name, 'Hidden message', and sound.",
-    privacy_strict: "Strict",
-    privacy_strict_desc: "App icon, 'Hidden contact', 'Hidden message', no sound.",
-    tooltip_dnd: "Do Not Disturb",
-    tooltip_delete: "Delete Account",
-    default_account_name: "Account"
+    tooltip_add_account: "Add Account", tooltip_settings: "Settings", welcome: "Welcome to WhatsNexus", welcome_desc: "Select an account or add a new one.", settings_title: "Settings", tab_accounts: "Accounts", tab_appearance: "Appearance", tab_notifications: "Notifications", heading_accounts: "Account Management", label_theme: "Theme", theme_auto: "Auto (System)", theme_light: "Light", theme_dark: "Dark", label_language: "Language", label_privacy: "Privacy Profile", privacy_broad: "Broad", privacy_broad_desc: "Photo, name, message preview, and sound.", privacy_medium: "Medium", privacy_medium_desc: "Photo, name, 'Hidden message', and sound.", privacy_strict: "Strict", privacy_strict_desc: "App icon, 'Hidden contact', 'Hidden message', no sound.", tooltip_dnd: "Do Not Disturb", tooltip_delete: "Delete Account", default_account_name: "Account",
+    lang_en: "English", lang_es: "Spanish", lang_hi: "Hindi", lang_ar: "Arabic", lang_bn: "Bengali", lang_pt: "Portuguese", lang_ru: "Russian", lang_ur: "Urdu", lang_id: "Indonesian", lang_fr: "French"
   },
   es: {
-    tooltip_add_account: "Añadir Cuenta",
-    tooltip_settings: "Configuración",
-    welcome: "Bienvenido a WhatsNexus",
-    welcome_desc: "Selecciona una cuenta en la barra lateral o añade una nueva para comenzar.",
-    settings_title: "Configuración",
-    tab_accounts: "Cuentas",
-    tab_appearance: "Apariencia",
-    tab_notifications: "Notificaciones",
-    heading_accounts: "Gestión de Cuentas",
-    label_theme: "Tema",
-    theme_auto: "Automático (Sistema)",
-    theme_light: "Claro",
-    theme_dark: "Oscuro",
-    label_language: "Idioma",
-    label_privacy: "Perfil de Privacidad",
-    privacy_broad: "Amplio",
-    privacy_broad_desc: "Foto, nombre, vista previa del mensaje y sonido.",
-    privacy_medium: "Medio",
-    privacy_medium_desc: "Foto, nombre, 'Mensaje oculto' y sonido.",
-    privacy_strict: "Estricto",
-    privacy_strict_desc: "Icono de app, 'Contacto oculto', 'Mensaje oculto', sin sonido.",
-    tooltip_dnd: "No Molestar",
-    tooltip_delete: "Eliminar Cuenta",
-    default_account_name: "Cuenta"
+    tooltip_add_account: "Añadir Cuenta", tooltip_settings: "Configuración", welcome: "Bienvenido a WhatsNexus", welcome_desc: "Selecciona una cuenta en la barra lateral o añade una nueva para comenzar.", settings_title: "Configuración", tab_accounts: "Cuentas", tab_appearance: "Apariencia", tab_notifications: "Notificaciones", heading_accounts: "Gestión de Cuentas", label_theme: "Tema", theme_auto: "Automático (Sistema)", theme_light: "Claro", theme_dark: "Oscuro", label_language: "Idioma", label_privacy: "Perfil de Privacidad", privacy_broad: "Amplio", privacy_broad_desc: "Foto, nombre, vista previa del mensaje y sonido.", privacy_medium: "Medio", privacy_medium_desc: "Foto, nombre, 'Mensaje oculto' y sonido.", privacy_strict: "Estricto", privacy_strict_desc: "Icono de app, 'Contacto oculto', 'Mensaje oculto', sin sonido.", tooltip_dnd: "No Molestar", tooltip_delete: "Eliminar Cuenta", default_account_name: "Cuenta",
+    lang_en: "Inglés", lang_es: "Español", lang_hi: "Hindi", lang_ar: "Árabe", lang_bn: "Bengalí", lang_pt: "Portugués", lang_ru: "Ruso", lang_ur: "Urdu", lang_id: "Indonesio", lang_fr: "Francés"
   },
   hi: {
-    tooltip_add_account: "खाता जोड़ें", tooltip_settings: "सेटिंग्स", welcome: "WhatsNexus में आपका स्वागत है", welcome_desc: "एक खाता चुनें या नया जोड़ें।", settings_title: "सेटिंग्स", tab_accounts: "खाते", tab_appearance: "दिखावट", tab_notifications: "सूचनाएं", heading_accounts: "खाता प्रबंधन", label_theme: "थीम", theme_auto: "ऑटो (सिस्टम)", theme_light: "हल्का", theme_dark: "गहरा", label_language: "भाषा", label_privacy: "गोपनीयता प्रोफ़ाइल", privacy_broad: "विस्तृत", privacy_broad_desc: "फोटो, नाम, संदेश पूर्वावलोकन और ध्वनि।", privacy_medium: "मध्यम", privacy_medium_desc: "फोटो, नाम, 'छिपा संदेश' और ध्वनि।", privacy_strict: "सख्त", privacy_strict_desc: "ऐप आइकन, 'छिपा संपर्क', 'छिपा संदेश', कोई ध्वनि नहीं।", tooltip_dnd: "परेशान न करें", tooltip_delete: "खाता हटाएं", default_account_name: "खाता"
+    tooltip_add_account: "खाता जोड़ें", tooltip_settings: "सेटिंग्स", welcome: "WhatsNexus में आपका स्वागत है", welcome_desc: "एक खाता चुनें या नया जोड़ें।", settings_title: "सेटिंग्स", tab_accounts: "खाते", tab_appearance: "दिखावट", tab_notifications: "सूचनाएं", heading_accounts: "खाता प्रबंधन", label_theme: "थीम", theme_auto: "ऑटो (सिस्टम)", theme_light: "हल्का", theme_dark: "गहरा", label_language: "भाषा", label_privacy: "गोपनीयता प्रोफ़ाइल", privacy_broad: "विस्तृत", privacy_broad_desc: "फोटो, नाम, संदेश पूर्वावलोकन और ध्वनि।", privacy_medium: "मध्यम", privacy_medium_desc: "फोटो, नाम, 'छिपा संदेश' और ध्वनि।", privacy_strict: "सख्त", privacy_strict_desc: "ऐप आइकन, 'छिपा संपर्क', 'छिपा संदेश', कोई ध्वनि नहीं।", tooltip_dnd: "परेशान न करें", tooltip_delete: "खाता हटाएं", default_account_name: "खाता",
+    lang_en: "अंग्रेज़ी", lang_es: "स्पेनिश", lang_hi: "हिन्दी", lang_ar: "अरबी", lang_bn: "बंगाली", lang_pt: "पुर्तगाली", lang_ru: "रूसी", lang_ur: "उर्दू", lang_id: "इंडोनेशियाई", lang_fr: "फ्रेंच"
   },
   ar: {
-    tooltip_add_account: "إضافة حساب", tooltip_settings: "الإعدادات", welcome: "مرحبًا بك في WhatsNexus", welcome_desc: "حدد حسابًا أو أضف حسابًا جديدًا.", settings_title: "الإعدادات", tab_accounts: "الحسابات", tab_appearance: "المظهر", tab_notifications: "الإشعارات", heading_accounts: "إدارة الحسابات", label_theme: "السمة", theme_auto: "تلقائي (النظام)", theme_light: "فاتح", theme_dark: "داكن", label_language: "اللغة", label_privacy: "ملف الخصوصية", privacy_broad: "واسع", privacy_broad_desc: "صورة، اسم، معاينة رسالة، وصوت.", privacy_medium: "متوسط", privacy_medium_desc: "صورة، اسم، 'رسالة مخفية'، وصوت.", privacy_strict: "صارم", privacy_strict_desc: "أيقونة التطبيق، 'جهة اتصال مخفية'، 'رسالة مخفية'، بدون صوت.", tooltip_dnd: "عدم الإزعاج", tooltip_delete: "حذف الحساب", default_account_name: "حساب"
+    tooltip_add_account: "إضافة حساب", tooltip_settings: "الإعدادات", welcome: "مرحبًا بك في WhatsNexus", welcome_desc: "حدد حسابًا أو أضف حسابًا جديدًا.", settings_title: "الإعدادات", tab_accounts: "الحسابات", tab_appearance: "المظهر", tab_notifications: "الإشعارات", heading_accounts: "إدارة الحسابات", label_theme: "السمة", theme_auto: "تلقائي (النظام)", theme_light: "فاتح", theme_dark: "داكن", label_language: "اللغة", label_privacy: "ملف الخصوصية", privacy_broad: "واسع", privacy_broad_desc: "صورة، اسم، معاينة رسالة، وصوت.", privacy_medium: "متوسط", privacy_medium_desc: "صورة، اسم، 'رسالة مخفية'، وصوت.", privacy_strict: "صارم", privacy_strict_desc: "أيقونة التطبيق، 'جهة اتصال مخفية'، 'رسالة مخفية'، بدون صوت.", tooltip_dnd: "عدم الإزعاج", tooltip_delete: "حذف الحساب", default_account_name: "حساب",
+    lang_en: "الإنجليزية", lang_es: "الإسبانية", lang_hi: "الهندية", lang_ar: "العربية", lang_bn: "البنغالية", lang_pt: "البرتغالية", lang_ru: "الروسية", lang_ur: "الأردية", lang_id: "الإندونيسية", lang_fr: "الفرنسية"
   },
   bn: {
-    tooltip_add_account: "অ্যাকাউন্ট যোগ করুন", tooltip_settings: "সেটিংস", welcome: "WhatsNexus এ স্বাগতম", welcome_desc: "একটি অ্যাকাউন্ট নির্বাচন করুন বা একটি নতুন যোগ করুন।", settings_title: "সেটিংস", tab_accounts: "অ্যাকাউন্ট", tab_appearance: "উপস্থিতি", tab_notifications: "বিজ্ঞপ্তি", heading_accounts: "অ্যাকাউন্ট পরিচালনা", label_theme: "থিম", theme_auto: "অটো (সিস্টেম)", theme_light: "হালকা", theme_dark: "অন্ধকার", label_language: "ভাষা", label_privacy: "গোপনীয়তা প্রোফাইল", privacy_broad: "বিস্তৃত", privacy_broad_desc: "ছবি, নাম, বার্তা প্রাকদর্শন এবং শব্দ।", privacy_medium: "মাঝারি", privacy_medium_desc: "ছবি, নাম, 'লুকানো বার্তা' এবং শব্দ।", privacy_strict: "কঠোর", privacy_strict_desc: "অ্যাপ আইকন, 'লুকানো পরিচিতি', 'লুকানো বার্তা', কোনো শব্দ নেই।", tooltip_dnd: "বিরক্ত করবেন না", tooltip_delete: "অ্যাকাউন্ট মুছুন", default_account_name: "অ্যাকাউন্ট"
+    tooltip_add_account: "অ্যাকাউন্ট যোগ করুন", tooltip_settings: "সেটিংস", welcome: "WhatsNexus এ স্বাগতম", welcome_desc: "একটি অ্যাকাউন্ট নির্বাচন করুন বা একটি নতুন যোগ করুন।", settings_title: "সেটিংস", tab_accounts: "অ্যাকাউন্ট", tab_appearance: "উপস্থিতি", tab_notifications: "বিজ্ঞপ্তি", heading_accounts: "অ্যাকাউন্ট পরিচালনা", label_theme: "থিম", theme_auto: "অটো (সিস্টেম)", theme_light: "হালকা", theme_dark: "অন্ধকার", label_language: "ভাষা", label_privacy: "গোপনীয়তা প্রোফাইল", privacy_broad: "বিস্তৃত", privacy_broad_desc: "ছবি, নাম, বার্তা প্রাকদর্শন এবং শব্দ।", privacy_medium: "মাঝারি", privacy_medium_desc: "ছবি, নাম, 'লুকানো বার্তা' এবং শব্দ।", privacy_strict: "কঠোর", privacy_strict_desc: "অ্যাপ আইকন, 'লুকানো পরিচিতি', 'লুকানো বার্তা', কোনো শব্দ নেই।", tooltip_dnd: "বিরক্ত করবেন না", tooltip_delete: "অ্যাকাউন্ট মুছুন", default_account_name: "অ্যাকাউন্ট",
+    lang_en: "ইংরেজি", lang_es: "স্প্যানিশ", lang_hi: "হিন্দি", lang_ar: "আরবি", lang_bn: "বাংলা", lang_pt: "পর্তুগিজ", lang_ru: "রাশিয়ান", lang_ur: "উর্দু", lang_id: "ইন্দোনেশিয়ান", lang_fr: "ফরাসি"
   },
   pt: {
-    tooltip_add_account: "Adicionar Conta", tooltip_settings: "Configurações", welcome: "Bem-vindo ao WhatsNexus", welcome_desc: "Selecione uma conta ou adicione uma nova.", settings_title: "Configurações", tab_accounts: "Contas", tab_appearance: "Aparência", tab_notifications: "Notificações", heading_accounts: "Gestão de Contas", label_theme: "Tema", theme_auto: "Automático (Sistema)", theme_light: "Claro", theme_dark: "Escuro", label_language: "Idioma", label_privacy: "Perfil de Privacidade", privacy_broad: "Amplo", privacy_broad_desc: "Foto, nome, pré-visualização da mensagem e som.", privacy_medium: "Médio", privacy_medium_desc: "Foto, nome, 'Mensagem oculta' e som.", privacy_strict: "Rigoroso", privacy_strict_desc: "Ícone da app, 'Contato oculto', 'Mensagem oculta', sem som.", tooltip_dnd: "Não Incomodar", tooltip_delete: "Excluir Conta", default_account_name: "Conta"
+    tooltip_add_account: "Adicionar Conta", tooltip_settings: "Configurações", welcome: "Bem-vindo ao WhatsNexus", welcome_desc: "Selecione uma conta ou adicione uma nova.", settings_title: "Configurações", tab_accounts: "Contas", tab_appearance: "Aparência", tab_notifications: "Notificações", heading_accounts: "Gestão de Contas", label_theme: "Tema", theme_auto: "Automático (Sistema)", theme_light: "Claro", theme_dark: "Escuro", label_language: "Idioma", label_privacy: "Perfil de Privacidade", privacy_broad: "Amplo", privacy_broad_desc: "Foto, nome, pré-visualização da mensagem e som.", privacy_medium: "Médio", privacy_medium_desc: "Foto, nome, 'Mensagem oculta' e som.", privacy_strict: "Rigoroso", privacy_strict_desc: "Ícone da app, 'Contato oculto', 'Mensagem oculta', sem som.", tooltip_dnd: "Não Incomodar", tooltip_delete: "Excluir Conta", default_account_name: "Conta",
+    lang_en: "Inglês", lang_es: "Espanhol", lang_hi: "Hindi", lang_ar: "Árabe", lang_bn: "Bengali", lang_pt: "Português", lang_ru: "Russo", lang_ur: "Urdu", lang_id: "Indonésio", lang_fr: "Francês"
   },
   ru: {
-    tooltip_add_account: "Добавить аккаунт", tooltip_settings: "Настройки", welcome: "Добро пожаловать в WhatsNexus", welcome_desc: "Выберите учетную запись или добавьте новую.", settings_title: "Настройки", tab_accounts: "Аккаунты", tab_appearance: "Внешний вид", tab_notifications: "Уведомления", heading_accounts: "Управление аккаунтами", label_theme: "Тема", theme_auto: "Авто (Система)", theme_light: "Светлая", theme_dark: "Темная", label_language: "Язык", label_privacy: "Профиль конфиденциальности", privacy_broad: "Широкий", privacy_broad_desc: "Фото, имя, предпросмотр сообщения и звук.", privacy_medium: "Средний", privacy_medium_desc: "Фото, имя, 'Скрытое сообщение' и звук.", privacy_strict: "Строгий", privacy_strict_desc: "Иконка приложения, 'Скрытый контакт', 'Скрытое сообщение', без звука.", tooltip_dnd: "Не беспокоить", tooltip_delete: "Удалить аккаунт", default_account_name: "Аккаунт"
+    tooltip_add_account: "Добавить аккаунт", tooltip_settings: "Настройки", welcome: "Добро пожаловать в WhatsNexus", welcome_desc: "Выберите учетную запись или добавьте новую.", settings_title: "Настройки", tab_accounts: "Аккаунты", tab_appearance: "Внешний вид", tab_notifications: "Уведомления", heading_accounts: "Управление аккаунтами", label_theme: "Тема", theme_auto: "Авто (Система)", theme_light: "Светлая", theme_dark: "Темная", label_language: "Язык", label_privacy: "Профиль конфиденциальности", privacy_broad: "Широкий", privacy_broad_desc: "Фото, имя, предпросмотр сообщения и звук.", privacy_medium: "Средний", privacy_medium_desc: "Фото, имя, 'Скрытое сообщение' и звук.", privacy_strict: "Строгий", privacy_strict_desc: "Иконка приложения, 'Скрытый контакт', 'Скрытое сообщение', без звука.", tooltip_dnd: "Не беспокоить", tooltip_delete: "Удалить аккаунт", default_account_name: "Аккаунт",
+    lang_en: "Английский", lang_es: "Испанский", lang_hi: "Хинди", lang_ar: "Арабский", lang_bn: "Бенгальский", lang_pt: "Португальский", lang_ru: "Русский", lang_ur: "Урду", lang_id: "Индонезийский", lang_fr: "Французский"
   },
   ur: {
-    tooltip_add_account: "اکاؤنٹ شامل کریں", tooltip_settings: "ترتیبات", welcome: "WhatsNexus میں خوش آمدید", welcome_desc: "ایک اکاؤنٹ منتخب کریں یا نیا شامل کریں۔", settings_title: "ترتیبات", tab_accounts: "اکاؤنٹس", tab_appearance: "ظاہری شکل", tab_notifications: "اطلاعات", heading_accounts: "اکاؤنٹ مینجمنٹ", label_theme: "تھیم", theme_auto: "آٹو (سسٹم)", theme_light: "روشنی", theme_dark: "تاریک", label_language: "زبان", label_privacy: "رازداری پروفائل", privacy_broad: "وسیع", privacy_broad_desc: "تصویر، نام، پیغام کا پیش نظارہ، اور آواز۔", privacy_medium: "درمیانہ", privacy_medium_desc: "تصویر، نام، 'پوشیدہ پیغام'، اور آواز۔", privacy_strict: "سخت", privacy_strict_desc: "ایپ آئیکن، 'پوشیدہ رابطہ'، 'پوشیدہ پیغام'، کوئی آواز نہیں۔", tooltip_dnd: "پریشان نہ کریں", tooltip_delete: "اکاؤنٹ حذف کریں", default_account_name: "اکاؤنٹ"
+    tooltip_add_account: "اکاؤنٹ شامل کریں", tooltip_settings: "ترتیبات", welcome: "WhatsNexus میں خوش آمدید", welcome_desc: "ایک اکاؤنٹ منتخب کریں یا نیا شامل کریں۔", settings_title: "ترتیبات", tab_accounts: "اکاؤنٹس", tab_appearance: "ظاہری شکل", tab_notifications: "اطلاعات", heading_accounts: "اکاؤنٹ مینجمنٹ", label_theme: "تھیم", theme_auto: "آٹو (سسٹم)", theme_light: "روشنی", theme_dark: "تاریک", label_language: "زبان", label_privacy: "رازداری پروفائل", privacy_broad: "وسیع", privacy_broad_desc: "تصویر، نام، پیغام کا پیش نظارہ، اور آواز۔", privacy_medium: "درمیانہ", privacy_medium_desc: "تصویر، نام، 'پوشیدہ پیغام'، اور آواز۔", privacy_strict: "سخت", privacy_strict_desc: "ایپ آئیکن، 'پوشیدہ رابطہ'، 'پوشیدہ پیغام'، کوئی آواز نہیں۔", tooltip_dnd: "پریشان نہ کریں", tooltip_delete: "اکاؤنٹ حذف کریں", default_account_name: "اکاؤنٹ",
+    lang_en: "انگریزی", lang_es: "ہسپانوی", lang_hi: "ہندی", lang_ar: "عربی", lang_bn: "بنگالی", lang_pt: "پرتگالی", lang_ru: "روسی", lang_ur: "اردو", lang_id: "انڈونیشیائی", lang_fr: "فرانسیسی"
   },
   id: {
-    tooltip_add_account: "Tambah Akun", tooltip_settings: "Pengaturan", welcome: "Selamat datang di WhatsNexus", welcome_desc: "Pilih akun atau tambahkan yang baru.", settings_title: "Pengaturan", tab_accounts: "Akun", tab_appearance: "Tampilan", tab_notifications: "Notifikasi", heading_accounts: "Manajemen Akun", label_theme: "Tema", theme_auto: "Otomatis (Sistem)", theme_light: "Terang", theme_dark: "Gelap", label_language: "Bahasa", label_privacy: "Profil Privasi", privacy_broad: "Luas", privacy_broad_desc: "Foto, nama, pratinjau pesan, dan suara.", privacy_medium: "Sedang", privacy_medium_desc: "Foto, nama, 'Pesan tersembunyi', dan suara.", privacy_strict: "Ketat", privacy_strict_desc: "Ikon aplikasi, 'Kontak tersembunyi', 'Pesan tersembunyi', tanpa suara.", tooltip_dnd: "Jangan Ganggu", tooltip_delete: "Hapus Akun", default_account_name: "Akun"
+    tooltip_add_account: "Tambah Akun", tooltip_settings: "Pengaturan", welcome: "Selamat datang di WhatsNexus", welcome_desc: "Pilih akun atau tambahkan yang baru.", settings_title: "Pengaturan", tab_accounts: "Akun", tab_appearance: "Tampilan", tab_notifications: "Notifikasi", heading_accounts: "Manajemen Akun", label_theme: "Tema", theme_auto: "Otomatis (Sistem)", theme_light: "Terang", theme_dark: "Gelap", label_language: "Bahasa", label_privacy: "Profil Privasi", privacy_broad: "Luas", privacy_broad_desc: "Foto, nama, pratinjau pesan, dan suara.", privacy_medium: "Sedang", privacy_medium_desc: "Foto, nama, 'Pesan tersembunyi', dan suara.", privacy_strict: "Ketat", privacy_strict_desc: "Ikon aplikasi, 'Kontak tersembunyi', 'Pesan tersembunyi', tanpa suara.", tooltip_dnd: "Jangan Ganggu", tooltip_delete: "Hapus Akun", default_account_name: "Akun",
+    lang_en: "Inggris", lang_es: "Spanyol", lang_hi: "Hindi", lang_ar: "Arab", lang_bn: "Bengali", lang_pt: "Portugis", lang_ru: "Rusia", lang_ur: "Urdu", lang_id: "Bahasa Indonesia", lang_fr: "Prancis"
   },
   fr: {
-    tooltip_add_account: "Ajouter un compte", tooltip_settings: "Paramètres", welcome: "Bienvenue sur WhatsNexus", welcome_desc: "Sélectionnez un compte ou ajoutez-en un nouveau.", settings_title: "Paramètres", tab_accounts: "Comptes", tab_appearance: "Apparence", tab_notifications: "Notifications", heading_accounts: "Gestion des comptes", label_theme: "Thème", theme_auto: "Auto (Système)", theme_light: "Clair", theme_dark: "Sombre", label_language: "Langue", label_privacy: "Profil de confidentialité", privacy_broad: "Large", privacy_broad_desc: "Photo, nom, aperçu du message et son.", privacy_medium: "Moyen", privacy_medium_desc: "Photo, nom, 'Message masqué' et son.", privacy_strict: "Strict", privacy_strict_desc: "Icône de l'application, 'Contact masqué', 'Message masqué', pas de son.", tooltip_dnd: "Ne pas déranger", tooltip_delete: "Supprimer le compte", default_account_name: "Compte"
+    tooltip_add_account: "Ajouter un compte", tooltip_settings: "Paramètres", welcome: "Bienvenue sur WhatsNexus", welcome_desc: "Sélectionnez un compte ou ajoutez-en un nouveau.", settings_title: "Paramètres", tab_accounts: "Comptes", tab_appearance: "Apparence", tab_notifications: "Notifications", heading_accounts: "Gestion des comptes", label_theme: "Thème", theme_auto: "Auto (Système)", theme_light: "Clair", theme_dark: "Sombre", label_language: "Langue", label_privacy: "Profil de confidentialité", privacy_broad: "Large", privacy_broad_desc: "Photo, nom, aperçu du message et son.", privacy_medium: "Moyen", privacy_medium_desc: "Photo, nom, 'Message masqué' et son.", privacy_strict: "Strict", privacy_strict_desc: "Icône de l'application, 'Contact masqué', 'Message masqué', pas de son.", tooltip_dnd: "Ne pas déranger", tooltip_delete: "Supprimer le compte", default_account_name: "Compte",
+    lang_en: "Anglais", lang_es: "Espagnol", lang_hi: "Hindi", lang_ar: "Arabe", lang_bn: "Bengali", lang_pt: "Portugais", lang_ru: "Russe", lang_ur: "Ourdou", lang_id: "Indonésien", lang_fr: "Français"
   }
 };
+
+// Generar select dinámico de idiomas
+function populateLanguageSelect() {
+  const langSelect = document.getElementById('language-select');
+  langSelect.innerHTML = ''; // limpiar
+  
+  const currentLangCode = settings.language || 'en';
+  const dict = i18n[currentLangCode] || i18n['en'];
+  
+  supportedLanguages.forEach(code => {
+    const translatedName = dict[`lang_${code}`] || nativeNames[code];
+    const nativeName = nativeNames[code];
+    const option = document.createElement('option');
+    option.value = code;
+    option.innerText = `${translatedName} (${nativeName})`;
+    langSelect.appendChild(option);
+  });
+  
+  langSelect.value = currentLangCode;
+}
 
 // Función para actualizar todos los textos de la interfaz basados en el idioma
 function updateTranslations() {
@@ -107,7 +105,6 @@ function updateTranslations() {
   document.querySelectorAll('[data-i18n]').forEach(el => {
     const key = el.getAttribute('data-i18n');
     if (lang[key]) {
-      // Si el elemento es un input/textarea, actualizar placeholder, si no, el innerText/innerHTML
       if (el.tagName === 'INPUT' && el.type === 'text') {
         el.placeholder = lang[key];
       } else {
@@ -116,7 +113,10 @@ function updateTranslations() {
     }
   });
 
-  // Re-renderizar tooltips dinámicos de los botones de cuentas en ajustes si es necesario
+  // Re-renderizar select de idiomas para que se actualicen los nombres de los otros idiomas
+  populateLanguageSelect();
+  
+  // Re-renderizar tooltips dinámicos de los botones de cuentas en ajustes
   renderSettingsAccounts(); 
 }
 
@@ -138,7 +138,6 @@ const settingsAccountList = document.getElementById('settings-account-list');
 const themeSelect = document.getElementById('theme-select');
 const languageSelect = document.getElementById('language-select');
 const privacyRadios = document.querySelectorAll('input[name="privacy-profile"]');
-
 
 function init() {
   applySettings();
@@ -175,7 +174,6 @@ function applySettings() {
   
   // Sincronizar selectores
   themeSelect.value = settings.theme;
-  languageSelect.value = settings.language;
   document.querySelector(`input[name="privacy-profile"][value="${settings.privacy}"]`).checked = true;
   
   // Aplicar Traducciones en toda la interfaz
