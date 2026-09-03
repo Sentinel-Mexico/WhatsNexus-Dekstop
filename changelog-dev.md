@@ -4,6 +4,15 @@ This changelog records all granular updates, bug fixes, refactorings, and featur
 
 ---
 
+## [0.12.5] - 2026-09-03
+### Fixed
+- **Dynamic Splash Screen Version Display:**
+  - Corrected relative package lookup path in `src/splash/splash.js` (`../../package.json`).
+  - Added synchronous IPC channel `get-app-version` in `src/main.js` (`app.getVersion()`) for dynamic, authoritative version retrieval.
+  - Removed static `v0.5.0` fallback in `src/splash/splash.html`, guaranteeing the splash badge automatically and accurately renders the latest SemVer release on every startup.
+
+---
+
 ## [0.12.4] - 2026-09-03
 ### Fixed
 - **Permissions Module Title Capitalization:**

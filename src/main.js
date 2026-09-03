@@ -96,6 +96,11 @@ ipcMain.on('splash-finished', () => {
   }
 });
 
+// Provide current dynamic application version
+ipcMain.on('get-app-version', (event) => {
+  event.returnValue = app.getVersion();
+});
+
 let currentTraySettings = {
   style: 'auto',
   showBadge: true

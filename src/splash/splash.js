@@ -6,14 +6,23 @@ document.addEventListener('DOMContentLoaded', () => {
   const progressFill = document.getElementById('progress-fill');
   const versionBadge = document.getElementById('version-badge');
 
-  // Query version from main if available
+  // Query dynamic application version from main process or package.json
   try {
-    const pkg = require('../package.json');
-    if (pkg && pkg.version && versionBadge) {
-      versionBadge.textContent = `v${pkg.version}`;
+    let currentVersion = null;
+    try {
+      currentVersion = ipcRenderer.sendSync('get-app-version');
+    } catch (_) {}
+
+    if (!currentVersion) {
+      const pkg = require('../../package.json');
+      currentVersion = pkg && pkg.version;
+    }
+
+    if (currentVersion && versionBadge) {
+      versionBadge.textContent = `v${currentVersion}`;
     }
   } catch (e) {
-    // Keep default
+    console.error('Failed to load version in splash:', e);
   }
 
   const steps = [
