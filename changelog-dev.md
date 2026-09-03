@@ -4,6 +4,13 @@ This changelog records all granular updates, bug fixes, refactorings, and featur
 
 ---
 
+## [0.12.1] - 2026-09-03
+### Fixed
+- **Language Selector Population:**
+  - Updated the top-level `supportedLanguages` array and `nativeNames` dictionary to include all 25 world languages in proportional ranking order, ensuring `populateLanguageSelect()` renders all 25 options in the interface selector.
+
+---
+
 ## [0.12.0] - 2026-09-03
 ### Added
 - **Top 25 Worldwide Languages Localization:**

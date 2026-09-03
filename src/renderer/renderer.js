@@ -1,12 +1,42 @@
 const path = require('path');
 const { shell, ipcRenderer } = require('electron');
 
-// Idiomas soportados
-const supportedLanguages = ['en', 'es', 'hi', 'ar', 'bn', 'pt', 'ru', 'ur', 'id', 'fr'];
+// Idiomas soportados (Los 25 más hablados del mundo en orden proporcional)
+const supportedLanguages = [
+  'en', 'zh', 'hi', 'es', 'fr',
+  'ar', 'bn', 'pt', 'ru', 'ur',
+  'id', 'de', 'ja', 'mr', 'te',
+  'tr', 'ta', 'yue', 'vi', 'fil',
+  'ko', 'fa', 'ha', 'sw', 'it'
+];
 
 // Nombres nativos de cada idioma
 const nativeNames = {
-  en: "English", es: "Español", hi: "हिन्दी", ar: "العربية", bn: "বাংলা", pt: "Português", ru: "Русский", ur: "اردو", id: "Bahasa Indonesia", fr: "Français"
+  en: "English",
+  zh: "中文 (普通话)",
+  hi: "हिन्दी",
+  es: "Español",
+  fr: "Français",
+  ar: "العربية",
+  bn: "বাংলা",
+  pt: "Português",
+  ru: "Русский",
+  ur: "اردو",
+  id: "Bahasa Indonesia",
+  de: "Deutsch",
+  ja: "日本語",
+  mr: "मराठी",
+  te: "తెలుగు",
+  tr: "Türkçe",
+  ta: "தமிழ்",
+  yue: "粵語 (廣東話)",
+  vi: "Tiếng Việt",
+  fil: "Filipino",
+  ko: "한국어",
+  fa: "فارسی",
+  ha: "Hausa",
+  sw: "Kiswahili",
+  it: "Italiano"
 };
 
 function getOSLanguage() {
