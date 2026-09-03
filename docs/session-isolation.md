@@ -62,17 +62,21 @@ function addAccount(name = null) {
     partition: `persist:${accountId}`,
     avatarUrl: null,
     dnd: false,
+    enabled: true,
     lastAccessed: Date.now(),
     hibernated: false
   };
 
   accounts.push(account);
   saveAccounts();
-  renderAccountSidebarItem(account);
+  renderAllSidebarAccounts();
   createWebviewContainer(account);
   activateAccount(accountId);
 }
 ```
+
+> [!TIP]
+> **Account Activation/Deactivation:** Accounts can be deactivated via Settings. Deactivating an account keeps its persistent partition data (`persist:acc_<id>`) on disk while removing it from the sidebar and destroying its active `<webview>` from the DOM to conserve RAM and suppress notifications. Re-enabling the account restores it immediately to the sidebar without requiring QR re-authentication.
 
 ### 3.2 Webview DOM Instantiation
 The webview is created with strict isolation attributes:

@@ -532,63 +532,255 @@ select:focus, input[type="text"]:focus {
   line-height: 1.4;
 }
 
-/* Listado de Cuentas en Ajustes */
+/* Listado de Cuentas en Ajustes (Estilo Tarjetas) */
 .settings-accounts {
   list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
-.settings-account-item {
+.settings-account-card {
+  background-color: var(--bg-sidebar);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 20px 24px;
+  list-style: none;
+  transition: all 0.2s ease;
+}
+
+.settings-account-card.account-disabled {
+  opacity: 0.72;
+}
+
+.account-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+body.theme-light .account-card-header {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.account-card-identity {
   display: flex;
   align-items: center;
-  padding: 15px;
-  border: 1px solid var(--border-color);
-  border-radius: 8px;
-  margin-bottom: 10px;
-  gap: 15px;
-  background-color: var(--bg-sidebar);
-}
-
-.settings-account-item .account-name-input {
-  background-color: var(--bg-hover);
-}
-
-.settings-account-item .account-avatar {
-  width: 40px;
-  height: 40px;
-  border: none;
-}
-
-.settings-account-info {
+  gap: 14px;
   flex-grow: 1;
 }
 
-.settings-account-actions {
-  display: flex;
-  gap: 10px;
-}
-
-.btn-action {
-  background: none;
-  border: none;
-  color: var(--text-secondary);
-  cursor: pointer;
-  padding: 8px;
-  border-radius: 6px;
-  transition: all 0.2s;
-}
-
-.btn-action:hover {
+.account-card-identity .account-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  overflow: hidden;
   background-color: var(--bg-hover);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.35rem;
+  color: var(--text-secondary);
+  flex-shrink: 0;
+  border: 1px solid var(--border-color);
+}
+
+.account-card-identity .account-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.account-name-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.account-name-display {
+  font-size: 1.05rem;
+  font-weight: 600;
   color: var(--text-primary);
 }
 
-.btn-danger:hover {
-  background-color: rgba(220, 53, 69, 0.1);
-  color: #dc3545;
+.account-name-input {
+  background-color: var(--bg-hover);
+  border: 1px solid var(--bg-active);
+  border-radius: 6px;
+  color: var(--text-primary);
+  font-size: 0.95rem;
+  padding: 5px 12px;
+  outline: none;
+  max-width: 250px;
 }
 
-.dnd-active {
-  color: #f39c12 !important;
+.account-name-input.hidden {
+  display: none;
+}
+
+.account-card-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.btn-card-action {
+  background: transparent;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 6px 14px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: var(--text-secondary);
+}
+
+.btn-card-action:hover {
+  background-color: var(--bg-hover);
+  color: var(--text-primary);
+  border-color: var(--text-secondary);
+}
+
+.btn-card-action.delete-btn {
+  color: #ef5350;
+}
+
+.btn-card-action.delete-btn:hover {
+  background-color: rgba(239, 83, 80, 0.12);
+  border-color: #ef5350;
+  color: #ef5350;
+}
+
+/* Filas internas de la tarjeta */
+.account-card-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 14px;
+  gap: 20px;
+}
+
+.account-row-info {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.account-row-title {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.account-row-desc {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  line-height: 1.35;
+}
+
+/* Control Segmentado (Activada / Desactivada) */
+.segmented-control {
+  display: inline-flex;
+  background-color: rgba(0, 0, 0, 0.22);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 3px;
+  gap: 3px;
+  flex-shrink: 0;
+}
+
+body.theme-light .segmented-control {
+  background-color: #e4e6eb;
+}
+
+.segmented-btn {
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  padding: 5px 14px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.segmented-btn:hover:not(.active) {
+  color: var(--text-primary);
+}
+
+.segmented-btn.active.status-active-btn {
+  border-color: var(--bg-active);
+  background-color: rgba(0, 168, 132, 0.12);
+  color: #ffffff;
+  font-weight: 600;
+}
+
+body.theme-light .segmented-btn.active.status-active-btn {
+  color: var(--bg-active);
+  background-color: rgba(0, 168, 132, 0.15);
+}
+
+.segmented-btn.active.status-inactive-btn {
+  border-color: #8696a0;
+  background-color: rgba(134, 150, 160, 0.18);
+  color: #ffffff;
+  font-weight: 600;
+}
+
+body.theme-light .segmented-btn.active.status-inactive-btn {
+  color: #495057;
+  background-color: #ced4da;
+}
+
+/* Modern Switch Toggle */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 44px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.switch-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: var(--bg-hover);
+  border: 1px solid var(--border-color);
+  transition: .25s;
+  border-radius: 24px;
+}
+
+.switch-slider:before {
+  position: absolute;
+  content: "";
+  height: 16px;
+  width: 16px;
+  left: 3px;
+  bottom: 3px;
+  background-color: var(--text-secondary);
+  transition: .25s;
+  border-radius: 50%;
+}
+
+.switch input:checked + .switch-slider {
+  background-color: var(--bg-active);
+  border-color: var(--bg-active);
+}
+
+.switch input:checked + .switch-slider:before {
+  transform: translateX(20px);
+  background-color: #ffffff;
 }
 
 /* Hibernation Overlay */

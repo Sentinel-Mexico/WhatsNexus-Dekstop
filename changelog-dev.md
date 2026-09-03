@@ -4,6 +4,23 @@ This changelog records all granular updates, bug fixes, refactorings, and featur
 
 ---
 
+## [0.6.0] - 2026-09-03
+### Added
+- **Account Activation & Deactivation System:** Added toggle to activate or deactivate individual WhatsApp accounts.
+  - Deactivated accounts are removed from the sidebar and their `<webview>` is destroyed/hibernated from the DOM to free RAM and suppress notifications.
+  - Persistent cache and authentication partitions (`persist:acc_<id>`) are safely preserved.
+  - Re-enabling an account immediately restores it to the sidebar without requiring QR re-scanning.
+- **Card-Style Account Management UI:** Redesigned the accounts list in Settings to match the reference design:
+  - Header with avatar, account name display with inline editing toggle, and action buttons ("Editar", "Eliminar").
+  - Row 1: Account status ("Estado de la cuenta") with segmented pill toggle ("Activada" / "Desactivada").
+  - Row 2: Do Not Disturb ("No molestar") with modern switch slider.
+- **Icon Updates:**
+  - Main Settings icon updated to `fa-solid fa-gear`.
+  - Account Management tab icon updated to `fa-solid fa-users-gear`.
+- **Internationalization:** Added 9 new localization keys across all 10 supported languages (`en`, `es`, `hi`, `ar`, `bn`, `pt`, `ru`, `ur`, `id`, `fr`).
+
+---
+
 ## [0.5.6] - 2026-09-03
 ### Fixed
 - **Rendering Artifacts & Black/Beige Tile Corruption:** Resolved missing/stale rectangular tiles caused by GPU tile cache starvation and compositor surface detachment.
