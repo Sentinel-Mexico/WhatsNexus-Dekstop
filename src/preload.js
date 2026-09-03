@@ -1,13 +1,14 @@
 const { ipcRenderer } = require('electron');
 
 let lastProfilePic = null;
+let lastProfileName = null;
 let observer = null;
 let intervalId = null;
 let attempts = 0;
 const MAX_ATTEMPTS = 30; // Máximo ~5 minutos de reintentos lentos
 
 // ========================================================
-// 1. Extracción de Foto de Perfil (Excluyendo Meta AI)
+// 1. Extracción de Foto y Nombre de Perfil (Filtrando Meta AI)
 // ========================================================
 function isMetaAiElement(el) {
   if (!el) return false;
@@ -45,7 +46,6 @@ function extractProfilePicture() {
             lastProfilePic = img.src;
             ipcRenderer.sendToHost('profile-picture-updated', img.src);
           }
-          cleanupObservers();
           return true;
         }
       }
@@ -54,6 +54,61 @@ function extractProfilePicture() {
     console.error('Error extrayendo foto de perfil:', error);
   }
   return false;
+}
+
+function extractProfileName() {
+  try {
+    // 1. Intentar desde pushname en localStorage de WhatsApp Web
+    const pushname = window.localStorage.getItem('pushname');
+    if (pushname && pushname.trim() && !pushname.toLowerCase().includes('meta ai')) {
+      return pushname.trim();
+    }
+
+    // 2. Intentar desde aria-label o título del botón de perfil en el header
+    const profileBtns = document.querySelectorAll('button[aria-label*="Profile" i], button[aria-label*="Perfil" i], header div[role="button"]');
+    for (const btn of profileBtns) {
+      const label = btn.getAttribute('aria-label') || btn.getAttribute('title') || '';
+      const match = label.match(/(?:profile|perfil)(?:\s*(?:de|:|-)\s*)(.+)/i);
+      if (match && match[1] && !match[1].toLowerCase().includes('meta ai')) {
+        return match[1].trim();
+      }
+    }
+
+    // 3. Intentar desde el drawer o panel de perfil si está abierto/cargado en DOM
+    const drawerInput = document.querySelector('[data-testid="profile-name-input"] input, [data-testid="drawer-left"] span[title]');
+    if (drawerInput) {
+      const val = drawerInput.value || drawerInput.innerText || drawerInput.getAttribute('title');
+      if (val && val.trim() && !val.toLowerCase().includes('meta ai')) {
+        return val.trim();
+      }
+    }
+
+    // 4. Fallback al número de teléfono desde last-wid-md
+    const lastWid = window.localStorage.getItem('last-wid-md');
+    if (lastWid) {
+      const numMatch = lastWid.match(/^(\d+)@/);
+      if (numMatch && numMatch[1]) {
+        return `+${numMatch[1]}`;
+      }
+    }
+  } catch (e) {
+    console.error('Error extrayendo nombre de perfil:', e);
+  }
+  return null;
+}
+
+function checkProfileInfo() {
+  const picFound = extractProfilePicture();
+  
+  const name = extractProfileName();
+  if (name && name !== lastProfileName) {
+    lastProfileName = name;
+    ipcRenderer.sendToHost('profile-name-updated', name);
+  }
+
+  if (picFound && lastProfileName) {
+    cleanupObservers();
+  }
 }
 
 function cleanupObservers() {
@@ -68,14 +123,14 @@ function cleanupObservers() {
 }
 
 window.addEventListener('load', () => {
-  if (extractProfilePicture()) return;
+  checkProfileInfo();
 
   let debounceTimer = null;
   observer = new MutationObserver(() => {
     if (debounceTimer) return;
     debounceTimer = setTimeout(() => {
       debounceTimer = null;
-      extractProfilePicture();
+      checkProfileInfo();
     }, 1500);
   });
 
@@ -83,8 +138,8 @@ window.addEventListener('load', () => {
 
   intervalId = setInterval(() => {
     attempts++;
-    const found = extractProfilePicture();
-    if (found || attempts >= MAX_ATTEMPTS) {
+    checkProfileInfo();
+    if (attempts >= MAX_ATTEMPTS) {
       cleanupObservers();
     }
   }, 10000);
@@ -172,11 +227,23 @@ ipcRenderer.on('update-account-settings', (event, data) => {
   }
 });
 
+// Silenciar audio si la cuenta está en DND o el sonido de notificación está desactivado
+const origAudioPlay = HTMLAudioElement.prototype.play;
+HTMLAudioElement.prototype.play = function() {
+  if (isDnd || !notificationSettings.notificationSound) {
+    return Promise.resolve();
+  }
+  return origAudioPlay.apply(this, arguments);
+};
+
 function makeCircularAvatar(src, callback) {
   if (!src) return callback(src);
   try {
     const img = new Image();
-    img.crossOrigin = 'anonymous';
+    // CRÍTICO: NUNCA asignar crossOrigin en blob: o data: URLs (provoca fallo de CORS y canvas tainted)
+    if (src.startsWith('http://') || src.startsWith('https://')) {
+      img.crossOrigin = 'anonymous';
+    }
     img.onload = () => {
       try {
         const size = Math.min(img.width, img.height) || 128;
@@ -189,7 +256,13 @@ function makeCircularAvatar(src, callback) {
         ctx.closePath();
         ctx.clip();
         ctx.drawImage(img, 0, 0, size, size);
-        callback(canvas.toDataURL('image/png'));
+        canvas.toBlob((blob) => {
+          if (blob) {
+            callback(URL.createObjectURL(blob));
+          } else {
+            callback(canvas.toDataURL('image/png'));
+          }
+        }, 'image/png');
       } catch (_) {
         callback(src);
       }
@@ -201,6 +274,34 @@ function makeCircularAvatar(src, callback) {
   }
 }
 
+function processNotificationOptions(title, options = {}) {
+  let finalTitle = title;
+  const finalOptions = { ...options };
+
+  // 1. Nombre de contacto
+  if (!notificationSettings.contactName) {
+    finalTitle = 'WhatsNexus';
+  }
+
+  // 2. Foto de contacto
+  if (!notificationSettings.contactPhoto) {
+    delete finalOptions.icon;
+  }
+
+  // 3. Vista previa del mensaje
+  if (!notificationSettings.messagePreview) {
+    finalOptions.body = '•••';
+  }
+
+  // 4. Sonido de alerta
+  if (!notificationSettings.notificationSound) {
+    finalOptions.silent = true;
+  }
+
+  return { finalTitle, finalOptions };
+}
+
+// 1. Interceptar window.Notification
 const OriginalNotification = window.Notification;
 
 if (OriginalNotification) {
@@ -215,30 +316,8 @@ if (OriginalNotification) {
       };
     }
 
-    let finalTitle = title;
-    const finalOptions = { ...options };
+    const { finalTitle, finalOptions } = processNotificationOptions(title, options);
 
-    // 1. Nombre de contacto
-    if (!notificationSettings.contactName) {
-      finalTitle = 'WhatsNexus';
-    }
-
-    // 2. Foto de contacto
-    if (!notificationSettings.contactPhoto) {
-      delete finalOptions.icon;
-    }
-
-    // 3. Vista previa del mensaje
-    if (!notificationSettings.messagePreview) {
-      finalOptions.body = '•••';
-    }
-
-    // 4. Sonido de alerta
-    if (!notificationSettings.notificationSound) {
-      finalOptions.silent = true;
-    }
-
-    // Proxy para registrar listeners antes de la creación asíncrona del canvas circular
     const proxy = {
       onclick: null,
       onclose: null,
@@ -270,7 +349,6 @@ if (OriginalNotification) {
       }
     };
 
-    // Si hay foto de contacto, redondearla a circular antes de despachar la notificación
     if (finalOptions.icon) {
       makeCircularAvatar(finalOptions.icon, (circularIcon) => {
         finalOptions.icon = circularIcon;
@@ -287,4 +365,27 @@ if (OriginalNotification) {
   CustomNotification.requestPermission = OriginalNotification.requestPermission.bind(OriginalNotification);
 
   window.Notification = CustomNotification;
+}
+
+// 2. Interceptar ServiceWorkerRegistration.prototype.showNotification (empleado por WhatsApp Web)
+if (window.ServiceWorkerRegistration && window.ServiceWorkerRegistration.prototype.showNotification) {
+  const origShowNotification = ServiceWorkerRegistration.prototype.showNotification;
+  ServiceWorkerRegistration.prototype.showNotification = function(title, options = {}) {
+    if (isDnd || !notificationSettings.desktopNotifications) {
+      return Promise.resolve();
+    }
+
+    const { finalTitle, finalOptions } = processNotificationOptions(title, options);
+
+    if (finalOptions.icon) {
+      return new Promise((resolve) => {
+        makeCircularAvatar(finalOptions.icon, (circularIcon) => {
+          finalOptions.icon = circularIcon;
+          origShowNotification.call(this, finalTitle, finalOptions).then(resolve).catch(resolve);
+        });
+      });
+    }
+
+    return origShowNotification.call(this, finalTitle, finalOptions);
+  };
 }

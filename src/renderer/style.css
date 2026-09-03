@@ -1060,3 +1060,29 @@ body.theme-light .segmented-btn.active.status-inactive-btn {
 .wake-btn:hover {
   opacity: 0.9;
 }
+
+/* Floating Sidebar Tooltip (Globo informativo desacoplado) */
+.sidebar-floating-tooltip {
+  position: fixed;
+  z-index: 99999;
+  transform: translateY(-50%);
+  background-color: var(--bg-hover);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+  padding: 6px 14px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+  white-space: nowrap;
+}
+
+.sidebar-floating-tooltip.visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(-50%) translateX(2px);
+}

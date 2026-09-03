@@ -227,7 +227,8 @@ function saveAccounts() {
     partition: a.partition,
     avatarUrl: a.avatarUrl,
     dnd: a.dnd,
-    enabled: a.enabled !== false
+    enabled: a.enabled !== false,
+    isCustomNamed: !!a.isCustomNamed
   }));
   localStorage.setItem('whatsNexusAccounts', JSON.stringify(toSave));
 }
@@ -344,19 +345,41 @@ function renderAllSidebarAccounts() {
   }
 }
 
+// Globo de texto / Tooltip flotante desacoplado del overflow de la sidebar
+const floatingTooltip = document.createElement('div');
+floatingTooltip.className = 'sidebar-floating-tooltip';
+document.body.appendChild(floatingTooltip);
+
+function attachSidebarTooltip(el, account) {
+  el.addEventListener('mouseenter', () => {
+    const rect = el.getBoundingClientRect();
+    const currentAcc = accounts.find(a => a.id === account.id) || account;
+    floatingTooltip.innerText = currentAcc.name;
+    floatingTooltip.style.top = `${rect.top + rect.height / 2}px`;
+    floatingTooltip.style.left = `${rect.right + 12}px`;
+    floatingTooltip.classList.add('visible');
+  });
+  el.addEventListener('mouseleave', () => {
+    floatingTooltip.classList.remove('visible');
+  });
+}
+
 function renderAccountSidebarItem(account) {
   const li = document.createElement('li');
-  li.className = 'account-item tooltip-container';
+  li.className = 'account-item';
   li.dataset.id = account.id;
+  li.title = account.name;
   
   li.innerHTML = `
     <div class="account-avatar" id="avatar_${account.id}">
       ${getAvatarHtml(account)}
     </div>
-    <span class="tooltip-text" id="tooltip_${account.id}">${account.name}</span>
   `;
+
+  attachSidebarTooltip(li, account);
   
   li.addEventListener('click', () => {
+    floatingTooltip.classList.remove('visible');
     activateAccount(account.id);
   });
   
@@ -368,9 +391,9 @@ function updateAccountSidebarItem(account) {
   if (avatarDiv) {
     avatarDiv.innerHTML = getAvatarHtml(account);
   }
-  const tooltip = document.getElementById(`tooltip_${account.id}`);
-  if (tooltip) {
-    tooltip.innerText = account.name;
+  const li = document.querySelector(`.account-item[data-id="${account.id}"]`);
+  if (li) {
+    li.title = account.name;
   }
 }
 
@@ -424,6 +447,7 @@ function buildWebviewDOM(account, parentContainer) {
       }
       webview.send('update-account-settings', { dnd: !!account.dnd });
       webview.send('set-dark-mode', isDark);
+      webview.setAudioMuted(!!account.dnd || (settings.notifications && settings.notifications.notificationSound === false));
     } catch (_) {}
   });
 
@@ -444,6 +468,23 @@ function buildWebviewDOM(account, parentContainer) {
         saveAccounts();
         updateAccountSidebarItem(acc);
         renderSettingsAccounts();
+      }
+    } else if (event.channel === 'profile-name-updated') {
+      const newName = event.args[0];
+      const acc = accounts.find(a => a.id === account.id);
+      if (acc && newName && acc.name !== newName) {
+        const lang = i18n[settings.language] || i18n['en'];
+        const isGenericName = !acc.isCustomNamed || 
+                              acc.name.startsWith(lang.default_account_name) ||
+                              acc.name.startsWith('Account') ||
+                              acc.name.startsWith('Cuenta') ||
+                              acc.name.startsWith('+');
+        if (isGenericName) {
+          acc.name = newName;
+          saveAccounts();
+          updateAccountSidebarItem(acc);
+          renderSettingsAccounts();
+        }
       }
     }
   });
@@ -646,6 +687,7 @@ window.saveAccountName = function(id) {
   const lang = i18n[settings.language] || i18n['en'];
   const newName = inputEl.value.trim() || lang.untitled_account || 'Cuenta sin nombre';
   acc.name = newName;
+  acc.isCustomNamed = true;
   inputEl.value = newName;
   displayEl.innerText = newName;
   
@@ -803,6 +845,7 @@ window.toggleDND = (id) => {
     if (wv) {
       try {
         wv.send('update-account-settings', { dnd: !!acc.dnd });
+        wv.setAudioMuted(!!acc.dnd || (settings.notifications && settings.notifications.notificationSound === false));
       } catch (_) {}
     }
   }

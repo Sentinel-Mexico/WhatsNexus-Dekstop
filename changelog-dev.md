@@ -4,6 +4,19 @@ This changelog records all granular updates, bug fixes, refactorings, and featur
 
 ---
 
+## [0.10.0] - 2026-09-03
+### Added
+- **Automatic Account Name Synchronization:** Automatically detects and syncs the user's authentic WhatsApp display name (`pushname` and profile drawer DOM) upon login, updating the account name in WhatsNexus without requiring manual typing (while gracefully preserving custom user renames).
+- **Floating Sidebar Tooltip Bubbles:** Implemented a detached, floating tooltip bubble (`.sidebar-floating-tooltip`) that dynamically positions itself next to hovered account avatars in the left sidebar, overcoming scrollable overflow clipping.
+
+### Fixed
+- **Do Not Disturb (DND) Audio & ServiceWorker Leakage:**
+  - Extended notification interception to `ServiceWorkerRegistration.prototype.showNotification` so background push notifications cannot bypass DND filters.
+  - Implemented dual-layer audio muting: guest `HTMLAudioElement.prototype.play` blocking and Chromium host-level `<webview>.setAudioMuted(true)`.
+- **Circular Notification Avatars on Blob URLs:** Resolved canvas tainting by restricting `crossOrigin = 'anonymous'` strictly to remote HTTP/HTTPS assets, allowing WhatsApp Web's memory-backed `blob:` notification icons to be cleanly exported to circular canvases.
+
+---
+
 ## [0.9.0] - 2026-09-03
 ### Added
 - **WhatsApp Web Theme Synchronization:** WhatsApp Web now automatically adopts dark or light mode based on WhatsNexus's active visual theme, combining Chromium-level `nativeTheme.themeSource`, guest DOM class injection, and `window.matchMedia` query mocking.
