@@ -81,3 +81,13 @@ Instead of relying on pop-up dialogs or modal windows that obstruct the interfac
    - Provides a "Back to chats" action in the header to return to the last active WhatsApp session.
 3. **Empty State View (`#empty-state`):**
    - Displayed automatically when zero accounts exist or all accounts have been removed.
+
+---
+
+## 4. Global Configuration Model (Universal Settings Enforcement)
+
+All preferences defined in the Settings panels (**Apariencia**, **Notificaciones**, and **Permisos**) operate under a **Global Enforcement Architecture**:
+
+1. **Universal Scope:** Configuration parameters are global application policies stored in `settings` (`localStorage`) and mirrored to the Electron main process via IPC.
+2. **Present Accounts:** Modifications made in Settings are reactively broadcast to all active `<webview>` instances, Chromium sessions, and audio outputs in real time (e.g., dynamic audio muting, dark/light guest classes, and notification filters).
+3. **Future Accounts:** Whenever a new account is registered (`addAccount`) or awakened from hibernation (`wakeWebview`), its newly created `<webview>` and isolated partition (`persist:acc_*`) automatically inherit the full global settings schema upon instantiation, guaranteeing absolute behavioral consistency across all profiles without requiring manual per-account setup.
