@@ -71,6 +71,10 @@
               <i class="fa-solid fa-bell"></i>
               <span data-i18n="tab_notifications">Notificaciones</span>
             </button>
+            <button class="tab-btn" data-tab="tab-permissions">
+              <i class="fa-solid fa-shield-halved"></i>
+              <span data-i18n="tab_permissions">Permisos</span>
+            </button>
           </nav>
 
           <!-- Panels Area -->
@@ -248,6 +252,105 @@
                   </div>
                   <label class="switch">
                     <input type="checkbox" id="notif-sound-toggle" checked>
+                    <span class="switch-slider"></span>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <!-- Pestaña Permisos -->
+            <div id="tab-permissions" class="settings-panel">
+              <div class="panel-header">
+                <h3 data-i18n="perm_heading">Permisos</h3>
+                <p class="panel-desc" data-i18n="perm_desc">Defina qué permisos se pueden otorgar automáticamente a WhatsApp Web.</p>
+              </div>
+
+              <!-- Cuadro Informativo / Aviso -->
+              <div class="permissions-notice-box">
+                <p data-i18n="perm_notice">Se seguirán solicitando permisos deshabilitados cuando sea necesario.</p>
+              </div>
+
+              <!-- Barra de Acciones Rápidas -->
+              <div class="perm-actions-bar">
+                <button id="perm-allow-all-btn" class="btn-perm-action" data-i18n="perm_btn_allow_all">Permitir todo</button>
+                <button id="perm-deny-all-btn" class="btn-perm-action" data-i18n="perm_btn_remove_all">Quitar todo</button>
+              </div>
+
+              <!-- Bloque 1: Acceso al dispositivo -->
+              <h4 class="perm-group-title" data-i18n="perm_group_device">Acceso al dispositivo</h4>
+              <div class="perm-card">
+                <!-- Fila 1: Micrófono -->
+                <div class="perm-row">
+                  <div class="perm-info">
+                    <h4 data-i18n="perm_mic_title">micrófono</h4>
+                    <p data-i18n="perm_mic_desc">Permita automáticamente el acceso a su micrófono.</p>
+                  </div>
+                  <label class="switch">
+                    <input type="checkbox" id="perm-mic-toggle" checked>
+                    <span class="switch-slider"></span>
+                  </label>
+                </div>
+
+                <!-- Fila 2: Cámara -->
+                <div class="perm-row">
+                  <div class="perm-info">
+                    <h4 data-i18n="perm_camera_title">cámara</h4>
+                    <p data-i18n="perm_camera_desc">Permita automáticamente el acceso a su cámara.</p>
+                  </div>
+                  <label class="switch">
+                    <input type="checkbox" id="perm-camera-toggle">
+                    <span class="switch-slider"></span>
+                  </label>
+                </div>
+
+                <!-- Fila 3: Cámara y micrófono -->
+                <div class="perm-row">
+                  <div class="perm-info">
+                    <h4 data-i18n="perm_cam_mic_title">Cámara y micrófono</h4>
+                    <p data-i18n="perm_cam_mic_desc">Permitir automáticamente el acceso simultáneo a la cámara y al micrófono.</p>
+                  </div>
+                  <label class="switch">
+                    <input type="checkbox" id="perm-cam-mic-toggle">
+                    <span class="switch-slider"></span>
+                  </label>
+                </div>
+
+                <!-- Fila 4: Ubicación -->
+                <div class="perm-row">
+                  <div class="perm-info">
+                    <h4 data-i18n="perm_location_title">Ubicación</h4>
+                    <p data-i18n="perm_location_desc">Permitir automáticamente el acceso a su ubicación.</p>
+                  </div>
+                  <label class="switch">
+                    <input type="checkbox" id="perm-location-toggle">
+                    <span class="switch-slider"></span>
+                  </label>
+                </div>
+              </div>
+
+              <!-- Bloque 2: Compartir -->
+              <h4 class="perm-group-title" data-i18n="perm_group_share">Compartir</h4>
+              <div class="perm-card">
+                <!-- Fila 1: Compartir pantalla -->
+                <div class="perm-row">
+                  <div class="perm-info">
+                    <h4 data-i18n="perm_screen_title">Compartir pantalla</h4>
+                    <p data-i18n="perm_screen_desc">Permitir automáticamente compartir contenidos de la pantalla.</p>
+                  </div>
+                  <label class="switch">
+                    <input type="checkbox" id="perm-screen-toggle" checked>
+                    <span class="switch-slider"></span>
+                  </label>
+                </div>
+
+                <!-- Fila 2: Pantalla con audio -->
+                <div class="perm-row">
+                  <div class="perm-info">
+                    <h4 data-i18n="perm_screen_audio_title">Pantalla con audio</h4>
+                    <p data-i18n="perm_screen_audio_desc">Permitir automáticamente compartir pantalla con audio.</p>
+                  </div>
+                  <label class="switch">
+                    <input type="checkbox" id="perm-screen-audio-toggle">
                     <span class="switch-slider"></span>
                   </label>
                 </div>

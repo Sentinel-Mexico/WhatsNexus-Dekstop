@@ -228,19 +228,82 @@ ipcMain.on('show-native-notification', (event, data) => {
   notification.show();
 });
 
+let currentPermissions = {
+  microphone: true,
+  camera: false,
+  cameraAndMic: false,
+  location: false,
+  screenShare: true,
+  screenShareAudio: false
+};
+
+ipcMain.on('update-permission-settings', (event, permissions) => {
+  if (permissions) {
+    currentPermissions = { ...currentPermissions, ...permissions };
+  }
+});
+
 function configureSessionPermissions(ses) {
   if (!ses) return;
-  ses.setPermissionRequestHandler((webContents, permission, callback) => {
+  ses.setPermissionRequestHandler((webContents, permission, callback, details) => {
     if (permission === 'notifications') {
       return callback(false); // Bloquear notificaciones web nativas de Chromium
     }
+
+    if (permission === 'media') {
+      const mediaTypes = (details && details.mediaTypes) || [];
+      const wantsAudio = mediaTypes.includes('audio');
+      const wantsVideo = mediaTypes.includes('video');
+
+      if (wantsAudio && wantsVideo) {
+        return callback(!!currentPermissions.cameraAndMic || (!!currentPermissions.camera && !!currentPermissions.microphone));
+      } else if (wantsAudio) {
+        return callback(!!currentPermissions.microphone);
+      } else if (wantsVideo) {
+        return callback(!!currentPermissions.camera);
+      }
+      return callback(true);
+    }
+
+    if (permission === 'geolocation') {
+      return callback(!!currentPermissions.location);
+    }
+
+    if (permission === 'display-capture') {
+      return callback(!!currentPermissions.screenShare);
+    }
+
     callback(true);
   });
 
-  ses.setPermissionCheckHandler((webContents, permission) => {
+  ses.setPermissionCheckHandler((webContents, permission, requestingOrigin, details) => {
     if (permission === 'notifications') {
       return false; // Bloquear comprobación de permisos nativos de Chromium
     }
+
+    if (permission === 'media') {
+      const mediaTypes = (details && details.mediaTypes) || [];
+      const wantsAudio = mediaTypes.includes('audio');
+      const wantsVideo = mediaTypes.includes('video');
+
+      if (wantsAudio && wantsVideo) {
+        return !!currentPermissions.cameraAndMic || (!!currentPermissions.camera && !!currentPermissions.microphone);
+      } else if (wantsAudio) {
+        return !!currentPermissions.microphone;
+      } else if (wantsVideo) {
+        return !!currentPermissions.camera;
+      }
+      return true;
+    }
+
+    if (permission === 'geolocation') {
+      return !!currentPermissions.location;
+    }
+
+    if (permission === 'display-capture') {
+      return !!currentPermissions.screenShare;
+    }
+
     return true;
   });
 }

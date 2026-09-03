@@ -4,6 +4,25 @@ This changelog records all granular updates, bug fixes, refactorings, and featur
 
 ---
 
+## [0.11.0] - 2026-09-03
+### Added
+- **Permissions Management Section in Settings:**
+  - Added new navigation tab: **Permisos** (`#tab-permissions`, `<i class="fa-solid fa-shield-halved"></i>`).
+  - Added header notice banner explaining that disabled permissions will continue to be requested when required.
+  - Added quick action buttons: **Permitir todo** (enables all permission switches) and **Quitar todo** (disables all switches).
+  - Implemented **Acceso al dispositivo** block:
+    - **micrófono:** Automatically grant microphone access.
+    - **cámara:** Automatically grant camera access.
+    - **Cámara y micrófono:** Automatically grant simultaneous access to camera and microphone.
+    - **Ubicación:** Automatically grant geolocation access.
+  - Implemented **Compartir** block:
+    - **Compartir pantalla:** Automatically allow screen content sharing.
+    - **Pantalla con audio:** Automatically allow screen sharing with system audio.
+  - **Native Session Permissions Handler:** Integrated `session.setPermissionRequestHandler` and `session.setPermissionCheckHandler` in `src/main.js` to automatically grant or deny media, geolocation, and display-capture permissions based on user preferences.
+  - **Full Internationalization (i18n):** Added 20 new localization keys translated across all 10 supported interface languages.
+
+---
+
 ## [0.10.2] - 2026-09-03
 ### Fixed
 - **Chromium Native Notification Permission Denial:**
