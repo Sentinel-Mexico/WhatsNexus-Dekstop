@@ -4,6 +4,14 @@ This changelog records all granular updates, bug fixes, refactorings, and featur
 
 ---
 
+## [0.12.3] - 2026-09-03
+### Fixed
+- **Bilingual Language Label Formatting:**
+  - Corrected language label formatting across all 25 language dictionaries to strictly follow `"{translated name in active language} ({native name})"`.
+  - Injected complete 25x25 translation matrices so selecting any language (e.g. Spanish) renders options like `Inglés (English)`, `Chino Mandarín (中文 (普通话))`, `Francés (Français)`, instead of repeating the native name.
+
+---
+
 ## [0.12.2] - 2026-09-03
 ### Fixed
 - **Language Selector Dropdown Viewport Height (10 Items Max):**
