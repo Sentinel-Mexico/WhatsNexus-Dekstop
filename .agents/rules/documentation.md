@@ -16,3 +16,8 @@ All markdown links between documentation files, repository files, and root READM
 
 ## 4. Language Consistency
 In accordance with `.agents/rules/language.md`, all documentation articles, guides, tables, and diagrams created or edited within `docs/` must strictly be written in neutral English.
+
+## 5. Agent Rules Index Maintenance (`.agents/README.md`)
+Whenever a rule is created, modified, or removed within `.agents/rules/`:
+1. **Index Synchronization:** The agent must immediately update `.agents/README.md` to document the new or modified rule in the Active Rules Index table, providing a clear summary of its purpose and requirements.
+2. **Canonical Governance:** `.agents/README.md` must always remain an up-to-date, canonical overview of all active behavioral rules and development standards governing the project.

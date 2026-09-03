@@ -27,7 +27,7 @@
           <span class="tooltip-text" data-i18n="tooltip_report_bug">Reportar Error</span>
         </button>
         <button id="settings-btn" class="icon-btn tooltip-container">
-          <i class="fa-solid fa-user-gear"></i>
+          <i class="fa-solid fa-gear"></i>
           <span class="tooltip-text" data-i18n="tooltip_settings">Configuración</span>
         </button>
       </div>
@@ -60,7 +60,7 @@
           <!-- Navigation Tabs -->
           <nav class="settings-nav">
             <button class="tab-btn active" data-tab="tab-accounts">
-              <i class="fa-solid fa-users"></i>
+              <i class="fa-solid fa-users-gear"></i>
               <span data-i18n="tab_accounts">Cuentas</span>
             </button>
             <button class="tab-btn" data-tab="tab-appearance">
@@ -70,6 +70,10 @@
             <button class="tab-btn" data-tab="tab-notifications">
               <i class="fa-solid fa-bell"></i>
               <span data-i18n="tab_notifications">Notificaciones</span>
+            </button>
+            <button class="tab-btn" data-tab="tab-permissions">
+              <i class="fa-solid fa-shield-halved"></i>
+              <span data-i18n="tab_permissions">Permisos</span>
             </button>
           </nav>
 
@@ -90,28 +94,79 @@
             <div id="tab-appearance" class="settings-panel">
               <div class="panel-header">
                 <h3 data-i18n="tab_appearance">Apariencia</h3>
-                <p class="panel-desc" data-i18n="desc_appearance">Personaliza el tema visual y el idioma de la aplicación.</p>
+                <p class="panel-desc" data-i18n="desc_appearance">Personaliza los temas visuales, el idioma y la integración con la bandeja del sistema.</p>
               </div>
+
+              <!-- Bloque 1: Temas y Estilo Visual -->
               <div class="setting-card">
-                <div class="setting-group">
-                  <div class="setting-text">
-                    <label data-i18n="label_theme">Tema</label>
-                    <span class="setting-hint" data-i18n="hint_theme">Elige la combinación de colores que prefieras</span>
-                  </div>
-                  <select id="theme-select" class="styled-select">
-                    <option value="theme-auto" data-i18n="theme_auto">Automático (Sistema)</option>
-                    <option value="theme-light" data-i18n="theme_light">Claro</option>
-                    <option value="theme-dark" data-i18n="theme_dark">Oscuro</option>
-                  </select>
+                <div class="setting-text">
+                  <h4 data-i18n="card_theme_title">Temas y Estilo Visual</h4>
+                  <p class="setting-hint" data-i18n="hint_theme">Elige la paleta de colores y el modo de iluminación preferido.</p>
                 </div>
-                <div class="setting-group">
-                  <div class="setting-text">
-                    <label data-i18n="label_language">Idioma</label>
-                    <span class="setting-hint" data-i18n="hint_language">Selecciona el idioma de la interfaz</span>
+                
+                <div class="setting-row-double">
+                  <div class="setting-subgroup">
+                    <label for="palette-select" data-i18n="label_palette">Paleta de Color</label>
+                    <select id="palette-select" class="styled-select">
+                      <option value="whatsapp" data-i18n="palette_whatsapp">WhatsApp (Esmeralda)</option>
+                      <option value="messenger" data-i18n="palette_messenger">Messenger (Azul Eléctrico)</option>
+                      <option value="telegram" data-i18n="palette_telegram">Telegram (Celeste Ciano)</option>
+                      <option value="signal" data-i18n="palette_signal">Signal (Azul Real)</option>
+                      <option value="forest" data-i18n="palette_forest">Bosque (Oliva y Tierra)</option>
+                    </select>
                   </div>
+
+                  <div class="setting-subgroup">
+                    <label for="theme-select" data-i18n="label_theme">Modo de Apariencia</label>
+                    <select id="theme-select" class="styled-select">
+                      <option value="theme-auto" data-i18n="theme_auto">Automático (Sistema)</option>
+                      <option value="theme-light" data-i18n="theme_light">Claro</option>
+                      <option value="theme-dark" data-i18n="theme_dark">Oscuro</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Bloque 2: Idioma de la Aplicación -->
+              <div class="setting-card">
+                <div class="setting-text">
+                  <h4 data-i18n="card_language_title">Idioma de la Interfaz</h4>
+                  <p class="setting-hint" data-i18n="hint_language">Selecciona el idioma principal de WhatsNexus.</p>
+                </div>
+                <div class="setting-group" style="margin-bottom: 0;">
                   <select id="language-select" class="styled-select">
                     <!-- Se llenará dinámicamente desde JS -->
                   </select>
+                </div>
+              </div>
+
+              <!-- Bloque 3: Bandeja del Sistema (Tray) -->
+              <div class="setting-card">
+                <div class="setting-text">
+                  <h4 data-i18n="card_tray_title">Bandeja del Sistema (Icono de Estado)</h4>
+                  <p class="setting-hint" data-i18n="hint_tray">Configura la presencia y estilo del icono en la barra de tareas o panel de notificaciones.</p>
+                </div>
+
+                <div class="setting-row-double">
+                  <div class="setting-subgroup">
+                    <label for="tray-style-select" data-i18n="label_tray_style">Estilo del Icono en Bandeja</label>
+                    <select id="tray-style-select" class="styled-select">
+                      <option value="auto" data-i18n="tray_style_auto">Predeterminado / Marca</option>
+                      <option value="light" data-i18n="tray_style_light">Claro (Monocromático blanco)</option>
+                      <option value="dark" data-i18n="tray_style_dark">Oscuro (Monocromático negro)</option>
+                    </select>
+                  </div>
+
+                  <div class="setting-subgroup">
+                    <label for="tray-badge-toggle" data-i18n="label_tray_badge">Contador de mensajes no leídos</label>
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 8px;">
+                      <span class="setting-hint" style="margin: 0;" data-i18n="hint_tray_badge">Mostrar badge numérico en el icono</span>
+                      <label class="switch">
+                        <input type="checkbox" id="tray-badge-toggle" checked>
+                        <span class="switch-slider"></span>
+                      </label>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -120,34 +175,172 @@
             <div id="tab-notifications" class="settings-panel">
               <div class="panel-header">
                 <h3 data-i18n="tab_notifications">Notificaciones</h3>
-                <p class="panel-desc" data-i18n="desc_notifications">Controla la privacidad del contenido en las notificaciones del sistema.</p>
+                <p class="panel-desc" data-i18n="desc_notifications">Configura notificaciones, privacidad y mensajes de WhatsNexus.</p>
               </div>
-              <div class="setting-card">
-                <div class="setting-group">
-                  <label data-i18n="label_privacy">Perfil de Privacidad</label>
-                  <div class="privacy-options">
-                    <label class="radio-label">
-                      <input type="radio" name="privacy-profile" value="broad" checked>
-                      <div class="radio-content">
-                        <h4 data-i18n="privacy_broad">Amplio</h4>
-                        <p data-i18n="privacy_broad_desc">Foto, nombre, vista previa del mensaje y sonido.</p>
-                      </div>
-                    </label>
-                    <label class="radio-label">
-                      <input type="radio" name="privacy-profile" value="medium">
-                      <div class="radio-content">
-                        <h4 data-i18n="privacy_medium">Medio</h4>
-                        <p data-i18n="privacy_medium_desc">Foto, nombre, "Mensaje oculto" y sonido.</p>
-                      </div>
-                    </label>
-                    <label class="radio-label">
-                      <input type="radio" name="privacy-profile" value="strict">
-                      <div class="radio-content">
-                        <h4 data-i18n="privacy_strict">Estricto</h4>
-                        <p data-i18n="privacy_strict_desc">Icono de app, "Contacto oculto", "Mensaje oculto", sin sonido.</p>
-                      </div>
-                    </label>
+
+              <!-- Bloque 1: Configuración de Privacidad en Notificaciones -->
+              <div class="notifications-section-header">
+                <div class="setting-text">
+                  <h4 data-i18n="heading_notifications_privacy">Notificaciones</h4>
+                  <p class="setting-hint" data-i18n="desc_notifications_privacy">Elige qué información puede aparecer en las notificaciones.</p>
+                </div>
+                <div class="privacy-preset-container">
+                  <label for="privacy-preset-select" data-i18n="label_privacy_preset">Privacidad</label>
+                  <select id="privacy-preset-select" class="styled-select preset-select">
+                    <option value="broad" data-i18n="preset_broad">Amplio</option>
+                    <option value="medium" data-i18n="preset_medium">Medio</option>
+                    <option value="strict" data-i18n="preset_strict">Estricto</option>
+                    <option value="custom" data-i18n="preset_custom">Personalizado</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="setting-card notif-card">
+                <!-- Fila 1: Notificaciones de escritorio -->
+                <div class="notif-row">
+                  <div class="notif-info">
+                    <h4 data-i18n="notif_desktop_title">Notificaciones de escritorio</h4>
+                    <p data-i18n="notif_desktop_desc">Muestra notificaciones de WhatsApp usando el sistema de notificaciones de escritorio.</p>
                   </div>
+                  <label class="switch">
+                    <input type="checkbox" id="notif-desktop-toggle" checked>
+                    <span class="switch-slider"></span>
+                  </label>
+                </div>
+
+                <!-- Fila 2: Foto de contacto -->
+                <div class="notif-row notif-sub-option">
+                  <div class="notif-info">
+                    <h4 data-i18n="notif_photo_title">Foto de contacto</h4>
+                    <p data-i18n="notif_photo_desc">Muestra la foto del remitente cuando esté disponible.</p>
+                  </div>
+                  <label class="switch">
+                    <input type="checkbox" id="notif-photo-toggle" checked>
+                    <span class="switch-slider"></span>
+                  </label>
+                </div>
+
+                <!-- Fila 3: Nombre de contacto -->
+                <div class="notif-row notif-sub-option">
+                  <div class="notif-info">
+                    <h4 data-i18n="notif_name_title">Nombre de contacto</h4>
+                    <p data-i18n="notif_name_desc">Muestra el remitente o el nombre del grupo.</p>
+                  </div>
+                  <label class="switch">
+                    <input type="checkbox" id="notif-name-toggle" checked>
+                    <span class="switch-slider"></span>
+                  </label>
+                </div>
+
+                <!-- Fila 4: Vista previa del mensaje -->
+                <div class="notif-row notif-sub-option">
+                  <div class="notif-info">
+                    <h4 data-i18n="notif_preview_title">Vista previa del mensaje</h4>
+                    <p data-i18n="notif_preview_desc">Muestra el contenido del mensaje recibido.</p>
+                  </div>
+                  <label class="switch">
+                    <input type="checkbox" id="notif-preview-toggle" checked>
+                    <span class="switch-slider"></span>
+                  </label>
+                </div>
+
+                <!-- Fila 5: Sonido de notificación -->
+                <div class="notif-row notif-sub-option">
+                  <div class="notif-info">
+                    <h4 data-i18n="notif_sound_title">Sonido de notificación</h4>
+                    <p data-i18n="notif_sound_desc">Permite que el escritorio reproduzca un sonido de alerta para los mensajes nuevos.</p>
+                  </div>
+                  <label class="switch">
+                    <input type="checkbox" id="notif-sound-toggle" checked>
+                    <span class="switch-slider"></span>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <!-- Pestaña Permisos -->
+            <div id="tab-permissions" class="settings-panel">
+              <div class="panel-header">
+                <h3 data-i18n="perm_heading">Permisos</h3>
+                <p class="panel-desc" data-i18n="perm_desc">Defina qué permisos se pueden otorgar automáticamente a WhatsApp Web.</p>
+              </div>
+
+              <!-- Cuadro Informativo / Aviso -->
+              <div class="permissions-notice-box">
+                <p data-i18n="perm_notice">Se seguirán solicitando permisos deshabilitados cuando sea necesario.</p>
+              </div>
+
+              <!-- Barra de Acciones Rápidas -->
+              <div class="perm-actions-bar">
+                <button id="perm-allow-all-btn" class="btn-perm-action" data-i18n="perm_btn_allow_all">Permitir todo</button>
+                <button id="perm-deny-all-btn" class="btn-perm-action" data-i18n="perm_btn_remove_all">Quitar todo</button>
+              </div>
+
+              <!-- Bloque 1: Acceso al dispositivo -->
+              <h4 class="perm-group-title" data-i18n="perm_group_device">Acceso al dispositivo</h4>
+              <div class="perm-card">
+                <!-- Fila 1: Micrófono -->
+                <div class="perm-row">
+                  <div class="perm-info">
+                    <h4 data-i18n="perm_mic_title">micrófono</h4>
+                    <p data-i18n="perm_mic_desc">Permita automáticamente el acceso a su micrófono.</p>
+                  </div>
+                  <label class="switch">
+                    <input type="checkbox" id="perm-mic-toggle" checked>
+                    <span class="switch-slider"></span>
+                  </label>
+                </div>
+
+                <!-- Fila 2: Cámara -->
+                <div class="perm-row">
+                  <div class="perm-info">
+                    <h4 data-i18n="perm_camera_title">cámara</h4>
+                    <p data-i18n="perm_camera_desc">Permita automáticamente el acceso a su cámara.</p>
+                  </div>
+                  <label class="switch">
+                    <input type="checkbox" id="perm-camera-toggle">
+                    <span class="switch-slider"></span>
+                  </label>
+                </div>
+
+                <!-- Fila 3: Ubicación -->
+                <div class="perm-row">
+                  <div class="perm-info">
+                    <h4 data-i18n="perm_location_title">Ubicación</h4>
+                    <p data-i18n="perm_location_desc">Permitir automáticamente el acceso a su ubicación.</p>
+                  </div>
+                  <label class="switch">
+                    <input type="checkbox" id="perm-location-toggle">
+                    <span class="switch-slider"></span>
+                  </label>
+                </div>
+              </div>
+
+              <!-- Bloque 2: Compartir -->
+              <h4 class="perm-group-title" data-i18n="perm_group_share">Compartir</h4>
+              <div class="perm-card">
+                <!-- Fila 1: Compartir pantalla -->
+                <div class="perm-row">
+                  <div class="perm-info">
+                    <h4 data-i18n="perm_screen_title">Compartir pantalla</h4>
+                    <p data-i18n="perm_screen_desc">Permitir automáticamente compartir contenidos de la pantalla.</p>
+                  </div>
+                  <label class="switch">
+                    <input type="checkbox" id="perm-screen-toggle" checked>
+                    <span class="switch-slider"></span>
+                  </label>
+                </div>
+
+                <!-- Fila 2: Pantalla con audio -->
+                <div class="perm-row">
+                  <div class="perm-info">
+                    <h4 data-i18n="perm_screen_audio_title">Pantalla con audio</h4>
+                    <p data-i18n="perm_screen_audio_desc">Permitir automáticamente compartir pantalla con audio.</p>
+                  </div>
+                  <label class="switch">
+                    <input type="checkbox" id="perm-screen-audio-toggle">
+                    <span class="switch-slider"></span>
+                  </label>
                 </div>
               </div>
             </div>

@@ -14,11 +14,11 @@ WhatsNexus achieves an ultra-low memory profile through a multi-tier optimizatio
 +------------------------------------+--------------------------------------------+
 |        Process / Engine Level      |             Application Level              |
 +------------------------------------+--------------------------------------------+
-| • Low-end device mode              | • 20-minute idle tab hibernation           |
-| • Site isolation trials disabled   | • Complete Webview DOM destruction         |
-| • Compact V8 heap (128 MB max-old) | • Startup lazy loading                     |
+| • Site isolation trials disabled   | • 20-minute idle tab hibernation           |
+| • Background networking disabled   | • Complete Webview DOM destruction         |
+| • IPC flooding protection disabled | • Startup lazy loading                     |
 | • Background tab throttling        | • Debounced preload mutation observers     |
-| • Renderer process limit caps      | • Instant session re-hydration            |
+| • Wayland color manager workaround | • Instant session re-hydration            |
 +------------------------------------+--------------------------------------------+
 ```
 
@@ -28,60 +28,21 @@ WhatsNexus achieves an ultra-low memory profile through a multi-tier optimizatio
 
 ### 2.1 The Hibernation Cycle
 1. When an account is inactive (not the currently visible account), its last interaction timestamp `acc.lastAccessed` is tracked.
-2. Every 60 seconds, a background interval triggers `checkHibernation()`.
-3. If an account has been idle for more than **20 minutes** (`HIBERNATION_TIMEOUT = 20 * 60 * 1000`), WhatsNexus triggers `hibernateWebview(acc.id)`.
-
-```javascript
-function hibernateWebview(id) {
-  const acc = accounts.find(a => a.id === id);
-  if (!acc) return;
-  
-  const webview = document.getElementById(`webview_${id}`);
-  if (webview) {
-    webview.remove(); // TOTAL DESTRUCTION: Destroys the Chromium guest renderer process
-  }
-  
-  const overlay = document.getElementById(`hibernation_${id}`);
-  if (overlay) {
-    overlay.classList.remove('hidden');
-  }
-  
-  acc.hibernated = true;
-}
-```
-
-### 2.2 Why DOM Destruction?
-Unlike simply applying `display: none` or `visibility: hidden` (which keeps the Chromium renderer process alive and consuming full RAM), calling `webview.remove()` completely terminates the sandboxed guest renderer process, freeing all associated VRAM, heap memory, and socket connections.
-
-### 2.3 Awakening & Session Restoration
-When the user switches back to a hibernated account, or clicks the "Wake Up" action on the hibernation screen:
-```javascript
-window.wakeWebview = (id) => {
-  const acc = accounts.find(a => a.id === id);
-  if (!acc) return;
-  
-  acc.lastAccessed = Date.now();
-  if (acc.hibernated) {
-    const overlay = document.getElementById(`hibernation_${id}`);
-    if (overlay) overlay.classList.add('hidden');
-    
-    const container = document.getElementById(`container_${id}`);
-    if (container) buildWebviewDOM(acc, container);
-    
-    acc.hibernated = false;
-  }
-};
-```
-Because the partition data is persistently cached on disk (`persist:acc_<id>`), WhatsApp Web re-authenticates and restores active chats within ~2 seconds without requiring QR re-scanning.
+2. Every 60 seconds, `checkHibernation()` verifies whether any inactive account has exceeded the `HIBERNATION_TIMEOUT = 20 * 60 * 1000` (20 minutes).
+3. Once expired, `hibernateWebview(id)` removes the `<webview>` element completely from the DOM, causing Chromium to terminate the underlying renderer process and instantly reclaiming **200 MB to 450 MB of RAM** per hibernated tab.
+4. An informative hibernation overlay replaces the webview, notifying the user that the tab is asleep to conserve memory.
+5. Clicking "Reactivar Cuenta" or switching back to the account instantly calls `wakeWebview(id)`, mounting a new `<webview>` element that seamlessly reconnects with the authenticated session partition.
 
 ---
 
-## 3. Startup Lazy Loading
+## 3. Webview Viewport & Visibility Management
 
-When WhatsNexus boots up with multiple configured accounts:
-- **Only the previously active account** (or the first account in the list) is actively instantiated into the DOM.
-- All other accounts are marked as `hibernated = true` and rendered with a dormant hibernation overlay.
-- This prevents the application from launching 5–10 simultaneous Chromium renderers on cold boot, reducing initial memory usage by **up to 80%**.
+In Electron, toggling `<webview>` visibility via CSS `display: none` can cause Chromium's compositor to drop the GPU rasterization surface, resulting in black box artifacts or delayed texture rebuilds upon reactivation.
+
+To guarantee zero-flicker tab switching and preserve GPU rasterization integrity:
+- Inactive accounts and full-window views are hidden using `visibility: hidden; opacity: 0; pointer-events: none; z-index: -1;` with absolute positioning.
+- Active accounts use `visibility: visible; opacity: 1; pointer-events: auto; z-index: 1;`.
+- This ensures the underlying Chromium guest renderers maintain correct viewport coordinates without visual tearing or graphical corruption.
 
 ---
 
@@ -90,26 +51,19 @@ When WhatsNexus boots up with multiple configured accounts:
 Configured in `src/main.js` before the Electron `app` is ready:
 
 ```javascript
-// Disable unnecessary background media services
+// Disable unnecessary background media services and Wayland color manager issues
 app.commandLine.appendSwitch('disable-features', 'HardwareMediaKeyHandling,MediaSessionService,WaylandWpColorManagerV1');
 
-// Reduce process overhead for site isolation
+// Reduce process overhead for site isolation across webview partitions
 app.commandLine.appendSwitch('disable-site-isolation-trials');
 
-// Limit background network activity
+// Limit background network activity and IPC throttling overhead
 app.commandLine.appendSwitch('disable-background-networking');
 app.commandLine.appendSwitch('disable-ipc-flooding-protection');
-
-// Aggressive VRAM and RAM reduction
-app.commandLine.appendSwitch('enable-low-end-device-mode');
-app.commandLine.appendSwitch('renderer-process-limit', '2');
-
-// Compact V8 JavaScript heap (limits old-space allocation per isolate to 128MB)
-app.commandLine.appendSwitch('js-flags', '--optimize_for_size --max-old-space-size=128');
-
-// Minimize disk cache I/O overhead for shaders
-app.commandLine.appendSwitch('disable-gpu-shader-disk-cache');
 ```
+
+> [!NOTE]
+> Aggressive flags such as `--enable-low-end-device-mode` and artificial `--renderer-process-limit` caps are intentionally avoided. On modern multi-monitor, high-DPI, and Wayland compositor environments, low-end device mode starves the GPU tile rasterizer memory budget, leading to missing tile artifacts (black or stale rectangular patches). True memory efficiency is achieved cleanly via the 20-minute hibernation cycle and lazy loading.
 
 ---
 

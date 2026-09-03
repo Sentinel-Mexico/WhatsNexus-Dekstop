@@ -6,6 +6,30 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ---
 
+## [0.12.1] - 2026-09-03
+### Added
+- **Top 25 Worldwide Languages Localization:**
+  - Expanded interface localization from 10 to the 25 most spoken languages in the world according to global speaker demographics (Ethnologue standard), sorted strictly in proportional order: English, Mandarin Chinese, Hindi, Spanish, French, Arabic, Bengali, Portuguese, Russian, Urdu, Indonesian, German, Japanese, Marathi, Telugu, Turkish, Tamil, Cantonese, Vietnamese, Filipino/Tagalog, Korean, Persian/Farsi, Hausa, Swahili, and Italian.
+  - Complete, professional localization across all settings, tabs, dialogs, and navigation elements.
+- **Granular Permissions Management:**
+  - Added dedicated **Permisos** section in Settings with individual controls for hardware and sharing access: Microphone, Camera, Geolocation, Screen Sharing, and Screen Sharing with Audio.
+  - Added quick action shortcuts: "Permitir todo" (Allow all) and "Quitar todo" (Remove all).
+  - Configured native Electron session permission handlers to dynamically grant or deny permissions according to user preferences.
+- **Advanced Notification Privacy Engine:**
+  - Introduced customizable privacy presets: Broad, Medium, Strict, and Custom.
+  - Fine-grained controls for Contact Photo, Contact Name, Message Preview, and Notification Sound.
+  - Authoritative desktop notification interception via Electron's native notification subsystem with circular avatar masking.
+  - Absolute Do Not Disturb (DND) isolation with hardware audio sink muting.
+- **Multi-Brand Palette & Appearance Customization:**
+  - Integrated 5 curated color palettes: WhatsApp (Emerald), Messenger (Meta Blue), Telegram (Cyan Blue), Signal (Royal Blue), and Forest (Olive & Earth), fully adaptive to both Light and Dark modes with WCAG AAA contrast ratio compliance.
+  - Automatic guest theme synchronization ensuring WhatsApp Web matches the host appearance.
+- **Enhanced Multi-Account Experience:**
+  - Automatic WhatsApp profile name synchronization alongside contact avatar extraction (filtering out Meta AI icons).
+  - Floating tooltip labels on sidebar accounts immune to container clipping.
+  - Dedicated System Tray customization with unread message badge count and monochrome/colored icon variants.
+
+---
+
 ## [0.5.4] - 2026-09-03
 ### Added
 - **Stacer-Inspired Loading Splash Screen:** Introduced a dedicated frameless splash screen on application startup with an emerald glowing WhatsApp emblem, dynamic startup stage messages, and a smooth ~1.8s progress bar.

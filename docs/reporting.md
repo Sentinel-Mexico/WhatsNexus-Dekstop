@@ -36,14 +36,19 @@ WhatsNexus adheres to strict privacy guarantees:
 
 ---
 
-## 2. Notification Privacy Profiles
+## 2. Notification Privacy Presets & Custom Privacy Engine
 
-To protect user confidentiality in public or shared workspaces, WhatsNexus implements configurable notification privacy profiles within `src/preload.js` and `#settings-view`:
+To protect user confidentiality in public or shared workspaces, WhatsNexus implements configurable notification privacy presets and granular toggles within `src/preload.js` and `#tab-notifications`:
 
-| Privacy Profile | Notification Avatar | Sender Title | Message Content | System Sound |
-| :--- | :--- | :--- | :--- | :--- |
-| **Broad (Default)** | Contact Profile Photo | Contact Name / Group | Full Message Preview | Yes (Enabled) |
-| **Medium** | Contact Profile Photo | Contact Name / Group | *"Hidden message"* | Yes (Enabled) |
-| **Strict** | App Icon (Generic) | *"Hidden contact"* | *"Hidden message"* | No (Muted) |
+| Privacy Preset | Desktop Notifs | Contact Photo | Contact Name | Message Preview | Notification Sound |
+| :--- | :---: | :---: | :---: | :---: | :---: |
+| **Broad (Amplio)** | Enabled | Enabled | Enabled | Enabled | Enabled |
+| **Medium (Medio)** | Enabled | Enabled | Enabled | Disabled (*Hidden*) | Enabled |
+| **Strict (Estricto)** | Enabled | Disabled (*Generic App Icon*) | Disabled (*Hidden Contact*) | Disabled (*Hidden*) | Disabled (*Muted*) |
+| **Custom (Personalizado)** | Configurable | Configurable | Configurable | Configurable | Configurable |
 
-Users can adjust their active privacy profile at any time under **Settings $\rightarrow$ Notifications**, with updates applied instantly across all active sessions.
+### Reactive Behavior
+- **Template Synchronization:** Selecting a preset instantly toggles the corresponding options and propagates the updated policy to all guest sessions.
+- **Granular Override:** Manually modifying any individual switch automatically changes the active preset selector to **"Personalizado" (Custom)**.
+- **Master Desktop Toggle:** Disabling desktop notifications blocks system alert dispatch completely and dims sub-options in the settings interface.
+- **In-flight Interception:** `src/preload.js` wraps the native HTML5 `window.Notification` constructor, dynamically filtering sender metadata, avatars, message bodies, and alert sounds in real time without requiring session refreshes.
