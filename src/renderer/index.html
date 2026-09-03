@@ -6,34 +6,124 @@
   <title>WhatsNexus</title>
   <link rel="stylesheet" href="style.css">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <!-- Font Awesome Free CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
-<body>
+<body class="theme-dark"> <!-- Theme can be theme-light, theme-dark, theme-auto -->
   <div class="app-container">
-    <!-- Sidebar para la gestión de cuentas -->
+    <!-- Sidebar minificada para iconos -->
     <aside class="sidebar">
-      <div class="sidebar-header">
-        <h2>WhatsNexus</h2>
-      </div>
-      
       <ul id="account-list" class="account-list">
         <!-- Las cuentas se añadirán aquí dinámicamente -->
       </ul>
       
-      <button id="add-account-btn" class="add-btn">
-        <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" class="css-i6dzq1"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-        Añadir Cuenta
-      </button>
+      <div class="sidebar-bottom">
+        <button id="add-account-btn" class="icon-btn tooltip-container">
+          <i class="fa-solid fa-user-plus"></i>
+          <span class="tooltip-text">Añadir Cuenta</span>
+        </button>
+        <button id="settings-btn" class="icon-btn tooltip-container">
+          <i class="fa-solid fa-user-gear"></i>
+          <span class="tooltip-text">Configuración</span>
+        </button>
+      </div>
     </aside>
 
     <!-- Contenedor principal donde se renderizarán los webviews -->
     <main id="webview-container" class="main-content">
-      <!-- Los <webview> se inyectarán aquí. Se usa 'partition="persist:ID"' para aislarlos -->
       <div class="empty-state" id="empty-state">
-        <div class="empty-icon">💬</div>
-        <h3>Bienvenido a WhatsNexus</h3>
-        <p>Selecciona una cuenta en la barra lateral o añade una nueva para comenzar.</p>
+        <div class="empty-icon"><i class="fa-brands fa-whatsapp"></i></div>
+        <h3 data-i18n="welcome">Bienvenido a WhatsNexus</h3>
+        <p data-i18n="welcome_desc">Selecciona una cuenta en la barra lateral o añade una nueva para comenzar.</p>
       </div>
     </main>
+  </div>
+
+  <!-- Modal de Configuración -->
+  <div id="settings-modal" class="modal-overlay hidden">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2><i class="fa-solid fa-gear"></i> Configuración</h2>
+        <button id="close-settings-btn" class="close-btn"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      
+      <div class="modal-body">
+        <!-- Pestañas de configuración -->
+        <div class="settings-tabs">
+          <button class="tab-btn active" data-tab="tab-accounts">Cuentas</button>
+          <button class="tab-btn" data-tab="tab-appearance">Apariencia</button>
+          <button class="tab-btn" data-tab="tab-notifications">Notificaciones</button>
+        </div>
+        
+        <!-- Contenido de las pestañas -->
+        <div class="settings-panels">
+          <!-- Pestaña Cuentas -->
+          <div id="tab-accounts" class="settings-panel active">
+            <h3>Gestión de Cuentas</h3>
+            <ul id="settings-account-list" class="settings-accounts">
+              <!-- Renderizado dinámico -->
+            </ul>
+          </div>
+          
+          <!-- Pestaña Apariencia -->
+          <div id="tab-appearance" class="settings-panel">
+            <div class="setting-group">
+              <label>Tema</label>
+              <select id="theme-select">
+                <option value="theme-auto">Automático (Sistema)</option>
+                <option value="theme-light">Claro</option>
+                <option value="theme-dark">Oscuro</option>
+              </select>
+            </div>
+            <div class="setting-group">
+              <label>Idioma</label>
+              <select id="language-select">
+                <option value="en">English (Inglés)</option>
+                <option value="es">Español</option>
+                <option value="hi">Hindi (हिन्दी)</option>
+                <option value="ar">Árabe (العربية)</option>
+                <option value="bn">Bengalí (বাংলা)</option>
+                <option value="pt">Portugués</option>
+                <option value="ru">Ruso (Русский)</option>
+                <option value="ur">Urdu (اردو)</option>
+                <option value="id">Indonesio</option>
+                <option value="fr">Francés</option>
+              </select>
+            </div>
+          </div>
+          
+          <!-- Pestaña Notificaciones -->
+          <div id="tab-notifications" class="settings-panel">
+            <div class="setting-group">
+              <label>Perfil de Privacidad</label>
+              <div class="privacy-options">
+                <label class="radio-label">
+                  <input type="radio" name="privacy-profile" value="broad" checked>
+                  <div class="radio-content">
+                    <h4>Amplio</h4>
+                    <p>Foto, nombre, vista previa del mensaje y sonido.</p>
+                  </div>
+                </label>
+                <label class="radio-label">
+                  <input type="radio" name="privacy-profile" value="medium">
+                  <div class="radio-content">
+                    <h4>Medio</h4>
+                    <p>Foto, nombre, "Mensaje oculto" y sonido.</p>
+                  </div>
+                </label>
+                <label class="radio-label">
+                  <input type="radio" name="privacy-profile" value="strict">
+                  <div class="radio-content">
+                    <h4>Estricto</h4>
+                    <p>Icono de app, "Contacto oculto", "Mensaje oculto", sin sonido.</p>
+                  </div>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
   <script src="renderer.js"></script>
