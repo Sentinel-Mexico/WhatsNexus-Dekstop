@@ -22,4 +22,9 @@ Aplica este incremento cuando la solicitud implique cambios drásticos o incompa
 > **REGLA DE SINCRONIZACIÓN DE VERSIONES:**
 > Siempre que se realice un cambio de versión, este debe reflejarse en **todos** los archivos donde esté definida la versión. En este proyecto Node.js, debes modificar el `package.json` y posteriormente ejecutar `npm install` (o `npm update`) para garantizar que el `package-lock.json` u otros archivos generados se sincronicen correctamente con la nueva versión.
 
+> **REGLA DE FORMATO DE MENSAJES DE COMMIT Y PUSH:**
+> Cada vez que se prepare un commit o push a Git, el mensaje debe comenzar estrictamente con el prefijo de la versión actual seguido del tipo de cambio y el resumen de la actualización.
+> Formato requerido: `"v.<VERSION> <tipo>: <resumen>"`
+> Ejemplo: `"v.0.3.1 perf: implement lazy loading on startup, debounce preload observers, ..."`
+
 **Instrucción final para el agente:** Cada vez que entregues un código actualizado, incluye un breve comentario en tu respuesta indicando qué tipo de incremento aplicaste (Parche, Menor o Mayor) y la justificación basada en estas reglas.
