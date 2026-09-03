@@ -1,4 +1,4 @@
-const { app, BrowserWindow, Menu, Tray, ipcMain, nativeImage, nativeTheme, Notification } = require('electron');
+const { app, BrowserWindow, Menu, Tray, ipcMain, nativeImage, nativeTheme, Notification, session } = require('electron');
 const path = require('path');
 const fs = require('fs');
 
@@ -228,7 +228,29 @@ ipcMain.on('show-native-notification', (event, data) => {
   notification.show();
 });
 
+function configureSessionPermissions(ses) {
+  if (!ses) return;
+  ses.setPermissionRequestHandler((webContents, permission, callback) => {
+    if (permission === 'notifications') {
+      return callback(false); // Bloquear notificaciones web nativas de Chromium
+    }
+    callback(true);
+  });
+
+  ses.setPermissionCheckHandler((webContents, permission) => {
+    if (permission === 'notifications') {
+      return false; // Bloquear comprobación de permisos nativos de Chromium
+    }
+    return true;
+  });
+}
+
 app.whenReady().then(() => {
+  configureSessionPermissions(session.defaultSession);
+  app.on('session-created', (ses) => {
+    configureSessionPermissions(ses);
+  });
+
   createSplashWindow();
   createWindow();
   createTray();

@@ -8,65 +8,116 @@ let attempts = 0;
 const MAX_ATTEMPTS = 30; // Máximo ~5 minutos de reintentos lentos
 
 // ========================================================
-// 1. Puente de Interceptación en el Contexto Principal (Main World)
+// 1. Procesamiento de Notificaciones y Recorte Circular
 // ========================================================
-function injectMainWorldNotificationBridge() {
+function makeCircularAvatar(src, callback) {
+  if (!src) return callback(null);
   try {
-    const script = document.createElement('script');
-    script.textContent = `
-(function() {
-  function dispatchToHost(title, options) {
-    try {
-      window.dispatchEvent(new CustomEvent('whats-nexus-notification', {
-        detail: {
-          title: title || 'WhatsApp',
-          options: options ? {
-            body: options.body,
-            icon: options.icon,
-            tag: options.tag,
-            silent: options.silent
-          } : {}
-        }
-      }));
-    } catch(e) {}
-  }
-
-  // Interceptar window.Notification
-  const OrigNotification = window.Notification;
-  window.Notification = function(title, options) {
-    dispatchToHost(title, options);
-    return {
-      onclick: null,
-      onclose: null,
-      onerror: null,
-      onshow: null,
-      addEventListener: function() {},
-      removeEventListener: function() {},
-      close: function() {}
+    const img = new Image();
+    // NUNCA asignar crossOrigin en blob: o data: URLs
+    if (src.startsWith('http://') || src.startsWith('https://')) {
+      img.crossOrigin = 'anonymous';
+    }
+    img.onload = () => {
+      try {
+        const size = Math.min(img.width, img.height) || 128;
+        const canvas = document.createElement('canvas');
+        canvas.width = size;
+        canvas.height = size;
+        const ctx = canvas.getContext('2d');
+        ctx.beginPath();
+        ctx.arc(size / 2, size / 2, size / 2, 0, Math.PI * 2);
+        ctx.closePath();
+        ctx.clip();
+        ctx.drawImage(img, 0, 0, size, size);
+        callback(canvas.toDataURL('image/png'));
+      } catch (err) {
+        callback(null);
+      }
     };
-  };
-  window.Notification.permission = 'granted';
-  window.Notification.requestPermission = function() { return Promise.resolve('granted'); };
-
-  // Interceptar ServiceWorkerRegistration.prototype.showNotification
-  if (window.ServiceWorkerRegistration && window.ServiceWorkerRegistration.prototype.showNotification) {
-    window.ServiceWorkerRegistration.prototype.showNotification = function(title, options) {
-      dispatchToHost(title, options);
-      return Promise.resolve();
-    };
-  }
-})();
-`;
-    (document.head || document.documentElement).appendChild(script);
-    script.remove();
-  } catch (e) {
-    console.error('Error injecting notification bridge:', e);
+    img.onerror = () => callback(null);
+    img.src = src;
+  } catch (err) {
+    callback(null);
   }
 }
 
-// Inyectar de inmediato y reforzar en DOMContentLoaded
-injectMainWorldNotificationBridge();
-window.addEventListener('DOMContentLoaded', injectMainWorldNotificationBridge);
+function dispatchNotificationToHost(title, options = {}) {
+  const rawIcon = options.icon;
+  if (rawIcon) {
+    makeCircularAvatar(rawIcon, (circularIcon) => {
+      ipcRenderer.sendToHost('guest-notification', {
+        title: title || 'WhatsApp',
+        body: options.body || '',
+        iconDataUrl: circularIcon
+      });
+    });
+  } else {
+    ipcRenderer.sendToHost('guest-notification', {
+      title: title || 'WhatsApp',
+      body: options.body || '',
+      iconDataUrl: null
+    });
+  }
+}
+
+function CustomNotification(title, options = {}) {
+  dispatchNotificationToHost(title, options);
+  return {
+    onclick: null,
+    onclose: null,
+    onerror: null,
+    onshow: null,
+    addEventListener: function() {},
+    removeEventListener: function() {},
+    close: function() {}
+  };
+}
+
+Object.defineProperty(CustomNotification, 'permission', {
+  get: () => 'granted',
+  configurable: true
+});
+
+CustomNotification.requestPermission = function(cb) {
+  const p = Promise.resolve('granted');
+  if (typeof cb === 'function') p.then(cb);
+  return p;
+};
+
+// Sobrescribir window.Notification de manera inmediata y definitiva
+try {
+  window.Notification = CustomNotification;
+  Object.defineProperty(window, 'Notification', {
+    value: CustomNotification,
+    writable: true,
+    configurable: true
+  });
+} catch (e) {
+  console.error('Error definying window.Notification:', e);
+}
+
+// Deshabilitar Service Workers para forzar el canal Notification
+if (navigator.serviceWorker) {
+  try {
+    navigator.serviceWorker.register = function() {
+      return Promise.reject(new Error('SW notifications disabled'));
+    };
+    navigator.serviceWorker.getRegistrations().then(registrations => {
+      for (const reg of registrations) {
+        reg.unregister();
+      }
+    }).catch(() => {});
+  } catch (_) {}
+}
+
+// Interceptar también ServiceWorkerRegistration si llegara a existir
+if (window.ServiceWorkerRegistration && window.ServiceWorkerRegistration.prototype.showNotification) {
+  window.ServiceWorkerRegistration.prototype.showNotification = function(title, options) {
+    dispatchNotificationToHost(title, options);
+    return Promise.resolve();
+  };
+}
 
 // ========================================================
 // 2. Extracción de Foto y Nombre de Perfil (Filtrando Meta AI)
@@ -257,62 +308,4 @@ window.matchMedia = function(query) {
 
 window.addEventListener('DOMContentLoaded', () => {
   applyThemeToGuest(isDarkMode);
-});
-
-// ========================================================
-// 4. Procesamiento de Notificaciones y Recorte Circular
-// ========================================================
-function makeCircularAvatar(src, callback) {
-  if (!src) return callback(null);
-  try {
-    const img = new Image();
-    // NUNCA asignar crossOrigin en blob: o data: URLs
-    if (src.startsWith('http://') || src.startsWith('https://')) {
-      img.crossOrigin = 'anonymous';
-    }
-    img.onload = () => {
-      try {
-        const size = Math.min(img.width, img.height) || 128;
-        const canvas = document.createElement('canvas');
-        canvas.width = size;
-        canvas.height = size;
-        const ctx = canvas.getContext('2d');
-        ctx.beginPath();
-        ctx.arc(size / 2, size / 2, size / 2, 0, Math.PI * 2);
-        ctx.closePath();
-        ctx.clip();
-        ctx.drawImage(img, 0, 0, size, size);
-        callback(canvas.toDataURL('image/png'));
-      } catch (err) {
-        callback(null);
-      }
-    };
-    img.onerror = () => callback(null);
-    img.src = src;
-  } catch (err) {
-    callback(null);
-  }
-}
-
-// Escuchar el evento de notificación proveniente del contexto principal
-window.addEventListener('whats-nexus-notification', (event) => {
-  const detail = event.detail || {};
-  const rawTitle = detail.title || 'WhatsApp';
-  const rawOptions = detail.options || {};
-
-  if (rawOptions.icon) {
-    makeCircularAvatar(rawOptions.icon, (circularIcon) => {
-      ipcRenderer.sendToHost('guest-notification', {
-        title: rawTitle,
-        body: rawOptions.body || '',
-        iconDataUrl: circularIcon
-      });
-    });
-  } else {
-    ipcRenderer.sendToHost('guest-notification', {
-      title: rawTitle,
-      body: rawOptions.body || '',
-      iconDataUrl: null
-    });
-  }
 });

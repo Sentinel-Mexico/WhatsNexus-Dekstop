@@ -272,12 +272,22 @@ function applySettings() {
       }
     });
 
-    // Enviar configuración a las webviews activas
+    // Enviar configuración a las webviews activas y sincronizar estado de audio
     document.querySelectorAll('webview').forEach(wv => {
       try {
         wv.send('update-notification-settings', settings.notifications);
         wv.send('set-dark-mode', isDark);
       } catch (_) {}
+    });
+
+    accounts.forEach(acc => {
+      const wv = document.getElementById(`webview_${acc.id}`);
+      if (wv) {
+        try {
+          const isMuted = !!acc.dnd || (settings.notifications && settings.notifications.notificationSound === false);
+          wv.setAudioMuted(isMuted);
+        } catch (_) {}
+      }
     });
   }
 

@@ -4,6 +4,19 @@ This changelog records all granular updates, bug fixes, refactorings, and featur
 
 ---
 
+## [0.10.2] - 2026-09-03
+### Fixed
+- **Chromium Native Notification Permission Denial:**
+  - Configured `setPermissionRequestHandler` and `setPermissionCheckHandler` across all Chromium sessions (`session.defaultSession` and dynamic partitions) to block native web notifications. This completely prevents Chromium's C++ NotificationPlatformBridge from dispatching un-filtered notifications directly to the OS.
+  - WhatsNexus is now the sole authority controlling notification dispatch, ensuring DND and privacy filters are 100% strictly enforced.
+- **Direct Main-World `window.Notification` Overwrite & ServiceWorker Disabling:**
+  - Overrode `window.Notification` directly on the main world window (via `contextIsolation: false`), guaranteeing interception even before `document.documentElement` is populated.
+  - Automatically unregisters and prevents new ServiceWorker registrations so WhatsApp Web consistently uses the intercepted `window.Notification` channel.
+- **Synchronous Audio Muting on DND and Notification Settings Changes:**
+  - Updated `applySettings()` and `toggleDND()` to dynamically synchronize `webview.setAudioMuted(isMuted)` across all webviews whenever DND or the notification sound toggle changes.
+
+---
+
 ## [0.10.1] - 2026-09-03
 ### Fixed
 - **Authoritative Notification Interception Architecture:**
