@@ -4,6 +4,13 @@ This changelog records all granular updates, bug fixes, refactorings, and featur
 
 ---
 
+## [0.12.4] - 2026-09-03
+### Fixed
+- **Permissions Module Title Capitalization:**
+  - Capitalized the labels for the hardware access options under "Acceso al dispositivo" in `src/renderer/index.html` and across all dictionaries in `src/renderer/renderer.js` (`Micrófono` and `Cámara`, `Microphone` and `Camera`).
+
+---
+
 ## [0.12.3] - 2026-09-03
 ### Fixed
 - **Bilingual Language Label Formatting:**
