@@ -1,6 +1,28 @@
 const { app, BrowserWindow, Menu, Tray, ipcMain } = require('electron');
 const path = require('path');
 
+// 3. Flags de optimización de Chromium
+app.commandLine.appendSwitch('disable-features', 'HardwareMediaKeyHandling,MediaSessionService');
+app.commandLine.appendSwitch('disable-site-isolation-trials'); // Reduce overhead de memoria
+app.commandLine.appendSwitch('disable-background-networking');
+app.commandLine.appendSwitch('disable-ipc-flooding-protection');
+app.commandLine.appendSwitch('enable-low-end-device-mode'); // Fuerte reducción de VRAM/RAM
+app.commandLine.appendSwitch('renderer-process-limit', '2'); // Limitamos agresivamente
+
+// 1. Single Instance Lock
+const gotTheLock = app.requestSingleInstanceLock();
+if (!gotTheLock) {
+  app.quit();
+} else {
+  app.on('second-instance', (event, commandLine, workingDirectory) => {
+    // Si el usuario intenta abrir otra instancia, enfocamos la original
+    if (mainWindow) {
+      if (mainWindow.isMinimized()) mainWindow.restore();
+      mainWindow.focus();
+    }
+  });
+}
+
 let mainWindow;
 let tray = null;
 
@@ -13,7 +35,8 @@ function createWindow() {
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false, // For simplicity in this scaffolding, though contextBridge is recommended for prod
-      webviewTag: true // CRITICAL: This allows the use of <webview> tags for session isolation
+      webviewTag: true, // CRITICAL: This allows the use of <webview> tags for session isolation
+      backgroundThrottling: true // Asegura throttling en background
     }
   });
 
