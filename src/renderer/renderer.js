@@ -139,13 +139,22 @@ function init() {
     const lang = i18n[settings.language] || i18n['en'];
     addAccount(`${lang.default_account_name} 1`);
   } else {
+    // Restaurar la última cuenta activa guardada o la primera disponible
+    const savedActiveId = localStorage.getItem('whatsNexusActiveAccount');
+    const targetActiveId = (savedActiveId && accounts.some(a => a.id === savedActiveId))
+      ? savedActiveId
+      : accounts[0].id;
+
     accounts.forEach(acc => {
       acc.lastAccessed = Date.now();
-      acc.hibernated = false;
       renderAccountSidebarItem(acc);
-      createWebviewContainer(acc);
+      // LAZY LOADING: Solo instanciamos el webview de la cuenta que se mostrará
+      const isTarget = (acc.id === targetActiveId);
+      acc.hibernated = !isTarget;
+      createWebviewContainer(acc, !isTarget);
     });
-    activateAccount(accounts[0].id);
+
+    activateAccount(targetActiveId);
   }
 
   // Hibernation checker every 1 minute
@@ -153,7 +162,15 @@ function init() {
 }
 
 function saveAccounts() {
-  localStorage.setItem('whatsNexusAccounts', JSON.stringify(accounts));
+  // Garantizar persistencia limpia sin estados transitorios
+  const toSave = accounts.map(a => ({
+    id: a.id,
+    name: a.name,
+    partition: a.partition,
+    avatarUrl: a.avatarUrl,
+    dnd: a.dnd
+  }));
+  localStorage.setItem('whatsNexusAccounts', JSON.stringify(toSave));
 }
 
 function saveSettings() {
@@ -239,16 +256,16 @@ function updateAccountSidebarItem(account) {
   }
 }
 
-function createWebviewContainer(account) {
+function createWebviewContainer(account, startHibernated = false) {
   const container = document.createElement('div');
   container.id = `container_${account.id}`;
   container.className = 'account-container hidden'; // By default hidden
   
   const lang = i18n[settings.language] || i18n['en'];
   
-  // Overlay de Hibernación (Oculto por defecto)
+  // Overlay de Hibernación (Visible si startHibernated es true)
   const overlay = document.createElement('div');
-  overlay.className = 'hibernation-overlay hidden';
+  overlay.className = `hibernation-overlay ${startHibernated ? '' : 'hidden'}`;
   overlay.id = `hibernation_${account.id}`;
   overlay.innerHTML = `
     <i class="fa-solid fa-moon hibernation-icon"></i>
@@ -260,8 +277,10 @@ function createWebviewContainer(account) {
   container.appendChild(overlay);
   webviewContainer.appendChild(container);
 
-  // Crear el webview
-  buildWebviewDOM(account, container);
+  // Solo crear el webview en el DOM si NO empieza hibernado (Lazy Loading)
+  if (!startHibernated) {
+    buildWebviewDOM(account, container);
+  }
 }
 
 function buildWebviewDOM(account, parentContainer) {
@@ -359,6 +378,7 @@ function activateAccount(id) {
   });
   
   if (id) {
+    localStorage.setItem('whatsNexusActiveAccount', id);
     emptyState.classList.add('hidden');
     const acc = accounts.find(a => a.id === id);
     if (acc) {
@@ -382,6 +402,7 @@ function deleteAccount(id) {
     if (accounts.length > 0) {
       activateAccount(accounts[0].id);
     } else {
+      localStorage.removeItem('whatsNexusActiveAccount');
       emptyState.classList.remove('hidden');
     }
   }

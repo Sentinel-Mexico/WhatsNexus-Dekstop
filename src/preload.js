@@ -1,20 +1,24 @@
 const { ipcRenderer } = require('electron');
 
 let lastProfilePic = null;
+let observer = null;
+let intervalId = null;
+let attempts = 0;
+const MAX_ATTEMPTS = 30; // Máximo ~5 minutos de reintentos lentos
 
 function extractProfilePicture() {
   try {
-    // En WhatsApp Web, la foto de perfil del usuario suele estar en el header principal
-    // (el panel izquierdo). Buscamos la primera imagen dentro de un header.
+    // En WhatsApp Web, la foto de perfil del usuario está en el header principal
     const header = document.querySelector('header');
     if (header) {
       const img = header.querySelector('img');
       if (img && img.src) {
         if (img.src !== lastProfilePic) {
           lastProfilePic = img.src;
-          // sendToHost envía el mensaje al <webview> en el proceso de renderizado
           ipcRenderer.sendToHost('profile-picture-updated', img.src);
         }
+        // OPTIMIZACIÓN CRÍTICA: Desconectar el observador para ahorrar 100% de CPU
+        cleanupObservers();
         return true;
       }
     }
@@ -24,14 +28,39 @@ function extractProfilePicture() {
   return false;
 }
 
+function cleanupObservers() {
+  if (observer) {
+    observer.disconnect();
+    observer = null;
+  }
+  if (intervalId) {
+    clearInterval(intervalId);
+    intervalId = null;
+  }
+}
+
 window.addEventListener('load', () => {
-  // Monitorear cambios en el DOM para cuando termine de cargar WhatsApp
-  const observer = new MutationObserver(() => {
-    extractProfilePicture();
+  // Intentar de inmediato
+  if (extractProfilePicture()) return;
+
+  // Monitorear con debounce/throttle para no saturar la CPU
+  let debounceTimer = null;
+  observer = new MutationObserver(() => {
+    if (debounceTimer) return;
+    debounceTimer = setTimeout(() => {
+      debounceTimer = null;
+      extractProfilePicture();
+    }, 1500); // Evaluar como máximo cada 1.5 segundos
   });
-  
+
   observer.observe(document.body, { childList: true, subtree: true });
-  
-  // Respaldo: verificar periódicamente (útil si el DOM cambia o tarda en cargar)
-  setInterval(extractProfilePicture, 5000);
+
+  // Respaldo periódico espaciado a 10s con límite de intentos
+  intervalId = setInterval(() => {
+    attempts++;
+    const found = extractProfilePicture();
+    if (found || attempts >= MAX_ATTEMPTS) {
+      cleanupObservers();
+    }
+  }, 10000);
 });
