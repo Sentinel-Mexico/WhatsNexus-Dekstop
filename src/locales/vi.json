@@ -225,5 +225,10 @@
   "perm_group_device_desc": "Manage hardware permissions for connected accounts.",
   "perm_group_share_desc": "Configure screen capture and streaming preferences.",
   "perm_group_downloads_desc": "Control the destination folder for received files.",
-  "perm_group_spellcheck_desc": "Manage native dictionaries for spell checking."
+  "perm_group_spellcheck_desc": "Manage native dictionaries for spell checking.",
+  "about_version_title": "Phiên bản WhatsNexus",
+  "about_version_desc": "Thông tin bản dựng hiện tại và cập nhật hệ thống.",
+  "about_license_desc_header": "Điều khoản sử dụng hợp pháp và quyền truy cập mã nguồn mở.",
+  "about_credits_desc_header": "Cộng đồng, nhà phát triển và nguồn cảm hứng của dự án.",
+  "about_doom_desc_header": "Giao thức giải trí cổ điển trong WebAssembly."
 }

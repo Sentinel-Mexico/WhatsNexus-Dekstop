@@ -225,5 +225,10 @@
   "perm_group_device_desc": "Manage hardware permissions for connected accounts.",
   "perm_group_share_desc": "Configure screen capture and streaming preferences.",
   "perm_group_downloads_desc": "Control the destination folder for received files.",
-  "perm_group_spellcheck_desc": "Manage native dictionaries for spell checking."
+  "perm_group_spellcheck_desc": "Manage native dictionaries for spell checking.",
+  "about_version_title": "WhatsNexus 版本",
+  "about_version_desc": "當前建置資訊同埋系統更新。",
+  "about_license_desc_header": "合法使用條款與開源代碼訪問。",
+  "about_credits_desc_header": "社群、開發者同埋項目靈感來源。",
+  "about_doom_desc_header": "基於 WebAssembly 嘅經典娛樂協議。"
 }

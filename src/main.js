@@ -371,7 +371,7 @@ const SPELLCHECK_MAP = {
   fa: 'fa',
   ha: 'ha',
   sw: 'sw',
-  it: 'it-IT'
+  it: 'it'
 };
 
 function loadSavedSystemSettings() {
@@ -380,7 +380,16 @@ function loadSavedSystemSettings() {
     if (fs.existsSync(filePath)) {
       const data = JSON.parse(fs.readFileSync(filePath, 'utf8'));
       if (Array.isArray(data.spellcheckLanguages)) {
-        currentSystemSettings.spellcheckLanguages = data.spellcheckLanguages;
+        const LEGACY_MAP = {
+          'es': 'es-ES',
+          'fr': 'fr-FR',
+          'de': 'de-DE',
+          'it-IT': 'it',
+          'ru-RU': 'ru'
+        };
+        currentSystemSettings.spellcheckLanguages = Array.from(new Set(
+          data.spellcheckLanguages.map(c => LEGACY_MAP[c] || c)
+        ));
       } else if (typeof data.spellcheckLanguage === 'string') {
         const mapped = SPELLCHECK_MAP[data.spellcheckLanguage] || data.spellcheckLanguage || 'es-ES';
         currentSystemSettings.spellcheckLanguages = [mapped];

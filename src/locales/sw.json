@@ -225,5 +225,10 @@
   "perm_group_device_desc": "Manage hardware permissions for connected accounts.",
   "perm_group_share_desc": "Configure screen capture and streaming preferences.",
   "perm_group_downloads_desc": "Control the destination folder for received files.",
-  "perm_group_spellcheck_desc": "Manage native dictionaries for spell checking."
+  "perm_group_spellcheck_desc": "Manage native dictionaries for spell checking.",
+  "about_version_title": "Toleo la WhatsNexus",
+  "about_version_desc": "Maelezo ya sasa ya muundo na masasisho ya mfumo.",
+  "about_license_desc_header": "Sheria na masharti ya kisheria ya matumizi na ufikiaji wa msimbo huria.",
+  "about_credits_desc_header": "Jumuiya, watengenezaji, na msukumo wa mradi.",
+  "about_doom_desc_header": "Itifaki ya burudani ya kitamaduni katika WebAssembly."
 }

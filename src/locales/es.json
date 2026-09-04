@@ -225,5 +225,10 @@
   "perm_group_device_desc": "Administra los permisos de hardware para las cuentas conectadas.",
   "perm_group_share_desc": "Configura las opciones de captura y transmisión de pantalla.",
   "perm_group_downloads_desc": "Controla el directorio destino para los archivos recibidos.",
-  "perm_group_spellcheck_desc": "Gestiona los diccionarios nativos para la revisión de texto."
+  "perm_group_spellcheck_desc": "Gestiona los diccionarios nativos para la revisión de texto.",
+  "about_version_title": "Versión de WhatsNexus",
+  "about_version_desc": "Información actual de la compilación y actualizaciones.",
+  "about_license_desc_header": "Términos de uso legal y acceso al código fuente abierto.",
+  "about_credits_desc_header": "Comunidad, desarrolladores e inspiración del proyecto.",
+  "about_doom_desc_header": "Protocolo de entretenimiento clásico en WebAssembly."
 }

@@ -280,8 +280,7 @@ function populateLanguageSelect() {
 }
 
 const SPELLCHECK_LANGUAGES = [
-  // Español: es, es-AR (Argentina 🇦🇷), es-ES (España 🇪🇸), es-MX (México 🇲🇽), es-US (EE.UU. 🇺🇸), es-419 (Latinoamérica 🌎)
-  { code: 'es', flag: '🇪🇸', base: 'es' },
+  // Español: es-AR (Argentina 🇦🇷), es-ES (España 🇪🇸), es-MX (México 🇲🇽), es-US (EE.UU. 🇺🇸), es-419 (Latinoamérica 🌎)
   { code: 'es-AR', flag: '🇦🇷', base: 'es', regionKey: 'region_argentina', defaultRegion: 'Argentina' },
   { code: 'es-ES', flag: '🇪🇸', base: 'es', regionKey: 'region_spain', defaultRegion: 'España' },
   { code: 'es-MX', flag: '🇲🇽', base: 'es', regionKey: 'region_mexico', defaultRegion: 'México' },
@@ -301,23 +300,19 @@ const SPELLCHECK_LANGUAGES = [
   { code: 'pt-BR', flag: '🇧🇷', base: 'pt', regionKey: 'region_brazil', defaultRegion: 'Brasil' },
   { code: 'pt-PT', flag: '🇵🇹', base: 'pt', regionKey: 'region_portugal', defaultRegion: 'Portugal' },
 
-  // Francés: fr, fr-FR (Francia 🇫🇷), fr-CA (Canadá 🇨🇦), fr-CH (Suiza 🇨🇭)
-  { code: 'fr', flag: '🇫🇷', base: 'fr' },
+  // Francés: fr-FR (Francia 🇫🇷), fr-CA (Canadá 🇨🇦), fr-CH (Suiza 🇨🇭)
   { code: 'fr-FR', flag: '🇫🇷', base: 'fr', regionKey: 'region_france', defaultRegion: 'Francia' },
   { code: 'fr-CA', flag: '🇨🇦', base: 'fr', regionKey: 'region_ca', defaultRegion: 'Canadá' },
   { code: 'fr-CH', flag: '🇨🇭', base: 'fr', regionKey: 'region_switzerland', defaultRegion: 'Suiza' },
 
-  // Alemán: de, de-DE (Alemania 🇩🇪), de-AT (Austria 🇦🇹), de-CH (Suiza 🇨🇭)
-  { code: 'de', flag: '🇩🇪', base: 'de' },
+  // Alemán: de-DE (Alemania 🇩🇪), de-AT (Austria 🇦🇹), de-CH (Suiza 🇨🇭)
   { code: 'de-DE', flag: '🇩🇪', base: 'de', regionKey: 'region_germany', defaultRegion: 'Alemania' },
   { code: 'de-AT', flag: '🇦🇹', base: 'de', regionKey: 'region_austria', defaultRegion: 'Austria' },
   { code: 'de-CH', flag: '🇨🇭', base: 'de', regionKey: 'region_switzerland', defaultRegion: 'Suiza' },
 
-  // Italiano / Ruso: it, it-IT (Italia 🇮🇹), ru, ru-RU (Rusia 🇷🇺)
+  // Italiano / Ruso (Códigos base directos sin duplicidad)
   { code: 'it', flag: '🇮🇹', base: 'it' },
-  { code: 'it-IT', flag: '🇮🇹', base: 'it', regionKey: 'region_italy', defaultRegion: 'Italia' },
   { code: 'ru', flag: '🇷🇺', base: 'ru' },
-  { code: 'ru-RU', flag: '🇷🇺', base: 'ru', regionKey: 'region_russia', defaultRegion: 'Rusia' },
 
   // Árabe / Persa: ar (🇸🇦), fa (🇮🇷)
   { code: 'ar', flag: '🇸🇦', base: 'ar' },
@@ -331,6 +326,7 @@ const SPELLCHECK_LANGUAGES = [
   { code: 'tr', flag: '🇹🇷', base: 'tr' },
   { code: 'vi', flag: '🇻🇳', base: 'vi' }
 ];
+
 
 function renderSpellcheckList() {
   const container = document.getElementById('spellcheck-multiselect-container');
@@ -347,6 +343,18 @@ function renderSpellcheckList() {
       settings.spellcheckLanguages = ['es-ES'];
     }
   }
+
+  // Mapear códigos redundantes/obsoletos que hayan sido guardados previamente
+  const DEPRECATED_SPELLCHECK_MAP = {
+    'es': 'es-ES',
+    'fr': 'fr-FR',
+    'de': 'de-DE',
+    'it-IT': 'it',
+    'ru-RU': 'ru'
+  };
+  settings.spellcheckLanguages = Array.from(new Set(
+    settings.spellcheckLanguages.map(c => DEPRECATED_SPELLCHECK_MAP[c] || c)
+  ));
 
   const selectedSet = new Set(settings.spellcheckLanguages);
 
@@ -718,6 +726,10 @@ function applySettings() {
           emptyState.classList.remove('hidden');
         }
       }
+      const existingWebview = document.getElementById('doom-webview');
+      if (existingWebview) {
+        existingWebview.src = 'about:blank';
+      }
     }
   }
 
@@ -1082,11 +1094,20 @@ function openDoomView() {
 
   // Activate Doom skull button and show doom-view
   if (doomBtn) doomBtn.classList.add('active');
-  if (doomView) doomView.classList.remove('hidden');
+  if (doomView) {
+    doomView.classList.remove('hidden');
 
-  // Cargar el port WebAssembly si no ha sido cargado
-  if (doomWebview && (!doomWebview.src || doomWebview.src === 'about:blank')) {
-    doomWebview.src = 'https://diekmann.github.io/wasm-doom/';
+    let doomWebview = document.getElementById('doom-webview');
+    if (!doomWebview) {
+      doomWebview = document.createElement('webview');
+      doomWebview.id = 'doom-webview';
+      doomWebview.setAttribute('webpreferences', 'contextIsolation=true');
+      doomWebview.setAttribute('allowpopups', 'false');
+      doomView.appendChild(doomWebview);
+    }
+    if (doomWebview && (!doomWebview.src || doomWebview.src === 'about:blank' || !doomWebview.src.includes('wasm-doom'))) {
+      doomWebview.src = 'https://diekmann.github.io/wasm-doom/';
+    }
   }
 }
 

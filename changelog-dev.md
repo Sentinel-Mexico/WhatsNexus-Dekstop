@@ -2,6 +2,21 @@
 
 This changelog records all granular updates, bug fixes, refactorings, and feature iterations developed on the `Dev` branch. Each version bump in `package.json` is documented here as it happens.
 
+## [0.18.3] - 2026-09-03
+### Fixed
+- **Renderizado y Ciclo de Vida del Webview de Doom:**
+  - Se corrigió la anidación del contenedor `#doom-view` en el DOM al cerrar formalmente la etiqueta de la sección previa `#donations-view`, eliminando el bloqueo visual por herencia de estilos `hidden` / `z-index: -1`.
+  - Se aplicaron estilos CSS de pantalla completa para el contenedor `#doom-view` y el `<webview>` (`display: flex; flex: 1; width: 100%; height: 100%; border: none;`).
+  - Se optimizó el ciclo de vida cargando el WebAssembly de Doom (`https://diekmann.github.io/wasm-doom/`) de forma diferida únicamente al abrir la vista, y restableciendo a `about:blank` al desactivar el toggle "Doomizate" para no consumir memoria innecesaria.
+- **Subtítulos Descriptivos en la Sección "Acerca de":**
+  - Se añadieron subtítulos explicativos (`.perm-group-desc`) debajo de cada tarjeta principal (*"Versión de WhatsNexus"*, *"Licencia y Repositorios"*, *"Créditos y Agradecimientos"* y *"Doomizate"*).
+  - Se integraron las cadenas traducidas en los 26 archivos de localización (`src/locales/*.json`).
+- **Limpieza de Códigos Redundantes en el Corrector Ortográfico:**
+  - Se eliminaron estrictamente los códigos ambiguos/redundantes `"es"`, `"fr"`, `"de"`, `"it-IT"` y `"ru-RU"` del array de idiomas disponibles en la interfaz.
+  - Se implementó una capa de migración que reasigna limpiamente cualquier código persistido previo a su contraparte regional correspondiente (`es-ES`, `fr-FR`, `de-DE`, `it`, `ru`).
+
+---
+
 ## [0.18.2] - 2026-09-03
 ### Changed
 - **Renovación de Marca y Logotipos Oficiales de WhatsNexus:**

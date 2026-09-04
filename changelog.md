@@ -6,6 +6,21 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ---
 
+## [0.18.3] - 2026-09-03
+### Fixed
+- **Doom Webview Rendering & Memory Lifecycle:**
+  - Resolved DOM nesting anomaly where `#doom-view` was encapsulated within `#donations-view`, eliminating inherited `hidden` state and `z-index: -1`.
+  - Added full flex styling on `#doom-view` and `#doom-webview` (`display: flex; flex: 1; width: 100%; height: 100%; border: none;`).
+  - Implemented lazy loading for WebAssembly Doom (`https://diekmann.github.io/wasm-doom/`) so it only runs on tab activation, and unloads to `about:blank` when toggled off.
+- **About Tab Descriptive Subtitles:**
+  - Added clear subtitles (`.perm-group-desc`) beneath each card header in the About view (WhatsNexus Version, License & Repositories, Credits & Acknowledgements, Doomize).
+  - Extended localizations across all 26 supported language files.
+- **Spellchecker Redundant Language Cleanup:**
+  - Strictly removed redundant language codes `"es"`, `"fr"`, `"de"`, `"it-IT"`, and `"ru-RU"` from the available selector cloud.
+  - Added seamless mapping layer to gracefully reconcile existing user configs to their primary regional codes without empty tags or errors.
+
+---
+
 ## [0.18.2] - 2026-09-03
 ### Changed
 - **Official WhatsNexus Brand Identity & Icons Refresh:**

@@ -225,5 +225,10 @@
   "perm_group_device_desc": "Manage hardware permissions for connected accounts.",
   "perm_group_share_desc": "Configure screen capture and streaming preferences.",
   "perm_group_downloads_desc": "Control the destination folder for received files.",
-  "perm_group_spellcheck_desc": "Manage native dictionaries for spell checking."
+  "perm_group_spellcheck_desc": "Manage native dictionaries for spell checking.",
+  "about_version_title": "نسخه WhatsNexus",
+  "about_version_desc": "اطلاعات ساخت فعلی و به‌روزرسانی‌های سیستم.",
+  "about_license_desc_header": "شرایط قانونی استفاده و دسترسی به کد منبع باز.",
+  "about_credits_desc_header": "جامعه، توسعه‌دهندگان و الهام‌بخش پروژه.",
+  "about_doom_desc_header": "پروتکل سرگرمی کلاسیک در WebAssembly."
 }

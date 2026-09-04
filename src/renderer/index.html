@@ -449,8 +449,9 @@
                 <p class="about-app-tagline" data-i18n="about_tagline">Cliente de escritorio multi-cuenta para WhatsApp Web</p>
               </div>
 
-              <!-- Tarjeta 1: Detalles Técnicos -->
-              <h4 class="perm-group-title" data-i18n="about_technical_details">Detalles Técnicos</h4>
+              <!-- Tarjeta 1: Versión de WhatsNexus -->
+              <h4 class="perm-group-title" data-i18n="about_version_title">Versión de WhatsNexus</h4>
+              <p class="perm-group-desc" data-i18n="about_version_desc">Información actual de la compilación y actualizaciones.</p>
               <div class="perm-card about-specs-card">
                 <div class="about-specs-grid">
                   <div class="about-spec-item">
@@ -480,8 +481,9 @@
                 </div>
               </div>
 
-              <!-- Tarjeta 2: Licencia y Enlaces -->
-              <h4 class="perm-group-title" data-i18n="about_license_links">Licencia y Enlaces</h4>
+              <!-- Tarjeta 2: Licencia y Repositorios -->
+              <h4 class="perm-group-title" data-i18n="about_license_links">Licencia y Repositorios</h4>
+              <p class="perm-group-desc" data-i18n="about_license_desc_header">Términos de uso legal y acceso al código fuente abierto.</p>
               <div class="perm-card">
                 <div class="perm-row">
                   <div class="perm-info">
@@ -517,6 +519,7 @@
 
               <!-- Tarjeta 3: Créditos y Agradecimientos -->
               <h4 class="perm-group-title" data-i18n="about_credits_title">Créditos y Agradecimientos</h4>
+              <p class="perm-group-desc" data-i18n="about_credits_desc_header">Comunidad, desarrolladores e inspiración del proyecto.</p>
               <div class="perm-card">
                 <div class="perm-row" style="align-items: center;">
                   <div class="perm-info">
@@ -542,6 +545,7 @@
 
               <!-- Tarjeta 4: Huevo de Pascua - Doomizate -->
               <h4 class="perm-group-title" data-i18n="about_doom_title">Doomizate</h4>
+              <p class="perm-group-desc" data-i18n="about_doom_desc_header">Protocolo de entretenimiento clásico en WebAssembly.</p>
               <div class="perm-card">
                 <div class="perm-row" style="align-items: center;">
                   <div class="perm-info">
@@ -627,9 +631,11 @@
             </div>
           </div>
         </div>
+      </section>
+
       <!-- Doom Easter Egg Full-Window View -->
       <section id="doom-view" class="doom-view hidden">
-        <webview id="doom-webview" src="about:blank" webpreferences="contextIsolation=true" allowpopups="false"></webview>
+        <webview id="doom-webview" webpreferences="contextIsolation=true" allowpopups="false"></webview>
       </section>
     </main>
   </div>

@@ -225,5 +225,10 @@
   "perm_group_device_desc": "Manage hardware permissions for connected accounts.",
   "perm_group_share_desc": "Configure screen capture and streaming preferences.",
   "perm_group_downloads_desc": "Control the destination folder for received files.",
-  "perm_group_spellcheck_desc": "Manage native dictionaries for spell checking."
+  "perm_group_spellcheck_desc": "Manage native dictionaries for spell checking.",
+  "about_version_title": "WhatsNexus వెర్షన్",
+  "about_version_desc": "ప్రస్తుత బిల్డ్ సమాచారం మరియు సిస్టమ్ నవీకరణలు.",
+  "about_license_desc_header": "చట్టపరమైన ఉపయోగ నిబంధనలు మరియు ఓపెన్ సోర్స్ కోడ్ యాక్సెస్.",
+  "about_credits_desc_header": "కమ్యూనిటీ, డెవలపర్లు మరియు ప్రాజెక్ట్ ప్రేరణ.",
+  "about_doom_desc_header": "WebAssembly లో క్లాసిక్ వినోద ప్రోటోకాల్."
 }
