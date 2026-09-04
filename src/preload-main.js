@@ -52,5 +52,40 @@ contextBridge.exposeInMainWorld('electronAPI', {
     const handler = (_event, accountId) => callback(accountId);
     ipcRenderer.on('select-account', handler);
     return () => ipcRenderer.removeListener('select-account', handler);
+  },
+  updater: {
+    checkForUpdates: () => ipcRenderer.invoke('check-for-updates'),
+    downloadUpdate: () => ipcRenderer.invoke('download-update'),
+    installUpdate: () => ipcRenderer.invoke('install-update'),
+    onUpdateAvailable: (callback) => {
+      if (typeof callback !== 'function') return;
+      const handler = (_event, info) => callback(info);
+      ipcRenderer.on('update-available', handler);
+      return () => ipcRenderer.removeListener('update-available', handler);
+    },
+    onUpdateNotAvailable: (callback) => {
+      if (typeof callback !== 'function') return;
+      const handler = (_event, info) => callback(info);
+      ipcRenderer.on('update-not-available', handler);
+      return () => ipcRenderer.removeListener('update-not-available', handler);
+    },
+    onDownloadProgress: (callback) => {
+      if (typeof callback !== 'function') return;
+      const handler = (_event, progressObj) => callback(progressObj);
+      ipcRenderer.on('download-progress', handler);
+      return () => ipcRenderer.removeListener('download-progress', handler);
+    },
+    onUpdateDownloaded: (callback) => {
+      if (typeof callback !== 'function') return;
+      const handler = (_event, info) => callback(info);
+      ipcRenderer.on('update-downloaded', handler);
+      return () => ipcRenderer.removeListener('update-downloaded', handler);
+    },
+    onError: (callback) => {
+      if (typeof callback !== 'function') return;
+      const handler = (_event, error) => callback(error);
+      ipcRenderer.on('update-error', handler);
+      return () => ipcRenderer.removeListener('update-error', handler);
+    }
   }
 });

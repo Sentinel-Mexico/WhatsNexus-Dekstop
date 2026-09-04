@@ -1,22 +1,26 @@
 /* ========================================================
-   Paletas de Color Optimizadas: Alto Contraste y Confort Visual
+   Optimized Color Palettes: High Contrast & Visual Comfort
    ======================================================== */
 
-/* WhatsApp (Esmeralda) - Modo Oscuro */
-:root {
-  --bg-primary: #111b21;
-  --bg-sidebar: #202c33;
-  --bg-hover: #2a3942;
-  --bg-active: #00a884;
-  --bg-modal: #111b21;
-  --bg-modal-overlay: rgba(11, 20, 26, 0.85);
-  --text-primary: #e9edef;
-  --text-secondary: #94a3b8;
+/* WhatsNexus (Official Flagship) - Dark Mode (Default) */
+:root,
+body.palette-whatsnexus {
+  --bg-primary: #151c17;
+  --bg-sidebar: #1e2922;
+  --bg-hover: #2b3b31;
+  --bg-active: #4c9e5f;
+  --bg-modal: #1e2922;
+  --bg-modal-overlay: rgba(18, 26, 20, 0.85);
+  --text-primary: #edf4ef;
+  --text-secondary: #9cb0a2;
   --text-color: var(--text-primary);
-  --border-color: #2a3942;
-  --whatsapp-bg: #0b141a;
-  --whatsapp-green: #00a884;
-  --whatsapp-green-hover: #008f6f;
+  --border-color: #2d3d33;
+  --whatsapp-bg: #111813;
+  --whatsapp-green: #4c9e5f;
+  --whatsapp-green-hover: #3d834e;
+  --accent-secondary: #6e9e4c;
+  --accent-terracotta: #9e624c;
+  --accent-crimson: #9e4c53;
   --transition-speed: 0.25s;
 
   /* Material 3 Expressive Tokens */
@@ -29,8 +33,46 @@
   --motion-expressive: cubic-bezier(0.2, 0, 0, 1);
 }
 
-/* WhatsApp (Esmeralda) - Modo Claro */
-body.theme-light {
+/* WhatsNexus (Official Flagship) - Light Mode */
+body.theme-light,
+body.palette-whatsnexus.theme-light {
+  --bg-primary: #f3f6f4;
+  --bg-sidebar: #ffffff;
+  --bg-hover: #e8eee9;
+  --bg-active: #3f8851;
+  --bg-modal: #ffffff;
+  --bg-modal-overlay: rgba(243, 246, 244, 0.85);
+  --text-primary: #152219;
+  --text-secondary: #506456;
+  --text-color: var(--text-primary);
+  --border-color: #d6e0d8;
+  --whatsapp-bg: #ebf0ec;
+  --whatsapp-green: #3f8851;
+  --whatsapp-green-hover: #347243;
+  --accent-secondary: #5c8c3e;
+  --accent-terracotta: #9e624c;
+  --accent-crimson: #9e4c53;
+}
+
+/* ========================================================
+   Palette: WhatsApp (Emerald)
+   ======================================================== */
+body.palette-whatsapp {
+  --bg-primary: #111b21;
+  --bg-sidebar: #202c33;
+  --bg-hover: #2a3942;
+  --bg-active: #00a884;
+  --bg-modal: #111b21;
+  --bg-modal-overlay: rgba(11, 20, 26, 0.85);
+  --text-primary: #e9edef;
+  --text-secondary: #94a3b8;
+  --border-color: #2a3942;
+  --whatsapp-bg: #0b141a;
+  --whatsapp-green: #00a884;
+  --whatsapp-green-hover: #008f6f;
+}
+
+body.palette-whatsapp.theme-light {
   --bg-primary: #f0f2f5;
   --bg-sidebar: #ffffff;
   --bg-hover: #f5f6f6;
@@ -39,9 +81,10 @@ body.theme-light {
   --bg-modal-overlay: rgba(255, 255, 255, 0.85);
   --text-primary: #111b21;
   --text-secondary: #54656f;
-  --text-color: var(--text-primary);
   --border-color: #e2e8f0;
   --whatsapp-bg: #efeae2;
+  --whatsapp-green: #00a884;
+  --whatsapp-green-hover: #008f6f;
 }
 
 /* ========================================================
@@ -167,7 +210,7 @@ body.palette-forest.theme-light {
 }
 
 body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   background-color: var(--bg-primary);
   color: var(--text-primary);
   overflow: hidden;
@@ -1355,6 +1398,65 @@ body.theme-light .segmented-btn.active.status-inactive-btn {
   opacity: 0.9;
 }
 
+/* Offline Account Overlay (No connection on account load) */
+.offline-overlay {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: var(--whatsapp-bg);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 15;
+  text-align: center;
+  padding: 32px 24px;
+  color: var(--text-secondary);
+}
+
+.offline-overlay.hidden {
+  display: none !important;
+}
+
+.offline-icon-wrapper {
+  width: 84px;
+  height: 84px;
+  border-radius: 50%;
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.28);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 22px;
+  color: #ef4444;
+  font-size: 2.3rem;
+  box-shadow: 0 4px 16px rgba(239, 68, 68, 0.15);
+}
+
+.offline-overlay h3 {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 10px 0;
+  letter-spacing: -0.01em;
+}
+
+.offline-overlay p {
+  font-size: 0.96rem;
+  line-height: 1.55;
+  max-width: 440px;
+  margin: 0 0 24px 0;
+  color: var(--text-secondary);
+}
+
+.offline-overlay .retry-btn {
+  padding: 10px 24px;
+  font-size: 0.92rem;
+  border-radius: var(--shape-sm);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
 /* Floating Sidebar Tooltip (Globo informativo desacoplado) */
 .sidebar-floating-tooltip {
   position: fixed;
@@ -1881,6 +1983,85 @@ body.theme-light .permissions-notice-box {
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 }
 
+.about-update-container {
+  margin: 4px 0 14px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.btn-update {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+}
+
+.btn-update:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none !important;
+  filter: none !important;
+}
+
+.btn-update.update-available {
+  background-color: #2e7d32;
+  background: linear-gradient(135deg, var(--color-moss, #6E9E4C), var(--accent-color, #4C9E5F));
+  color: #ffffff;
+  box-shadow: 0 4px 14px rgba(76, 158, 95, 0.35);
+  animation: update-pulse 2s infinite ease-in-out;
+}
+
+.btn-update.update-ready {
+  background-color: #25D366;
+  background: linear-gradient(135deg, #25D366, #128C7E);
+  color: #ffffff;
+  font-weight: 700;
+  box-shadow: 0 0 16px rgba(37, 211, 102, 0.5);
+  animation: update-pulse 1.8s infinite ease-in-out;
+}
+
+@keyframes update-pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.02);
+  }
+}
+
+.update-progress-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  max-width: 260px;
+}
+
+.update-progress-track {
+  flex: 1;
+  height: 6px;
+  background-color: var(--bg-hover);
+  border: 1px solid var(--border-color);
+  border-radius: 9999px;
+  overflow: hidden;
+}
+
+.update-progress-bar {
+  width: 0%;
+  height: 100%;
+  background: linear-gradient(90deg, var(--color-moss, #6E9E4C), var(--accent-color, #4C9E5F));
+  border-radius: 9999px;
+  transition: width 0.25s ease;
+}
+
+.update-progress-text {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  min-width: 38px;
+  text-align: right;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
 .about-app-tagline {
   font-size: 0.88rem;
   color: var(--text-secondary);
@@ -2151,6 +2332,54 @@ body.theme-light .permissions-notice-box {
   cursor: pointer;
 }
 
+.danger-icon {
+  background: rgba(239, 68, 68, 0.12) !important;
+  color: #ef4444 !important;
+  border-color: rgba(239, 68, 68, 0.3) !important;
+}
+
+.delete-account-msg {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--text-primary);
+  margin: 0;
+  background-color: var(--bg-hover);
+  padding: 16px 18px;
+  border-radius: var(--shape-md, 12px);
+  border: 1px solid var(--border-color);
+}
+
+.delete-account-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 6px;
+}
+
+.btn-danger-action {
+  background-color: #ef4444;
+  color: #ffffff;
+  border: none;
+  border-radius: var(--shape-sm);
+  padding: 8px 18px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.2s var(--motion-expressive);
+}
+
+.btn-danger-action:hover {
+  background-color: #dc2626;
+  transform: translateY(-1px);
+}
+
+.btn-danger-action:active {
+  transform: translateY(0);
+}
+
 /* Leyenda de Exención de Responsabilidad (Disclaimer) */
 .about-disclaimer-box {
   margin-top: 24px;
@@ -2167,6 +2396,103 @@ body.theme-light .permissions-notice-box {
   opacity: 0.85;
 }
 
+/* Modal Popup: Reconexión Activa a Internet */
+.reconnecting-card {
+  max-width: 400px;
+  padding: 38px 28px 32px;
+  text-align: center;
+  background-color: var(--bg-modal, var(--bg-sidebar, #111b21));
+  border: 1px solid var(--border-color);
+  border-radius: var(--shape-lg, 16px);
+  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.45);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.reconnecting-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.reconnecting-spinner-wrapper {
+  position: relative;
+  width: 76px;
+  height: 76px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 22px;
+}
+
+.reconnecting-spinner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 3px solid rgba(76, 158, 95, 0.18);
+  border-top-color: var(--accent-color, #4C9E5F);
+  animation: reconnecting-spin 1s infinite linear;
+}
+
+@keyframes reconnecting-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.reconnecting-icon {
+  font-size: 1.75rem;
+  color: var(--accent-color, #4C9E5F);
+}
+
+.reconnecting-title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 10px 0;
+}
+
+.reconnecting-desc {
+  font-size: 0.92rem;
+  line-height: 1.55;
+  color: var(--text-secondary);
+  margin: 0 0 22px 0;
+  max-width: 320px;
+}
+
+.reconnecting-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 6px 16px;
+  background: var(--bg-hover);
+  border: 1px solid var(--border-color);
+  border-radius: 9999px;
+  font-size: 0.84rem;
+  font-weight: 600;
+  color: var(--accent-color, #4C9E5F);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+.pulse-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--accent-color, #4C9E5F);
+  animation: dot-pulse 1.4s infinite ease-in-out;
+}
+
+@keyframes dot-pulse {
+  0%, 100% { opacity: 0.3; transform: scale(0.8); }
+  50% { opacity: 1; transform: scale(1.2); }
+}
+
 /* ==========================================================================
    Easter Egg: Doom Classic View
    ========================================================================== */
@@ -2178,6 +2504,7 @@ body.theme-light .permissions-notice-box {
   height: 100%;
   background-color: #000000;
   display: flex;
+  flex: 1;
   flex-direction: column;
   z-index: 10;
   overflow: hidden;
@@ -2188,6 +2515,7 @@ body.theme-light .permissions-notice-box {
 }
 
 .doom-view.hidden {
+  display: none !important;
   visibility: hidden !important;
   opacity: 0 !important;
   pointer-events: none !important;
@@ -2195,6 +2523,8 @@ body.theme-light .permissions-notice-box {
 }
 
 #doom-webview {
+  display: flex;
+  flex: 1;
   width: 100%;
   height: 100%;
   border: none;

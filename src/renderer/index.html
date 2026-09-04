@@ -6,7 +6,9 @@
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com data:; img-src 'self' data: blob: https:; connect-src 'self';">
   <title>WhatsNexus</title>
   <link rel="stylesheet" href="style.css">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <!-- Font Awesome Free CDN -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
@@ -118,11 +120,12 @@
                     <label class="setting-inline-label" for="palette-select" data-i18n="label_palette">Paleta de Color</label>
                     <div class="custom-select-wrapper" id="custom-palette-select-wrapper">
                       <div class="custom-select-trigger" id="palette-select-trigger" tabindex="0">
-                        <span id="palette-select-label">WhatsApp (Esmeralda)</span>
+                        <span id="palette-select-label">WhatsNexus</span>
                         <i class="fa-solid fa-chevron-down select-chevron"></i>
                       </div>
                       <div class="custom-select-options" id="palette-select-options"></div>
                       <select id="palette-select" class="styled-select" style="display: none;">
+                        <option value="whatsnexus" data-i18n="palette_whatsnexus">WhatsNexus</option>
                         <option value="whatsapp" data-i18n="palette_whatsapp">WhatsApp (Esmeralda)</option>
                         <option value="messenger" data-i18n="palette_messenger">Messenger (Azul Eléctrico)</option>
                         <option value="telegram" data-i18n="palette_telegram">Telegram (Celeste Ciano)</option>
@@ -446,11 +449,24 @@
                 </div>
                 <h2 class="about-app-title">WhatsNexus</h2>
                 <p class="about-app-version" id="about-app-version"></p>
+                <div class="about-update-container">
+                  <button type="button" id="btn-update" class="btn-primary-action btn-update">
+                    <i class="fa-solid fa-arrows-rotate"></i>
+                    <span id="btn-update-text" data-i18n="btn_check_updates">Buscar actualizaciones</span>
+                  </button>
+                  <div id="update-progress-container" class="update-progress-container" style="display: none;">
+                    <div class="update-progress-track">
+                      <div id="update-progress-bar" class="update-progress-bar"></div>
+                    </div>
+                    <span id="update-progress-text" class="update-progress-text">0%</span>
+                  </div>
+                </div>
                 <p class="about-app-tagline" data-i18n="about_tagline">Cliente de escritorio multi-cuenta para WhatsApp Web</p>
               </div>
 
-              <!-- Tarjeta 1: Detalles Técnicos -->
-              <h4 class="perm-group-title" data-i18n="about_technical_details">Detalles Técnicos</h4>
+              <!-- Tarjeta 1: Versión de WhatsNexus -->
+              <h4 class="perm-group-title" data-i18n="about_version_title">Versión de WhatsNexus</h4>
+              <p class="perm-group-desc" data-i18n="about_version_desc">Información actual de la compilación y actualizaciones.</p>
               <div class="perm-card about-specs-card">
                 <div class="about-specs-grid">
                   <div class="about-spec-item">
@@ -480,8 +496,9 @@
                 </div>
               </div>
 
-              <!-- Tarjeta 2: Licencia y Enlaces -->
-              <h4 class="perm-group-title" data-i18n="about_license_links">Licencia y Enlaces</h4>
+              <!-- Tarjeta 2: Licencia y Repositorios -->
+              <h4 class="perm-group-title" data-i18n="about_license_links">Licencia y Repositorios</h4>
+              <p class="perm-group-desc" data-i18n="about_license_desc_header">Términos de uso legal y acceso al código fuente abierto.</p>
               <div class="perm-card">
                 <div class="perm-row">
                   <div class="perm-info">
@@ -517,6 +534,7 @@
 
               <!-- Tarjeta 3: Créditos y Agradecimientos -->
               <h4 class="perm-group-title" data-i18n="about_credits_title">Créditos y Agradecimientos</h4>
+              <p class="perm-group-desc" data-i18n="about_credits_desc_header">Comunidad, desarrolladores e inspiración del proyecto.</p>
               <div class="perm-card">
                 <div class="perm-row" style="align-items: center;">
                   <div class="perm-info">
@@ -542,6 +560,7 @@
 
               <!-- Tarjeta 4: Huevo de Pascua - Doomizate -->
               <h4 class="perm-group-title" data-i18n="about_doom_title">Doomizate</h4>
+              <p class="perm-group-desc" data-i18n="about_doom_desc_header">Protocolo de entretenimiento clásico en WebAssembly.</p>
               <div class="perm-card">
                 <div class="perm-row" style="align-items: center;">
                   <div class="perm-info">
@@ -627,6 +646,8 @@
             </div>
           </div>
         </div>
+      </section>
+
       <!-- Doom Easter Egg Full-Window View -->
       <section id="doom-view" class="doom-view hidden">
         <webview id="doom-webview" src="about:blank" webpreferences="contextIsolation=true" allowpopups="false"></webview>
@@ -657,6 +678,50 @@
         </div>
         <div class="app-modal-footer">
           <button type="button" id="btn-close-gpl-modal-action" class="btn-primary" data-i18n="btn_understood">Entendido</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Popup: Confirmación de eliminación de cuenta -->
+  <div id="delete-account-modal" class="app-modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="delete-account-modal-title">
+    <div class="app-modal-card">
+      <div class="app-modal-header">
+        <div class="app-modal-header-info">
+          <div class="app-modal-icon-wrapper danger-icon">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+          </div>
+          <h3 id="delete-account-modal-title" class="app-modal-title" data-i18n="modal_delete_account_title">Eliminar cuenta</h3>
+        </div>
+        <button type="button" id="btn-close-delete-modal" class="app-modal-close-btn" aria-label="Cerrar">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <div class="app-modal-body">
+        <p id="delete-account-modal-message" class="delete-account-msg" data-i18n="modal_delete_account_msg">
+          ¿Estás seguro de que deseas eliminar esta cuenta? Se cerrará la sesión y se perderán los datos locales asociados.
+        </p>
+        <div class="app-modal-footer delete-account-footer">
+          <button type="button" id="btn-cancel-delete-account" class="btn-secondary-action" data-i18n="btn_cancel">Cancelar</button>
+          <button type="button" id="btn-confirm-delete-account" class="btn-danger-action" data-i18n="btn_confirm_delete">Eliminar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Popup: Reconectando a Internet (Offline durante uso activo) -->
+  <div id="reconnecting-modal" class="app-modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="reconnecting-modal-title">
+    <div class="app-modal-card reconnecting-card">
+      <div class="reconnecting-content">
+        <div class="reconnecting-spinner-wrapper">
+          <div class="reconnecting-spinner"></div>
+          <i class="fa-solid fa-wifi reconnecting-icon"></i>
+        </div>
+        <h3 id="reconnecting-modal-title" class="reconnecting-title" data-i18n="reconnecting_title">Sin conexión a internet</h3>
+        <p class="reconnecting-desc" data-i18n="reconnecting_desc">Se perdió la conexión a la red. Intentando reconectar automáticamente...</p>
+        <div class="reconnecting-badge">
+          <span class="pulse-dot"></span>
+          <span data-i18n="reconnecting_status">Buscando señal...</span>
         </div>
       </div>
     </div>

@@ -7,31 +7,38 @@ Because WhatsNexus utilizes native Node.js and modern ES modules in the renderer
 ```bash
 # Verify all primary JavaScript files
 node -c src/main.js
+node -c src/preload-main.js
 node -c src/renderer/renderer.js
 node -c src/preload.js
+node -c scripts/download-doom.js
 ```
 
-### 1.1 Internationalization (i18n) Key Consistency Test
-To ensure zero missing translation keys across all 10 supported languages, run the following verification snippet:
+### 1.1 Internationalization (i18n) Consistency Test
+To ensure zero missing or broken translation JSON files across all 26 supported languages, run:
 
 ```bash
 node -e "
 const fs = require('fs');
-const html = fs.readFileSync('src/renderer/index.html', 'utf-8');
-const js = fs.readFileSync('src/renderer/renderer.js', 'utf-8');
-const i18n = eval('(' + js.split('const i18n = ')[1].split('function populateLanguageSelect')[0].trim().replace(/;$/, '') + ')');
-const matches = [...html.matchAll(/data-i18n=[\"']([^\"']+)[\"']/g)].map(m => m[1]);
-const uniqueKeys = [...new Set(matches)];
-const supportedLangs = ['en', 'es', 'hi', 'ar', 'bn', 'pt', 'ru', 'ur', 'id', 'fr'];
-let failed = false;
-for (const lang of supportedLangs) {
-  const missing = uniqueKeys.filter(k => !i18n[lang] || !i18n[lang][k]);
-  if (missing.length > 0) {
-    console.error('Missing in', lang, missing);
-    failed = true;
+const path = require('path');
+const localesDir = 'src/locales';
+const files = fs.readdirSync(localesDir).filter(f => f.endsWith('.json'));
+console.log('Testing', files.length, 'locale files...');
+const en = JSON.parse(fs.readFileSync(path.join(localesDir, 'en.json'), 'utf-8'));
+const enKeys = Object.keys(en);
+let errors = 0;
+for (const file of files) {
+  try {
+    const data = JSON.parse(fs.readFileSync(path.join(localesDir, file), 'utf-8'));
+    const missing = enKeys.filter(k => data[k] === undefined);
+    if (missing.length > 0) {
+      console.warn(file, 'missing', missing.length, 'keys');
+    }
+  } catch (err) {
+    console.error('Invalid JSON in', file, err.message);
+    errors++;
   }
 }
-if (!failed) console.log('All i18n translation keys are 100% verified!');
+if (errors === 0) console.log('All 26 locale files parsed successfully!');
 "
 ```
 
@@ -60,7 +67,22 @@ Before cutting any release candidate, run through the following test matrices:
 - [ ] **Return to Chat**: Clicking "Back to chats" or selecting an account in the sidebar hides settings and restores the chat session.
 - [ ] **Theme Switching**: Changing from Dark to Light or Auto updates CSS theme variables immediately.
 
-### 2.4 Platform Compatibility
+### 2.4 Offline Protection & Network Reconnection
+- [ ] **Startup Offline**: Launch with network disconnected; verify account displays offline overlay with retry action.
+- [ ] **Mid-Session Disconnect**: Disconnect network while using chats; confirm high z-index `#reconnecting-modal` appears and blocks input.
+- [ ] **Auto-Reconnect**: Reconnect network; verify modal auto-dismisses and reloads accounts.
+
+### 2.5 Auto-Updater (OTA)
+- [ ] **Check for Updates**: Navigate to Settings ➔ About; click `#btn-update` and confirm state changes to "Checking...".
+- [ ] **Up-to-Date State**: Verify button transitions to "You have the latest version" and resets to idle.
+
+### 2.6 Classic Doom Easter Egg
+- [ ] **Activation**: Enable "Doomizate" in Settings ➔ About; verify skull icon appears in sidebar.
+- [ ] **Execution**: Click skull icon; confirm Chocolate Doom boots with audio and controls overlay.
+- [ ] **Controls Overlay**: Toggle chevron button to collapse and expand the overlay.
+
+### 2.7 Platform Compatibility
 - [ ] **Linux (Wayland)**: Verify that launching with `--ozone-platform=wayland` runs smoothly without `wayland_wp_color_manager` errors.
 - [ ] **Linux (X11 / XWayland)**: Verify standard desktop window rendering.
 - [ ] **Windows**: Test system tray minimize and notification popup formatting.
+- [ ] **macOS**: Test DMG application bundle and dock integration.

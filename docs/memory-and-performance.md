@@ -54,12 +54,8 @@ Configured in `src/main.js` before the Electron `app` is ready:
 // Disable unnecessary background media services and Wayland color manager issues
 app.commandLine.appendSwitch('disable-features', 'HardwareMediaKeyHandling,MediaSessionService,WaylandWpColorManagerV1');
 
-// Reduce process overhead for site isolation across webview partitions
-app.commandLine.appendSwitch('disable-site-isolation-trials');
-
-// Limit background network activity and IPC throttling overhead
-app.commandLine.appendSwitch('disable-background-networking');
-app.commandLine.appendSwitch('disable-ipc-flooding-protection');
+// Permit immediate audio playback without user gesture blocking
+app.commandLine.appendSwitch('autoplay-policy', 'no-user-gesture-required');
 ```
 
 > [!NOTE]

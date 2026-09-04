@@ -93,5 +93,5 @@ function buildWebviewDOM(account, parentContainer) {
 }
 ```
 
-### 3.3 Account Deletion
-Deleting an account removes its DOM container, removes its sidebar icon, and updates `localStorage`. To release disk space permanently, the underlying partition folder in the OS application data path can also be purged when required.
+### 3.3 Account Deletion Safeguard
+To prevent accidental session loss, deleting an account triggers a confirmation modal (`#delete-account-modal`) displaying the targeted account name, danger warning, and explicit cancel/confirm actions (supporting Escape key dismissal). Upon confirmation, its DOM container is removed, the `<webview>` is destroyed, its sidebar tab is purged, and `localStorage` is updated. To release disk space permanently, the underlying partition folder in the OS application data path can also be purged when required.

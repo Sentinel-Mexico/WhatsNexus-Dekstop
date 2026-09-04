@@ -11,12 +11,11 @@ WhatsNexus strictly follows Semantic Versioning in the standard format:
 MAJOR.MINOR.PATCH  (e.g., 0.5.2)
 ```
 
-### 1.1 Initial Development Phase (`0.x.x`)
-The project is currently in beta/initial development (`0.x.x`). During this phase:
-- The **MAJOR** digit remains at `0`.
-- New features increment the **MINOR** digit (e.g., `0.4.0` $\rightarrow$ `0.5.0`), resetting the PATCH digit to `0`.
-- Bug fixes, performance tweaks, and UI refactorings increment the **PATCH** digit (e.g., `0.5.1` $\rightarrow$ `0.5.2`).
-- The transition to `1.0.0` will occur only when the maintainer declares the first production-ready milestone.
+### 1.1 Production Milestone (`1.x.x`)
+With the release of `1.0.0`, WhatsNexus has completed its beta/initial development phase and entered production stability:
+- **PATCH** increments (e.g., `1.0.0` $\rightarrow$ `1.0.1`) are used for bug fixes, platform compatibility patches, styling adjustments, and minor refactorings.
+- **MINOR** increments (e.g., `1.0.0` $\rightarrow$ `1.1.0`) are used for backward-compatible new features, newly integrated locales, or additional settings modules.
+- **MAJOR** increments (e.g., `1.0.0` $\rightarrow$ `2.0.0`) are reserved for breaking architectural overhauls or foundational migrations.
 
 ### 1.2 Increment Triggers
 

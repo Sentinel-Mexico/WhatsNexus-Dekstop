@@ -6,6 +6,33 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ---
 
+## [1.0.0] - 2026-09-04
+### Added
+- **Primer Lanzamiento Oficial Estable (Salida de Beta):**
+  - Consolidación y maduración de la arquitectura completa de WhatsNexus para entornos de producción.
+- **Sistema Completo de Actualizaciones Automáticas (OTA Updates):**
+  - Integración de `electron-updater` y `electron-log` conectando con GitHub Releases (`Sentinel-Mexico/WhatsNexus-Dekstop`).
+  - Máquina de estados visual e interactiva en la sección "Acerca de" con comprobación manual, descarga con porcentaje en tiempo real y reinicio para instalación.
+- **Protección Offline y Reconexión Automática:**
+  - Pantalla dedicada de estado sin conexión en cada cuenta con botón interactivo de reintento ante errores de carga de red (`did-fail-load`).
+  - Modal global de bloqueo ante pérdida de conexión (`#reconnecting-modal`) con desenfoque de fondo y animación de sincronización que deshabilita interacciones accidentales.
+  - Reconexión y recarga automática reactiva al detectar conectividad a Internet (`window.addEventListener('online')`).
+- **Migración Oficial de DOOM a Cloudflare WebAssembly (Chocolate Doom):**
+  - Integración 100% nativa y offline del port oficial de Chocolate Doom de Cloudflare (`cloudflare/doom-wasm`).
+  - Eliminación de dependencias externas; carga concurrente ultrarrápida mediante `fetch()` e inyección directa en el sistema de archivos virtual de Emscripten.
+  - Reproducción de sonido inmediata y desbloqueo de `AudioContext` en el primer gesto de usuario (`autoplay-policy=no-user-gesture-required`).
+  - Superposición flotante de controles estilizada en el tema oscuro de WhatsNexus con botón colapsable para pantalla limpia.
+- **Tipografía Oficial Google Fonts Poppins:**
+  - Adopción global de la familia tipográfica Poppins (pesos 300, 400, 500, 600, 700) en todas las vistas, splash de carga y menús.
+- **Nueva Paleta Oficial WhatsNexus:**
+  - Paleta de colores distintiva por defecto con modos claro y oscuro optimizados para alto contraste y ergonomía visual durante largas jornadas.
+- **Pipeline de CI/CD Automatizado Multiplataforma:**
+  - Flujo de compilación y empaquetado en GitHub Actions (`.github/workflows/build.yml`) para Linux (.deb, .AppImage, .snap para x64 y arm64), macOS (.dmg para x64 y arm64) y Windows (.exe NSIS para x64).
+- **Cuadro de Diálogo de Confirmación para Eliminación de Cuentas:**
+  - Modal `#delete-account-modal` con advertencia de seguridad, atajo con tecla Escape y confirmación explícita para evitar pérdidas accidentales de sesiones.
+
+---
+
 ## [0.18.2] - 2026-09-03
 ### Changed
 - **Official WhatsNexus Brand Identity & Icons Refresh:**

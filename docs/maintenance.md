@@ -30,36 +30,24 @@ npx electron .
 
 ## 2. Packaging & Building
 
-WhatsNexus utilizes `electron-packager` for compiling standalone distributable binaries across desktop platforms.
+### 2.1 Automated Multiplatform CI/CD Pipeline (GitHub Actions)
+WhatsNexus includes a fully automated build pipeline defined in `.github/workflows/build.yml`. When changes are pushed directly to `main` or a release tag (`v*`) is published, GitHub Actions matrix builds standalone release artifacts for all supported desktop targets:
+- **Linux (x64 & arm64)**: `.deb`, `.AppImage`, and `.snap` (via Snapcraft).
+- **macOS (x64 & Apple Silicon arm64)**: `.dmg`.
+- **Windows (x64)**: NSIS installer `.exe`.
 
-### 2.1 Linux Build
-```bash
-npx electron-packager . WhatsNexus \
-  --platform=linux \
-  --arch=x64 \
-  --out=dist/ \
-  --overwrite \
-  --icon=src/assets/icon.png
-```
+### 2.2 Local Manual Packaging
+For local testing or standalone compilation, `electron-packager` can be used:
 
-### 2.2 Windows Build
 ```bash
-npx electron-packager . WhatsNexus \
-  --platform=win32 \
-  --arch=x64 \
-  --out=dist/ \
-  --overwrite \
-  --icon=src/assets/icon.ico
-```
+# Linux
+npx electron-packager . WhatsNexus --platform=linux --arch=x64 --out=dist/ --overwrite --icon=src/assets/icon.png
 
-### 2.3 macOS Build
-```bash
-npx electron-packager . WhatsNexus \
-  --platform=darwin \
-  --arch=x64 \
-  --out=dist/ \
-  --overwrite \
-  --icon=src/assets/icon.icns
+# Windows
+npx electron-packager . WhatsNexus --platform=win32 --arch=x64 --out=dist/ --overwrite --icon=src/assets/icon.ico
+
+# macOS
+npx electron-packager . WhatsNexus --platform=darwin --arch=x64 --out=dist/ --overwrite --icon=src/assets/icon.icns
 ```
 
 ---
@@ -68,20 +56,25 @@ npx electron-packager . WhatsNexus \
 
 Before tagging or releasing any update:
 
-1. **Verify Code Syntax & Linting:**
+1. **Verify Code Syntax & Integrity:**
    ```bash
    node -c src/main.js
+   node -c src/preload-main.js
    node -c src/renderer/renderer.js
    node -c src/preload.js
+   node -c scripts/download-doom.js
    ```
-2. **SemVer Compliance:**
+2. **Synchronize Offline Doom Assets:**
+   ```bash
+   npm run download-doom
+   ```
+3. **SemVer Compliance:**
    - Determine increment type (PATCH, MINOR, or MAJOR).
    - Bump version in `package.json`.
-3. **Lockfile Synchronization:**
-   - Execute `npm install` to synchronize `package-lock.json`.
 4. **Changelog Updates:**
-   - On `Dev`: Document granular changes under `[VERSION] - YYYY-MM-DD` in `changelog-dev.md`.
-   - On `main` (Release Only): Compile a high-level summary of all milestone features into `changelog.md`.
+   - On `Dev`: Document granular changes under `[VERSION] - YYYY-MM-DD` in `changelog-dev.md` (in English).
+   - On `main` (Production Releases): Summarize all milestone features into `changelog.md` (in Spanish).
 5. **Git Commit & Push:**
    - Commit message: `"v.<VERSION> <type>: <summary>"`.
-   - Push strictly to `origin/Dev` during ongoing development.
+   - Push to `origin/Dev` during ongoing development.
+   - Merge/push to `origin/main` for production releases.

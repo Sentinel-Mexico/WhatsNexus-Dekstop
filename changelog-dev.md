@@ -2,120 +2,247 @@
 
 This changelog records all granular updates, bug fixes, refactorings, and feature iterations developed on the `Dev` branch. Each version bump in `package.json` is documented here as it happens.
 
+## [1.0.0] - 2026-09-04
+### Added
+- **Official Stable Production Release (Out of Beta):**
+  - Officially concluded the initial beta development phase and promoted WhatsNexus to its first production-grade milestone (`1.0.0`).
+  - Consolidated complete documentation suite across `README.md` and `docs/` reflecting all production capabilities, architectures, and testing matrices.
+- **Comprehensive Auto-Updater Architecture (OTA Updates):**
+  - Integrated `electron-updater` and `electron-log` targeting GitHub Releases (`Sentinel-Mexico/WhatsNexus-Dekstop`).
+  - Added interactive visual state machine in the "About" settings module with manual update checks, live percentage readouts, and one-click install/restart workflows.
+- **Offline Protection & Automatic Network Reconnection Subsystem:**
+  - Implemented container-level offline screens with visual status badges and retry actions on network load failure (`did-fail-load`).
+  - Added global high-z-index `#reconnecting-modal` preventing accidental chat manipulation during network loss, with reactive auto-reconnect on `online` events.
+- **Cloudflare Doom-Wasm Port Migration with Audio & Overlay:**
+  - Migrated Classic Doom Easter Egg to Cloudflare's Chocolate Doom WebAssembly engine running completely offline.
+  - Solved resource loading deadlocks via concurrent `fetch()` and direct virtual filesystem population (`FS.createDataFile`).
+  - Added `--autoplay-policy=no-user-gesture-required` and explicit WebAudio unlocking for instant sound.
+  - Built dark-themed floating controls overlay card with collapsible toggle.
+- **Official Typography Migration to Google Fonts "Poppins":**
+  - Adopted Poppins font family globally across main interface, splash screen, and Doom launcher.
+- **Official WhatsNexus Brand Palette & Visual Identity:**
+  - Configured default WhatsNexus color scheme (dark & light variants) engineered for long-session readability and visual comfort.
+- **Multiplatform CI/CD Pipeline (`.github/workflows/build.yml`):**
+  - Configured automated GitHub Actions matrix producing `.deb`, `.AppImage`, `.snap` (x64/arm64), `.dmg` (x64/arm64), and `.exe` (NSIS x64).
+- **Account Deletion Safety Dialog:**
+  - Added modal confirmation `#delete-account-modal` preventing accidental account and session purges.
+
+## [0.21.1] - 2026-09-04
+### Added
+- **Cloudflare Doom-Wasm Port Migration & Audio Pipeline Fixes:**
+  - Migrated Classic Doom Easter Egg to Cloudflare's official Chocolate Doom WebAssembly port (`cloudflare/doom-wasm`).
+  - Integrated local engine assets into `src/assets/doom/`: `websockets-doom.js`, `websockets-doom.wasm` / `doom.wasm`, `default.cfg`, and shareware `doom1.wad`.
+  - Added `--autoplay-policy=no-user-gesture-required` Chromium command line switch in `src/main.js` before `app.whenReady()` to prevent WebAudio autoplay policy restrictions.
+  - Implemented explicit `AudioContext` unlocking logic in Doom's `index.html` on first keydown, mousedown, or touch event, immediately resuming any suspended contexts across WebAudio and Emscripten SDL2.
+  - Designed and implemented a floating, semi-transparent controls overlay card in the top-right corner of the Doom view styled with WhatsNexus dark theme aesthetics:
+    - Lists Chocolate Doom keybindings: Movement (Arrows or W/A/S/D), Fire (Ctrl or Left Click), Open/Interact (Space), Run/Speed (Shift), Change Weapon (1-7).
+    - Includes a collapsible/expandable chevron toggle button allowing users to hide controls for an unobstructed gameplay view.
+  - Purged redundant legacy files (`doom.js` and duplicated `doom.wasm`), optimizing offline payload exclusively to Cloudflare's `websockets-doom.wasm`, `websockets-doom.js`, `default.cfg`, and `doom1.wad`.
+  - Resolved resource loading deadlock ("Cargando recursos... (2/4)") by replacing legacy Emscripten XHR preloading with robust concurrent modern `fetch` and direct virtual filesystem population (`FS.createDataFile`), achieving instant engine initialization.
+- **Automated Multiplatform CI/CD Pipeline (`.github/workflows/build.yml`):**
+  - Created GitHub Actions workflow `.github/workflows/build.yml` configured to execute strictly on pushes to `main` and release tags (`v*`).
+  - Implemented multiplatform build matrix across `ubuntu-latest`, `windows-latest`, and `macos-latest` leveraging `samuelmeuli/action-electron-builder@v1` with `${{ secrets.GITHUB_TOKEN }}`.
+  - Configured Linux ARM64 multiarch cross-compilation toolchains (`gcc-aarch64-linux-gnu`, `g++-aarch64-linux-gnu`, `snapcraft`) producing `.deb`, `.AppImage`, `.snap` (x64 and arm64), macOS `.dmg` (x64 and arm64), and Windows NSIS `.exe` (x64).
+- **Global Typography Migration to Google Fonts "Poppins":**
+  - Adopted Google Fonts "Poppins" as the official typography across WhatsNexus.
+  - Integrated Poppins font links (weights 300, 400, 500, 600, 700) with preconnect directives in `src/renderer/index.html` and `src/splash/splash.html`.
+  - Updated global `font-family` styles across `src/renderer/style.css` and `src/splash/splash.css`.
+
+## [0.21.0] - 2026-09-03
+### Added
+- **Comprehensive Offline Protections & Network Reconnection Architecture:**
+  - **Account Offline Screen:** Implemented dedicated `.offline-overlay` displayed inside individual account containers when the app is launched offline or when a webview encounters a network loading failure (`did-fail-load`). Displays offline status iconography, clear explanatory text, and an interactive "Reintentar" / "Retry" button that attempts reconnection with visual loading feedback.
+  - **Active Disconnection Reconnecting Overlay:** Introduced `#reconnecting-modal` with high z-index backdrop that activates automatically if network connectivity drops while using the application. Completely blocks accidental interactions across accounts, displays a spinning progress indicator, pulse badge, and reconnecting status message.
+  - **Seamless Auto-Reconnection:** Integrated reactive listeners (`window.addEventListener('online')` and verification ping) that automatically dismiss the reconnecting modal and reloads any account webviews showing the offline screen once the network connection is restored.
+  - **Full Internationalization:** Added localization tokens across all 26 supported languages (`offline_screen_title`, `offline_screen_desc`, `btn_retry`, `status_connecting`, `reconnecting_title`, `reconnecting_desc`, `reconnecting_status`).
+
+## [0.20.1] - 2026-09-03
+### Added
+- **Offline & Responsive Native WebAssembly Doom:**
+  - Implemented a 100% self-contained, offline port of Classic Doom running locally under `src/assets/doom/`.
+  - Added native assets: `index.html`, JavaScript engine runner `doom.js`, WebAssembly binary `doom.wasm`, and Shareware IWAD `doom1.wad`.
+  - Added automated retrieval script `scripts/download-doom.js` registered under `npm run download-doom` and `postinstall` in `package.json`.
+  - Configured full-stretch responsive CSS for canvas (`100vw`/`100vh`, `object-fit: contain`, flex centering) eliminating borders and external network latency.
+  - Updated `<webview id="doom-webview">` in `index.html` and `renderer.js` to point directly to local `../assets/doom/index.html`.
+- **Account Deletion Confirmation Dialog:**
+  - Added modal popup `#delete-account-modal` in account management view to prevent accidental account deletions.
+  - Displays the targeted account name with danger iconography, warning message, and clear "Cancel" / "Delete" actions.
+  - Integrated keyboard accessibility (Escape key dismiss) and backdrop click dismissal.
+  - Added localization keys across all 26 supported languages (`modal_delete_account_title`, `modal_delete_account_msg`, `btn_confirm_delete`, `btn_cancel`).
+
+## [0.20.0] - 2026-09-03
+### Added
+- **Complete Auto-Updater Architecture (OTA Updates via `electron-updater`):**
+  - Integrated `electron-updater` and `electron-log` for automated GitHub releases and background update verification.
+  - Configured `electron-builder` `publish` metadata in `package.json` pointing to `Sentinel-Mexico/WhatsNexus-Dekstop` on GitHub.
+  - Configured manual update flow via `autoUpdater.autoDownload = false;` to guarantee explicit user agency before downloading updates.
+  - Implemented secure IPC handlers in main process (`check-for-updates`, `download-update`, `install-update`) with fallback error handling.
+  - Forwarded real-time updater events (`update-available`, `update-not-available`, `download-progress`, `update-downloaded`, `update-error`) to the renderer via `mainWindow.webContents.send`.
+  - Safely exposed updater methods and event listeners under `window.electronAPI.updater` via `contextBridge` in `preload-main.js`.
+- **Interactive Update UI & State Machine in "About" View:**
+  - Added modern `#btn-update` action button directly beneath the version badge in the "About" section header card.
+  - Implemented a resilient UI state machine in `renderer.js`:
+    - **Idle State:** Displays "Buscar actualizaciones" / "Check for updates" (interactive).
+    - **Checking State:** Calls `check-for-updates`, transitions to "Buscando..." / "Checking..." with a spinner (disabled).
+    - **Up-to-Date State:** Informs user with "Tienes la última versión" / "You have the latest version" and automatically reverts to Idle.
+    - **Update Available State:** Highlights button with "Actualización disponible: Descargar ahora" / "Update available: Download now".
+    - **Downloading State:** Calls `download-update`, disables button with live percentage readout, and reveals a sleek dual-gradient animated progress bar.
+    - **Downloaded State:** Emphasizes action button in vibrant emerald green with "Instalar y Reiniciar" / "Install & Restart" triggering `quitAndInstall()`.
+    - **Error State:** Gracefully displays error indicator and reverts to Idle without crashing.
+  - Added localization strings across all 26 supported languages (`src/locales/*.json`).
+- **Feature Comparison Matrix in Documentation:**
+  - Added a comprehensive, side-by-side feature comparison table in `README.md` contrasting WhatsApp Web, ZapZap, and WhatsNexus across 19 functional criteria (session isolation, multi-account tabs, notification privacy presets, tray unread badges, memory hibernation, theme engine, OTA updates, and open-source licensing).
+
+## [0.19.0] - 2026-09-03
+### Added
+- **Official "WhatsNexus" Flagship Color Palette (Default Preset):**
+  - Designed and introduced the official "WhatsNexus" brand color palette as the default appearance across the application, replacing generic themes.
+  - Implemented both Dark Mode (`body.palette-whatsnexus` / `:root`) and Light Mode (`body.palette-whatsnexus.theme-light` / `body.theme-light`) variants, engineered specifically for high contrast, WCAG AAA accessibility, and prolonged visual ergonomics without eye strain.
+  - Core palette tokens derived from official brand swatches:
+    - Primary Action / Accent: `#4C9E5F` (vibrant emerald green) with hover `#3d834e`
+    - Secondary Accent / Badges: `#6E9E4C` (moss green)
+    - Warm Accent / Highlights: `#9E624C` (terracotta)
+    - Alert / Crimson Accent: `#9E4C53` (rose crimson)
+    - Dark Canvas & Slate: `#151c17` canvas with `#1e2922` sidebar and panels, derived from deep pine `#3B493F`
+    - Light Canvas & Neutral: `#f3f6f4` canvas with `#ffffff` card surfaces and `#152219` high-contrast typography
+  - Added `<option value="whatsnexus" data-i18n="palette_whatsnexus">WhatsNexus</option>` as the first option in Settings > Appearance, localized across all 26 supported languages (`src/locales/*.json`).
+  - Preserved the classic "WhatsApp (Emerald)" palette as a dedicated selectable option (`palette-whatsapp`).
+
+### Changed
+- **Splash Screen Cohesive Brand Identity:**
+  - Modernized the splash loading window styling (`splash.css`) to align with the new WhatsNexus color scheme.
+  - Upgraded card background to deep pine gradient (`#1e2922` to `#131a15`), ambient radial glow and pulse animations to `#4C9E5F`, and progress track fill to a vibrant dual-gradient (`#6E9E4C` to `#4C9E5F`).
+  - Adjusted typography colors to high-contrast pine-tinted hues (`#edf4ef`, `#9cb0a2`, `#d6e3d9`).
+- **Codebase Internationalization & Agent Rules Alignment:**
+  - Translated all internal code comments, annotations, and documentation from Spanish to professional English across `main.js`, `renderer.js`, and markdown documentation files.
+  - Updated agent rules (`.agents/rules/changelog.md` and `branching.md`) to formally enforce that `changelog.md` is reserved strictly for stable releases merged to `main`, while `changelog-dev.md` tracks all granular development changes and triggers immediate synchronization to `origin/Dev`.
+
+### Fixed
+- **Classic Doom WebAssembly Demo 404 Resolution:**
+  - Updated the Doom port URL in `openDoomView()` from the decommissioned `https://diekmann.github.io/wasm-doom/` to the official live WebAssembly demo endpoint at `https://diekmann.github.io/wasm-fizzbuzz/doom/`.
+
+---
+
+## [0.18.3] - 2026-09-03
+### Fixed
+- **Doom Webview Rendering & Memory Lifecycle:**
+  - Resolved a DOM nesting defect in `index.html` where `#doom-view` was inadvertently placed inside the `#donations-view` element, eliminating inherited `hidden`, `opacity: 0`, and `z-index: -1` states.
+  - Applied full-window flex layout rules to `#doom-view` and `#doom-webview` (`display: flex; flex: 1; width: 100%; height: 100%; border: none;`).
+  - Optimized memory usage by dynamically instantiating/loading the WebAssembly port only upon opening the view, and resetting the webview source to `about:blank` when the "Doomizate" toggle is disabled.
+- **Descriptive Subtitles in About Tab:**
+  - Added secondary subtitle descriptions (`.perm-group-desc`) beneath each card header in the About view ("WhatsNexus Version", "License and Repositories", "Credits and Acknowledgements", and "Doomize").
+  - Injected corresponding localized strings across all 26 language files in `src/locales/`.
+- **Redundant Language Codes Cleanup (Spellchecker):**
+  - Strictly removed ambiguous redundant language codes `"es"`, `"fr"`, `"de"`, `"it-IT"`, and `"ru-RU"` from the available spellchecking catalog in favor of precise regional codes and unified root entries (`it`, `ru`).
+  - Added an automatic migration layer in both renderer and main process to remap legacy persisted codes to their current equivalents without UI errors or empty chips.
+
+---
+
 ## [0.18.2] - 2026-09-03
 ### Changed
-- **Renovación de Marca y Logotipos Oficiales de WhatsNexus:**
-  - Se actualizaron los assets oficiales de la aplicación (`src/assets/`) a partir de las fuentes vectoriales maestras:
-    - `icon.png` (256x256) & `tray-green.png` (64x64) generados a partir de `whatsnexus-logo.png` / `.svg`.
-    - `tray-light.png` (64x64) generado a partir de `whatsnexus-logo-monocrome-white.png`.
-    - `tray-dark.png` (64x64) generado a partir de `whatsnexus-logo-monocrome-black.png`.
-    - `tray-green-badge.png` (64x64) generado a partir de `whatsnexus-logo-badge.png`.
-    - `tray-light-badge.png` (64x64) generado a partir de `whatsnexus-logo-monocrome-white-badge.png`.
-    - `tray-dark-badge.png` (64x64) generado a partir de `whatsnexus-logo-monocrome-black-badge.png`.
-  - Se actualizó la pantalla de carga (*Splash Screen*) para renderizar el logo vectorial nítido `whatsnexus-logo.svg`.
-  - Se actualizó la sección *"Acerca de"* (`#tab-about`) para mostrar el logo oficial vectorial `whatsnexus-logo.svg`.
+- **Official WhatsNexus Brand Identity & Icons Refresh:**
+  - Regenerated master application icons and system tray assets (`src/assets/`) from official vector source files:
+    - `icon.png` (256x256) & `tray-green.png` (64x64) generated from `whatsnexus-logo.png` / `.svg`.
+    - `tray-light.png` (64x64) generated from `whatsnexus-logo-monocrome-white.png`.
+    - `tray-dark.png` (64x64) generated from `whatsnexus-logo-monocrome-black.png`.
+    - `tray-green-badge.png` (64x64) generated from `whatsnexus-logo-badge.png`.
+    - `tray-light-badge.png` (64x64) generated from `whatsnexus-logo-monocrome-white-badge.png`.
+    - `tray-dark-badge.png` (64x64) generated from `whatsnexus-logo-monocrome-black-badge.png`.
+  - Updated the Splash Screen to display the sharp vector asset `whatsnexus-logo.svg`.
+  - Updated the About section (`#tab-about`) to render the official vector asset `whatsnexus-logo.svg`.
 
 ---
 
 ## [0.18.1] - 2026-09-03
 ### Fixed
-- **Subtítulos Descriptivos en Módulos de Permisos/Sistema:**
-  - Se agregaron subtítulos explicativos (`.perm-group-desc`) debajo de los encabezados principales: *"Acceso al dispositivo"*, *"Compartir"*, *"Gestión de Descargas"* y *"Corrector Ortográfico"*, con soporte i18n en los 26 idiomas.
-- **Eliminación de Scroll y Expansión Fluida del Corrector Ortográfico:**
-  - Se eliminó el límite de altura (`max-height`) y la barra de desplazamiento vertical en `.spellcheck-multiselect-container` (`height: auto; overflow: visible;`), permitiendo que el panel crezca libremente hacia abajo mostrando todas las etiquetas/chips de idiomas.
-- **Consistencia Visual y Eliminación de Doble Tarjeta:**
-  - Se eliminó el fondo y borde duplicado interior del contenedor de idiomas para integrarlo fluidamente al fondo de la tarjeta principal.
-  - Se alineó estructuralmente la tarjeta de *"Corrector Ortográfico"* adoptando el contenedor `.perm-row.download-management-row` idéntico al de *"Gestión de Descargas"*, asegurando que el primer chip de idioma quede perfectamente alineado con los elementos de las tarjetas superiores.
+- **Descriptive Subtitles for Permission & System Modules:**
+  - Added explanatory subtitles (`.perm-group-desc`) below main module headers: "Device Access", "Screen Sharing", "Download Management", and "Spellchecker", with i18n support across all 26 languages.
+- **Uncapped Fluid Height for Spellchecker Container:**
+  - Removed vertical scrollbar and `max-height` constraints on `.spellcheck-multiselect-container` (`height: auto; overflow: visible;`), allowing the container to expand downward naturally showing all language chips.
+- **Visual Consistency & Double Card Removal:**
+  - Eliminated redundant inner card background and border in the language container to fuse seamlessly with the parent card surface.
+  - Structurally normalized the Spellchecker card using `.perm-row.download-management-row` identical to Download Management, ensuring perfect left-edge alignment with adjacent settings cards.
 
 ---
 
 ## [0.18.0] - 2026-09-03
 ### Added
-- **Easter Egg: Doom Clásico en Vista Aislada (WASM):**
-  - Se implementó la tarjeta de configuración discreta *"Doomizate"* con interruptor/toggle en la pestaña "Acerca de".
-  - Se configuró persistencia del estado en `settings.doomizate` (desactivado por defecto).
-  - Se añadió el botón dinámico con ícono de calavera (`<i class="fa-solid fa-skull"></i>`) en la barra lateral, posicionado estrictamente debajo de "Añadir Cuenta" y arriba de "Reportar Error", visible únicamente cuando `settings.doomizate` está habilitado.
-  - Se integró el contenedor principal `#doom-view` con `<webview>` aislado que carga el port web WebAssembly de Doom (`https://diekmann.github.io/wasm-doom/`).
-  - Se conectó la navegación completa entre pestañas: al abrir Doom se deseleccionan las cuentas y se ocultan los demás webviews; al activar un chat o salir de Doom se regresa al estado previo sin interferir con las sesiones de WhatsApp.
+- **Classic Doom Easter Egg in Isolated View (WASM):**
+  - Added a discreet "Doomizate" configuration card with toggle control at the bottom of the About tab.
+  - Implemented persistent setting storage in `settings.doomizate` (disabled by default).
+  - Added a dynamic skull icon button (`<i class="fa-solid fa-skull"></i>`) to the sidebar navigation rail, positioned between "Add Account" and "Report Bug", displayed strictly when `settings.doomizate` is enabled.
+  - Integrated `#doom-view` with an isolated `<webview>` running the WebAssembly port of Classic Doom.
+  - Implemented complete tab switching workflow: opening Doom deactivates account tabs and hides other webviews; selecting an account returns to the chat view without disrupting WhatsApp sessions.
 
 ---
 
 ## [0.17.11] - 2026-09-03
 ### Changed
-- **Migración Integral de Licencia a GNU GPL v3:**
-  - Se incorporó el archivo oficial [`LICENSE`](LICENSE) con los términos íntegros de la **GNU General Public License v3 (GPL v3)** bajo titularidad de Sentinel Studio (`Copyright (C) 2026 Sentinel Studio`).
-  - Se actualizó el campo `"license"` en `package.json` a `"GPL-3.0-or-later"`.
-  - Se actualizaron los badges en el `README.md` incorporando la insignia de versión actual (`v0.17.11`) y el badge oficial de GPL v3 (`![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)`), junto con la sección formal de licencia.
-- **Refactorización Completa en Interfaz y Modal de Licencia:**
-  - Se renombró el botón de la sección "Acerca de" a **"Licencia GNU GPL v3"**.
-  - Se refactorizó todo el código frontend (HTML, CSS y JS) eliminando cualquier identificador o variable residual de `mit` en favor de `gpl` (`#btn-open-gpl-license`, `#gpl-license-modal`, `openGplModal()`, etc.).
-  - Se implementó la nueva redacción explicativa estructurada de la GPL v3 en el modal popup, incluyendo condiciones de copyleft y limitación de responsabilidad, con soporte multilingüe en los 26 idiomas de la aplicación.
+- **Full License Migration to GNU GPL v3:**
+  - Added the official standard text of the **GNU General Public License v3 (GPL v3)** in `LICENSE` under Sentinel Studio copyright (`Copyright (C) 2026 Sentinel Studio`).
+  - Updated package manifest (`package.json`) `"license"` field to `"GPL-3.0-or-later"`.
+  - Updated `README.md` with version badge (`v0.17.11`), GPL v3 badge (`![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)`), and legal terms section.
+- **UI & License Modal Refactoring:**
+  - Renamed About section license badge to **"GNU GPL v3 License"**.
+  - Refactored frontend source code (HTML, CSS, JS) eliminating residual `mit` identifiers in favor of `gpl` (`#btn-open-gpl-license`, `#gpl-license-modal`, `openGplModal()`, etc.).
+  - Implemented structured GPL v3 explanation popup detailing copyleft conditions and warranty limitation, with translations in all 26 supported languages.
 
 ---
 
 ## [0.17.10] - 2026-09-03
 ### Changed
-- **Corrector Ortográfico con Layout Horizontal Fluido (Chips/Etiquetas):**
-  - Se modificó `.spellcheck-multiselect-container` con `display: flex; flex-wrap: wrap; gap: 10px;` para que las opciones se distribuyan modularmente de izquierda a derecha con salto de línea automático.
-  - Se rediseñaron los ítems como chips estilizados (`.spellcheck-checkbox-item`) con bordes redondeados y padding adaptativo.
-- **Ordenamiento Alfabético Dinámico según Idioma Activo:**
-  - Se implementó ordenamiento previo a la renderización con `.sort((a, b) => a.nombreTraducido.localeCompare(b.nombreTraducido, currentLang))` garantizando que el orden visual responda estrictamente al texto localizado mostrado en pantalla.
-- **Ampliación del Catálogo de Variantes BCP-47:**
-  - Se incorporó la lista completa de variantes requeridas para Español (`es`, `es-AR`, `es-ES`, `es-MX`, `es-US`, `es-419`), Inglés (`en-US`, `en-GB`, `en-CA`, `en-AU`, `en-IN`, `en-NZ`, `en-ZA`), Portugués (`pt-BR`, `pt-PT`), Francés (`fr`, `fr-FR`, `fr-CA`, `fr-CH`), Alemán (`de`, `de-DE`, `de-AT`, `de-CH`), Italiano/Ruso (`it`, `it-IT`, `ru`, `ru-RU`), Árabe/Persa (`ar`, `fa`), y Asiáticos/Otros (`hi`, `id`, `ko`, `ta`, `tr`, `vi`).
-- **Créditos de Desarrollo y Enlace a Sentinel Studio:**
-  - Se actualizó el texto descriptivo de desarrollo a: *"WhatsNexus es mantenido por Sentinel Studio y la comunidad de Github."*.
-  - Se añadió el botón interactivo `#btn-about-sentinel` con redirección externa segura a `https://somossentinel.com/studio`.
-- **Aviso Legal y Descargo de Responsabilidad (Disclaimer):**
-  - Se agregó al final de la pestaña Acerca de un bloque centrado con el descargo legal formal: *"WhatsNexus no tiene ninguna afiliación, patrocinio ni respaldo por parte de WhatsApp, Messenger, Telegram, Signal, Viber o cualquiera de sus empresas desarrolladoras o matrices."* con soporte i18n en los 26 idiomas.
+- **Spellchecker Fluid Horizontal Tag Layout:**
+  - Refactored `.spellcheck-multiselect-container` with `display: flex; flex-wrap: wrap; gap: 10px;` so options distribute modularly from left to right with automatic line wrapping.
+  - Redesigned items as styled chips (`.spellcheck-checkbox-item`) with rounded borders and responsive padding.
+- **Dynamic Alphabetical Collation by Active Language:**
+  - Implemented pre-render sorting using `.sort((a, b) => a.nombreTraducido.localeCompare(b.nombreTraducido, currentLang))` ensuring visual ordering matches the localized text displayed on screen.
+- **Expanded BCP-47 Regional Catalog:**
+  - Added complete regional variants for Spanish (`es-AR`, `es-ES`, `es-MX`, `es-US`, `es-419`), English (`en-US`, `en-GB`, `en-CA`, `en-AU`, `en-IN`, `en-NZ`, `en-ZA`), Portuguese (`pt-BR`, `pt-PT`), French (`fr-FR`, `fr-CA`, `fr-CH`), German (`de-DE`, `de-AT`, `de-CH`), Italian/Russian (`it`, `ru`), Arabic/Persian (`ar`, `fa`), and Asian/Other languages (`hi`, `id`, `ko`, `ta`, `tr`, `vi`).
+- **Development Credits & Sentinel Studio Link:**
+  - Updated development text to: *"WhatsNexus is maintained by Sentinel Studio and the GitHub community."*.
+  - Added interactive `#btn-about-sentinel` button redirecting securely to `https://somossentinel.com/studio`.
+- **Legal Disclaimer:**
+  - Added a centered disclaimer block at the bottom of the About tab clarifying that WhatsNexus has no affiliation, sponsorship, or endorsement from WhatsApp or related messaging platforms.
 
 ### Fixed
-- **Fondo Sólido Opaco en Modal de Licencia MIT:**
-  - Se corrigió la transparencia no deseada en `.app-modal-card`, `.app-modal-header` y `.app-modal-body` configurando un fondo opaco coherente con el tema activo (`background-color: var(--bg-modal, var(--bg-sidebar, #111b21));`).
+- **Solid Background for License Modal:**
+  - Eliminated unwanted transparency in `.app-modal-card`, `.app-modal-header`, and `.app-modal-body` using opaque theme tokens (`var(--bg-modal)`).
 
 ---
 
 ## [0.17.9] - 2026-09-03
 ### Changed
-- **Ancho Dinámico del Dropdown "Estilo del Icono en Bandeja":**
-  - Se modificaron las reglas CSS de `.setting-row-between .custom-select-wrapper` y `.custom-select-trigger` para que adopten `width: max-content; flex: 0 0 auto;`, replicando el comportamiento adaptativo del selector de temas y asegurando alineación perfecta a la derecha.
-- **Reestructuración de la Tarjeta "Idioma de la Interfaz":**
-  - Se reorganizó el bloque de idioma a un esquema horizontal Flexbox (`.setting-row-between`) con etiqueta descriptiva alineada a la izquierda y menú desplegable estilizado alineado a la derecha.
-- **Popup Modal Nativo para "MIT License" (Sección Acerca de):**
-  - Se convirtió el distintivo estático de la Licencia MIT en un botón interactivo (`#btn-open-mit-license`).
-  - Se implementó un modal nativo en el DOM (`#mit-license-modal`) con fondo semitransparente (*backdrop blur*), tarjeta central tematizada, botón de cierre "X", botón de acción y soporte de cierre mediante clic exterior o tecla `Escape`.
-- **Botón hacia el Repositorio de ZapZap (Sección Acerca de):**
-  - Se integró el botón `#btn-about-zapzap` en la fila de inspiración y agradecimientos con estilo idéntico al del repositorio oficial, invocando el handler IPC seguro `open-external-url` para abrir el repositorio de ZapZap en el navegador web predeterminado.
+- **Dynamic Width for Tray Icon Style Dropdown:**
+  - Updated CSS rules for `.setting-row-between .custom-select-wrapper` and `.custom-select-trigger` to adopt `width: max-content; flex: 0 0 auto;`, replicating theme selector behavior.
+- **Restructuring of Interface Language Card:**
+  - Reorganized language settings into a clean Flexbox layout (`.setting-row-between`) with descriptive label on the left and stylized dropdown on the right.
+- **Interactive License Modal Popup:**
+  - Transformed static license badge into an interactive trigger (`#btn-open-gpl-license`).
+  - Added modal with backdrop blur, themed card, close button, and Escape key dismissal.
+- **ZapZap Repository Link Button:**
+  - Added `#btn-about-zapzap` button in Inspiration row opening external repository in user's default browser via safe IPC handler.
 
 ---
 
 ## [0.17.8] - 2026-09-03
 ### Changed
-- **Corrector Ortográfico Multilingüe con Checkboxes y Gestión de Espacio en Disco:**
-  - Se sustituyó el menú desplegable (dropdown) de selección única por una lista de selección múltiple dentro de un contenedor con scroll vertical estilizado (`.spellcheck-multiselect-container`).
-  - Se implementó el formato visual `[Checkbox] [Bandera Emoji] [Nombre del Idioma] ([Variante/Región])` con insignia de código BCP-47.
-  - Se incorporó el catálogo completo de 25 idiomas base junto con sus variantes regionales clave:
-    - **Español:** `es-ES` (España), `es-MX` (México), `es-AR` (Argentina), `es-CO` (Colombia)
-    - **Inglés:** `en-US` (Estados Unidos), `en-GB` (Reino Unido), `en-CA` (Canadá), `en-AU` (Australia)
-    - **Portugués:** `pt-BR` (Brasil), `pt-PT` (Portugal)
-    - **Francés:** `fr-FR` (Francia), `fr-CA` (Canadá)
-    - **Alemán:** `de-DE` (Alemania), `de-AT` (Austria), `de-CH` (Suiza)
-    - **Chino:** `zh-CN` (Simplificado), `zh-TW` (Tradicional - Taiwán), `zh-HK` (Tradicional - Hong Kong)
-    - **Italiano:** `it-IT` (Italia)
-    - **Resto de idiomas base:** `hi`, `ar`, `bn`, `ru`, `ur`, `id`, `ja`, `mr`, `te`, `tr`, `ta`, `vi`, `fil`, `ko`, `fa`, `ha`, `sw`.
-  - **Traducciones dinámicas:** Se vincularon los nombres de idiomas y regiones al sistema i18n (`lang_*`, `region_*`, `variant_*`), actualizándose inmediatamente al alternar el idioma de la aplicación.
-  - **Soporte Multilingüe Concurrente:** Se actualizó `main.js` y el IPC bridge para enviar un arreglo de códigos BCP-47 y llamar a `session.setSpellCheckerLanguages(array)` en la sesión por defecto y en todas las sesiones activas de los webviews.
-  - **Gestión Eficiente de Disco (.bdic):** Se desarrolló `removeDictionariesForLanguages(removedLangs)` para detectar idiomas desmarcados y eliminar de manera física y silenciosa sus archivos `.bdic` descargados en `userData/Dictionaries` y subcarpetas de particiones.
+- **Multilingual Spellchecker with Checkboxes & Disk Space Management:**
+  - Replaced single-selection dropdown with multi-select list inside `.spellcheck-multiselect-container`.
+  - Implemented visual chip layout with checkbox, emoji flag, translated language name, and regional tag.
+  - Linked language names to i18n dictionary (`lang_*`, `region_*`, `variant_*`) updating immediately on language switch.
+  - Added multi-language dictionary support across default session and webview partitions.
+  - Added `removeDictionariesForLanguages()` to detect unselected languages and clean up unused `.bdic` files from disk.
 
 ---
 
 ## [0.17.7] - 2026-09-03
 ### Fixed
-- **Modo Automático del Selector de Temas (Detección de Tema del SO):**
-  - Se corrigió el bloqueo permanente de `nativeTheme.themeSource` en Electron: al seleccionar temas manuales (`dark`/`light`) el proceso principal fijaba `themeSource`, lo que impedía a Chromium y al Renderer volver a consultar las preferencias reales del sistema operativo al cambiar a `theme-auto`.
-  - Se habilitó la opción `system` en el handler IPC `set-theme-mode` para restablecer `nativeTheme.themeSource = 'system'`.
-  - Se expuso `systemIsDark` de forma síncrona en el bridge `electronAPI` (`preload-main.js`) derivado de `nativeTheme.shouldUseDarkColors`.
-  - Se implementó el listener reactivo `nativeTheme.on('updated')` en `main.js` para notificar al Renderer en tiempo real ante cambios del tema del sistema (vía portal de escritorio DBus en Linux Wayland/X11).
-  - Se unificó la resolución en `getEffectiveThemeIsDark()` en `renderer.js` garantizando que al seleccionar "Automático (Sistema)" la interfaz adopte inmediatamente el esquema claro u oscuro del entorno de escritorio.
+- **Theme Selector System Auto Mode (OS Theme Detection):**
+  - Fixed Electron `nativeTheme.themeSource` locking issue where manual theme switches prevented returning to OS auto detection.
+  - Added `system` parameter in `set-theme-mode` IPC handler to reset `nativeTheme.themeSource = 'system'`.
+  - Synchronously exposed `systemIsDark` on the `electronAPI` bridge (`preload-main.js`) derived from `nativeTheme.shouldUseDarkColors`.
+  - Implemented the reactive `nativeTheme.on('updated')` listener in `main.js` to notify the Renderer in real-time on OS theme changes (via DBus desktop portal on Linux Wayland/X11).
+  - Unified theme resolution in `getEffectiveThemeIsDark()` in `renderer.js`, ensuring that selecting "Automatic (System)" applies the desktop dark/light scheme immediately.
 
 ---
 

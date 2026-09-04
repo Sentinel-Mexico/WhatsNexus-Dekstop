@@ -1,4 +1,4 @@
-// Fallback si corre fuera de Electron (src/preload-main.js expone window.electronAPI)
+// Fallback if running outside Electron (src/preload-main.js exposes window.electronAPI)
 if (typeof window.electronAPI === 'undefined') {
   window.electronAPI = {
     appInfo: { version: '', appVersion: '', platform: 'linux', arch: 'x64', electronVersion: 'N/A', chromeVersion: 'N/A' },
@@ -25,7 +25,7 @@ function escapeHtml(str) {
     .replace(/'/g, '&#039;');
 }
 
-// Idiomas soportados (Los 25 más hablados del mundo en orden proporcional)
+// Supported languages (Top 25 most spoken world languages in proportional order)
 const supportedLanguages = [
   'en', 'zh', 'hi', 'es', 'fr',
   'ar', 'bn', 'pt', 'ru', 'ur',
@@ -34,7 +34,7 @@ const supportedLanguages = [
   'ko', 'fa', 'ha', 'sw', 'it'
 ];
 
-// Nombres nativos de cada idioma
+// Native names for each language
 const nativeNames = {
   en: "English",
   zh: "中文 (普通话)",
@@ -68,7 +68,7 @@ function getOSLanguage() {
   return supportedLanguages.includes(lang) ? lang : 'en';
 }
 
-// El estado de nuestras cuentas
+// Account state tracking
 let accounts = JSON.parse(localStorage.getItem('whatsNexusAccounts')) || [];
 let activeAccountId = null;
 const HIBERNATION_TIMEOUT = 20 * 60 * 1000; // 20 minutos (en milisegundos)
@@ -76,6 +76,7 @@ const HIBERNATION_TIMEOUT = 20 * 60 * 1000; // 20 minutos (en milisegundos)
 // Settings
 let settings = JSON.parse(localStorage.getItem('whatsNexusSettings')) || {
   theme: 'theme-dark',
+  themePalette: 'whatsnexus',
   language: getOSLanguage(),
   privacy: 'broad'
 };
@@ -119,15 +120,19 @@ if (settings.doomizate === undefined) {
   settings.doomizate = false;
 }
 
-// URLs para donaciones y apoyo externo (reemplazar con los enlaces deseados)
+if (!settings.themePalette) {
+  settings.themePalette = 'whatsnexus';
+}
+
+// URLs for donations and external support
 const DONATION_URLS = {
-  github: 'https://github.com/sponsors/Sentinel-Mexico', // Reemplazar con tu enlace de GitHub Sponsors
-  paypal: 'https://www.paypal.me/SentinelMexico',       // Reemplazar con tu enlace de PayPal
-  kofi:   'https://ko-fi.com/sentinelmexico'            // Reemplazar con tu enlace de Ko-fi
+  github: 'https://github.com/sponsors/Sentinel-Mexico',
+  paypal: 'https://www.paypal.me/SentinelMexico',
+  kofi:   'https://ko-fi.com/sentinelmexico'
 };
 
 // ==========================================================================
-// Sistema de Traducción Dinámica (Lazy Loading - P-01)
+// Dynamic Translation System (Lazy Loading - P-01)
 // ==========================================================================
 let i18n = {};
 let fallbackTranslations = {};
@@ -192,7 +197,7 @@ async function loadActiveLocale(langCode) {
 
     currentTranslations = { ...fallbackTranslations, ...activeData };
 
-    // Liberar memoria: retener únicamente el idioma activo y el fallback en i18n
+    // Free memory: retain only the active language and fallback in i18n
     i18n = {};
     i18n['en'] = fallbackTranslations;
     i18n[code] = currentTranslations;
@@ -224,7 +229,7 @@ function populateLanguageSelect() {
     const nativeName = nativeNames[code] || code;
     const displayText = `${translatedName} (${nativeName})`;
 
-    // Select nativo oculto
+    // Hidden native select
     if (langSelect) {
       const option = document.createElement('option');
       option.value = code;
@@ -232,7 +237,7 @@ function populateLanguageSelect() {
       langSelect.appendChild(option);
     }
 
-    // Selector visual personalizado
+    // Custom visual dropdown
     if (customOptions) {
       const customOpt = document.createElement('div');
       customOpt.className = 'custom-option' + (code === currentLangCode ? ' selected' : '');
@@ -280,15 +285,14 @@ function populateLanguageSelect() {
 }
 
 const SPELLCHECK_LANGUAGES = [
-  // Español: es, es-AR (Argentina 🇦🇷), es-ES (España 🇪🇸), es-MX (México 🇲🇽), es-US (EE.UU. 🇺🇸), es-419 (Latinoamérica 🌎)
-  { code: 'es', flag: '🇪🇸', base: 'es' },
+  // Spanish: es-AR (Argentina), es-ES (Spain), es-MX (Mexico), es-US (USA), es-419 (Latin America)
   { code: 'es-AR', flag: '🇦🇷', base: 'es', regionKey: 'region_argentina', defaultRegion: 'Argentina' },
   { code: 'es-ES', flag: '🇪🇸', base: 'es', regionKey: 'region_spain', defaultRegion: 'España' },
   { code: 'es-MX', flag: '🇲🇽', base: 'es', regionKey: 'region_mexico', defaultRegion: 'México' },
   { code: 'es-US', flag: '🇺🇸', base: 'es', regionKey: 'region_us', defaultRegion: 'EE.UU.' },
   { code: 'es-419', flag: '🌎', base: 'es', regionKey: 'region_latam', defaultRegion: 'Latinoamérica' },
 
-  // Inglés: en-US (EE.UU. 🇺🇸), en-GB (Reino Unido 🇬🇧), en-CA (Canadá 🇨🇦), en-AU (Australia 🇦🇺), en-IN (India 🇮🇳), en-NZ (Nueva Zelanda 🇳🇿), en-ZA (Sudáfrica 🇿🇦)
+  // English: en-US (USA), en-GB (UK), en-CA (Canada), en-AU (Australia), en-IN (India), en-NZ (New Zealand), en-ZA (South Africa)
   { code: 'en-US', flag: '🇺🇸', base: 'en', regionKey: 'region_us', defaultRegion: 'EE.UU.' },
   { code: 'en-GB', flag: '🇬🇧', base: 'en', regionKey: 'region_uk', defaultRegion: 'Reino Unido' },
   { code: 'en-CA', flag: '🇨🇦', base: 'en', regionKey: 'region_ca', defaultRegion: 'Canadá' },
@@ -297,33 +301,29 @@ const SPELLCHECK_LANGUAGES = [
   { code: 'en-NZ', flag: '🇳🇿', base: 'en', regionKey: 'region_nz', defaultRegion: 'Nueva Zelanda' },
   { code: 'en-ZA', flag: '🇿🇦', base: 'en', regionKey: 'region_za', defaultRegion: 'Sudáfrica' },
 
-  // Portugués: pt-BR (Brasil 🇧🇷), pt-PT (Portugal 🇵🇹)
+  // Portuguese: pt-BR (Brazil), pt-PT (Portugal)
   { code: 'pt-BR', flag: '🇧🇷', base: 'pt', regionKey: 'region_brazil', defaultRegion: 'Brasil' },
   { code: 'pt-PT', flag: '🇵🇹', base: 'pt', regionKey: 'region_portugal', defaultRegion: 'Portugal' },
 
-  // Francés: fr, fr-FR (Francia 🇫🇷), fr-CA (Canadá 🇨🇦), fr-CH (Suiza 🇨🇭)
-  { code: 'fr', flag: '🇫🇷', base: 'fr' },
+  // French: fr-FR (France), fr-CA (Canada), fr-CH (Switzerland)
   { code: 'fr-FR', flag: '🇫🇷', base: 'fr', regionKey: 'region_france', defaultRegion: 'Francia' },
   { code: 'fr-CA', flag: '🇨🇦', base: 'fr', regionKey: 'region_ca', defaultRegion: 'Canadá' },
   { code: 'fr-CH', flag: '🇨🇭', base: 'fr', regionKey: 'region_switzerland', defaultRegion: 'Suiza' },
 
-  // Alemán: de, de-DE (Alemania 🇩🇪), de-AT (Austria 🇦🇹), de-CH (Suiza 🇨🇭)
-  { code: 'de', flag: '🇩🇪', base: 'de' },
+  // German: de-DE (Germany), de-AT (Austria), de-CH (Switzerland)
   { code: 'de-DE', flag: '🇩🇪', base: 'de', regionKey: 'region_germany', defaultRegion: 'Alemania' },
   { code: 'de-AT', flag: '🇦🇹', base: 'de', regionKey: 'region_austria', defaultRegion: 'Austria' },
   { code: 'de-CH', flag: '🇨🇭', base: 'de', regionKey: 'region_switzerland', defaultRegion: 'Suiza' },
 
-  // Italiano / Ruso: it, it-IT (Italia 🇮🇹), ru, ru-RU (Rusia 🇷🇺)
+  // Italian / Russian (Direct root codes without duplication)
   { code: 'it', flag: '🇮🇹', base: 'it' },
-  { code: 'it-IT', flag: '🇮🇹', base: 'it', regionKey: 'region_italy', defaultRegion: 'Italia' },
   { code: 'ru', flag: '🇷🇺', base: 'ru' },
-  { code: 'ru-RU', flag: '🇷🇺', base: 'ru', regionKey: 'region_russia', defaultRegion: 'Rusia' },
 
-  // Árabe / Persa: ar (🇸🇦), fa (🇮🇷)
+  // Arabic / Persian: ar, fa
   { code: 'ar', flag: '🇸🇦', base: 'ar' },
   { code: 'fa', flag: '🇮🇷', base: 'fa' },
 
-  // Asiáticos / Otros: hi (Hindi 🇮🇳), id (Indonesio 🇮🇩), ko (Coreano 🇰🇷), ta (Tamil 🇮🇳), tr (Turco 🇹🇷), vi (Vietnamita 🇻🇳)
+  // Asian & Other Languages: hi (Hindi), id (Indonesian), ko (Korean), ta (Tamil), tr (Turkish), vi (Vietnamese)
   { code: 'hi', flag: '🇮🇳', base: 'hi' },
   { code: 'id', flag: '🇮🇩', base: 'id' },
   { code: 'ko', flag: '🇰🇷', base: 'ko' },
@@ -331,6 +331,7 @@ const SPELLCHECK_LANGUAGES = [
   { code: 'tr', flag: '🇹🇷', base: 'tr' },
   { code: 'vi', flag: '🇻🇳', base: 'vi' }
 ];
+
 
 function renderSpellcheckList() {
   const container = document.getElementById('spellcheck-multiselect-container');
@@ -348,9 +349,21 @@ function renderSpellcheckList() {
     }
   }
 
+  // Map legacy/redundant codes previously saved
+  const DEPRECATED_SPELLCHECK_MAP = {
+    'es': 'es-ES',
+    'fr': 'fr-FR',
+    'de': 'de-DE',
+    'it-IT': 'it',
+    'ru-RU': 'ru'
+  };
+  settings.spellcheckLanguages = Array.from(new Set(
+    settings.spellcheckLanguages.map(c => DEPRECATED_SPELLCHECK_MAP[c] || c)
+  ));
+
   const selectedSet = new Set(settings.spellcheckLanguages);
 
-  // Mapear cada elemento con su nombre traducido formateado
+  // Map each item with its translated formatted name
   const items = SPELLCHECK_LANGUAGES.map(item => {
     const langName = dict[`lang_${item.base}`] || nativeNames[item.base] || item.base;
     let labelContent = langName;
@@ -364,7 +377,7 @@ function renderSpellcheckList() {
     };
   });
 
-  // Ordenamiento alfabético dinámico estricto basado en el texto traducido que el usuario ve
+  // Strict dynamic alphabetical collation based on user-visible translated text
   items.sort((a, b) => a.nombreTraducido.localeCompare(b.nombreTraducido, currentLang));
 
   items.forEach(item => {
@@ -469,7 +482,7 @@ const notifNameToggle = document.getElementById('notif-name-toggle');
 const notifPreviewToggle = document.getElementById('notif-preview-toggle');
 const notifSoundToggle = document.getElementById('notif-sound-toggle');
 
-// Elementos de la Pestaña Permisos / Sistema
+// Permissions / System Tab Elements
 const permAllowAllBtn = document.getElementById('perm-allow-all-btn');
 const permDenyAllBtn = document.getElementById('perm-deny-all-btn');
 const permMicToggle = document.getElementById('perm-mic-toggle');
@@ -482,7 +495,7 @@ const downloadPathInput = document.getElementById('download-path-input');
 const btnSelectDownloadDir = document.getElementById('btn-select-download-dir');
 const btnResetDownloadDir = document.getElementById('btn-reset-download-dir');
 
-// Rastreo de mensajes no leídos por cuenta para el System Tray
+// Unread messages tracking per account for System Tray
 const accountUnreadCounts = {};
 
 function updateTotalUnread() {
@@ -532,7 +545,7 @@ function getEffectiveThemeIsDark() {
   if (settings.theme === 'theme-dark') return true;
   if (settings.theme === 'theme-light') return false;
 
-  // Modo Automático (Sistema)
+  // Automatic Mode (System)
   if (window.electronAPI && typeof window.electronAPI.systemIsDark === 'boolean') {
     return window.electronAPI.systemIsDark;
   }
@@ -557,11 +570,13 @@ async function init() {
   initDownloadPathUI();
   renderSpellcheckList();
   loadAboutInfo();
+  initAutoUpdater();
+  initNetworkMonitor();
   if (electronAPI.setSpellcheckerLanguages) {
     electronAPI.setSpellcheckerLanguages(settings.spellcheckLanguages || ['es-ES']);
   }
   
-  // Garantizar propiedad enabled en cuentas existentes
+  // Ensure enabled property on existing accounts
   accounts.forEach(acc => {
     if (acc.enabled === undefined) acc.enabled = true;
   });
@@ -570,7 +585,7 @@ async function init() {
     const lang = i18n[settings.language] || i18n['en'];
     addAccount(`${lang.default_account_name} 1`);
   } else {
-    // Solo cuentas activadas pueden mostrarse y seleccionarse
+    // Only enabled accounts can be displayed and selected
     const enabledAccounts = accounts.filter(a => a.enabled !== false);
     const savedActiveId = localStorage.getItem('whatsNexusActiveAccount');
     const targetActiveId = (savedActiveId && enabledAccounts.some(a => a.id === savedActiveId))
@@ -581,7 +596,7 @@ async function init() {
 
     accounts.forEach(acc => {
       acc.lastAccessed = Date.now();
-      // Lazy loading: solo instanciamos el webview si está habilitada y es el objetivo inicial
+      // Lazy loading: only instantiate webview if enabled and initial active target
       const isTarget = (acc.id === targetActiveId && acc.enabled !== false);
       acc.hibernated = !isTarget;
       createWebviewContainer(acc, !isTarget);
@@ -599,7 +614,7 @@ async function init() {
 }
 
 function saveAccounts() {
-  // Garantizar persistencia limpia sin estados transitorios
+  // Ensure clean persistence without transient states
   const toSave = accounts.map(a => ({
     id: a.id,
     name: a.name,
@@ -621,9 +636,9 @@ function applySettings() {
   const isAuto = (settings.theme === 'theme-auto' || !settings.theme);
   const isDark = getEffectiveThemeIsDark();
 
-  const palette = settings.themePalette || 'whatsapp';
+  const palette = settings.themePalette || 'whatsnexus';
   
-  // Establecer paleta y modo de luz/oscuridad en el body
+  // Set palette and light/dark mode on body
   document.body.className = `palette-${palette} ${isDark ? 'theme-dark' : 'theme-light'}`;
   
   if (themeSelect) themeSelect.value = settings.theme || 'theme-auto';
@@ -632,7 +647,7 @@ function applySettings() {
   if (trayBadgeToggle) trayBadgeToggle.checked = settings.trayShowBadge !== false;
   if (downloadPathInput && settings.downloadPath) downloadPathInput.value = settings.downloadPath;
 
-  // Sincronizar UI de Notificaciones
+  // Synchronize Notifications UI
   if (settings.notifications) {
     if (privacyPresetSelect) privacyPresetSelect.value = settings.notifications.preset || 'broad';
     if (notifDesktopToggle) notifDesktopToggle.checked = settings.notifications.desktopNotifications !== false;
@@ -641,7 +656,7 @@ function applySettings() {
     if (notifPreviewToggle) notifPreviewToggle.checked = settings.notifications.messagePreview !== false;
     if (notifSoundToggle) notifSoundToggle.checked = settings.notifications.notificationSound !== false;
 
-    // Atenuar controles secundarios si las notificaciones de escritorio están apagadas
+    // Dim secondary controls if desktop notifications are turned off
     const isDesktopEnabled = settings.notifications.desktopNotifications !== false;
     document.querySelectorAll('.notif-sub-option').forEach(el => {
       if (!isDesktopEnabled) {
@@ -651,7 +666,7 @@ function applySettings() {
       }
     });
 
-    // Enviar configuración a las webviews activas
+    // Send settings to active webviews
     document.querySelectorAll('webview').forEach(wv => {
       try {
         wv.send('update-notification-settings', settings.notifications);
@@ -669,7 +684,7 @@ function applySettings() {
     });
   }
 
-  // Sincronizar modo oscuro/claro a nivel global de Chromium y Electron
+  // Synchronize dark/light mode across Chromium and Electron system level
   if (window.electronAPI && electronAPI.setThemeMode) {
     electronAPI.setThemeMode(isAuto ? 'system' : (isDark ? 'dark' : 'light'));
   }
@@ -678,7 +693,7 @@ function applySettings() {
     refreshAllCustomDropdowns();
   }
 
-  // Sincronizar UI de Permisos
+  // Synchronize Permissions UI
   if (settings.permissions) {
     if (permMicToggle) permMicToggle.checked = settings.permissions.microphone !== false;
     if (permCameraToggle) permCameraToggle.checked = !!settings.permissions.camera;
@@ -686,17 +701,17 @@ function applySettings() {
     if (permScreenToggle) permScreenToggle.checked = settings.permissions.screenShare !== false;
     if (permScreenAudioToggle) permScreenAudioToggle.checked = !!settings.permissions.screenShareAudio;
 
-    // Sincronizar permisos con el proceso principal
+    // Synchronize permissions with main process
     electronAPI.updatePermissionSettings(settings.permissions);
   }
 
-  // Sincronizar apariencia de la bandeja con el proceso principal
+  // Synchronize tray appearance with main process
   electronAPI.updateTraySettings({
     style: settings.trayStyle || 'auto',
     showBadge: settings.trayShowBadge !== false
   });
   
-  // Sincronizar UI de Doomizate (Easter Egg)
+  // Synchronize Doomizate UI (Easter Egg)
   if (doomizateToggle) {
     doomizateToggle.checked = !!settings.doomizate;
   }
@@ -717,6 +732,10 @@ function applySettings() {
         } else {
           emptyState.classList.remove('hidden');
         }
+      }
+      const existingWebview = document.getElementById('doom-webview');
+      if (existingWebview) {
+        existingWebview.src = 'about:blank';
       }
     }
   }
@@ -776,12 +795,12 @@ function renderAllSidebarAccounts() {
   }
 }
 
-// Globo de texto / Tooltip flotante desacoplado del overflow de la sidebar
+// Floating tooltip decoupled from sidebar overflow
 const floatingTooltip = document.createElement('div');
 floatingTooltip.className = 'sidebar-floating-tooltip';
 document.body.appendChild(floatingTooltip);
 
-// Posición unificada: exactamente a 8px del límite derecho de la sidebar
+// Unified position: exactly 8px from right edge of sidebar
 const TOOLTIP_GAP = 8; // px desde el borde derecho de la sidebar
 
 function getSidebarRight() {
@@ -803,7 +822,7 @@ function attachSidebarTooltip(el, getTooltipText) {
   });
 }
 
-// Inicializar tooltips unificados para los botones inferiores de la sidebar
+// Initialize unified tooltips for bottom sidebar buttons
 function initSidebarBottomTooltips() {
   const addBtn = document.getElementById('add-account-btn');
   const bugBtn = document.getElementById('report-bug-btn');
@@ -873,7 +892,7 @@ function createWebviewContainer(account, startHibernated = false) {
   
   const lang = i18n[settings.language] || i18n['en'];
   
-  // Overlay de Hibernación (Visible si startHibernated es true)
+  // Hibernation Overlay (Visible if startHibernated is true)
   const overlay = document.createElement('div');
   overlay.className = `hibernation-overlay ${startHibernated ? '' : 'hidden'}`;
   overlay.id = `hibernation_${account.id}`;
@@ -883,22 +902,98 @@ function createWebviewContainer(account, startHibernated = false) {
     <p data-i18n="hibernation_desc">${escapeHtml(lang.hibernation_desc)}</p>
     <button class="wake-btn" onclick="wakeWebview('${escapeHtml(account.id)}')" data-i18n="wake_button">${escapeHtml(lang.wake_button)}</button>
   `;
-  
   container.appendChild(overlay);
+
+  // Offline Overlay (Shown if account fails to load or app opened offline)
+  const offlineOverlay = document.createElement('div');
+  offlineOverlay.className = 'offline-overlay hidden';
+  offlineOverlay.id = `offline_${account.id}`;
+  offlineOverlay.innerHTML = `
+    <div class="offline-icon-wrapper">
+      <i class="fa-solid fa-wifi-slash"></i>
+    </div>
+    <h3 data-i18n="offline_screen_title">${escapeHtml(lang.offline_screen_title || 'Sin conexión a internet')}</h3>
+    <p data-i18n="offline_screen_desc">${escapeHtml(lang.offline_screen_desc || 'No se puede conectar a WhatsApp Web. Comprueba tu conexión de red y vuelve a intentarlo.')}</p>
+    <button type="button" class="btn-primary-action retry-btn" onclick="retryLoadAccount('${escapeHtml(account.id)}')">
+      <i class="fa-solid fa-rotate-right"></i>
+      <span data-i18n="btn_retry">${escapeHtml(lang.btn_retry || 'Reintentar')}</span>
+    </button>
+  `;
+  container.appendChild(offlineOverlay);
+
   webviewContainer.appendChild(container);
 
-  // Solo crear el webview en el DOM si NO empieza hibernado (Lazy Loading)
+  // Only create webview in DOM if NOT starting hibernated (Lazy Loading)
   if (!startHibernated) {
     buildWebviewDOM(account, container);
   }
 }
+
+function showAccountOfflineScreen(accountId) {
+  const offlineEl = document.getElementById(`offline_${accountId}`);
+  const webview = document.getElementById(`webview_${accountId}`);
+  if (offlineEl) {
+    offlineEl.classList.remove('hidden');
+  }
+  if (webview) {
+    webview.style.display = 'none';
+  }
+}
+
+function hideAccountOfflineScreen(accountId) {
+  const offlineEl = document.getElementById(`offline_${accountId}`);
+  const webview = document.getElementById(`webview_${accountId}`);
+  if (offlineEl) {
+    offlineEl.classList.add('hidden');
+  }
+  if (webview) {
+    webview.style.display = '';
+  }
+}
+
+function retryLoadAccount(accountId) {
+  const btn = document.querySelector(`#offline_${accountId} .retry-btn`);
+  const originalHtml = btn ? btn.innerHTML : '';
+  if (btn) {
+    btn.disabled = true;
+    const connectingText = (typeof currentTranslations !== 'undefined' && currentTranslations && currentTranslations.status_connecting) || 'Conectando...';
+    btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> <span>${escapeHtml(connectingText)}</span>`;
+  }
+
+  setTimeout(() => {
+    const webview = document.getElementById(`webview_${accountId}`);
+    if (webview) {
+      webview.style.display = '';
+      if (!webview.src || webview.src === 'about:blank') {
+        webview.src = 'https://web.whatsapp.com/';
+      } else {
+        webview.reload();
+      }
+    } else {
+      const container = document.getElementById(`container_${accountId}`);
+      const acc = accounts.find(a => a.id === accountId);
+      if (container && acc) {
+        buildWebviewDOM(acc, container);
+      }
+    }
+
+    setTimeout(() => {
+      if (btn) {
+        btn.disabled = false;
+        btn.innerHTML = originalHtml;
+      }
+    }, 2000);
+  }, 350);
+}
+
+window.retryLoadAccount = retryLoadAccount;
 
 function buildWebviewDOM(account, parentContainer) {
   const webview = document.createElement('webview');
   webview.id = `webview_${account.id}`;
   webview.setAttribute('src', 'https://web.whatsapp.com/');
   webview.setAttribute('partition', account.partition);
-  webview.setAttribute('webpreferences', 'backgroundThrottling=yes, contextIsolation=no'); // CRITICO: Throttling de memoria y acceso a contexto principal
+  webview.setAttribute('webpreferences', 'backgroundThrottling=yes, contextIsolation=no'); // CRITICAL: Memory throttling and main context access
   
   const preloadPath = electronAPI.webviewPreloadPath || '';
   if (preloadPath) {
@@ -907,8 +1002,26 @@ function buildWebviewDOM(account, parentContainer) {
   webview.setAttribute('useragent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36');
   webview.className = 'webview-active';
 
-  // Sincronizar configuración de notificaciones, DND y tema al cargar la sesión
+  // Si no hay conexión al iniciar o cargar la cuenta, mostrar la pantalla offline
+  if (!navigator.onLine) {
+    showAccountOfflineScreen(account.id);
+  }
+
+  // Detección de errores de carga de red
+  webview.addEventListener('did-fail-load', (e) => {
+    if (e.isMainFrame && e.errorCode !== -3) {
+      console.warn(`[Webview ${account.id}] Falló la carga (código ${e.errorCode}):`, e.errorDescription);
+      showAccountOfflineScreen(account.id);
+    }
+  });
+
+  webview.addEventListener('did-finish-load', () => {
+    hideAccountOfflineScreen(account.id);
+  });
+
+  // Synchronize notifications, DND, and theme configuration upon session load
   webview.addEventListener('dom-ready', () => {
+    hideAccountOfflineScreen(account.id);
     const isDark = getEffectiveThemeIsDark();
     try {
       if (settings && settings.notifications) {
@@ -1082,11 +1195,20 @@ function openDoomView() {
 
   // Activate Doom skull button and show doom-view
   if (doomBtn) doomBtn.classList.add('active');
-  if (doomView) doomView.classList.remove('hidden');
+  if (doomView) {
+    doomView.classList.remove('hidden');
 
-  // Cargar el port WebAssembly si no ha sido cargado
-  if (doomWebview && (!doomWebview.src || doomWebview.src === 'about:blank')) {
-    doomWebview.src = 'https://diekmann.github.io/wasm-doom/';
+    let doomWebview = document.getElementById('doom-webview');
+    if (!doomWebview) {
+      doomWebview = document.createElement('webview');
+      doomWebview.id = 'doom-webview';
+      doomWebview.setAttribute('webpreferences', 'contextIsolation=true');
+      doomWebview.setAttribute('allowpopups', 'false');
+      doomView.appendChild(doomWebview);
+    }
+    if (doomWebview && (!doomWebview.src || doomWebview.src === 'about:blank' || !doomWebview.src.includes('assets/doom/index.html'))) {
+      doomWebview.src = '../assets/doom/index.html';
+    }
   }
 }
 
@@ -1164,7 +1286,34 @@ function activateAccount(id) {
   }
 }
 
-function deleteAccount(id) {
+let accountIdPendingDelete = null;
+
+function promptDeleteAccount(id) {
+  accountIdPendingDelete = id;
+  const deleteModal = document.getElementById('delete-account-modal');
+  const deleteMsg = document.getElementById('delete-account-modal-message');
+  
+  if (deleteModal) {
+    if (deleteMsg) {
+      const acc = accounts.find(a => a.id === id);
+      const lang = (typeof i18n !== 'undefined' && i18n[settings.language]) || (typeof i18n !== 'undefined' && i18n['en']) || {};
+      const baseMsg = (typeof currentTranslations !== 'undefined' && currentTranslations.modal_delete_account_msg) || lang.modal_delete_account_msg || '¿Estás seguro de que deseas eliminar esta cuenta?';
+      const accName = acc ? (acc.name || `${lang.default_account_name || 'Cuenta'} ${acc.index || ''}`.trim()) : '';
+      deleteMsg.innerText = accName ? `${baseMsg} ("${accName}")` : baseMsg;
+    }
+    deleteModal.classList.remove('hidden');
+  }
+}
+
+function closeDeleteModal() {
+  const deleteModal = document.getElementById('delete-account-modal');
+  if (deleteModal) {
+    deleteModal.classList.add('hidden');
+  }
+  accountIdPendingDelete = null;
+}
+
+function executeDeleteAccount(id) {
   accounts = accounts.filter(a => a.id !== id);
   saveAccounts();
   
@@ -1192,6 +1341,10 @@ function deleteAccount(id) {
     }
   }
   renderSettingsAccounts();
+}
+
+function deleteAccount(id) {
+  promptDeleteAccount(id);
 }
 
 window.setAccountStatus = function(id, enabled) {
@@ -1351,7 +1504,7 @@ function renderSettingsAccounts() {
           <button class="btn-card-action edit-btn" onclick="toggleEditAccountName('${safeId}')">
             <span>${escapeHtml(lang.btn_edit)}</span>
           </button>
-          <button class="btn-card-action delete-btn" onclick="deleteAccount('${safeId}')">
+          <button class="btn-card-action delete-btn" onclick="promptDeleteAccount('${safeId}')">
             <span>${escapeHtml(lang.btn_delete)}</span>
           </button>
         </div>
@@ -1424,7 +1577,8 @@ window.toggleDND = (id) => {
   }
 };
 
-window.deleteAccount = deleteAccount;
+window.deleteAccount = promptDeleteAccount;
+window.promptDeleteAccount = promptDeleteAccount;
 
 if (themeSelect) {
   themeSelect.addEventListener('change', (e) => {
@@ -1832,11 +1986,265 @@ if (gplModal) {
   });
 }
 
+// Control del Modal de Confirmación de Eliminación de Cuenta
+const deleteAccountModal = document.getElementById('delete-account-modal');
+const btnCloseDeleteModal = document.getElementById('btn-close-delete-modal');
+const btnCancelDeleteAccount = document.getElementById('btn-cancel-delete-account');
+const btnConfirmDeleteAccount = document.getElementById('btn-confirm-delete-account');
+
+if (btnCloseDeleteModal) {
+  btnCloseDeleteModal.addEventListener('click', (e) => {
+    e.preventDefault();
+    closeDeleteModal();
+  });
+}
+
+if (btnCancelDeleteAccount) {
+  btnCancelDeleteAccount.addEventListener('click', (e) => {
+    e.preventDefault();
+    closeDeleteModal();
+  });
+}
+
+if (btnConfirmDeleteAccount) {
+  btnConfirmDeleteAccount.addEventListener('click', (e) => {
+    e.preventDefault();
+    if (accountIdPendingDelete) {
+      const idToDelete = accountIdPendingDelete;
+      closeDeleteModal();
+      executeDeleteAccount(idToDelete);
+    }
+  });
+}
+
+if (deleteAccountModal) {
+  deleteAccountModal.addEventListener('click', (e) => {
+    if (e.target === deleteAccountModal) {
+      closeDeleteModal();
+    }
+  });
+}
+
 document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape' && gplModal && !gplModal.classList.contains('hidden')) {
-    closeGplModal();
+  if (e.key === 'Escape') {
+    if (gplModal && !gplModal.classList.contains('hidden')) {
+      closeGplModal();
+    }
+    if (deleteAccountModal && !deleteAccountModal.classList.contains('hidden')) {
+      closeDeleteModal();
+    }
   }
 });
+
+// ========================================================
+// Auto-Updater State Machine (OTA Updates)
+// ========================================================
+function initAutoUpdater() {
+  const btnUpdate = document.getElementById('btn-update');
+  const progressContainer = document.getElementById('update-progress-container');
+  const progressBar = document.getElementById('update-progress-bar');
+  const progressText = document.getElementById('update-progress-text');
+
+  if (!btnUpdate) return;
+
+  const updater = window.electronAPI && window.electronAPI.updater;
+  if (!updater) {
+    console.warn('[AutoUpdater] electronAPI.updater is not available');
+    return;
+  }
+
+  // Update States: 'IDLE' | 'CHECKING' | 'UP_TO_DATE' | 'AVAILABLE' | 'DOWNLOADING' | 'DOWNLOADED' | 'ERROR'
+  let currentState = 'IDLE';
+  let revertTimer = null;
+
+  function getTranslation(key, fallback) {
+    if (typeof currentTranslations !== 'undefined' && currentTranslations && currentTranslations[key]) {
+      return currentTranslations[key];
+    }
+    const lang = (typeof settings !== 'undefined' && settings && settings.language) || 'es';
+    if (typeof i18n !== 'undefined' && i18n && i18n[lang] && i18n[lang][key]) {
+      return i18n[lang][key];
+    }
+    return fallback;
+  }
+
+  function setButtonState(state, payload) {
+    if (revertTimer) {
+      clearTimeout(revertTimer);
+      revertTimer = null;
+    }
+    currentState = state;
+
+    btnUpdate.classList.remove('update-available', 'update-ready');
+
+    switch (state) {
+      case 'IDLE':
+        btnUpdate.disabled = false;
+        if (progressContainer) progressContainer.style.display = 'none';
+        btnUpdate.innerHTML = `<i class="fa-solid fa-arrows-rotate"></i> <span id="btn-update-text" data-i18n="btn_check_updates">${getTranslation('btn_check_updates', 'Buscar actualizaciones')}</span>`;
+        break;
+
+      case 'CHECKING':
+        btnUpdate.disabled = true;
+        if (progressContainer) progressContainer.style.display = 'none';
+        btnUpdate.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> <span id="btn-update-text" data-i18n="btn_checking_updates">${getTranslation('btn_checking_updates', 'Buscando...')}</span>`;
+        break;
+
+      case 'UP_TO_DATE':
+        btnUpdate.disabled = true;
+        if (progressContainer) progressContainer.style.display = 'none';
+        btnUpdate.innerHTML = `<i class="fa-solid fa-circle-check"></i> <span id="btn-update-text" data-i18n="btn_up_to_date">${getTranslation('btn_up_to_date', 'Tienes la última versión')}</span>`;
+        revertTimer = setTimeout(() => {
+          setButtonState('IDLE');
+        }, 3000);
+        break;
+
+      case 'AVAILABLE':
+        btnUpdate.disabled = false;
+        btnUpdate.classList.add('update-available');
+        if (progressContainer) progressContainer.style.display = 'none';
+        btnUpdate.innerHTML = `<i class="fa-solid fa-cloud-arrow-down"></i> <span id="btn-update-text" data-i18n="btn_update_available">${getTranslation('btn_update_available', 'Actualización disponible: Descargar ahora')}</span>`;
+        break;
+
+      case 'DOWNLOADING':
+        btnUpdate.disabled = true;
+        if (progressContainer) progressContainer.style.display = 'flex';
+        const percent = (payload && typeof payload.percent === 'number') ? Math.round(payload.percent) : 0;
+        if (progressBar) progressBar.style.width = `${percent}%`;
+        if (progressText) progressText.innerText = `${percent}%`;
+        btnUpdate.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> <span id="btn-update-text">${getTranslation('btn_downloading_update', 'Descargando...')} ${percent > 0 ? percent + '%' : ''}</span>`;
+        break;
+
+      case 'DOWNLOADED':
+        btnUpdate.disabled = false;
+        btnUpdate.classList.add('update-ready');
+        if (progressContainer) progressContainer.style.display = 'none';
+        btnUpdate.innerHTML = `<i class="fa-solid fa-bolt"></i> <span id="btn-update-text" data-i18n="btn_install_restart">${getTranslation('btn_install_restart', 'Instalar y Reiniciar')}</span>`;
+        break;
+
+      case 'ERROR':
+        btnUpdate.disabled = true;
+        if (progressContainer) progressContainer.style.display = 'none';
+        btnUpdate.innerHTML = `<i class="fa-solid fa-circle-exclamation"></i> <span id="btn-update-text" data-i18n="btn_update_error">${getTranslation('btn_update_error', 'Error al buscar actualizaciones')}</span>`;
+        revertTimer = setTimeout(() => {
+          setButtonState('IDLE');
+        }, 3500);
+        break;
+    }
+  }
+
+  btnUpdate.addEventListener('click', async () => {
+    if (currentState === 'IDLE') {
+      setButtonState('CHECKING');
+      try {
+        await updater.checkForUpdates();
+      } catch (err) {
+        console.error('[AutoUpdater] checkForUpdates error:', err);
+        setButtonState('ERROR');
+      }
+    } else if (currentState === 'AVAILABLE') {
+      setButtonState('DOWNLOADING', { percent: 0 });
+      try {
+        await updater.downloadUpdate();
+      } catch (err) {
+        console.error('[AutoUpdater] downloadUpdate error:', err);
+        setButtonState('ERROR');
+      }
+    } else if (currentState === 'DOWNLOADED') {
+      try {
+        updater.installUpdate();
+      } catch (err) {
+        console.error('[AutoUpdater] installUpdate error:', err);
+      }
+    }
+  });
+
+  updater.onUpdateAvailable((info) => {
+    setButtonState('AVAILABLE', info);
+  });
+
+  updater.onUpdateNotAvailable((info) => {
+    setButtonState('UP_TO_DATE', info);
+  });
+
+  updater.onDownloadProgress((progressObj) => {
+    setButtonState('DOWNLOADING', progressObj);
+  });
+
+  updater.onUpdateDownloaded((info) => {
+    setButtonState('DOWNLOADED', info);
+  });
+
+  updater.onError((err) => {
+    setButtonState('ERROR', err);
+  });
+}
+
+// ========================================================
+// Network Connectivity Monitoring & Offline Protections
+// ========================================================
+let hadInitialConnection = navigator.onLine;
+
+function initNetworkMonitor() {
+  const reconnectingModal = document.getElementById('reconnecting-modal');
+  let pollTimer = null;
+
+  function showReconnectingModal() {
+    if (reconnectingModal) {
+      reconnectingModal.classList.remove('hidden');
+    }
+    if (!pollTimer) {
+      pollTimer = setInterval(verifyConnectionOnline, 3000);
+    }
+  }
+
+  function hideReconnectingModal() {
+    if (reconnectingModal) {
+      reconnectingModal.classList.add('hidden');
+    }
+    if (pollTimer) {
+      clearInterval(pollTimer);
+      pollTimer = null;
+    }
+    // Reconnection succeeded: reload any accounts showing the offline overlay
+    accounts.forEach(acc => {
+      const offlineEl = document.getElementById(`offline_${acc.id}`);
+      if (offlineEl && !offlineEl.classList.contains('hidden')) {
+        retryLoadAccount(acc.id);
+      }
+    });
+  }
+
+  async function verifyConnectionOnline() {
+    if (navigator.onLine) {
+      try {
+        await fetch('https://web.whatsapp.com/favicon.ico', { method: 'HEAD', mode: 'no-cors', cache: 'no-store' });
+        console.log('[Network] Connectivity restored verified by ping.');
+        hadInitialConnection = true;
+        hideReconnectingModal();
+      } catch (_) {
+        // Still unreachable, keep reconnecting modal active
+      }
+    }
+  }
+
+  window.addEventListener('online', () => {
+    console.log('[Network] Online event received.');
+    hadInitialConnection = true;
+    hideReconnectingModal();
+  });
+
+  window.addEventListener('offline', () => {
+    console.log('[Network] Offline event received.');
+    if (hadInitialConnection) {
+      showReconnectingModal();
+    }
+  });
+
+  if (navigator.onLine) {
+    hadInitialConnection = true;
+  }
+}
 
 addAccountBtn.addEventListener('click', () => addAccount());
 
@@ -1891,11 +2299,11 @@ if (donateBtn) {
   });
 }
 
-// Controladores del Easter Egg: Doom Clásico
+// Easter Egg Controllers: Classic Doom
 if (doomBtn) {
   doomBtn.addEventListener('click', () => {
     if (doomView && !doomView.classList.contains('hidden')) {
-      // Si ya está activo, volver al chat activo o empty state
+      // If already active, return to active chat or empty state
       const enabledAccounts = accounts.filter(a => a.enabled !== false);
       if (activeAccountId && enabledAccounts.some(a => a.id === activeAccountId)) {
         activateAccount(activeAccountId);

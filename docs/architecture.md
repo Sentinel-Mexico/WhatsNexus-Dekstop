@@ -59,19 +59,24 @@ The main process acts as the supervisor for the entire operating system interfac
 - **Multi-Session Proxy Engine & Strict Isolation:** Dynamically provisions HTTP/SOCKS5 proxy rules or system proxy discovery across `session.defaultSession` and all partitioned sessions (`persist:acc_*`) via `session.setProxy()`. When Strict Proxy Isolation is enabled, local bypass rules are removed (`proxyBypassRules: ''`) to ensure no direct network connections evade the tunnel. Reverts to direct connections on demand (`{ mode: 'direct' }`).
 - **WebRTC IP Leak Mitigation:** Enforces `session.setWebRTCIPHandlingPolicy('disable-non-proxied-udp')` at the Chromium networking layer across all sessions when WebRTC protection is enabled, preventing local and public IP disclosures over non-proxied UDP.
 - **Real-Time System Diagnostics & Engine Introspection:** Exposes dynamic runtime parameters via IPC (`get-system-info`), sourcing live metrics directly from `app.getVersion()`, `process.versions` (Electron, Chromium, Node.js, V8), and Node's native `os` module (`os.type()`, `os.release()`, `os.arch()`).
+- **Automated OTA Update Engine:** Integrates `electron-updater` with `electron-log` targeting GitHub Releases (`Sentinel-Mexico/WhatsNexus-Dekstop`). Provides safe manual update verification, download progress streaming, and restart-and-install lifecycle control.
 
 ### 2.2 Secure Preloads (`src/preload-main.js` & `src/splash/splash-preload.js`)
-- **Main Preload (`src/preload-main.js`):** Securely bridges IPC channels, platform diagnostics, webview preload paths, native notification dispatchers, download folder selectors, spellchecker configuration, network/proxy/WebRTC settings, system info introspection (`getSystemInfo`), locale loading (`loadLocale`), and external browser link dispatchers to `window.electronAPI` via `contextBridge.exposeInMainWorld()`.
+- **Main Preload (`src/preload-main.js`):** Securely bridges IPC channels, platform diagnostics, webview preload paths, native notification dispatchers, download folder selectors, spellchecker configuration, network/proxy/WebRTC settings, system info introspection (`getSystemInfo`), locale loading (`loadLocale`), auto-updater commands (`window.electronAPI.updater`), and external browser link dispatchers to `window.electronAPI` via `contextBridge.exposeInMainWorld()`.
 - **Splash Preload (`src/splash/splash-preload.js`):** Exposes `window.splashAPI` for querying SemVer application versions and signaling transition completion.
 
 ### 2.3 Main Renderer (`src/renderer/`)
 The primary UI layer consists of vanilla HTML5, CSS3, and modern JavaScript:
-- **Sidebar Controller:** Manages the active visual state between accounts, Add Account modal/action, Bug Report dispatcher, Donations view (`#donate-btn`), and Settings view with a unified, floating tooltip system aligned 8px from the sidebar.
-- **Full-Window Workspace:** Houses WhatsApp Web guest containers, an `#empty-state` placeholder, `#settings-view`, and `#donations-view`.
+- **Design System & Typography:** Official typography using Google Fonts Poppins with preconnect directives. Curated WhatsNexus default palette (harmonious dark and light modes) plus popular community themes (Dracula, Nord, Monokai).
+- **Sidebar Controller:** Manages the active visual state between accounts, Add Account modal/action, Bug Report dispatcher, Donations view (`#donate-btn`), Settings view, and optional Doom Easter Egg with a unified, floating tooltip system aligned 8px from the sidebar.
+- **Full-Window Workspace:** Houses WhatsApp Web guest containers, an `#empty-state` placeholder, `#settings-view`, `#donations-view`, and `#doom-view`.
 - **Donations Module:** Renders a responsive CSS grid of support platforms (GitHub Sponsors, PayPal, Ko-fi) with external navigation safeguards powered by safe IPC invokes (`openExternalUrl`).
 - **Session Manager:** Manages account metadata persistence in `localStorage`, orchestrates dynamic creation/removal of `<webview>` elements, and executes the 20-minute idle hibernation cycle.
-- **Zero-Mute Multimedia Audio Pipeline:** Dispatches notification preferences without ever muting `webContents`, ensuring voice notes and chat videos play continuously.
-- **Modular Internationalization (i18n - P-01):** Translates the interface dynamically across 25 global languages using a lazy-loading architecture from `src/locales/*.json`. Only the active locale and the `en.json` fallback are retained in memory, drastically optimizing RAM footprint.
+- **Zero-Mute Multimedia Audio Pipeline:** Dispatches notification preferences without ever muting `webContents`, ensuring voice notes and chat videos play continuously. Configured with `--autoplay-policy=no-user-gesture-required`.
+- **Modular Internationalization (i18n):** Translates the interface dynamically across 26 global languages using a lazy-loading architecture from `src/locales/*.json`. Only the active locale and the `en.json` fallback are retained in memory, drastically optimizing RAM footprint.
+- **Offline Protections & Network Auto-Reconnection:**
+  - Dedicated container offline overlay with status badge and manual retry trigger on failed webview loads (`did-fail-load`).
+  - System-wide `#reconnecting-modal` with high z-index backdrop that blocks accidental interactions when the machine loses Internet access, seamlessly auto-dismissing and reloading upon `window.addEventListener('online')`.
 
 ### 2.4 Guest Preload Script (`src/preload.js`)
 Injected directly into each WhatsApp Web `<webview>` tag:
@@ -95,12 +100,16 @@ Instead of relying on pop-up dialogs or modal windows that obstruct the interfac
    - Treated as an internal full-window view that occupies 100% width and height of the main content workspace.
    - Triggered by `#settings-btn` in the sidebar, which assumes an `.active` tab state.
    - Provides a "Back to chats" action in the header to return to the last active WhatsApp session.
+   - Includes real-time Update Check state machine under the "About" module.
 3. **Dedicated Donations View (`#donations-view`):**
    - Full-window view triggered by `#donate-btn` in the sidebar, positioned strictly between Bug Report and Settings.
    - Houses a card grid of project sponsorship channels with direct OS browser dispatching.
    - Includes a back navigation button returning to active chats.
 4. **Empty State View (`#empty-state`):**
    - Displayed automatically when zero accounts exist or all accounts have been removed.
+5. **Classic Doom View (`#doom-view`):**
+   - Full-window Easter Egg running Cloudflare's Chocolate Doom WebAssembly port natively and 100% offline.
+   - Features immediate sound effects without gesture blocking and a collapsible, dark-themed floating controls overlay.
 
 ---
 
