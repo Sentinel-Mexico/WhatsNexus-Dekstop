@@ -1,15 +1,18 @@
-// Electron API exposed via contextBridge (src/preload-main.js)
-const electronAPI = window.electronAPI || {
-  appInfo: { version: '', appVersion: '', platform: 'linux', arch: 'x64', electronVersion: 'N/A', chromeVersion: 'N/A' },
-  webviewPreloadPath: '',
-  updateTrayBadge: () => {},
-  setThemeMode: () => {},
-  updatePermissionSettings: () => {},
-  updateTraySettings: () => {},
-  showNativeNotification: () => {},
-  openExternal: (url) => window.open(url, '_blank'),
-  onSelectAccount: () => {}
-};
+// Fallback si corre fuera de Electron (src/preload-main.js expone window.electronAPI)
+if (typeof window.electronAPI === 'undefined') {
+  window.electronAPI = {
+    appInfo: { version: '', appVersion: '', platform: 'linux', arch: 'x64', electronVersion: 'N/A', chromeVersion: 'N/A' },
+    webviewPreloadPath: '',
+    updateTrayBadge: () => {},
+    setThemeMode: () => {},
+    updatePermissionSettings: () => {},
+    updateTraySettings: () => {},
+    showNativeNotification: () => {},
+    openExternal: (url) => window.open(url, '_blank'),
+    onSelectAccount: () => {}
+  };
+}
+
 
 // S-03: Sanitization helper to prevent XSS via innerHTML
 function escapeHtml(str) {

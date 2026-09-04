@@ -2,6 +2,15 @@
 
 This changelog records all granular updates, bug fixes, refactorings, and feature iterations developed on the `Dev` branch. Each version bump in `package.json` is documented here as it happens.
 
+## [0.17.5] - 2026-09-03
+### Fixed
+- **Sidebar Buttons & Accounts Initialization (SyntaxError Fix):**
+  - Resolved `Uncaught SyntaxError: Identifier 'electronAPI' has already been declared` occurring at line 1 of `src/renderer/renderer.js`. The variable was previously exposed to the global window context via `contextBridge.exposeInMainWorld`, causing a syntax collision when re-declared with `const electronAPI`.
+  - Replaced top-level declaration with a non-colliding fallback guard (`if (typeof window.electronAPI === 'undefined')`), allowing the entire renderer script to parse and execute properly.
+  - Restored execution of `DOMContentLoaded`, accounts rendering (`renderAllSidebarAccounts()`), and click listeners for the sidebar navigation rail (Add Account, Bug Report, Donations, and Settings).
+  - Added `openExternalUrl` alias bridge in `src/preload-main.js` to ensure 100% compatibility with external link callers.
+  - Added console error/warning forwarding from `mainWindow.webContents` in `src/main.js` so renderer runtime errors are never silently suppressed in the CLI.
+
 ---
 
 ## [0.17.4] - 2026-09-03

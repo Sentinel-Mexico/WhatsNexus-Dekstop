@@ -100,6 +100,12 @@ function createWindow() {
   // Hide the menu bar for a cleaner look
   mainWindow.setMenuBarVisibility(false);
 
+  mainWindow.webContents.on('console-message', (event, level, message, line) => {
+    if (level >= 2) {
+      console.log(`[Renderer ${level === 3 ? 'Error' : 'Warn'}]: ${message} (line: ${line})`);
+    }
+  });
+
   mainWindow.webContents.on('did-attach-webview', (event, wc) => {
     if (wc && wc.session) {
       configureSession(wc.session);

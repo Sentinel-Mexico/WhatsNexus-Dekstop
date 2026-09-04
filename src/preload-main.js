@@ -7,8 +7,8 @@ try {
 
 contextBridge.exposeInMainWorld('electronAPI', {
   appInfo: {
-    version: initInfo.version || '0.17.4',
-    appVersion: initInfo.version || '0.17.4',
+    version: initInfo.version || '0.17.5',
+    appVersion: initInfo.version || '0.17.5',
     platform: initInfo.platform || process.platform,
     arch: initInfo.arch || process.arch,
     electronVersion: initInfo.electronVersion || process.versions.electron || 'N/A',
@@ -21,6 +21,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   updateTraySettings: (settings) => ipcRenderer.send('update-tray-settings', settings),
   showNativeNotification: (data) => ipcRenderer.send('show-native-notification', data),
   openExternal: (url) => ipcRenderer.send('open-external', url),
+  openExternalUrl: (url) => ipcRenderer.send('open-external', url),
   selectFolder: () => ipcRenderer.invoke('select-folder'),
   selectDownloadDirectory: () => ipcRenderer.invoke('select-folder'),
   getDefaultDownloadsPath: () => ipcRenderer.invoke('get-default-downloads-path'),
