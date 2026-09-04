@@ -2,6 +2,14 @@
 
 This changelog records all granular updates, bug fixes, refactorings, and feature iterations developed on the `Dev` branch. Each version bump in `package.json` is documented here as it happens.
 
+## [1.0.3] - 2026-09-04
+### Fixed
+- **DOOM Controls Overlay Accuracy & Interaction Enhancements:**
+  - Updated the floating controls card in `src/assets/doom/index.html` to accurately reflect engine keybindings: firing mapped to Spacebar and Left Click, and door interaction/activation mapped to `E`.
+  - Added horizontal camera rotation mappings to the controls overlay, clarifying that steering can be achieved via mouse horizontal motion or keyboard keys `O` (turn left) and `P` (turn right).
+  - Added an informational note regarding classic DOOM (1993) level design mechanics where vertical jumping does not exist in the original vanilla engine.
+  - Enabled browser pointer lock (`canvas.requestPointerLock()`) on canvas click, providing continuous 360-degree mouse look and seamless keyboard focus.
+
 ## [1.0.2] - 2026-09-04
 ### Fixed
 - **Classic Doom WebAssembly Engine Execution & Black Screen Resolution:**

@@ -178,6 +178,16 @@
       white-space: nowrap;
     }
 
+    .controls-note {
+      margin-top: 4px;
+      padding-top: 8px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      color: #8696a0;
+      font-size: 10.5px;
+      line-height: 1.35;
+      font-style: italic;
+    }
+
     /* Estado de carga */
     #loading-indicator {
       position: absolute;
@@ -249,12 +259,16 @@
           <span class="control-keys"><kbd>▲</kbd><kbd>◄</kbd><kbd>▼</kbd><kbd>►</kbd> o <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd></span>
         </div>
         <div class="control-row">
+          <span class="control-label">Girar cámara:</span>
+          <span class="control-keys"><kbd>Ratón</kbd> o <kbd>O</kbd> / <kbd>P</kbd></span>
+        </div>
+        <div class="control-row">
           <span class="control-label">Disparar:</span>
-          <span class="control-keys"><kbd>Ctrl</kbd> o <kbd>Clic Izq</kbd></span>
+          <span class="control-keys"><kbd>Espacio</kbd> o <kbd>Clic Izq</kbd></span>
         </div>
         <div class="control-row">
           <span class="control-label">Abrir / Interactuar:</span>
-          <span class="control-keys"><kbd>Espacio</kbd></span>
+          <span class="control-keys"><kbd>E</kbd></span>
         </div>
         <div class="control-row">
           <span class="control-label">Correr / Acelerar:</span>
@@ -263,6 +277,9 @@
         <div class="control-row">
           <span class="control-label">Cambiar de arma:</span>
           <span class="control-keys"><kbd>1</kbd> - <kbd>7</kbd></span>
+        </div>
+        <div class="controls-note">
+          Nota: En DOOM clásico (1993) no existe salto por diseño de niveles (corre con Shift para cruzar abismos).
         </div>
       </div>
     </div>
@@ -366,7 +383,20 @@
             const canvas = document.getElementById("canvas");
             if (canvas) {
               canvas.focus();
-              canvas.addEventListener("click", () => canvas.focus());
+              canvas.addEventListener("click", () => {
+                canvas.focus();
+                if (canvas.requestPointerLock && document.pointerLockElement !== canvas) {
+                  canvas.requestPointerLock();
+                }
+              });
+            }
+            const container = document.getElementById("game-container");
+            if (container) {
+              container.addEventListener("click", (e) => {
+                if (!e.target.closest("#controls-overlay") && canvas) {
+                  canvas.focus();
+                }
+              });
             }
           },
           canvas: (function() {
