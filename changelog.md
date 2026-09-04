@@ -8,37 +8,38 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [1.0.1] - 2026-09-04
 ### Changed
-- **Gobernanza y Sincronización Estricta de Versiones:**
-  - Estandarización de reglas operativas en `.agents/rules/` estableciendo la tríada obligatoria de sincronización de versiones (`changelog-dev.md`, `package.json` y `package-lock.json`).
-  - Verificación e integración de paridad al 100% en el archivo de bloqueo de dependencias (`package-lock.json`) en cada incremento.
+- **Governance & Strict Version Synchronization Triad:**
+  - Standardized agent operational rules in `.agents/rules/` establishing the mandatory version synchronization triad (`changelog-dev.md`, `package.json`, and `package-lock.json`).
+  - Enforced 100% parity verification on `package-lock.json` across all version increments prior to committing.
 ### Fixed
-- **Optimización y Estabilidad en Gestión de Paquetes:**
-  - Optimización en rutinas de empaquetado y mitigación de bloqueos en verificación de dependencias.
+- **Package Management Stability & Optimization:**
+  - Streamlined package workflows and eliminated lifecycle script deadlocks during dependency and lockfile verification.
 
 ## [1.0.0] - 2026-09-04
 ### Added
-- **Primer Lanzamiento Oficial Estable (Salida de Beta):**
-  - Consolidación y maduración de la arquitectura completa de WhatsNexus para entornos de producción.
-- **Sistema Completo de Actualizaciones Automáticas (OTA Updates):**
-  - Integración de `electron-updater` y `electron-log` conectando con GitHub Releases (`Sentinel-Mexico/WhatsNexus-Dekstop`).
-  - Máquina de estados visual e interactiva en la sección "Acerca de" con comprobación manual, descarga con porcentaje en tiempo real y reinicio para instalación.
-- **Protección Offline y Reconexión Automática:**
-  - Pantalla dedicada de estado sin conexión en cada cuenta con botón interactivo de reintento ante errores de carga de red (`did-fail-load`).
-  - Modal global de bloqueo ante pérdida de conexión (`#reconnecting-modal`) con desenfoque de fondo y animación de sincronización que deshabilita interacciones accidentales.
-  - Reconexión y recarga automática reactiva al detectar conectividad a Internet (`window.addEventListener('online')`).
-- **Migración Oficial de DOOM a Cloudflare WebAssembly (Chocolate Doom):**
-  - Integración 100% nativa y offline del port oficial de Chocolate Doom de Cloudflare (`cloudflare/doom-wasm`).
-  - Eliminación de dependencias externas; carga concurrente ultrarrápida mediante `fetch()` e inyección directa en el sistema de archivos virtual de Emscripten.
-  - Reproducción de sonido inmediata y desbloqueo de `AudioContext` en el primer gesto de usuario (`autoplay-policy=no-user-gesture-required`).
-  - Superposición flotante de controles estilizada en el tema oscuro de WhatsNexus con botón colapsable para pantalla limpia.
-- **Tipografía Oficial Google Fonts Poppins:**
-  - Adopción global de la familia tipográfica Poppins (pesos 300, 400, 500, 600, 700) en todas las vistas, splash de carga y menús.
-- **Nueva Paleta Oficial WhatsNexus:**
-  - Paleta de colores distintiva por defecto con modos claro y oscuro optimizados para alto contraste y ergonomía visual durante largas jornadas.
-- **Pipeline de CI/CD Automatizado Multiplataforma:**
-  - Flujo de compilación y empaquetado en GitHub Actions (`.github/workflows/build.yml`) para Linux (.deb, .AppImage, .snap para x64 y arm64), macOS (.dmg para x64 y arm64) y Windows (.exe NSIS para x64).
-- **Cuadro de Diálogo de Confirmación para Eliminación de Cuentas:**
-  - Modal `#delete-account-modal` con advertencia de seguridad, atajo con tecla Escape y confirmación explícita para evitar pérdidas accidentales de sesiones.
+- **First Official Stable Production Release (Out of Beta):**
+  - Promoted WhatsNexus to its first production-grade milestone (`1.0.0`), concluding the initial beta phase.
+  - Consolidated full architectural and technical documentation across `README.md` and `docs/`.
+- **Comprehensive Auto-Updater Architecture (OTA Updates):**
+  - Integrated `electron-updater` and `electron-log` targeting GitHub Releases (`Sentinel-Mexico/WhatsNexus-Dekstop`).
+  - Built interactive visual state machine in the "About" settings section featuring manual update checks, live percentage readouts, and one-click restart-to-install workflows.
+- **Offline Protection & Automatic Network Reconnection Subsystem:**
+  - Dedicated offline status screen for individual account views with interactive retry action on network load failure (`did-fail-load`).
+  - Global high-z-index `#reconnecting-modal` with backdrop blur and animated synchronization ring preventing accidental chat interaction during network outage.
+  - Reactive auto-reconnect and refresh upon internet restoration (`window.addEventListener('online')`).
+- **Official Migration of DOOM to Cloudflare WebAssembly (Chocolate Doom):**
+  - 100% native and offline integration of Cloudflare's Chocolate Doom WebAssembly port (`cloudflare/doom-wasm`).
+  - Eliminated external network dependencies; ultrafast asset loading via concurrent `fetch()` and direct injection into Emscripten virtual filesystem.
+  - Immediate audio playback and user-gesture unblocking via `--autoplay-policy=no-user-gesture-required` and custom audio unlocking.
+  - Dark-themed floating controls overlay card with collapsible toggle button for clean view.
+- **Official Typography Migration to Google Fonts Poppins:**
+  - Adopted Poppins font family (weights 300, 400, 500, 600, 700) across all views, startup splash screen, and settings drawers.
+- **Official WhatsNexus Brand Palette:**
+  - New default curated color scheme with light and dark mode variants optimized for high contrast, legibility, and long-session visual comfort.
+- **Automated Multiplatform CI/CD Pipeline:**
+  - GitHub Actions build and release workflow (`.github/workflows/build.yml`) for Linux (.deb, .AppImage, .snap for x64 and arm64), macOS (.dmg for x64 and arm64), and Windows (.exe NSIS for x64).
+- **Account Deletion Confirmation Dialog:**
+  - Security modal `#delete-account-modal` with warning details, Escape key dismissal, and explicit confirmation to prevent accidental session loss.
 
 ---
 
