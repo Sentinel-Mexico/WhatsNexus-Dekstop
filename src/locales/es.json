@@ -218,5 +218,8 @@
   "modal_gpl_conditions_label": "Condiciones:",
   "modal_gpl_conditions_body": "Tienes total libertad para modificar y distribuir este software. Sin embargo, si decides distribuir una versión modificada (incluso con fines comerciales), estás legalmente obligado a liberar el código fuente de tus modificaciones bajo esta misma licencia GPL v3.",
   "modal_gpl_warranty_label": "Limitación de responsabilidad:",
-  "modal_gpl_warranty_body": "El software se proporciona 'tal cual', sin garantía de ningún tipo, expresa o implícita. En ningún caso los autores o titulares de los derechos de autor serán responsables de ninguna reclamación o daño."
+  "modal_gpl_warranty_body": "El software se proporciona 'tal cual', sin garantía de ningún tipo, expresa o implícita. En ningún caso los autores o titulares de los derechos de autor serán responsables de ninguna reclamación o daño.",
+  "about_doom_title": "Doomizate",
+  "about_doom_option_title": "Doom clásico",
+  "about_doom_option_desc": "Activar protocolo clásico"
 }

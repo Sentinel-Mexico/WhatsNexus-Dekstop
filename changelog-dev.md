@@ -2,6 +2,17 @@
 
 This changelog records all granular updates, bug fixes, refactorings, and feature iterations developed on the `Dev` branch. Each version bump in `package.json` is documented here as it happens.
 
+## [0.18.0] - 2026-09-03
+### Added
+- **Easter Egg: Doom Clásico en Vista Aislada (WASM):**
+  - Se implementó la tarjeta de configuración discreta *"Doomizate"* con interruptor/toggle en la pestaña "Acerca de".
+  - Se configuró persistencia del estado en `settings.doomizate` (desactivado por defecto).
+  - Se añadió el botón dinámico con ícono de calavera (`<i class="fa-solid fa-skull"></i>`) en la barra lateral, posicionado estrictamente debajo de "Añadir Cuenta" y arriba de "Reportar Error", visible únicamente cuando `settings.doomizate` está habilitado.
+  - Se integró el contenedor principal `#doom-view` con `<webview>` aislado que carga el port web WebAssembly de Doom (`https://diekmann.github.io/wasm-doom/`).
+  - Se conectó la navegación completa entre pestañas: al abrir Doom se deseleccionan las cuentas y se ocultan los demás webviews; al activar un chat o salir de Doom se regresa al estado previo sin interferir con las sesiones de WhatsApp.
+
+---
+
 ## [0.17.11] - 2026-09-03
 ### Changed
 - **Migración Integral de Licencia a GNU GPL v3:**

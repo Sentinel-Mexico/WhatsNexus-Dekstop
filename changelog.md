@@ -6,6 +6,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ---
 
+## [0.18.0] - 2026-09-03
+### Added
+- **Classic Doom Easter Egg in Isolated WASM View:**
+  - Added "Doomizate" configuration card with toggle control in the About settings tab (disabled by default).
+  - Integrated dynamic sidebar skull button (`<i class="fa-solid fa-skull"></i>`), located strictly between "Add Account" and "Report Bug", shown only when the toggle is active.
+  - Implemented `#doom-view` containing an isolated `<webview>` running the WebAssembly port of Classic Doom (`https://diekmann.github.io/wasm-doom/`).
+  - Added seamless tab switching with WhatsApp accounts, settings, and donations view without session interference.
+
+---
+
 ## [0.17.11] - 2026-09-03
 ### Changed
 - **Full License Migration to GNU GPL v3:**
