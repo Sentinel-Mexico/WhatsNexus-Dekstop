@@ -302,33 +302,33 @@ function saveSystemSettings() {
   } catch (_) {}
 }
 
-// Mapeo de códigos de interfaz (25 idiomas) a diccionarios locales Chromium .bdic
+// Mapeo de códigos de interfaz (25 idiomas) a códigos BCP-47 para el corrector nativo de Chromium
 const SPELLCHECK_MAP = {
   en: 'en-US',
-  zh: 'en-US',
+  zh: 'zh-CN',
   hi: 'hi',
-  es: 'es-MX',
-  fr: 'fr-FR',
-  ar: 'en-US',
-  bn: 'en-US',
+  es: 'es',
+  fr: 'fr',
+  ar: 'ar',
+  bn: 'bn',
   pt: 'pt-BR',
   ru: 'ru',
-  ur: 'en-US',
+  ur: 'ur',
   id: 'id',
-  de: 'de-DE',
-  ja: 'en-US',
-  mr: 'en-US',
-  te: 'en-US',
+  de: 'de',
+  ja: 'ja',
+  mr: 'mr',
+  te: 'te',
   tr: 'tr',
   ta: 'ta',
-  yue: 'en-US',
+  yue: 'zh-TW',
   vi: 'vi',
-  fil: 'en-US',
+  fil: 'fil',
   ko: 'ko',
   fa: 'fa',
-  ha: 'en-US',
-  sw: 'en-US',
-  it: 'it-IT'
+  ha: 'ha',
+  sw: 'sw',
+  it: 'it'
 };
 
 const activeSessions = new Set();
@@ -344,6 +344,7 @@ function applySpellChecker(ses, langCode) {
 }
 
 function updateSpellCheckerAllSessions(langCode) {
+  applySpellChecker(session.defaultSession, langCode);
   for (const ses of activeSessions) {
     applySpellChecker(ses, langCode);
   }
@@ -557,6 +558,19 @@ ipcMain.handle('get-system-info', () => {
     osArch: os.arch(),
     platform: process.platform
   };
+});
+
+ipcMain.handle('load-locale', (event, langCode) => {
+  const safeLang = (langCode || 'en').replace(/[^a-zA-Z0-9_-]/g, '');
+  const filePath = path.join(__dirname, 'locales', `${safeLang}.json`);
+  try {
+    if (fs.existsSync(filePath)) {
+      return JSON.parse(fs.readFileSync(filePath, 'utf8'));
+    }
+  } catch (err) {
+    console.error('[Locale Load Error]:', err);
+  }
+  return null;
 });
 
 function configureSessionPermissions(ses) {

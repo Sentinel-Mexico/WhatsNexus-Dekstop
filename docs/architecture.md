@@ -54,13 +54,14 @@ The main process acts as the supervisor for the entire operating system interfac
   - Responds to `update-tray-badge` and `update-tray-settings` IPC events from the renderer.
 - **Safe External Link Dispatch:** Handles `open-external` and `open-external-url` IPC invocations with strict protocol validation ensuring links only open via standard `http:` and `https:` schemes in the external default OS browser.
 - **System Downloads Management:** Intercepts `will-download` events on the default session and partitioned sessions (`persist:acc_*`), applying `item.setSavePath()` to automatically route incoming file downloads to the user-specified directory (or default `app.getPath('downloads')`).
-- **Native Chromium Spellchecking:** Manages multi-session spellchecking across all active and dynamically created guest sessions via `session.setSpellCheckerLanguages()`, mapping interface language codes to Chromium `.bdic` dictionaries locally.
+- **Native Chromium Spellchecking:** Manages multi-session spellchecking across `session.defaultSession` and all partitioned guest sessions (`persist:acc_*`) via `session.setSpellCheckerLanguages()`, mapping interface language codes to standardized BCP-47 identifiers (`en-US`, `zh-CN`, `hi`, `es`, `fr`, etc.) and delegating dictionary downloads entirely to Chromium's native background subsystem.
+- **Dynamic Locale Provisioning (`load-locale`):** Serves modular translation JSON files from `src/locales/` on demand to the renderer via IPC, eliminating in-memory dictionary monoliths.
 - **Multi-Session Proxy Engine & Strict Isolation:** Dynamically provisions HTTP/SOCKS5 proxy rules or system proxy discovery across `session.defaultSession` and all partitioned sessions (`persist:acc_*`) via `session.setProxy()`. When Strict Proxy Isolation is enabled, local bypass rules are removed (`proxyBypassRules: ''`) to ensure no direct network connections evade the tunnel. Reverts to direct connections on demand (`{ mode: 'direct' }`).
 - **WebRTC IP Leak Mitigation:** Enforces `session.setWebRTCIPHandlingPolicy('disable-non-proxied-udp')` at the Chromium networking layer across all sessions when WebRTC protection is enabled, preventing local and public IP disclosures over non-proxied UDP.
 - **Real-Time System Diagnostics & Engine Introspection:** Exposes dynamic runtime parameters via IPC (`get-system-info`), sourcing live metrics directly from `app.getVersion()`, `process.versions` (Electron, Chromium, Node.js, V8), and Node's native `os` module (`os.type()`, `os.release()`, `os.arch()`).
 
 ### 2.2 Secure Preloads (`src/preload-main.js` & `src/splash/splash-preload.js`)
-- **Main Preload (`src/preload-main.js`):** Securely bridges IPC channels, platform diagnostics, webview preload paths, native notification dispatchers, download folder selectors, spellchecker configuration, network/proxy/WebRTC settings, system info introspection (`getSystemInfo`), and external browser link dispatchers to `window.electronAPI` via `contextBridge.exposeInMainWorld()`.
+- **Main Preload (`src/preload-main.js`):** Securely bridges IPC channels, platform diagnostics, webview preload paths, native notification dispatchers, download folder selectors, spellchecker configuration, network/proxy/WebRTC settings, system info introspection (`getSystemInfo`), locale loading (`loadLocale`), and external browser link dispatchers to `window.electronAPI` via `contextBridge.exposeInMainWorld()`.
 - **Splash Preload (`src/splash/splash-preload.js`):** Exposes `window.splashAPI` for querying SemVer application versions and signaling transition completion.
 
 ### 2.3 Main Renderer (`src/renderer/`)
@@ -70,7 +71,7 @@ The primary UI layer consists of vanilla HTML5, CSS3, and modern JavaScript:
 - **Donations Module:** Renders a responsive CSS grid of support platforms (GitHub Sponsors, PayPal, Ko-fi) with external navigation safeguards powered by safe IPC invokes (`openExternalUrl`).
 - **Session Manager:** Manages account metadata persistence in `localStorage`, orchestrates dynamic creation/removal of `<webview>` elements, and executes the 20-minute idle hibernation cycle.
 - **Zero-Mute Multimedia Audio Pipeline:** Dispatches notification preferences without ever muting `webContents`, ensuring voice notes and chat videos play continuously.
-- **Internationalization (i18n):** Translates the complete interface dynamically across 25 global languages based on system locale or user override.
+- **Modular Internationalization (i18n - P-01):** Translates the interface dynamically across 25 global languages using a lazy-loading architecture from `src/locales/*.json`. Only the active locale and the `en.json` fallback are retained in memory, drastically optimizing RAM footprint.
 
 ### 2.4 Guest Preload Script (`src/preload.js`)
 Injected directly into each WhatsApp Web `<webview>` tag:

@@ -27,6 +27,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   updateNetworkSettings: (settings) => ipcRenderer.invoke('update-network-settings', settings),
   getNetworkSettings: () => ipcRenderer.invoke('get-network-settings'),
   getSystemInfo: () => ipcRenderer.invoke('get-system-info'),
+  loadLocale: (lang) => ipcRenderer.invoke('load-locale', lang),
   onSelectAccount: (callback) => {
     if (typeof callback !== 'function') return;
     const handler = (_event, accountId) => callback(accountId);

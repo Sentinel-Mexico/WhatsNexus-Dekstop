@@ -4,6 +4,26 @@ This changelog records all granular updates, bug fixes, refactorings, and featur
 
 ---
 
+## [0.17.1] - 2026-09-03
+### Performance & Refactoring
+- **Dynamic Modular i18n System (P-01 - Monolito de Diccionarios):**
+  - Eliminated the monolithic 3,130-line hardcoded translation dictionary from `renderer.js`, reducing file size from 4,990 lines down to 1,860 lines and significantly improving RAM utilization.
+  - Created modular directory `src/locales/` housing individual JSON translation files for each of the 25 supported languages.
+  - Extracted complete 182-key dictionaries for English (`en.json`) and Spanish (`es.json`), and generated valid baseline JSON files for the remaining 23 languages.
+  - Implemented lazy-loading mechanism (`loadActiveLocale`): loads solely the user-selected language with `en.json` retained in memory as an automatic fallback for missing keys.
+  - Added secure IPC channel `load-locale` in `src/main.js` and exposed `electronAPI.loadLocale` in `src/preload-main.js`.
+  - Switching language in Settings now dynamically loads the target `.json` file from disk and instantly updates DOM text nodes.
+- **Native Chromium Spellchecker Alignment:**
+  - Standardized `SPELLCHECK_MAP` in `src/main.js` mapping all 25 supported interface languages to their exact Electron/Chromium BCP-47 identifiers (`en-US`, `zh-CN`, `hi`, `es`, `fr`, `ar`, `bn`, `pt-BR`, `ru`, `ur`, `id`, `de`, `ja`, `mr`, `te`, `tr`, `ta`, `zh-TW`, `vi`, `fil`, `ko`, `fa`, `ha`, `sw`, `it`).
+  - Confined spellchecker dictionary provisioning exclusively to native Chromium background management via `session.setSpellCheckerLanguages()` without external HTTP fetch or manual `.bdic` manipulation.
+  - Sychronized spellchecker selection across `session.defaultSession` and all active/partitioned guest sessions (`persist:acc_*`).
+- **Visual Styles & Themes Layout Optimization:**
+  - Adjusted the flexbox layout in the "Temas y Estilo Visual" card (`.setting-row-inline-pair`):
+    - Configured the "Modo de Apariencia" (Theme) dropdown container (`.setting-item-theme`) with `flex: 0 0 max-content` to occupy strictly the space needed for its longest label.
+    - Set the "Paleta de Color" dropdown container (`.setting-item-palette`) to `flex: 1 1 auto` to absorb all freed horizontal space.
+
+---
+
 ## [0.17.0] - 2026-09-03
 ### Added
 - **"Acerca de" (About) Settings Section (UI/UX):**
