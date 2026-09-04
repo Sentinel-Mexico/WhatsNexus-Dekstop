@@ -22,6 +22,8 @@ This changelog records all granular updates, bug fixes, refactorings, and featur
     - **Downloaded State:** Emphasizes action button in vibrant emerald green with "Instalar y Reiniciar" / "Install & Restart" triggering `quitAndInstall()`.
     - **Error State:** Gracefully displays error indicator and reverts to Idle without crashing.
   - Added localization strings across all 26 supported languages (`src/locales/*.json`).
+- **Feature Comparison Matrix in Documentation:**
+  - Added a comprehensive, side-by-side feature comparison table in `README.md` contrasting WhatsApp Web, ZapZap, and WhatsNexus across 19 functional criteria (session isolation, multi-account tabs, notification privacy presets, tray unread badges, memory hibernation, theme engine, OTA updates, and open-source licensing).
 
 ## [0.19.0] - 2026-09-03
 ### Added

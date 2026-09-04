@@ -15,6 +15,30 @@
 *   **System Tray Integration:** Keep it running in the background and receive notifications without cluttering your taskbar.
 *   **Native Notifications:** Fully integrated with your operating system's notification system.
 
+## ⚖️ Comparison: WhatsApp Web vs. ZapZap vs. WhatsNexus
+
+| Feature | WhatsApp Web | ZapZap | WhatsNexus ⚡ |
+| :--- | :---: | :---: | :---: |
+| **Runs in your default browser** | ✅ | ❌ | ❌ |
+| **Standalone desktop application** | ❌ | ✅ | ✅ |
+| **Multiple accounts (simultaneous tabs)** | ❌ | ✅ | ✅ |
+| **Strict session isolation (cookies & cache)** | ❌ | ✅ | ✅ |
+| **Native system tray integration** | ❌ | ✅ | ✅ |
+| **Unread badge counter on tray icon** | ❌ | ❌ | ✅ |
+| **Native desktop notifications** | Limited | ✅ | ✅ |
+| **Granular notification privacy presets** | ❌ | ❌ | ✅ |
+| **Memory management & tab hibernation** | ❌ | ❌ | ✅ |
+| **Spell checking with regional dictionaries** | Browser dependent | ✅ | ✅ |
+| **Curated theme engine & brand palettes** | ❌ *(Light/Dark only)* | Limited | ✅ *(WhatsNexus, Dracula, Nord, etc.)* |
+| **Cross-platform support** | Browser / Store app | Linux focused (PyQt) | ✅ (Linux, Windows, macOS) |
+| **Linux package support (AppImage, Flatpak, DEB)** | ❌ | ✅ | ✅ |
+| **Automatic OTA updates** | ❌ | AppImage (`.zsync`) | ✅ (`electron-updater` / GitHub) |
+| **Custom CSS & JavaScript injection** | ❌ | ✅ | ✅ |
+| **Multi-language internationalization (i18n)** | Official languages | Partial | ✅ (26 Languages) |
+| **Open source license** | ❌ Proprietary | ✅ GPL-3.0 | ✅ GPL-3.0 |
+| **Classic Doom Easter Egg** | ❌ | ❌ | ✅ |
+| **Privacy model** | Browser shared session | Dedicated application | Dedicated isolated partitions |
+
 ## 🚀 Getting Started
 
 ### Prerequisites
