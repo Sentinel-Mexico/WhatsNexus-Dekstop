@@ -6,6 +6,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ---
 
+## [0.18.1] - 2026-09-03
+### Fixed
+- **Descriptive Subtitles for Permission & System Modules:**
+  - Added clean secondary subtitles (`.perm-group-desc`) beneath headers for Device Access, Screen Sharing, Download Management, and Spellchecker across all 26 supported languages.
+- **Uncapped Fluid Height for Spellchecker Tag Cloud:**
+  - Removed vertical scrollbar and `max-height` constraints on `.spellcheck-multiselect-container` (`height: auto; overflow: visible;`), allowing the modular chip cloud to expand naturally without nested scrollbars.
+- **Card Alignment and Background Normalization:**
+  - Removed redundant inner card background and borders in the spellchecker container to fuse seamlessly with the main card background.
+  - Normalized container layout using `.download-management-row`, achieving perfect left-edge alignment with the headers and input controls of adjacent cards.
+
+---
+
 ## [0.18.0] - 2026-09-03
 ### Added
 - **Classic Doom Easter Egg in Isolated WASM View:**

@@ -1437,6 +1437,13 @@ body.theme-light .permissions-notice-box {
   font-weight: 700;
   color: var(--text-primary);
   margin-top: 26px;
+  margin-bottom: 4px;
+}
+
+.perm-group-desc {
+  font-size: 0.84rem;
+  color: var(--text-secondary);
+  line-height: 1.35;
   margin-bottom: 12px;
 }
 
@@ -1920,12 +1927,12 @@ body.theme-light .permissions-notice-box {
    Corrector Ortográfico Multilingüe (Horizontal Wrap Chips)
    ======================================================== */
 .spellcheck-multiselect-container {
-  max-height: 220px;
-  overflow-y: auto;
-  background-color: var(--bg-sidebar);
-  border: 1px solid var(--border-color);
-  border-radius: var(--shape-md, 12px);
-  padding: 12px;
+  height: auto;
+  overflow: visible;
+  background-color: transparent;
+  border: none;
+  padding: 0;
+  margin-top: 6px;
   display: flex;
   flex-wrap: wrap;
   gap: 10px;

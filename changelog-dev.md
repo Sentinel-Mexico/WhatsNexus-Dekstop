@@ -2,6 +2,18 @@
 
 This changelog records all granular updates, bug fixes, refactorings, and feature iterations developed on the `Dev` branch. Each version bump in `package.json` is documented here as it happens.
 
+## [0.18.1] - 2026-09-03
+### Fixed
+- **Subtítulos Descriptivos en Módulos de Permisos/Sistema:**
+  - Se agregaron subtítulos explicativos (`.perm-group-desc`) debajo de los encabezados principales: *"Acceso al dispositivo"*, *"Compartir"*, *"Gestión de Descargas"* y *"Corrector Ortográfico"*, con soporte i18n en los 26 idiomas.
+- **Eliminación de Scroll y Expansión Fluida del Corrector Ortográfico:**
+  - Se eliminó el límite de altura (`max-height`) y la barra de desplazamiento vertical en `.spellcheck-multiselect-container` (`height: auto; overflow: visible;`), permitiendo que el panel crezca libremente hacia abajo mostrando todas las etiquetas/chips de idiomas.
+- **Consistencia Visual y Eliminación de Doble Tarjeta:**
+  - Se eliminó el fondo y borde duplicado interior del contenedor de idiomas para integrarlo fluidamente al fondo de la tarjeta principal.
+  - Se alineó estructuralmente la tarjeta de *"Corrector Ortográfico"* adoptando el contenedor `.perm-row.download-management-row` idéntico al de *"Gestión de Descargas"*, asegurando que el primer chip de idioma quede perfectamente alineado con los elementos de las tarjetas superiores.
+
+---
+
 ## [0.18.0] - 2026-09-03
 ### Added
 - **Easter Egg: Doom Clásico en Vista Aislada (WASM):**

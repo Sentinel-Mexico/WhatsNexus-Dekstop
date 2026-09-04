@@ -221,5 +221,9 @@
   "modal_gpl_warranty_body": "The software is provided 'as is', without warranty of any kind, express or implied. In no event shall the authors or copyright holders be liable for any claim or damages.",
   "about_doom_title": "Doomize",
   "about_doom_option_title": "Classic Doom",
-  "about_doom_option_desc": "Enable classic protocol"
+  "about_doom_option_desc": "Enable classic protocol",
+  "perm_group_device_desc": "Manage hardware permissions for connected accounts.",
+  "perm_group_share_desc": "Configure screen capture and streaming preferences.",
+  "perm_group_downloads_desc": "Control the destination folder for received files.",
+  "perm_group_spellcheck_desc": "Manage native dictionaries for spell checking."
 }
