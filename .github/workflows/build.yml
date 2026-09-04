@@ -1,0 +1,51 @@
+name: Build & Release Multiplataforma
+
+on:
+  workflow_dispatch: # Permite ejecutarlo manualmente desde la web de GitHub
+  push:
+    branches:
+      - main
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Compilar para ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+
+    steps:
+      - name: Clonar repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      # Requisitos adicionales para arquitecturas ARM y Snap en Linux
+      - name: Dependencias de compilación para Linux
+        if: startsWith(matrix.os, 'ubuntu')
+        run: |
+          sudo dpkg --add-architecture arm64
+          sudo apt-get update
+          sudo apt-get install --no-install-recommends -y gcc-aarch64-linux-gnu g++-aarch64-linux-gnu snapcraft
+
+      - name: Compilar y Desplegar Binarios
+        uses: samuelmeuli/action-electron-builder@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          release: true
+          # Para Linux compila x64 y arm64
+          args: ${{ startsWith(matrix.os, 'ubuntu') && '--linux deb AppImage snap --x64 --arm64' || (startsWith(matrix.os, 'macos') && '--mac dmg --x64 --arm64' || '--win nsis --x64') }}
