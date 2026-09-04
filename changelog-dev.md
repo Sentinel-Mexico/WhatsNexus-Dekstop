@@ -2,6 +2,16 @@
 
 This changelog records all granular updates, bug fixes, refactorings, and feature iterations developed on the `Dev` branch. Each version bump in `package.json` is documented here as it happens.
 
+## [1.0.1] - 2026-09-04
+### Changed
+- **Governance & Version Synchronization Triad Enforcement:**
+  - Standardized agent behavioral rules in `.agents/rules/changelog.md` and `.agents/rules/versioning.md` establishing a mandatory version triad rule (`changelog-dev.md`, `package.json`, `package-lock.json`).
+  - Formalized automatic lockfile verification (`npm install --package-lock-only`) to guarantee strict version parity across dependencies and metadata prior to every commit.
+  - Updated repository governance documentation index in `.agents/README.md` to reflect production milestone policies and lockfile synchronization protocols.
+### Performance
+- **Optimization & Script Execution Safeguards:**
+  - Optimized package management routines and streamlined lockfile updates to guarantee swift, deadlock-free dependency verification.
+
 ## [1.0.0] - 2026-09-04
 ### Added
 - **Official Stable Production Release (Out of Beta):**

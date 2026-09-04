@@ -16,11 +16,14 @@ Apply this increment when the request introduces new functionality or features t
 Apply this increment when the request involves drastic or incompatible changes that break backward compatibility or modify the core application structure. When doing this, both the MINOR and PATCH digits must be reset to 0.
 - Use cases: Fundamental architecture changes (e.g., migrating from PyQt6 to Electron), complete interface redesigns that significantly change the user experience (UX), or database modifications requiring an incompatible migration.
 
-> **IMPORTANT NOTE (Beta / Initial Development Phase):**
-> Currently, the project is in the initial development phase (version `0.x.x`). During this phase, the first digit (MAJOR) will remain at `0`. Any new feature will increment the MINOR digit (e.g., from `0.1.0` to `0.2.0`), and bug fixes will increment the PATCH digit (e.g., from `0.1.0` to `0.1.1`). The transition to version `1.0.0` will only occur when the user explicitly indicates that the application has reached its first stable, finalized release.
-
-> **VERSION SYNCHRONIZATION RULE:**
-> Whenever a version change occurs, it must be reflected across **all** files where the version is defined. In this Node.js project, you must update `package.json` and subsequently run `npm install` (or `npm update`) to ensure `package-lock.json` and other generated files remain properly synchronized with the new version.
+> **MILESTONE STATUS (Production / Post-Beta Phase):**
+> As of version `1.0.0`, the project has graduated from the initial beta phase (`0.x.x`) into official stable production. All subsequent iterations adhere to standard SemVer: breaking architecture/API overhauls trigger a MAJOR increment (`2.0.0`), backward-compatible features trigger a MINOR increment (`1.1.0`), and fixes/refactors trigger a PATCH increment (`1.0.1`).
+>
+> **MANDATORY VERSION SYNCHRONIZATION TRIAD RULE:**
+> Every single time `changelog-dev.md` is updated (or a version bump is introduced), the agent **must explicitly verify and guarantee** that both `package.json` and `package-lock.json` are updated to the exact same version number. Under no circumstance may any of the triad files diverge in version.
+> - When bumping a version, immediately update `package.json`.
+> - Run `npm install --package-lock-only` (or verify and update `package-lock.json`) so the lockfile matches `package.json` and `changelog-dev.md` with 100% parity before committing.
+> - Verify that `package.json`, `package-lock.json`, and `changelog-dev.md` all reflect the exact same version string.
 
 > **COMMIT AND PUSH MESSAGE FORMAT RULE:**
 > Whenever preparing a Git commit or push, the message must strictly begin with the prefix of the current version followed by the change type and a summary of the update.
