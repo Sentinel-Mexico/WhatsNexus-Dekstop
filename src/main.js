@@ -5,7 +5,6 @@ const os = require('os');
 
 // 3. Flags de optimización de Chromium
 app.commandLine.appendSwitch('disable-features', 'HardwareMediaKeyHandling,MediaSessionService,WaylandWpColorManagerV1');
-app.commandLine.appendSwitch('disable-background-networking');
 
 // 1. Single Instance Lock
 const gotTheLock = app.requestSingleInstanceLock();
@@ -100,14 +99,15 @@ function createWindow() {
   // Hide the menu bar for a cleaner look
   mainWindow.setMenuBarVisibility(false);
 
+  mainWindow.webContents.on('console-message', (event, level, message, line) => {
+    if (level >= 2) {
+      console.log(`[Renderer ${level === 3 ? 'Error' : 'Warn'}]: ${message} (line: ${line})`);
+    }
+  });
+
   mainWindow.webContents.on('did-attach-webview', (event, wc) => {
     if (wc && wc.session) {
       configureSession(wc.session);
-    }
-    if (wc && typeof wc.setWebRTCIPHandlingPolicy === 'function') {
-      const policy = currentNetworkSettings.webrtcProtection ? 'disable-non-proxied-udp' : 'default';
-      wc.setWebRTCIPHandlingPolicy(policy);
-      console.log(`[Backend WebRTC]: Synchronized policy '${policy}' on attached webview (id: ${wc.id})`);
     }
   });
 
@@ -143,6 +143,7 @@ ipcMain.on('get-init-info', (event) => {
     arch: process.arch,
     electronVersion: process.versions.electron || 'N/A',
     chromeVersion: process.versions.chrome || 'N/A',
+    systemIsDark: nativeTheme.shouldUseDarkColors,
     webviewPreloadPath: 'file://' + path.join(__dirname, 'preload.js')
   };
 });
@@ -239,10 +240,23 @@ ipcMain.on('update-tray-settings', (event, settings) => {
   }
 });
 
-// IPC para sincronizar el modo de tema (dark/light) a nivel de sistema Chromium
+// IPC para sincronizar el modo de tema (dark/light/system) a nivel de sistema Chromium
 ipcMain.on('set-theme-mode', (event, mode) => {
-  if (mode === 'dark' || mode === 'light') {
+  if (mode === 'dark' || mode === 'light' || mode === 'system') {
     nativeTheme.themeSource = mode;
+  }
+});
+
+ipcMain.handle('get-system-theme', () => {
+  return {
+    shouldUseDarkColors: nativeTheme.shouldUseDarkColors,
+    themeSource: nativeTheme.themeSource
+  };
+});
+
+nativeTheme.on('updated', () => {
+  if (mainWindow && !mainWindow.isDestroyed()) {
+    mainWindow.webContents.send('system-theme-updated', nativeTheme.shouldUseDarkColors);
   }
 });
 
@@ -324,19 +338,56 @@ ipcMain.on('update-permission-settings', (event, permissions) => {
 // Configuración de Sistema (Descargas y Corrector Ortográfico)
 let currentSystemSettings = {
   downloadPath: '',
-  spellcheckLanguage: 'es'
+  spellcheckLanguages: ['es-ES']
 };
 
 function getSystemSettingsFilePath() {
   return path.join(app.getPath('userData'), 'system_settings.json');
 }
 
+// Mapeo de fallback para compatibilidad con versiones previas
+const SPELLCHECK_MAP = {
+  en: 'en-US',
+  zh: 'zh-CN',
+  hi: 'hi',
+  es: 'es-ES',
+  fr: 'fr-FR',
+  ar: 'ar',
+  bn: 'bn',
+  pt: 'pt-BR',
+  ru: 'ru',
+  ur: 'ur',
+  id: 'id',
+  de: 'de-DE',
+  ja: 'ja',
+  mr: 'mr',
+  te: 'te',
+  tr: 'tr',
+  ta: 'ta',
+  yue: 'zh-TW',
+  vi: 'vi',
+  fil: 'fil',
+  ko: 'ko',
+  fa: 'fa',
+  ha: 'ha',
+  sw: 'sw',
+  it: 'it-IT'
+};
+
 function loadSavedSystemSettings() {
   try {
     const filePath = getSystemSettingsFilePath();
     if (fs.existsSync(filePath)) {
       const data = JSON.parse(fs.readFileSync(filePath, 'utf8'));
-      currentSystemSettings = { ...currentSystemSettings, ...data };
+      if (Array.isArray(data.spellcheckLanguages)) {
+        currentSystemSettings.spellcheckLanguages = data.spellcheckLanguages;
+      } else if (typeof data.spellcheckLanguage === 'string') {
+        const mapped = SPELLCHECK_MAP[data.spellcheckLanguage] || data.spellcheckLanguage || 'es-ES';
+        currentSystemSettings.spellcheckLanguages = [mapped];
+      }
+      if (data.downloadPath) {
+        currentSystemSettings.downloadPath = data.downloadPath;
+      }
     }
   } catch (_) {}
   if (!currentSystemSettings.downloadPath) {
@@ -353,161 +404,85 @@ function saveSystemSettings() {
   } catch (_) {}
 }
 
-// Mapeo de códigos de interfaz (25 idiomas) a códigos BCP-47 para el corrector nativo de Chromium
-const SPELLCHECK_MAP = {
-  en: 'en-US',
-  zh: 'zh-CN',
-  hi: 'hi',
-  es: 'es',
-  fr: 'fr',
-  ar: 'ar',
-  bn: 'bn',
-  pt: 'pt-BR',
-  ru: 'ru',
-  ur: 'ur',
-  id: 'id',
-  de: 'de',
-  ja: 'ja',
-  mr: 'mr',
-  te: 'te',
-  tr: 'tr',
-  ta: 'ta',
-  yue: 'zh-TW',
-  vi: 'vi',
-  fil: 'fil',
-  ko: 'ko',
-  fa: 'fa',
-  ha: 'ha',
-  sw: 'sw',
-  it: 'it'
-};
+/**
+ * Elimina físicamente del disco los archivos .bdic correspondientes a los idiomas desmarcados.
+ * Busca en la carpeta Dictionaries de userData y en particiones existentes.
+ */
+function removeDictionariesForLanguages(removedLangs) {
+  if (!Array.isArray(removedLangs) || removedLangs.length === 0) return;
+  try {
+    const userDataPath = app.getPath('userData');
+    const dirsToScan = [];
+    const mainDictDir = path.join(userDataPath, 'Dictionaries');
+    if (fs.existsSync(mainDictDir)) {
+      dirsToScan.push(mainDictDir);
+    }
+    const partitionsDir = path.join(userDataPath, 'Partitions');
+    if (fs.existsSync(partitionsDir)) {
+      try {
+        const subdirs = fs.readdirSync(partitionsDir);
+        for (const sub of subdirs) {
+          const subDict = path.join(partitionsDir, sub, 'Dictionaries');
+          if (fs.existsSync(subDict)) {
+            dirsToScan.push(subDict);
+          }
+        }
+      } catch (_) {}
+    }
+
+    for (const dir of dirsToScan) {
+      if (!fs.existsSync(dir)) continue;
+      let files = [];
+      try {
+        files = fs.readdirSync(dir);
+      } catch (_) {
+        continue;
+      }
+
+      for (const lang of removedLangs) {
+        if (!lang || typeof lang !== 'string') continue;
+        const cleanLang = lang.trim().toLowerCase();
+        for (const file of files) {
+          if (!file.toLowerCase().endsWith('.bdic')) continue;
+          const fileNameLower = file.toLowerCase();
+          if (
+            fileNameLower.startsWith(cleanLang + '-') ||
+            fileNameLower.startsWith(cleanLang + '.') ||
+            fileNameLower === `${cleanLang}.bdic`
+          ) {
+            try {
+              const fullPath = path.join(dir, file);
+              fs.unlinkSync(fullPath);
+              console.log(`[Spellchecker Disk Cleanup] Removed dictionary file: ${fullPath}`);
+            } catch (_) {
+              // Silencioso ante archivos bloqueados o permisos
+            }
+          }
+        }
+      }
+    }
+  } catch (_) {
+    // Falla silenciosa
+  }
+}
 
 const activeSessions = new Set();
 
-function applySpellChecker(ses, langCode) {
+function applySpellChecker(ses, languages) {
   if (!ses) return;
-  const targetCode = SPELLCHECK_MAP[langCode] || langCode || 'en-US';
+  const langs = Array.isArray(languages) ? languages : [languages || 'es-ES'];
+  const validLangs = langs.filter(l => typeof l === 'string' && l.trim().length > 0);
   try {
-    ses.setSpellCheckerLanguages([targetCode]);
+    ses.setSpellCheckerLanguages(validLangs);
   } catch (err) {
     console.error('[Spellchecker Error]:', err);
   }
 }
 
-function updateSpellCheckerAllSessions(langCode) {
-  applySpellChecker(session.defaultSession, langCode);
+function updateSpellCheckerAllSessions(languages) {
+  applySpellChecker(session.defaultSession, languages);
   for (const ses of activeSessions) {
-    applySpellChecker(ses, langCode);
-  }
-}
-
-// Configuración de Privacidad y Red (Proxy y WebRTC)
-let currentNetworkSettings = {
-  useProxy: false,
-  proxyType: 'direct', // 'direct', 'http', 'socks5', 'system'
-  proxyHost: '',
-  proxyPort: '',
-  strictProxyIsolation: false,
-  webrtcProtection: false
-};
-
-function getNetworkSettingsFilePath() {
-  return path.join(app.getPath('userData'), 'network_settings.json');
-}
-
-function loadSavedNetworkSettings() {
-  try {
-    const filePath = getNetworkSettingsFilePath();
-    if (fs.existsSync(filePath)) {
-      const data = JSON.parse(fs.readFileSync(filePath, 'utf8'));
-      currentNetworkSettings = { ...currentNetworkSettings, ...data };
-    }
-  } catch (_) {}
-}
-
-function saveNetworkSettings() {
-  try {
-    const filePath = getNetworkSettingsFilePath();
-    fs.writeFileSync(filePath, JSON.stringify(currentNetworkSettings, null, 2), 'utf8');
-  } catch (_) {}
-}
-
-function getProxyConfig() {
-  if (!currentNetworkSettings.useProxy || currentNetworkSettings.proxyType === 'direct') {
-    return { mode: 'direct' };
-  }
-  if (currentNetworkSettings.proxyType === 'system') {
-    return { mode: 'system' };
-  }
-
-  let host = (currentNetworkSettings.proxyHost || '').trim();
-  let port = (currentNetworkSettings.proxyPort || '').trim();
-  if (!host) {
-    return { mode: 'direct' };
-  }
-
-  // Normalizar host para asegurar formato válido en Chromium
-  host = host.replace(/^https?:\/\//i, '').replace(/^socks[45]?:\/\//i, '').replace(/\/+$/, '');
-  const endpoint = port ? `${host}:${port}` : host;
-  const isSocks = currentNetworkSettings.proxyType === 'socks5';
-  const proxyRules = isSocks ? `socks5://${endpoint}` : `http=${endpoint};https=${endpoint}`;
-  const proxyBypassRules = currentNetworkSettings.strictProxyIsolation ? '' : '<local>';
-
-  return {
-    mode: 'fixed_servers',
-    proxyRules,
-    proxyBypassRules
-  };
-}
-
-async function applyProxyToSession(ses) {
-  if (!ses) return;
-  try {
-    const config = getProxyConfig();
-    await ses.setProxy(config);
-    console.log('[Backend Proxy]: Proxy successfully applied on session:', JSON.stringify(config));
-  } catch (err) {
-    console.error('[Proxy Config Error]:', err);
-  }
-}
-
-function attachSessionWebRTC(ses) {
-  if (!ses) return;
-  if (typeof ses.setWebRTCIPHandlingPolicy !== 'function') {
-    ses.setWebRTCIPHandlingPolicy = function(policy) {
-      this._webrtcPolicy = policy;
-      try {
-        const allWc = webContents.getAllWebContents();
-        for (const wc of allWc) {
-          if (wc && !wc.isDestroyed() && (wc.session === this || this === session.defaultSession)) {
-            if (typeof wc.setWebRTCIPHandlingPolicy === 'function') {
-              wc.setWebRTCIPHandlingPolicy(policy);
-            }
-          }
-        }
-      } catch (err) {
-        console.error('[WebRTC Policy Error]:', err);
-      }
-    };
-  }
-}
-
-function applyWebRTCToSession(ses) {
-  if (!ses) return;
-  attachSessionWebRTC(ses);
-  const policy = currentNetworkSettings.webrtcProtection ? 'disable-non-proxied-udp' : 'default';
-  try {
-    ses.setWebRTCIPHandlingPolicy(policy);
-    console.log(`[Backend WebRTC]: Applied policy '${policy}' to session and associated webContents`);
-  } catch (err) {
-    console.error('[WebRTC Policy Error]:', err);
-  }
-}
-
-function updateNetworkAllSessions() {
-  for (const ses of activeSessions) {
-    applyProxyToSession(ses);
-    applyWebRTCToSession(ses);
+    applySpellChecker(ses, languages);
   }
 }
 
@@ -606,32 +581,38 @@ ipcMain.handle('set-download-path', (event, newPath) => {
 ipcMain.handle('get-system-settings', () => {
   return {
     downloadPath: currentSystemSettings.downloadPath || app.getPath('downloads'),
-    spellcheckLanguage: currentSystemSettings.spellcheckLanguage || 'es'
+    spellcheckLanguages: currentSystemSettings.spellcheckLanguages || ['es-ES'],
+    spellcheckLanguage: (currentSystemSettings.spellcheckLanguages && currentSystemSettings.spellcheckLanguages[0]) || 'es-ES'
   };
 });
 
-ipcMain.handle('set-spellchecker-language', (event, langCode) => {
-  if (typeof langCode === 'string') {
-    currentSystemSettings.spellcheckLanguage = langCode;
+ipcMain.handle('set-spellchecker-languages', (event, languages) => {
+  if (Array.isArray(languages)) {
+    const previous = currentSystemSettings.spellcheckLanguages || [];
+    const removed = previous.filter(l => !languages.includes(l));
+    if (removed.length > 0) {
+      removeDictionariesForLanguages(removed);
+    }
+    currentSystemSettings.spellcheckLanguages = languages;
     saveSystemSettings();
-    updateSpellCheckerAllSessions(langCode);
+    updateSpellCheckerAllSessions(languages);
   }
   return true;
 });
 
-ipcMain.handle('get-network-settings', () => {
-  return currentNetworkSettings;
-});
-
-ipcMain.handle('update-network-settings', (event, newSettings) => {
-  console.log('[Backend IPC: update-network-settings] Received payload:', JSON.stringify(newSettings));
-  if (newSettings && typeof newSettings === 'object') {
-    currentNetworkSettings = { ...currentNetworkSettings, ...newSettings };
-    saveNetworkSettings();
-    updateNetworkAllSessions();
+ipcMain.handle('set-spellchecker-language', (event, langCode) => {
+  if (typeof langCode === 'string') {
+    const langs = [langCode];
+    const previous = currentSystemSettings.spellcheckLanguages || [];
+    const removed = previous.filter(l => !langs.includes(l));
+    if (removed.length > 0) {
+      removeDictionariesForLanguages(removed);
+    }
+    currentSystemSettings.spellcheckLanguages = langs;
+    saveSystemSettings();
+    updateSpellCheckerAllSessions(langs);
   }
-  console.log('[Backend Network Settings] Active settings now:', JSON.stringify(currentNetworkSettings));
-  return currentNetworkSettings;
+  return true;
 });
 
 ipcMain.handle('get-system-info', () => {
@@ -771,15 +752,12 @@ function configureSession(ses) {
   activeSessions.add(ses);
   configureSessionPermissions(ses);
   configureSessionDownloads(ses);
-  applySpellChecker(ses, currentSystemSettings.spellcheckLanguage || 'es');
-  applyProxyToSession(ses);
-  applyWebRTCToSession(ses);
+  applySpellChecker(ses, currentSystemSettings.spellcheckLanguages || ['es-ES']);
 }
 
 app.whenReady().then(() => {
   loadSavedPermissions();
   loadSavedSystemSettings();
-  loadSavedNetworkSettings();
   configureSession(session.defaultSession);
   app.on('session-created', (ses) => {
     configureSession(ses);

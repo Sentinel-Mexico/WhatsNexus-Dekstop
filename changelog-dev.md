@@ -2,6 +2,72 @@
 
 This changelog records all granular updates, bug fixes, refactorings, and feature iterations developed on the `Dev` branch. Each version bump in `package.json` is documented here as it happens.
 
+## [0.17.9] - 2026-09-03
+### Changed
+- **Ancho Dinámico del Dropdown "Estilo del Icono en Bandeja":**
+  - Se modificaron las reglas CSS de `.setting-row-between .custom-select-wrapper` y `.custom-select-trigger` para que adopten `width: max-content; flex: 0 0 auto;`, replicando el comportamiento adaptativo del selector de temas y asegurando alineación perfecta a la derecha.
+- **Reestructuración de la Tarjeta "Idioma de la Interfaz":**
+  - Se reorganizó el bloque de idioma a un esquema horizontal Flexbox (`.setting-row-between`) con etiqueta descriptiva alineada a la izquierda y menú desplegable estilizado alineado a la derecha.
+- **Popup Modal Nativo para "MIT License" (Sección Acerca de):**
+  - Se convirtió el distintivo estático de la Licencia MIT en un botón interactivo (`#btn-open-mit-license`).
+  - Se implementó un modal nativo en el DOM (`#mit-license-modal`) con fondo semitransparente (*backdrop blur*), tarjeta central tematizada, botón de cierre "X", botón de acción y soporte de cierre mediante clic exterior o tecla `Escape`.
+- **Botón hacia el Repositorio de ZapZap (Sección Acerca de):**
+  - Se integró el botón `#btn-about-zapzap` en la fila de inspiración y agradecimientos con estilo idéntico al del repositorio oficial, invocando el handler IPC seguro `open-external-url` para abrir el repositorio de ZapZap en el navegador web predeterminado.
+
+---
+
+## [0.17.8] - 2026-09-03
+### Changed
+- **Corrector Ortográfico Multilingüe con Checkboxes y Gestión de Espacio en Disco:**
+  - Se sustituyó el menú desplegable (dropdown) de selección única por una lista de selección múltiple dentro de un contenedor con scroll vertical estilizado (`.spellcheck-multiselect-container`).
+  - Se implementó el formato visual `[Checkbox] [Bandera Emoji] [Nombre del Idioma] ([Variante/Región])` con insignia de código BCP-47.
+  - Se incorporó el catálogo completo de 25 idiomas base junto con sus variantes regionales clave:
+    - **Español:** `es-ES` (España), `es-MX` (México), `es-AR` (Argentina), `es-CO` (Colombia)
+    - **Inglés:** `en-US` (Estados Unidos), `en-GB` (Reino Unido), `en-CA` (Canadá), `en-AU` (Australia)
+    - **Portugués:** `pt-BR` (Brasil), `pt-PT` (Portugal)
+    - **Francés:** `fr-FR` (Francia), `fr-CA` (Canadá)
+    - **Alemán:** `de-DE` (Alemania), `de-AT` (Austria), `de-CH` (Suiza)
+    - **Chino:** `zh-CN` (Simplificado), `zh-TW` (Tradicional - Taiwán), `zh-HK` (Tradicional - Hong Kong)
+    - **Italiano:** `it-IT` (Italia)
+    - **Resto de idiomas base:** `hi`, `ar`, `bn`, `ru`, `ur`, `id`, `ja`, `mr`, `te`, `tr`, `ta`, `vi`, `fil`, `ko`, `fa`, `ha`, `sw`.
+  - **Traducciones dinámicas:** Se vincularon los nombres de idiomas y regiones al sistema i18n (`lang_*`, `region_*`, `variant_*`), actualizándose inmediatamente al alternar el idioma de la aplicación.
+  - **Soporte Multilingüe Concurrente:** Se actualizó `main.js` y el IPC bridge para enviar un arreglo de códigos BCP-47 y llamar a `session.setSpellCheckerLanguages(array)` en la sesión por defecto y en todas las sesiones activas de los webviews.
+  - **Gestión Eficiente de Disco (.bdic):** Se desarrolló `removeDictionariesForLanguages(removedLangs)` para detectar idiomas desmarcados y eliminar de manera física y silenciosa sus archivos `.bdic` descargados en `userData/Dictionaries` y subcarpetas de particiones.
+
+---
+
+## [0.17.7] - 2026-09-03
+### Fixed
+- **Modo Automático del Selector de Temas (Detección de Tema del SO):**
+  - Se corrigió el bloqueo permanente de `nativeTheme.themeSource` en Electron: al seleccionar temas manuales (`dark`/`light`) el proceso principal fijaba `themeSource`, lo que impedía a Chromium y al Renderer volver a consultar las preferencias reales del sistema operativo al cambiar a `theme-auto`.
+  - Se habilitó la opción `system` en el handler IPC `set-theme-mode` para restablecer `nativeTheme.themeSource = 'system'`.
+  - Se expuso `systemIsDark` de forma síncrona en el bridge `electronAPI` (`preload-main.js`) derivado de `nativeTheme.shouldUseDarkColors`.
+  - Se implementó el listener reactivo `nativeTheme.on('updated')` en `main.js` para notificar al Renderer en tiempo real ante cambios del tema del sistema (vía portal de escritorio DBus en Linux Wayland/X11).
+  - Se unificó la resolución en `getEffectiveThemeIsDark()` en `renderer.js` garantizando que al seleccionar "Automático (Sistema)" la interfaz adopte inmediatamente el esquema claro u oscuro del entorno de escritorio.
+
+---
+
+## [0.17.6] - 2026-09-03
+### Removed
+- **Privacidad y Red (Proxy & WebRTC Subsystem Elimination):**
+  - Completely removed the "Privacidad y Red" settings tab and UI panel (`tab-network`) from `src/renderer/index.html`.
+  - Cleaned all proxy configuration, WebRTC manipulation, strict isolation, and network UI logic (`updateNetworkUI`) from `src/renderer/renderer.js`.
+  - Removed `update-network-settings` and WebRTC blocking overrides (`window.RTCPeerConnection`) from guest webviews in `src/preload.js`.
+  - Removed `updateNetworkSettings` and `getNetworkSettings` IPC invokers from `src/preload-main.js`.
+  - Removed backend network settings management, `ses.setProxy`, `setWebRTCIPHandlingPolicy`, and IPC handlers (`get-network-settings`, `update-network-settings`) in `src/main.js`, eliminating Linux `SIGSEGV` crashes and Chromium network service restarts.
+  - Removed `disable-background-networking` CLI switch in `src/main.js` preventing Network Service process crashes.
+
+---
+
+## [0.17.5] - 2026-09-03
+### Fixed
+- **Sidebar Buttons & Accounts Initialization (SyntaxError Fix):**
+  - Resolved `Uncaught SyntaxError: Identifier 'electronAPI' has already been declared` occurring at line 1 of `src/renderer/renderer.js`. The variable was previously exposed to the global window context via `contextBridge.exposeInMainWorld`, causing a syntax collision when re-declared with `const electronAPI`.
+  - Replaced top-level declaration with a non-colliding fallback guard (`if (typeof window.electronAPI === 'undefined')`), allowing the entire renderer script to parse and execute properly.
+  - Restored execution of `DOMContentLoaded`, accounts rendering (`renderAllSidebarAccounts()`), and click listeners for the sidebar navigation rail (Add Account, Bug Report, Donations, and Settings).
+  - Added `openExternalUrl` alias bridge in `src/preload-main.js` to ensure 100% compatibility with external link callers.
+  - Added console error/warning forwarding from `mainWindow.webContents` in `src/main.js` so renderer runtime errors are never silently suppressed in the CLI.
+
 ---
 
 ## [0.17.4] - 2026-09-03
