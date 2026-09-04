@@ -2,6 +2,17 @@
 
 This changelog records all granular updates, bug fixes, refactorings, and feature iterations developed on the `Dev` branch. Each version bump in `package.json` is documented here as it happens.
 
+## [0.17.7] - 2026-09-03
+### Fixed
+- **Modo Automático del Selector de Temas (Detección de Tema del SO):**
+  - Se corrigió el bloqueo permanente de `nativeTheme.themeSource` en Electron: al seleccionar temas manuales (`dark`/`light`) el proceso principal fijaba `themeSource`, lo que impedía a Chromium y al Renderer volver a consultar las preferencias reales del sistema operativo al cambiar a `theme-auto`.
+  - Se habilitó la opción `system` en el handler IPC `set-theme-mode` para restablecer `nativeTheme.themeSource = 'system'`.
+  - Se expuso `systemIsDark` de forma síncrona en el bridge `electronAPI` (`preload-main.js`) derivado de `nativeTheme.shouldUseDarkColors`.
+  - Se implementó el listener reactivo `nativeTheme.on('updated')` en `main.js` para notificar al Renderer en tiempo real ante cambios del tema del sistema (vía portal de escritorio DBus en Linux Wayland/X11).
+  - Se unificó la resolución en `getEffectiveThemeIsDark()` en `renderer.js` garantizando que al seleccionar "Automático (Sistema)" la interfaz adopte inmediatamente el esquema claro u oscuro del entorno de escritorio.
+
+---
+
 ## [0.17.6] - 2026-09-03
 ### Removed
 - **Privacidad y Red (Proxy & WebRTC Subsystem Elimination):**

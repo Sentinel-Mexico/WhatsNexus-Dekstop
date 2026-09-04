@@ -143,6 +143,7 @@ ipcMain.on('get-init-info', (event) => {
     arch: process.arch,
     electronVersion: process.versions.electron || 'N/A',
     chromeVersion: process.versions.chrome || 'N/A',
+    systemIsDark: nativeTheme.shouldUseDarkColors,
     webviewPreloadPath: 'file://' + path.join(__dirname, 'preload.js')
   };
 });
@@ -239,10 +240,23 @@ ipcMain.on('update-tray-settings', (event, settings) => {
   }
 });
 
-// IPC para sincronizar el modo de tema (dark/light) a nivel de sistema Chromium
+// IPC para sincronizar el modo de tema (dark/light/system) a nivel de sistema Chromium
 ipcMain.on('set-theme-mode', (event, mode) => {
-  if (mode === 'dark' || mode === 'light') {
+  if (mode === 'dark' || mode === 'light' || mode === 'system') {
     nativeTheme.themeSource = mode;
+  }
+});
+
+ipcMain.handle('get-system-theme', () => {
+  return {
+    shouldUseDarkColors: nativeTheme.shouldUseDarkColors,
+    themeSource: nativeTheme.themeSource
+  };
+});
+
+nativeTheme.on('updated', () => {
+  if (mainWindow && !mainWindow.isDestroyed()) {
+    mainWindow.webContents.send('system-theme-updated', nativeTheme.shouldUseDarkColors);
   }
 });
 

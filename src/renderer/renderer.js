@@ -448,7 +448,30 @@ async function initDownloadPathUI() {
   }
 }
 
+function getEffectiveThemeIsDark() {
+  if (settings.theme === 'theme-dark') return true;
+  if (settings.theme === 'theme-light') return false;
+
+  // Modo Automático (Sistema)
+  if (window.electronAPI && typeof window.electronAPI.systemIsDark === 'boolean') {
+    return window.electronAPI.systemIsDark;
+  }
+  if (window.matchMedia) {
+    return window.matchMedia('(prefers-color-scheme: dark)').matches;
+  }
+  return true;
+}
+
 async function init() {
+  if (window.electronAPI && electronAPI.getSystemTheme) {
+    try {
+      const themeInfo = await electronAPI.getSystemTheme();
+      if (themeInfo && typeof themeInfo.shouldUseDarkColors === 'boolean') {
+        window.electronAPI.systemIsDark = themeInfo.shouldUseDarkColors;
+      }
+    } catch (_) {}
+  }
+
   await loadActiveLocale(settings.language || 'es');
   applySettings();
   initDownloadPathUI();
@@ -515,9 +538,8 @@ function saveSettings() {
 }
 
 function applySettings() {
-  const isDark = (settings.theme === 'theme-auto' || !settings.theme)
-    ? (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches)
-    : (settings.theme === 'theme-dark');
+  const isAuto = (settings.theme === 'theme-auto' || !settings.theme);
+  const isDark = getEffectiveThemeIsDark();
 
   const palette = settings.themePalette || 'whatsapp';
   
@@ -567,8 +589,10 @@ function applySettings() {
     });
   }
 
-  // Sincronizar modo oscuro/claro a nivel global de Chromium
-  electronAPI.setThemeMode(isDark ? 'dark' : 'light');
+  // Sincronizar modo oscuro/claro a nivel global de Chromium y Electron
+  if (window.electronAPI && electronAPI.setThemeMode) {
+    electronAPI.setThemeMode(isAuto ? 'system' : (isDark ? 'dark' : 'light'));
+  }
 
   if (typeof refreshAllCustomDropdowns === 'function') {
     refreshAllCustomDropdowns();
@@ -780,9 +804,7 @@ function buildWebviewDOM(account, parentContainer) {
 
   // Sincronizar configuración de notificaciones, DND y tema al cargar la sesión
   webview.addEventListener('dom-ready', () => {
-    const isDark = (settings.theme === 'theme-auto' || !settings.theme)
-      ? (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches)
-      : (settings.theme === 'theme-dark');
+    const isDark = getEffectiveThemeIsDark();
     try {
       if (settings && settings.notifications) {
         webview.send('update-notification-settings', settings.notifications);
@@ -1770,8 +1792,25 @@ if (window.electronAPI && electronAPI.onDefaultDownloadsPath) {
   });
 }
 
-window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
-  if (settings.theme === 'theme-auto') applySettings();
+// Detección reactiva de cambios de tema en el Sistema Operativo
+if (window.electronAPI && electronAPI.onSystemThemeUpdated) {
+  electronAPI.onSystemThemeUpdated((isDark) => {
+    if (window.electronAPI) {
+      window.electronAPI.systemIsDark = isDark;
+    }
+    if (settings.theme === 'theme-auto' || !settings.theme) {
+      applySettings();
+    }
+  });
+}
+
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+  if (window.electronAPI) {
+    window.electronAPI.systemIsDark = e.matches;
+  }
+  if (settings.theme === 'theme-auto' || !settings.theme) {
+    applySettings();
+  }
 });
 
 document.addEventListener('DOMContentLoaded', init);
