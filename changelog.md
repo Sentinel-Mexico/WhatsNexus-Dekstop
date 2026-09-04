@@ -6,6 +6,44 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ---
 
+## [0.17.9] - 2026-09-03
+### Added
+- **Multilingual Spellchecker with Checklist UI & Regional BCP-47 Variants:**
+  - Redesigned the spellchecker selector into a multi-select checklist within a vertical scroll container (`max-height: 200px`).
+  - Added support for 25 base languages and regional variants (Spanish: `es-ES`, `es-MX`, `es-AR`, `es-CO`; English: `en-US`, `en-GB`, `en-CA`, `en-AU`; Portuguese: `pt-BR`, `pt-PT`; French: `fr-FR`, `fr-CA`; German: `de-DE`, `de-AT`, `de-CH`; Chinese: `zh-CN`, `zh-TW`, `zh-HK`; Italian: `it-IT`; and base languages).
+  - Visual format: `[Checkbox] [Emoji Flag] [Language Name] ([Variant/Region]) [BCP-47 Code]`.
+  - Dynamic i18n support automatically translating language and regional variant names when switching interface language.
+  - Concurrent multi-language spellchecking applied across `session.defaultSession` and all active webview sessions.
+- **Automated Dictionary Disk Cleanup (`.bdic`):**
+  - Integrated `removeDictionariesForLanguages` in the main process to detect unselected languages and safely delete physical compiled `.bdic` files from `userData/Dictionaries` and partition directories.
+- **Native Modal Popup for MIT License (About View):**
+  - Replaced the static MIT License badge with an interactive trigger opening a native DOM modal with backdrop blur (`backdrop-filter: blur(8px)`), thematic styling, and multiple dismiss options (close button, action button, backdrop click, Escape key).
+- **Official ZapZap Project Repository Button (About View):**
+  - Added a dedicated button in the Inspiration card linking directly to `https://github.com/rafatosta/zapzap` via secure IPC (`open-external-url`).
+
+### Changed
+- **Dynamic Tray Icon Style Selector Width:**
+  - Updated CSS for `.setting-row-between .custom-select-wrapper` to `width: max-content; flex: 0 0 auto;`, allowing the dropdown to adapt smoothly to the length of the selected option while remaining pinned to the right edge.
+- **Interface Language Card Restructuring:**
+  - Modernized the Interface Language card into a horizontal Flexbox layout (`.setting-row-between`), featuring the descriptive label on the left and the language selector on the right.
+
+### Fixed
+- **Automatic Theme Mode System Synchronization:**
+  - Resolved `nativeTheme.themeSource` locking in Electron, restoring dynamic query of OS dark/light mode preferences in `theme-auto`.
+  - Integrated `nativeTheme.on('updated')` events to reactively synchronize UI appearance when the operating system switches color schemes.
+- **Renderer SyntaxError Resolution:**
+  - Fixed duplicate `electronAPI` declaration collision in `renderer.js`, restoring sidebar account rendering and navigation rail buttons.
+- **Dynamic i18n Locale Resolution:**
+  - Fully populated all 25 locale JSON files with complete dictionaries, eliminating unintended fallbacks to English.
+- **Unified Download Directory Management:**
+  - Connected IPC bridges (`selectFolder`, `getDefaultDownloadsPath`, `setDownloadPath`) and intercepted session downloads to ensure files save directly into user-configured paths.
+
+### Removed
+- **Privacy & Network Subsystem (Proxy & WebRTC Overrides):**
+  - Completely removed proxy routing, strict isolation, and WebRTC manipulation overrides from the main process, preload scripts, and renderer, permanently eliminating Linux `SIGSEGV` segmentation faults and Chromium Network Service process restarts.
+
+---
+
 ## [0.12.1] - 2026-09-03
 ### Added
 - **Top 25 Worldwide Languages Localization:**
