@@ -325,6 +325,7 @@
 
               <!-- Bloque 1: Acceso al dispositivo -->
               <h4 class="perm-group-title" data-i18n="perm_group_device">Acceso al dispositivo</h4>
+              <p class="perm-group-desc" data-i18n="perm_group_device_desc">Administra los permisos de hardware para las cuentas conectadas.</p>
               <div class="perm-card">
                 <!-- Fila 1: Micrófono -->
                 <div class="perm-row">
@@ -365,6 +366,7 @@
 
               <!-- Bloque 2: Compartir -->
               <h4 class="perm-group-title" data-i18n="perm_group_share">Compartir</h4>
+              <p class="perm-group-desc" data-i18n="perm_group_share_desc">Configura las opciones de captura y transmisión de pantalla.</p>
               <div class="perm-card">
                 <!-- Fila 1: Compartir pantalla -->
                 <div class="perm-row">
@@ -393,6 +395,7 @@
 
               <!-- Bloque 3: Gestión de Descargas -->
               <h4 class="perm-group-title" data-i18n="perm_group_downloads">Gestión de Descargas</h4>
+              <p class="perm-group-desc" data-i18n="perm_group_downloads_desc">Controla el directorio destino para los archivos recibidos.</p>
               <div class="perm-card">
                 <div class="perm-row download-management-row">
                   <div class="perm-info">
@@ -415,13 +418,16 @@
 
               <!-- Bloque 4: Corrector Ortográfico Multilingüe -->
               <h4 class="perm-group-title" data-i18n="perm_group_spellcheck">Corrector Ortográfico</h4>
+              <p class="perm-group-desc" data-i18n="perm_group_spellcheck_desc">Gestiona los diccionarios nativos para la revisión de texto.</p>
               <div class="perm-card">
-                <div class="perm-info" style="margin-bottom: 12px;">
-                  <h4 data-i18n="perm_spellcheck_title">Idiomas del Corrector Ortográfico</h4>
-                  <p data-i18n="perm_spellcheck_desc">Corrección ortográfica nativa de Chromium en tiempo real para todos los chats.</p>
-                </div>
-                <div class="spellcheck-multiselect-container" id="spellcheck-multiselect-container">
-                  <!-- Renderizado dinámicamente con checkboxes y banderas -->
+                <div class="perm-row download-management-row">
+                  <div class="perm-info" style="width: 100%;">
+                    <h4 data-i18n="perm_spellcheck_title">Idiomas del Corrector Ortográfico</h4>
+                    <p data-i18n="perm_spellcheck_desc">Corrección ortográfica nativa de Chromium en tiempo real para todos los chats.</p>
+                    <div class="spellcheck-multiselect-container" id="spellcheck-multiselect-container">
+                      <!-- Renderizado dinámicamente con checkboxes y banderas -->
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
