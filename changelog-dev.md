@@ -2,6 +2,40 @@
 
 This changelog records all granular updates, bug fixes, refactorings, and feature iterations developed on the `Dev` branch. Each version bump in `package.json` is documented here as it happens.
 
+## [0.17.9] - 2026-09-03
+### Changed
+- **Ancho Dinámico del Dropdown "Estilo del Icono en Bandeja":**
+  - Se modificaron las reglas CSS de `.setting-row-between .custom-select-wrapper` y `.custom-select-trigger` para que adopten `width: max-content; flex: 0 0 auto;`, replicando el comportamiento adaptativo del selector de temas y asegurando alineación perfecta a la derecha.
+- **Reestructuración de la Tarjeta "Idioma de la Interfaz":**
+  - Se reorganizó el bloque de idioma a un esquema horizontal Flexbox (`.setting-row-between`) con etiqueta descriptiva alineada a la izquierda y menú desplegable estilizado alineado a la derecha.
+- **Popup Modal Nativo para "MIT License" (Sección Acerca de):**
+  - Se convirtió el distintivo estático de la Licencia MIT en un botón interactivo (`#btn-open-mit-license`).
+  - Se implementó un modal nativo en el DOM (`#mit-license-modal`) con fondo semitransparente (*backdrop blur*), tarjeta central tematizada, botón de cierre "X", botón de acción y soporte de cierre mediante clic exterior o tecla `Escape`.
+- **Botón hacia el Repositorio de ZapZap (Sección Acerca de):**
+  - Se integró el botón `#btn-about-zapzap` en la fila de inspiración y agradecimientos con estilo idéntico al del repositorio oficial, invocando el handler IPC seguro `open-external-url` para abrir el repositorio de ZapZap en el navegador web predeterminado.
+
+---
+
+## [0.17.8] - 2026-09-03
+### Changed
+- **Corrector Ortográfico Multilingüe con Checkboxes y Gestión de Espacio en Disco:**
+  - Se sustituyó el menú desplegable (dropdown) de selección única por una lista de selección múltiple dentro de un contenedor con scroll vertical estilizado (`.spellcheck-multiselect-container`).
+  - Se implementó el formato visual `[Checkbox] [Bandera Emoji] [Nombre del Idioma] ([Variante/Región])` con insignia de código BCP-47.
+  - Se incorporó el catálogo completo de 25 idiomas base junto con sus variantes regionales clave:
+    - **Español:** `es-ES` (España), `es-MX` (México), `es-AR` (Argentina), `es-CO` (Colombia)
+    - **Inglés:** `en-US` (Estados Unidos), `en-GB` (Reino Unido), `en-CA` (Canadá), `en-AU` (Australia)
+    - **Portugués:** `pt-BR` (Brasil), `pt-PT` (Portugal)
+    - **Francés:** `fr-FR` (Francia), `fr-CA` (Canadá)
+    - **Alemán:** `de-DE` (Alemania), `de-AT` (Austria), `de-CH` (Suiza)
+    - **Chino:** `zh-CN` (Simplificado), `zh-TW` (Tradicional - Taiwán), `zh-HK` (Tradicional - Hong Kong)
+    - **Italiano:** `it-IT` (Italia)
+    - **Resto de idiomas base:** `hi`, `ar`, `bn`, `ru`, `ur`, `id`, `ja`, `mr`, `te`, `tr`, `ta`, `vi`, `fil`, `ko`, `fa`, `ha`, `sw`.
+  - **Traducciones dinámicas:** Se vincularon los nombres de idiomas y regiones al sistema i18n (`lang_*`, `region_*`, `variant_*`), actualizándose inmediatamente al alternar el idioma de la aplicación.
+  - **Soporte Multilingüe Concurrente:** Se actualizó `main.js` y el IPC bridge para enviar un arreglo de códigos BCP-47 y llamar a `session.setSpellCheckerLanguages(array)` en la sesión por defecto y en todas las sesiones activas de los webviews.
+  - **Gestión Eficiente de Disco (.bdic):** Se desarrolló `removeDictionariesForLanguages(removedLangs)` para detectar idiomas desmarcados y eliminar de manera física y silenciosa sus archivos `.bdic` descargados en `userData/Dictionaries` y subcarpetas de particiones.
+
+---
+
 ## [0.17.7] - 2026-09-03
 ### Fixed
 - **Modo Automático del Selector de Temas (Detección de Tema del SO):**

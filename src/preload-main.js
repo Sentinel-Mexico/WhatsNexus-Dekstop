@@ -29,7 +29,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   updateTraySettings: (settings) => ipcRenderer.send('update-tray-settings', settings),
   showNativeNotification: (data) => ipcRenderer.send('show-native-notification', data),
   openExternal: (url) => ipcRenderer.send('open-external', url),
-  openExternalUrl: (url) => ipcRenderer.send('open-external', url),
+  openExternalUrl: (url) => ipcRenderer.invoke('open-external-url', url),
   selectFolder: () => ipcRenderer.invoke('select-folder'),
   selectDownloadDirectory: () => ipcRenderer.invoke('select-folder'),
   getDefaultDownloadsPath: () => ipcRenderer.invoke('get-default-downloads-path'),
@@ -43,7 +43,8 @@ contextBridge.exposeInMainWorld('electronAPI', {
     return () => ipcRenderer.removeListener('default-downloads-path', handler);
   },
   getSystemSettings: () => ipcRenderer.invoke('get-system-settings'),
-  setSpellcheckerLanguage: (lang) => ipcRenderer.invoke('set-spellchecker-language', lang),
+  setSpellcheckerLanguage: (lang) => ipcRenderer.invoke('set-spellchecker-languages', Array.isArray(lang) ? lang : [lang]),
+  setSpellcheckerLanguages: (langs) => ipcRenderer.invoke('set-spellchecker-languages', Array.isArray(langs) ? langs : [langs]),
   getSystemInfo: () => ipcRenderer.invoke('get-system-info'),
   loadLocale: (lang) => ipcRenderer.invoke('load-locale', lang),
   onSelectAccount: (callback) => {

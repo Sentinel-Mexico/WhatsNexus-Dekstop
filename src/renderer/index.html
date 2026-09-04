@@ -152,7 +152,8 @@
                   <h4 data-i18n="card_language_title">Idioma de la Interfaz</h4>
                   <p class="setting-hint" data-i18n="hint_language">Selecciona el idioma principal de WhatsNexus.</p>
                 </div>
-                <div class="setting-group" style="margin-bottom: 0;">
+                <div class="setting-row-between" style="margin-top: 14px;">
+                  <label for="language-select" data-i18n="label_interface_language">Idioma de la interfaz</label>
                   <div class="custom-select-wrapper" id="custom-language-select-wrapper">
                     <div class="custom-select-trigger" id="language-select-trigger" tabindex="0">
                       <span id="language-select-label">Español (Español)</span>
@@ -408,26 +409,15 @@
                 </div>
               </div>
 
-              <!-- Bloque 4: Corrector Ortográfico Nativo -->
+              <!-- Bloque 4: Corrector Ortográfico Multilingüe -->
               <h4 class="perm-group-title" data-i18n="perm_group_spellcheck">Corrector Ortográfico</h4>
               <div class="perm-card">
-                <div class="perm-row">
-                  <div class="perm-info">
-                    <h4 data-i18n="perm_spellcheck_title">Idioma del Corrector Ortográfico</h4>
-                    <p data-i18n="perm_spellcheck_desc">Corrección ortográfica nativa de Chromium en tiempo real para todos los chats.</p>
-                  </div>
-                  <div class="custom-select-wrapper" id="custom-spellcheck-select-wrapper">
-                    <div class="custom-select-trigger" id="spellcheck-select-trigger" tabindex="0">
-                      <span id="spellcheck-select-label">Español (Español)</span>
-                      <i class="fa-solid fa-chevron-down select-chevron"></i>
-                    </div>
-                    <div class="custom-select-options" id="spellcheck-select-options">
-                      <!-- Se llenará dinámicamente con los 25 idiomas -->
-                    </div>
-                    <select id="spellcheck-select" class="styled-select" style="display: none;">
-                      <!-- Se mantiene para compatibilidad -->
-                    </select>
-                  </div>
+                <div class="perm-info" style="margin-bottom: 12px;">
+                  <h4 data-i18n="perm_spellcheck_title">Idiomas del Corrector Ortográfico</h4>
+                  <p data-i18n="perm_spellcheck_desc">Corrección ortográfica nativa de Chromium en tiempo real para todos los chats.</p>
+                </div>
+                <div class="spellcheck-multiselect-container" id="spellcheck-multiselect-container">
+                  <!-- Renderizado dinámicamente con checkboxes y banderas -->
                 </div>
               </div>
             </div>
@@ -488,7 +478,10 @@
                     <h4 data-i18n="about_license_title">Licencia</h4>
                     <p data-i18n="about_license_desc">Software libre y de código abierto distribuido bajo la Licencia MIT.</p>
                   </div>
-                  <span class="webrtc-badge" style="background: rgba(37, 211, 102, 0.12); color: var(--accent-color); font-weight: 600; border-color: rgba(37, 211, 102, 0.25);">MIT License</span>
+                  <button type="button" class="badge-license-btn" id="btn-open-mit-license" title="Ver detalles de la licencia MIT">
+                    <i class="fa-solid fa-scale-balanced"></i>
+                    <span>MIT License</span>
+                  </button>
                 </div>
                 <div class="perm-row">
                   <div class="perm-info">
@@ -526,6 +519,10 @@
                     <h4 data-i18n="about_inspiration_title">Inspiración</h4>
                     <p data-i18n="about_inspiration_desc">El diseño y concepto original fueron profundamente inspirados por el proyecto ZapZap creado por Rafael Tosta.</p>
                   </div>
+                  <button type="button" class="btn-primary" id="btn-about-zapzap" style="display: inline-flex; align-items: center; gap: 8px; font-size: 0.88rem; padding: 9px 18px; cursor: pointer; border-radius: var(--shape-sm); flex-shrink: 0;">
+                    <i class="fa-brands fa-github"></i>
+                    <span data-i18n="about_btn_zapzap">Visitar repositorio de ZapZap</span>
+                  </button>
                 </div>
               </div>
             </div>
@@ -598,6 +595,29 @@
         </div>
       </section>
     </main>
+  </div>
+
+  <!-- Modal Popup: Licencia MIT -->
+  <div id="mit-license-modal" class="app-modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="mit-license-title">
+    <div class="app-modal-card">
+      <div class="app-modal-header">
+        <div class="app-modal-header-info">
+          <div class="app-modal-icon-wrapper">
+            <i class="fa-solid fa-scale-balanced"></i>
+          </div>
+          <h3 id="mit-license-title" class="app-modal-title" data-i18n="modal_mit_title">Licencia MIT (MIT License)</h3>
+        </div>
+        <button type="button" id="btn-close-mit-modal" class="app-modal-close-btn" aria-label="Cerrar">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <div class="app-modal-body">
+        <p class="mit-license-text" data-i18n="modal_mit_body">WhatsNexus se distribuye bajo la Licencia MIT. Esta es una licencia de software libre permisiva que otorga a los usuarios derechos para usar, copiar, modificar, fusionar, publicar, distribuir, sublicenciar y/o vender copias del software. Condiciones: El aviso de derechos de autor y el aviso de permiso deben incluirse en todas las copias o partes sustanciales del software. El software se proporciona 'tal cual', sin garantía.</p>
+        <div class="app-modal-footer">
+          <button type="button" id="btn-close-mit-modal-action" class="btn-primary" data-i18n="btn_understood">Entendido</button>
+        </div>
+      </div>
+    </div>
   </div>
 
   <script src="renderer.js"></script>

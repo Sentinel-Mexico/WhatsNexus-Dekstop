@@ -338,19 +338,56 @@ ipcMain.on('update-permission-settings', (event, permissions) => {
 // Configuración de Sistema (Descargas y Corrector Ortográfico)
 let currentSystemSettings = {
   downloadPath: '',
-  spellcheckLanguage: 'es'
+  spellcheckLanguages: ['es-ES']
 };
 
 function getSystemSettingsFilePath() {
   return path.join(app.getPath('userData'), 'system_settings.json');
 }
 
+// Mapeo de fallback para compatibilidad con versiones previas
+const SPELLCHECK_MAP = {
+  en: 'en-US',
+  zh: 'zh-CN',
+  hi: 'hi',
+  es: 'es-ES',
+  fr: 'fr-FR',
+  ar: 'ar',
+  bn: 'bn',
+  pt: 'pt-BR',
+  ru: 'ru',
+  ur: 'ur',
+  id: 'id',
+  de: 'de-DE',
+  ja: 'ja',
+  mr: 'mr',
+  te: 'te',
+  tr: 'tr',
+  ta: 'ta',
+  yue: 'zh-TW',
+  vi: 'vi',
+  fil: 'fil',
+  ko: 'ko',
+  fa: 'fa',
+  ha: 'ha',
+  sw: 'sw',
+  it: 'it-IT'
+};
+
 function loadSavedSystemSettings() {
   try {
     const filePath = getSystemSettingsFilePath();
     if (fs.existsSync(filePath)) {
       const data = JSON.parse(fs.readFileSync(filePath, 'utf8'));
-      currentSystemSettings = { ...currentSystemSettings, ...data };
+      if (Array.isArray(data.spellcheckLanguages)) {
+        currentSystemSettings.spellcheckLanguages = data.spellcheckLanguages;
+      } else if (typeof data.spellcheckLanguage === 'string') {
+        const mapped = SPELLCHECK_MAP[data.spellcheckLanguage] || data.spellcheckLanguage || 'es-ES';
+        currentSystemSettings.spellcheckLanguages = [mapped];
+      }
+      if (data.downloadPath) {
+        currentSystemSettings.downloadPath = data.downloadPath;
+      }
     }
   } catch (_) {}
   if (!currentSystemSettings.downloadPath) {
@@ -367,51 +404,85 @@ function saveSystemSettings() {
   } catch (_) {}
 }
 
-// Mapeo de códigos de interfaz (25 idiomas) a códigos BCP-47 para el corrector nativo de Chromium
-const SPELLCHECK_MAP = {
-  en: 'en-US',
-  zh: 'zh-CN',
-  hi: 'hi',
-  es: 'es',
-  fr: 'fr',
-  ar: 'ar',
-  bn: 'bn',
-  pt: 'pt-BR',
-  ru: 'ru',
-  ur: 'ur',
-  id: 'id',
-  de: 'de',
-  ja: 'ja',
-  mr: 'mr',
-  te: 'te',
-  tr: 'tr',
-  ta: 'ta',
-  yue: 'zh-TW',
-  vi: 'vi',
-  fil: 'fil',
-  ko: 'ko',
-  fa: 'fa',
-  ha: 'ha',
-  sw: 'sw',
-  it: 'it'
-};
+/**
+ * Elimina físicamente del disco los archivos .bdic correspondientes a los idiomas desmarcados.
+ * Busca en la carpeta Dictionaries de userData y en particiones existentes.
+ */
+function removeDictionariesForLanguages(removedLangs) {
+  if (!Array.isArray(removedLangs) || removedLangs.length === 0) return;
+  try {
+    const userDataPath = app.getPath('userData');
+    const dirsToScan = [];
+    const mainDictDir = path.join(userDataPath, 'Dictionaries');
+    if (fs.existsSync(mainDictDir)) {
+      dirsToScan.push(mainDictDir);
+    }
+    const partitionsDir = path.join(userDataPath, 'Partitions');
+    if (fs.existsSync(partitionsDir)) {
+      try {
+        const subdirs = fs.readdirSync(partitionsDir);
+        for (const sub of subdirs) {
+          const subDict = path.join(partitionsDir, sub, 'Dictionaries');
+          if (fs.existsSync(subDict)) {
+            dirsToScan.push(subDict);
+          }
+        }
+      } catch (_) {}
+    }
+
+    for (const dir of dirsToScan) {
+      if (!fs.existsSync(dir)) continue;
+      let files = [];
+      try {
+        files = fs.readdirSync(dir);
+      } catch (_) {
+        continue;
+      }
+
+      for (const lang of removedLangs) {
+        if (!lang || typeof lang !== 'string') continue;
+        const cleanLang = lang.trim().toLowerCase();
+        for (const file of files) {
+          if (!file.toLowerCase().endsWith('.bdic')) continue;
+          const fileNameLower = file.toLowerCase();
+          if (
+            fileNameLower.startsWith(cleanLang + '-') ||
+            fileNameLower.startsWith(cleanLang + '.') ||
+            fileNameLower === `${cleanLang}.bdic`
+          ) {
+            try {
+              const fullPath = path.join(dir, file);
+              fs.unlinkSync(fullPath);
+              console.log(`[Spellchecker Disk Cleanup] Removed dictionary file: ${fullPath}`);
+            } catch (_) {
+              // Silencioso ante archivos bloqueados o permisos
+            }
+          }
+        }
+      }
+    }
+  } catch (_) {
+    // Falla silenciosa
+  }
+}
 
 const activeSessions = new Set();
 
-function applySpellChecker(ses, langCode) {
+function applySpellChecker(ses, languages) {
   if (!ses) return;
-  const targetCode = SPELLCHECK_MAP[langCode] || langCode || 'en-US';
+  const langs = Array.isArray(languages) ? languages : [languages || 'es-ES'];
+  const validLangs = langs.filter(l => typeof l === 'string' && l.trim().length > 0);
   try {
-    ses.setSpellCheckerLanguages([targetCode]);
+    ses.setSpellCheckerLanguages(validLangs);
   } catch (err) {
     console.error('[Spellchecker Error]:', err);
   }
 }
 
-function updateSpellCheckerAllSessions(langCode) {
-  applySpellChecker(session.defaultSession, langCode);
+function updateSpellCheckerAllSessions(languages) {
+  applySpellChecker(session.defaultSession, languages);
   for (const ses of activeSessions) {
-    applySpellChecker(ses, langCode);
+    applySpellChecker(ses, languages);
   }
 }
 
@@ -510,15 +581,36 @@ ipcMain.handle('set-download-path', (event, newPath) => {
 ipcMain.handle('get-system-settings', () => {
   return {
     downloadPath: currentSystemSettings.downloadPath || app.getPath('downloads'),
-    spellcheckLanguage: currentSystemSettings.spellcheckLanguage || 'es'
+    spellcheckLanguages: currentSystemSettings.spellcheckLanguages || ['es-ES'],
+    spellcheckLanguage: (currentSystemSettings.spellcheckLanguages && currentSystemSettings.spellcheckLanguages[0]) || 'es-ES'
   };
+});
+
+ipcMain.handle('set-spellchecker-languages', (event, languages) => {
+  if (Array.isArray(languages)) {
+    const previous = currentSystemSettings.spellcheckLanguages || [];
+    const removed = previous.filter(l => !languages.includes(l));
+    if (removed.length > 0) {
+      removeDictionariesForLanguages(removed);
+    }
+    currentSystemSettings.spellcheckLanguages = languages;
+    saveSystemSettings();
+    updateSpellCheckerAllSessions(languages);
+  }
+  return true;
 });
 
 ipcMain.handle('set-spellchecker-language', (event, langCode) => {
   if (typeof langCode === 'string') {
-    currentSystemSettings.spellcheckLanguage = langCode;
+    const langs = [langCode];
+    const previous = currentSystemSettings.spellcheckLanguages || [];
+    const removed = previous.filter(l => !langs.includes(l));
+    if (removed.length > 0) {
+      removeDictionariesForLanguages(removed);
+    }
+    currentSystemSettings.spellcheckLanguages = langs;
     saveSystemSettings();
-    updateSpellCheckerAllSessions(langCode);
+    updateSpellCheckerAllSessions(langs);
   }
   return true;
 });
@@ -660,7 +752,7 @@ function configureSession(ses) {
   activeSessions.add(ses);
   configureSessionPermissions(ses);
   configureSessionDownloads(ses);
-  applySpellChecker(ses, currentSystemSettings.spellcheckLanguage || 'es');
+  applySpellChecker(ses, currentSystemSettings.spellcheckLanguages || ['es-ES']);
 }
 
 app.whenReady().then(() => {

@@ -107,8 +107,12 @@ if (settings.downloadPath === undefined) {
   settings.downloadPath = '';
 }
 
-if (settings.spellcheckLanguage === undefined) {
-  settings.spellcheckLanguage = settings.language || 'es';
+if (settings.spellcheckLanguages === undefined) {
+  if (settings.spellcheckLanguage) {
+    settings.spellcheckLanguages = [settings.spellcheckLanguage];
+  } else {
+    settings.spellcheckLanguages = ['es-ES'];
+  }
 }
 
 // URLs para donaciones y apoyo externo (reemplazar con los enlaces deseados)
@@ -271,66 +275,128 @@ function populateLanguageSelect() {
   }
 }
 
-function populateSpellcheckSelect() {
-  const spSelect = document.getElementById('spellcheck-select');
-  const customOptions = document.getElementById('spellcheck-select-options');
-  const triggerLabel = document.getElementById('spellcheck-select-label');
-  const trigger = document.getElementById('spellcheck-select-trigger');
-  
-  if (spSelect) spSelect.innerHTML = '';
-  if (customOptions) customOptions.innerHTML = '';
-  
-  const currentLangCode = settings.spellcheckLanguage || settings.language || 'es';
-  const dict = i18n[settings.language] || i18n['en'];
-  
-  supportedLanguages.forEach(code => {
-    const translatedName = dict[`lang_${code}`] || nativeNames[code];
-    const nativeName = nativeNames[code];
-    const displayText = `${translatedName} (${nativeName})`;
+const SPELLCHECK_LANGUAGES = [
+  // Español
+  { code: 'es-ES', flag: '🇪🇸', base: 'es', regionKey: 'region_spain', defaultRegion: 'España' },
+  { code: 'es-MX', flag: '🇲🇽', base: 'es', regionKey: 'region_mexico', defaultRegion: 'México' },
+  { code: 'es-AR', flag: '🇦🇷', base: 'es', regionKey: 'region_argentina', defaultRegion: 'Argentina' },
+  { code: 'es-CO', flag: '🇨🇴', base: 'es', regionKey: 'region_colombia', defaultRegion: 'Colombia' },
 
-    // Select nativo oculto
-    if (spSelect) {
-      const option = document.createElement('option');
-      option.value = code;
-      option.innerText = displayText;
-      spSelect.appendChild(option);
+  // Inglés
+  { code: 'en-US', flag: '🇺🇸', base: 'en', regionKey: 'region_us', defaultRegion: 'Estados Unidos' },
+  { code: 'en-GB', flag: '🇬🇧', base: 'en', regionKey: 'region_uk', defaultRegion: 'Reino Unido' },
+  { code: 'en-CA', flag: '🇨🇦', base: 'en', regionKey: 'region_ca', defaultRegion: 'Canadá' },
+  { code: 'en-AU', flag: '🇦🇺', base: 'en', regionKey: 'region_au', defaultRegion: 'Australia' },
+
+  // Portugués
+  { code: 'pt-BR', flag: '🇧🇷', base: 'pt', regionKey: 'region_brazil', defaultRegion: 'Brasil' },
+  { code: 'pt-PT', flag: '🇵🇹', base: 'pt', regionKey: 'region_portugal', defaultRegion: 'Portugal' },
+
+  // Francés
+  { code: 'fr-FR', flag: '🇫🇷', base: 'fr', regionKey: 'region_france', defaultRegion: 'Francia' },
+  { code: 'fr-CA', flag: '🇨🇦', base: 'fr', regionKey: 'region_ca', defaultRegion: 'Canadá' },
+
+  // Alemán
+  { code: 'de-DE', flag: '🇩🇪', base: 'de', regionKey: 'region_germany', defaultRegion: 'Alemania' },
+  { code: 'de-AT', flag: '🇦🇹', base: 'de', regionKey: 'region_austria', defaultRegion: 'Austria' },
+  { code: 'de-CH', flag: '🇨🇭', base: 'de', regionKey: 'region_switzerland', defaultRegion: 'Suiza' },
+
+  // Chino
+  { code: 'zh-CN', flag: '🇨🇳', base: 'zh', regionKey: 'variant_simplified', defaultRegion: 'Simplificado' },
+  { code: 'zh-TW', flag: '🇹🇼', base: 'zh', regionKey: 'variant_trad_taiwan', defaultRegion: 'Tradicional - Taiwán' },
+  { code: 'zh-HK', flag: '🇭🇰', base: 'zh', regionKey: 'variant_trad_hk', defaultRegion: 'Tradicional - Hong Kong' },
+
+  // Resto de idiomas base
+  { code: 'hi', flag: '🇮🇳', base: 'hi' },
+  { code: 'ar', flag: '🇸🇦', base: 'ar' },
+  { code: 'bn', flag: '🇧🇩', base: 'bn' },
+  { code: 'ru', flag: '🇷🇺', base: 'ru' },
+  { code: 'ur', flag: '🇵🇰', base: 'ur' },
+  { code: 'id', flag: '🇮🇩', base: 'id' },
+  { code: 'ja', flag: '🇯🇵', base: 'ja' },
+  { code: 'mr', flag: '🇮🇳', base: 'mr' },
+  { code: 'te', flag: '🇮🇳', base: 'te' },
+  { code: 'tr', flag: '🇹🇷', base: 'tr' },
+  { code: 'ta', flag: '🇮🇳', base: 'ta' },
+  { code: 'vi', flag: '🇻🇳', base: 'vi' },
+  { code: 'fil', flag: '🇵🇭', base: 'fil' },
+  { code: 'ko', flag: '🇰🇷', base: 'ko' },
+  { code: 'fa', flag: '🇮🇷', base: 'fa' },
+  { code: 'ha', flag: '🇳🇬', base: 'ha' },
+  { code: 'sw', flag: '🇹🇿', base: 'sw' },
+  { code: 'it-IT', flag: '🇮🇹', base: 'it', regionKey: 'region_italy', defaultRegion: 'Italia' }
+];
+
+function renderSpellcheckList() {
+  const container = document.getElementById('spellcheck-multiselect-container');
+  if (!container) return;
+
+  container.innerHTML = '';
+  const dict = i18n[settings.language] || i18n['en'] || {};
+
+  if (!Array.isArray(settings.spellcheckLanguages)) {
+    if (settings.spellcheckLanguage) {
+      settings.spellcheckLanguages = [settings.spellcheckLanguage];
+    } else {
+      settings.spellcheckLanguages = ['es-ES'];
     }
-
-    // Selector visual personalizado
-    if (customOptions) {
-      const customOpt = document.createElement('div');
-      customOpt.className = 'custom-option' + (code === currentLangCode ? ' selected' : '');
-      customOpt.innerText = displayText;
-      customOpt.dataset.value = code;
-
-      customOpt.addEventListener('click', (e) => {
-        e.stopPropagation();
-        settings.spellcheckLanguage = code;
-        saveSettings();
-        if (electronAPI.setSpellcheckerLanguage) {
-          electronAPI.setSpellcheckerLanguage(code);
-        }
-        if (spSelect) spSelect.value = code;
-        if (triggerLabel) {
-          triggerLabel.innerText = displayText;
-        }
-        customOptions.querySelectorAll('.custom-option').forEach(opt => {
-          opt.classList.toggle('selected', opt.dataset.value === code);
-        });
-        if (customOptions) customOptions.classList.remove('open');
-        if (trigger) trigger.classList.remove('open');
-      });
-
-      customOptions.appendChild(customOpt);
-    }
-  });
-  
-  if (spSelect) spSelect.value = currentLangCode;
-  if (triggerLabel) {
-    const activeTranslated = dict[`lang_${currentLangCode}`] || nativeNames[currentLangCode];
-    const activeNative = nativeNames[currentLangCode];
-    triggerLabel.innerText = `${activeTranslated} (${activeNative})`;
   }
+
+  const selectedSet = new Set(settings.spellcheckLanguages);
+
+  SPELLCHECK_LANGUAGES.forEach(item => {
+    const itemLabel = document.createElement('label');
+    itemLabel.className = 'spellcheck-checkbox-item' + (selectedSet.has(item.code) ? ' selected' : '');
+
+    const cb = document.createElement('input');
+    cb.type = 'checkbox';
+    cb.className = 'spellcheck-cb';
+    cb.value = item.code;
+    cb.checked = selectedSet.has(item.code);
+
+    const flagSpan = document.createElement('span');
+    flagSpan.className = 'spellcheck-item-flag';
+    flagSpan.innerText = item.flag;
+
+    const nameSpan = document.createElement('span');
+    nameSpan.className = 'spellcheck-item-name';
+    const langName = dict[`lang_${item.base}`] || nativeNames[item.base] || item.base;
+    let labelContent = langName;
+    if (item.regionKey) {
+      const regionText = dict[item.regionKey] || item.defaultRegion;
+      labelContent += ` (${regionText})`;
+    }
+    nameSpan.innerText = labelContent;
+
+    const codeSpan = document.createElement('span');
+    codeSpan.className = 'spellcheck-item-code';
+    codeSpan.innerText = item.code;
+
+    cb.addEventListener('change', () => {
+      const currentSelected = new Set(settings.spellcheckLanguages || []);
+      if (cb.checked) {
+        currentSelected.add(item.code);
+        itemLabel.classList.add('selected');
+      } else {
+        currentSelected.delete(item.code);
+        itemLabel.classList.remove('selected');
+      }
+
+      settings.spellcheckLanguages = Array.from(currentSelected);
+      saveSettings();
+
+      if (window.electronAPI && electronAPI.setSpellcheckerLanguages) {
+        electronAPI.setSpellcheckerLanguages(settings.spellcheckLanguages);
+      }
+    });
+
+    itemLabel.appendChild(cb);
+    itemLabel.appendChild(flagSpan);
+    itemLabel.appendChild(nameSpan);
+    itemLabel.appendChild(codeSpan);
+
+    container.appendChild(itemLabel);
+  });
 }
 
 function updateTranslations() {
@@ -348,7 +414,7 @@ function updateTranslations() {
   });
 
   populateLanguageSelect();
-  populateSpellcheckSelect();
+  renderSpellcheckList();
   renderSettingsAccounts();
   if (typeof loadAboutInfo === 'function') {
     loadAboutInfo();
@@ -399,10 +465,6 @@ const permScreenAudioToggle = document.getElementById('perm-screen-audio-toggle'
 const downloadPathInput = document.getElementById('download-path-input');
 const btnSelectDownloadDir = document.getElementById('btn-select-download-dir');
 const btnResetDownloadDir = document.getElementById('btn-reset-download-dir');
-const spellcheckSelect = document.getElementById('spellcheck-select');
-const spellcheckTrigger = document.getElementById('spellcheck-select-trigger');
-const spellcheckOptions = document.getElementById('spellcheck-select-options');
-const spellcheckLabel = document.getElementById('spellcheck-select-label');
 
 // Rastreo de mensajes no leídos por cuenta para el System Tray
 const accountUnreadCounts = {};
@@ -427,8 +489,10 @@ async function initDownloadPathUI() {
         settings.downloadPath = sys.downloadPath;
         downloadPathInput.value = sys.downloadPath;
       }
-      if (sys && sys.spellcheckLanguage) {
-        settings.spellcheckLanguage = sys.spellcheckLanguage;
+      if (sys && Array.isArray(sys.spellcheckLanguages)) {
+        settings.spellcheckLanguages = sys.spellcheckLanguages;
+      } else if (sys && sys.spellcheckLanguage) {
+        settings.spellcheckLanguages = [sys.spellcheckLanguage];
       }
     } catch (_) {}
   }
@@ -475,10 +539,10 @@ async function init() {
   await loadActiveLocale(settings.language || 'es');
   applySettings();
   initDownloadPathUI();
-  populateSpellcheckSelect();
+  renderSpellcheckList();
   loadAboutInfo();
-  if (electronAPI.setSpellcheckerLanguage) {
-    electronAPI.setSpellcheckerLanguage(settings.spellcheckLanguage || 'es');
+  if (electronAPI.setSpellcheckerLanguages) {
+    electronAPI.setSpellcheckerLanguages(settings.spellcheckLanguages || ['es-ES']);
   }
   
   // Garantizar propiedad enabled en cuentas existentes
@@ -1606,6 +1670,7 @@ async function loadAboutInfo() {
 
 const btnAboutRepo = document.getElementById('btn-about-repo');
 const btnAboutIssues = document.getElementById('btn-about-issues');
+const btnAboutZapzap = document.getElementById('btn-about-zapzap');
 
 if (btnAboutRepo) {
   btnAboutRepo.addEventListener('click', () => {
@@ -1628,6 +1693,70 @@ if (btnAboutIssues) {
     }
   });
 }
+
+if (btnAboutZapzap) {
+  btnAboutZapzap.addEventListener('click', () => {
+    const zapzapUrl = 'https://github.com/rafatosta/zapzap';
+    if (electronAPI && electronAPI.openExternalUrl) {
+      electronAPI.openExternalUrl(zapzapUrl);
+    } else if (electronAPI && electronAPI.openExternal) {
+      electronAPI.openExternal(zapzapUrl);
+    }
+  });
+}
+
+// Control del Modal de Licencia MIT
+const mitModal = document.getElementById('mit-license-modal');
+const btnOpenMitLicense = document.getElementById('btn-open-mit-license');
+const btnCloseMitModal = document.getElementById('btn-close-mit-modal');
+const btnCloseMitModalAction = document.getElementById('btn-close-mit-modal-action');
+
+function openMitModal() {
+  if (mitModal) {
+    mitModal.classList.remove('hidden');
+  }
+}
+
+function closeMitModal() {
+  if (mitModal) {
+    mitModal.classList.add('hidden');
+  }
+}
+
+if (btnOpenMitLicense) {
+  btnOpenMitLicense.addEventListener('click', (e) => {
+    e.preventDefault();
+    openMitModal();
+  });
+}
+
+if (btnCloseMitModal) {
+  btnCloseMitModal.addEventListener('click', (e) => {
+    e.preventDefault();
+    closeMitModal();
+  });
+}
+
+if (btnCloseMitModalAction) {
+  btnCloseMitModalAction.addEventListener('click', (e) => {
+    e.preventDefault();
+    closeMitModal();
+  });
+}
+
+if (mitModal) {
+  mitModal.addEventListener('click', (e) => {
+    if (e.target === mitModal) {
+      closeMitModal();
+    }
+  });
+}
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && mitModal && !mitModal.classList.contains('hidden')) {
+    closeMitModal();
+  }
+});
 
 addAccountBtn.addEventListener('click', () => addAccount());
 
@@ -1709,34 +1838,6 @@ document.querySelectorAll('.btn-donate').forEach(btn => {
   });
 });
 
-// Desplegable personalizado para Corrector Ortográfico
-const spTrigger = document.getElementById('spellcheck-select-trigger');
-const spOptions = document.getElementById('spellcheck-select-options');
-
-if (spTrigger && spOptions) {
-  spTrigger.addEventListener('click', (e) => {
-    e.stopPropagation();
-    document.querySelectorAll('.custom-select-options.open').forEach(el => {
-      if (el !== spOptions) el.classList.remove('open');
-    });
-    document.querySelectorAll('.custom-select-trigger.open').forEach(el => {
-      if (el !== spTrigger) el.classList.remove('open');
-    });
-
-    const isOpen = spOptions.classList.contains('open');
-    if (isOpen) {
-      spOptions.classList.remove('open');
-      spTrigger.classList.remove('open');
-    } else {
-      spOptions.classList.add('open');
-      spTrigger.classList.add('open');
-      const selected = spOptions.querySelector('.custom-option.selected');
-      if (selected) {
-        selected.scrollIntoView({ block: 'nearest' });
-      }
-    }
-  });
-}
 
 // Botones de Gestión de Descargas
 if (btnSelectDownloadDir) {
