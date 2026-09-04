@@ -115,6 +115,10 @@ if (settings.spellcheckLanguages === undefined) {
   }
 }
 
+if (settings.doomizate === undefined) {
+  settings.doomizate = false;
+}
+
 // URLs para donaciones y apoyo externo (reemplazar con los enlaces deseados)
 const DONATION_URLS = {
   github: 'https://github.com/sponsors/Sentinel-Mexico', // Reemplazar con tu enlace de GitHub Sponsors
@@ -434,6 +438,7 @@ function updateTranslations() {
 
 const accountList = document.getElementById('account-list');
 const addAccountBtn = document.getElementById('add-account-btn');
+const doomBtn = document.getElementById('doom-btn');
 const reportBugBtn = document.getElementById('report-bug-btn');
 const donateBtn = document.getElementById('donate-btn');
 const settingsBtn = document.getElementById('settings-btn');
@@ -444,6 +449,9 @@ const settingsView = document.getElementById('settings-view');
 const backToChatsBtn = document.getElementById('back-to-chats-btn');
 const donationsView = document.getElementById('donations-view');
 const backFromDonationsBtn = document.getElementById('back-from-donations-btn');
+const doomView = document.getElementById('doom-view');
+const doomWebview = document.getElementById('doom-webview');
+const doomizateToggle = document.getElementById('doomizate-toggle');
 const tabBtns = document.querySelectorAll('.tab-btn');
 const settingsPanels = document.querySelectorAll('.settings-panel');
 const settingsAccountList = document.getElementById('settings-account-list');
@@ -688,6 +696,31 @@ function applySettings() {
     showBadge: settings.trayShowBadge !== false
   });
   
+  // Sincronizar UI de Doomizate (Easter Egg)
+  if (doomizateToggle) {
+    doomizateToggle.checked = !!settings.doomizate;
+  }
+  if (doomBtn) {
+    if (settings.doomizate) {
+      doomBtn.style.display = 'flex';
+      doomBtn.classList.remove('hidden');
+    } else {
+      doomBtn.style.display = 'none';
+      doomBtn.classList.add('hidden');
+      if (doomView && !doomView.classList.contains('hidden')) {
+        closeDoomView();
+        const enabledAccounts = accounts.filter(a => a.enabled !== false);
+        if (activeAccountId && enabledAccounts.some(a => a.id === activeAccountId)) {
+          activateAccount(activeAccountId);
+        } else if (enabledAccounts.length > 0) {
+          activateAccount(enabledAccounts[0].id);
+        } else {
+          emptyState.classList.remove('hidden');
+        }
+      }
+    }
+  }
+
   updateTranslations();
   updateTotalUnread();
 }
@@ -1033,8 +1066,33 @@ function closeDonationsView() {
   if (donateBtn) donateBtn.classList.remove('active');
 }
 
+function closeDoomView() {
+  if (doomView) doomView.classList.add('hidden');
+  if (doomBtn) doomBtn.classList.remove('active');
+}
+
+function openDoomView() {
+  closeSettingsView();
+  closeDonationsView();
+
+  // Deactivate active account tab in sidebar and hide all account webviews
+  document.querySelectorAll('.account-item').forEach(item => item.classList.remove('active'));
+  document.querySelectorAll('.account-container').forEach(container => container.classList.add('hidden'));
+  emptyState.classList.add('hidden');
+
+  // Activate Doom skull button and show doom-view
+  if (doomBtn) doomBtn.classList.add('active');
+  if (doomView) doomView.classList.remove('hidden');
+
+  // Cargar el port WebAssembly si no ha sido cargado
+  if (doomWebview && (!doomWebview.src || doomWebview.src === 'about:blank')) {
+    doomWebview.src = 'https://diekmann.github.io/wasm-doom/';
+  }
+}
+
 function openDonationsView() {
   closeSettingsView();
+  closeDoomView();
   // Deactivate active account tab in sidebar and hide webviews
   document.querySelectorAll('.account-item').forEach(item => item.classList.remove('active'));
   document.querySelectorAll('.account-container').forEach(container => container.classList.add('hidden'));
@@ -1047,6 +1105,7 @@ function openDonationsView() {
 
 function openSettingsView() {
   closeDonationsView();
+  closeDoomView();
   // Deactivate active account tab in sidebar and hide webviews
   document.querySelectorAll('.account-item').forEach(item => item.classList.remove('active'));
   document.querySelectorAll('.account-container').forEach(container => container.classList.add('hidden'));
@@ -1064,6 +1123,7 @@ function openSettingsView() {
 function activateAccount(id) {
   closeSettingsView();
   closeDonationsView();
+  closeDoomView();
 
   if (!id) {
     activeAccountId = null;
@@ -1828,6 +1888,34 @@ if (reportBugBtn) {
 if (donateBtn) {
   donateBtn.addEventListener('click', () => {
     openDonationsView();
+  });
+}
+
+// Controladores del Easter Egg: Doom Clásico
+if (doomBtn) {
+  doomBtn.addEventListener('click', () => {
+    if (doomView && !doomView.classList.contains('hidden')) {
+      // Si ya está activo, volver al chat activo o empty state
+      const enabledAccounts = accounts.filter(a => a.enabled !== false);
+      if (activeAccountId && enabledAccounts.some(a => a.id === activeAccountId)) {
+        activateAccount(activeAccountId);
+      } else if (enabledAccounts.length > 0) {
+        activateAccount(enabledAccounts[0].id);
+      } else {
+        closeDoomView();
+        emptyState.classList.remove('hidden');
+      }
+    } else {
+      openDoomView();
+    }
+  });
+}
+
+if (doomizateToggle) {
+  doomizateToggle.addEventListener('change', (e) => {
+    settings.doomizate = e.target.checked;
+    saveSettings();
+    applySettings();
   });
 }
 

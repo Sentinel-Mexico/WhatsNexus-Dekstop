@@ -218,5 +218,8 @@
   "modal_gpl_conditions_label": "Conditions:",
   "modal_gpl_conditions_body": "You have complete freedom to modify and distribute this software. However, if you choose to distribute a modified version (even commercially), you are legally obligated to release the source code of your modifications under this same GPL v3 license.",
   "modal_gpl_warranty_label": "Limitation of Liability:",
-  "modal_gpl_warranty_body": "The software is provided 'as is', without warranty of any kind, express or implied. In no event shall the authors or copyright holders be liable for any claim or damages."
+  "modal_gpl_warranty_body": "The software is provided 'as is', without warranty of any kind, express or implied. In no event shall the authors or copyright holders be liable for any claim or damages.",
+  "about_doom_title": "Doomize",
+  "about_doom_option_title": "Classic Doom",
+  "about_doom_option_desc": "Enable classic protocol"
 }

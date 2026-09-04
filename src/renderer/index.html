@@ -22,6 +22,10 @@
         <button id="add-account-btn" class="icon-btn" aria-label="Añadir Cuenta">
           <i class="fa-solid fa-user-plus"></i>
         </button>
+        <button id="doom-btn" class="icon-btn tooltip-container hidden" aria-label="Doom" style="display: none;">
+          <i class="fa-solid fa-skull"></i>
+          <span class="tooltip-text">Doom</span>
+        </button>
         <button id="report-bug-btn" class="icon-btn" aria-label="Reportar Error">
           <i class="fa-solid fa-bug"></i>
         </button>
@@ -530,6 +534,21 @@
                 </div>
               </div>
 
+              <!-- Tarjeta 4: Huevo de Pascua - Doomizate -->
+              <h4 class="perm-group-title" data-i18n="about_doom_title">Doomizate</h4>
+              <div class="perm-card">
+                <div class="perm-row" style="align-items: center;">
+                  <div class="perm-info">
+                    <h4 data-i18n="about_doom_option_title">Doom clásico</h4>
+                    <p data-i18n="about_doom_option_desc">Activar protocolo clásico</p>
+                  </div>
+                  <label class="switch">
+                    <input type="checkbox" id="doomizate-toggle">
+                    <span class="switch-slider"></span>
+                  </label>
+                </div>
+              </div>
+
               <!-- Leyenda de Exención de Responsabilidad (Disclaimer) -->
               <div class="about-disclaimer-box">
                 <p data-i18n="about_disclaimer">WhatsNexus no tiene ninguna afiliación, patrocinio ni respaldo por parte de WhatsApp, Messenger, Telegram, Signal, Viber o cualquiera de sus empresas desarrolladoras o matrices.</p>
@@ -602,6 +621,9 @@
             </div>
           </div>
         </div>
+      <!-- Doom Easter Egg Full-Window View -->
+      <section id="doom-view" class="doom-view hidden">
+        <webview id="doom-webview" src="about:blank" webpreferences="contextIsolation=true" allowpopups="false"></webview>
       </section>
     </main>
   </div>
