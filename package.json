@@ -1,10 +1,12 @@
 {
   "name": "whatsnexus",
-  "version": "0.20.0",
+  "version": "0.20.1",
   "description": "Multi-account WhatsApp Web client using Electron",
   "main": "src/main.js",
   "scripts": {
-    "start": "electron ."
+    "start": "electron .",
+    "download-doom": "node scripts/download-doom.js",
+    "postinstall": "node scripts/download-doom.js"
   },
   "author": "Sentinel Studio",
   "license": "GPL-3.0-or-later",

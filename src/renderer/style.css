@@ -2273,6 +2273,54 @@ body.theme-light .permissions-notice-box {
   cursor: pointer;
 }
 
+.danger-icon {
+  background: rgba(239, 68, 68, 0.12) !important;
+  color: #ef4444 !important;
+  border-color: rgba(239, 68, 68, 0.3) !important;
+}
+
+.delete-account-msg {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--text-primary);
+  margin: 0;
+  background-color: var(--bg-hover);
+  padding: 16px 18px;
+  border-radius: var(--shape-md, 12px);
+  border: 1px solid var(--border-color);
+}
+
+.delete-account-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 6px;
+}
+
+.btn-danger-action {
+  background-color: #ef4444;
+  color: #ffffff;
+  border: none;
+  border-radius: var(--shape-sm);
+  padding: 8px 18px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.2s var(--motion-expressive);
+}
+
+.btn-danger-action:hover {
+  background-color: #dc2626;
+  transform: translateY(-1px);
+}
+
+.btn-danger-action:active {
+  transform: translateY(0);
+}
+
 /* Leyenda de Exención de Responsabilidad (Disclaimer) */
 .about-disclaimer-box {
   margin-top: 24px;

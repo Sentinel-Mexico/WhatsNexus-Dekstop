@@ -2,6 +2,20 @@
 
 This changelog records all granular updates, bug fixes, refactorings, and feature iterations developed on the `Dev` branch. Each version bump in `package.json` is documented here as it happens.
 
+## [0.20.1] - 2026-09-03
+### Added
+- **Offline & Responsive Native WebAssembly Doom:**
+  - Implemented a 100% self-contained, offline port of Classic Doom running locally under `src/assets/doom/`.
+  - Added native assets: `index.html`, JavaScript engine runner `doom.js`, WebAssembly binary `doom.wasm`, and Shareware IWAD `doom1.wad`.
+  - Added automated retrieval script `scripts/download-doom.js` registered under `npm run download-doom` and `postinstall` in `package.json`.
+  - Configured full-stretch responsive CSS for canvas (`100vw`/`100vh`, `object-fit: contain`, flex centering) eliminating borders and external network latency.
+  - Updated `<webview id="doom-webview">` in `index.html` and `renderer.js` to point directly to local `../assets/doom/index.html`.
+- **Account Deletion Confirmation Dialog:**
+  - Added modal popup `#delete-account-modal` in account management view to prevent accidental account deletions.
+  - Displays the targeted account name with danger iconography, warning message, and clear "Cancel" / "Delete" actions.
+  - Integrated keyboard accessibility (Escape key dismiss) and backdrop click dismissal.
+  - Added localization keys across all 26 supported languages (`modal_delete_account_title`, `modal_delete_account_msg`, `btn_confirm_delete`, `btn_cancel`).
+
 ## [0.20.0] - 2026-09-03
 ### Added
 - **Complete Auto-Updater Architecture (OTA Updates via `electron-updater`):**

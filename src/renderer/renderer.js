@@ -1111,8 +1111,8 @@ function openDoomView() {
       doomWebview.setAttribute('allowpopups', 'false');
       doomView.appendChild(doomWebview);
     }
-    if (doomWebview && (!doomWebview.src || doomWebview.src === 'about:blank' || !doomWebview.src.includes('wasm-fizzbuzz'))) {
-      doomWebview.src = 'https://diekmann.github.io/wasm-fizzbuzz/doom/';
+    if (doomWebview && (!doomWebview.src || doomWebview.src === 'about:blank' || !doomWebview.src.includes('assets/doom/index.html'))) {
+      doomWebview.src = '../assets/doom/index.html';
     }
   }
 }
@@ -1191,7 +1191,34 @@ function activateAccount(id) {
   }
 }
 
-function deleteAccount(id) {
+let accountIdPendingDelete = null;
+
+function promptDeleteAccount(id) {
+  accountIdPendingDelete = id;
+  const deleteModal = document.getElementById('delete-account-modal');
+  const deleteMsg = document.getElementById('delete-account-modal-message');
+  
+  if (deleteModal) {
+    if (deleteMsg) {
+      const acc = accounts.find(a => a.id === id);
+      const lang = (typeof i18n !== 'undefined' && i18n[settings.language]) || (typeof i18n !== 'undefined' && i18n['en']) || {};
+      const baseMsg = (typeof currentTranslations !== 'undefined' && currentTranslations.modal_delete_account_msg) || lang.modal_delete_account_msg || '¿Estás seguro de que deseas eliminar esta cuenta?';
+      const accName = acc ? (acc.name || `${lang.default_account_name || 'Cuenta'} ${acc.index || ''}`.trim()) : '';
+      deleteMsg.innerText = accName ? `${baseMsg} ("${accName}")` : baseMsg;
+    }
+    deleteModal.classList.remove('hidden');
+  }
+}
+
+function closeDeleteModal() {
+  const deleteModal = document.getElementById('delete-account-modal');
+  if (deleteModal) {
+    deleteModal.classList.add('hidden');
+  }
+  accountIdPendingDelete = null;
+}
+
+function executeDeleteAccount(id) {
   accounts = accounts.filter(a => a.id !== id);
   saveAccounts();
   
@@ -1219,6 +1246,10 @@ function deleteAccount(id) {
     }
   }
   renderSettingsAccounts();
+}
+
+function deleteAccount(id) {
+  promptDeleteAccount(id);
 }
 
 window.setAccountStatus = function(id, enabled) {
@@ -1378,7 +1409,7 @@ function renderSettingsAccounts() {
           <button class="btn-card-action edit-btn" onclick="toggleEditAccountName('${safeId}')">
             <span>${escapeHtml(lang.btn_edit)}</span>
           </button>
-          <button class="btn-card-action delete-btn" onclick="deleteAccount('${safeId}')">
+          <button class="btn-card-action delete-btn" onclick="promptDeleteAccount('${safeId}')">
             <span>${escapeHtml(lang.btn_delete)}</span>
           </button>
         </div>
@@ -1451,7 +1482,8 @@ window.toggleDND = (id) => {
   }
 };
 
-window.deleteAccount = deleteAccount;
+window.deleteAccount = promptDeleteAccount;
+window.promptDeleteAccount = promptDeleteAccount;
 
 if (themeSelect) {
   themeSelect.addEventListener('change', (e) => {
@@ -1859,9 +1891,53 @@ if (gplModal) {
   });
 }
 
+// Control del Modal de Confirmación de Eliminación de Cuenta
+const deleteAccountModal = document.getElementById('delete-account-modal');
+const btnCloseDeleteModal = document.getElementById('btn-close-delete-modal');
+const btnCancelDeleteAccount = document.getElementById('btn-cancel-delete-account');
+const btnConfirmDeleteAccount = document.getElementById('btn-confirm-delete-account');
+
+if (btnCloseDeleteModal) {
+  btnCloseDeleteModal.addEventListener('click', (e) => {
+    e.preventDefault();
+    closeDeleteModal();
+  });
+}
+
+if (btnCancelDeleteAccount) {
+  btnCancelDeleteAccount.addEventListener('click', (e) => {
+    e.preventDefault();
+    closeDeleteModal();
+  });
+}
+
+if (btnConfirmDeleteAccount) {
+  btnConfirmDeleteAccount.addEventListener('click', (e) => {
+    e.preventDefault();
+    if (accountIdPendingDelete) {
+      const idToDelete = accountIdPendingDelete;
+      closeDeleteModal();
+      executeDeleteAccount(idToDelete);
+    }
+  });
+}
+
+if (deleteAccountModal) {
+  deleteAccountModal.addEventListener('click', (e) => {
+    if (e.target === deleteAccountModal) {
+      closeDeleteModal();
+    }
+  });
+}
+
 document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape' && gplModal && !gplModal.classList.contains('hidden')) {
-    closeGplModal();
+  if (e.key === 'Escape') {
+    if (gplModal && !gplModal.classList.contains('hidden')) {
+      closeGplModal();
+    }
+    if (deleteAccountModal && !deleteAccountModal.classList.contains('hidden')) {
+      closeDeleteModal();
+    }
   }
 });
 

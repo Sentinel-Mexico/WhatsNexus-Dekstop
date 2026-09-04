@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Classic Doom (WASM)</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      background-color: #000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    /* Forzar al canvas de WebAssembly a estirarse manteniendo la proporción (o cubriendo todo) */
+    canvas {
+      width: 100% !important;
+      height: 100% !important;
+      object-fit: contain;
+      outline: none;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="screen" width="640" height="400" tabindex="0"></canvas>
+  <script src="doom.js"></script>
+</body>
+</html>

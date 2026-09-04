@@ -238,5 +238,9 @@
   "btn_update_available": "Actualización disponible: Descargar ahora",
   "btn_downloading_update": "Descargando...",
   "btn_install_restart": "Instalar y Reiniciar",
-  "btn_update_error": "Error al buscar actualizaciones"
+  "btn_update_error": "Error al buscar actualizaciones",
+  "modal_delete_account_title": "Eliminar cuenta",
+  "modal_delete_account_msg": "¿Estás seguro de que deseas eliminar esta cuenta? Se cerrará la sesión y se perderán los datos locales asociados.",
+  "btn_confirm_delete": "Eliminar",
+  "btn_cancel": "Cancelar"
 }

@@ -648,7 +648,7 @@
 
       <!-- Doom Easter Egg Full-Window View -->
       <section id="doom-view" class="doom-view hidden">
-        <webview id="doom-webview" webpreferences="contextIsolation=true" allowpopups="false"></webview>
+        <webview id="doom-webview" src="../assets/doom/index.html" webpreferences="contextIsolation=true" allowpopups="false"></webview>
       </section>
     </main>
   </div>
@@ -676,6 +676,32 @@
         </div>
         <div class="app-modal-footer">
           <button type="button" id="btn-close-gpl-modal-action" class="btn-primary" data-i18n="btn_understood">Entendido</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Popup: Confirmación de eliminación de cuenta -->
+  <div id="delete-account-modal" class="app-modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="delete-account-modal-title">
+    <div class="app-modal-card">
+      <div class="app-modal-header">
+        <div class="app-modal-header-info">
+          <div class="app-modal-icon-wrapper danger-icon">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+          </div>
+          <h3 id="delete-account-modal-title" class="app-modal-title" data-i18n="modal_delete_account_title">Eliminar cuenta</h3>
+        </div>
+        <button type="button" id="btn-close-delete-modal" class="app-modal-close-btn" aria-label="Cerrar">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <div class="app-modal-body">
+        <p id="delete-account-modal-message" class="delete-account-msg" data-i18n="modal_delete_account_msg">
+          ¿Estás seguro de que deseas eliminar esta cuenta? Se cerrará la sesión y se perderán los datos locales asociados.
+        </p>
+        <div class="app-modal-footer delete-account-footer">
+          <button type="button" id="btn-cancel-delete-account" class="btn-secondary-action" data-i18n="btn_cancel">Cancelar</button>
+          <button type="button" id="btn-confirm-delete-account" class="btn-danger-action" data-i18n="btn_confirm_delete">Eliminar</button>
         </div>
       </div>
     </div>

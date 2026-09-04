@@ -238,5 +238,9 @@
   "btn_update_available": "Update available: Download now",
   "btn_downloading_update": "Downloading...",
   "btn_install_restart": "Install & Restart",
-  "btn_update_error": "Error checking for updates"
+  "btn_update_error": "Error checking for updates",
+  "modal_delete_account_title": "Delete Account",
+  "modal_delete_account_msg": "Are you sure you want to delete this account? The session will be closed and associated local data will be removed.",
+  "btn_confirm_delete": "Delete",
+  "btn_cancel": "Cancel"
 }
