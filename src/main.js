@@ -26,33 +26,49 @@ let splashWindow = null;
 let tray = null;
 
 function createSplashWindow() {
-  splashWindow = new BrowserWindow({
-    width: 480,
-    height: 300,
-    frame: false,
-    resizable: false,
-    transparent: true,
-    alwaysOnTop: true,
-    center: true,
-    show: false,
-    webPreferences: {
-      nodeIntegration: false,
-      contextIsolation: true,
-      preload: path.join(__dirname, 'splash', 'splash-preload.js')
+  try {
+    splashWindow = new BrowserWindow({
+      width: 480,
+      height: 300,
+      frame: false,
+      resizable: false,
+      transparent: process.platform !== 'linux',
+      backgroundColor: '#111b21',
+      alwaysOnTop: true,
+      center: true,
+      show: false,
+      webPreferences: {
+        nodeIntegration: false,
+        contextIsolation: true,
+        sandbox: false,
+        preload: path.join(__dirname, 'splash', 'splash-preload.js')
+      }
+    });
+
+    splashWindow.loadFile(path.join(__dirname, 'splash', 'splash.html'));
+
+    splashWindow.once('ready-to-show', () => {
+      if (splashWindow && !splashWindow.isDestroyed()) {
+        splashWindow.show();
+      }
+    });
+
+    setTimeout(() => {
+      if (splashWindow && !splashWindow.isDestroyed() && !splashWindow.isVisible()) {
+        splashWindow.show();
+      }
+    }, 250);
+
+    splashWindow.on('closed', () => {
+      splashWindow = null;
+    });
+  } catch (err) {
+    console.error('Error creating splash window:', err);
+    if (mainWindow && !mainWindow.isDestroyed()) {
+      mainWindow.show();
+      mainWindow.focus();
     }
-  });
-
-  splashWindow.loadFile(path.join(__dirname, 'splash', 'splash.html'));
-
-  splashWindow.once('ready-to-show', () => {
-    if (splashWindow && !splashWindow.isDestroyed()) {
-      splashWindow.show();
-    }
-  });
-
-  splashWindow.on('closed', () => {
-    splashWindow = null;
-  });
+  }
 }
 
 function createWindow() {
@@ -65,6 +81,7 @@ function createWindow() {
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
+      sandbox: false,
       webviewTag: true, // CRITICAL: This allows the use of <webview> tags for session isolation
       backgroundThrottling: true, // Asegura throttling en background
       preload: path.join(__dirname, 'preload-main.js')
@@ -119,6 +136,17 @@ ipcMain.on('get-app-version', (event) => {
   event.returnValue = app.getVersion();
 });
 
+ipcMain.on('get-init-info', (event) => {
+  event.returnValue = {
+    version: app.getVersion(),
+    platform: process.platform,
+    arch: process.arch,
+    electronVersion: process.versions.electron || 'N/A',
+    chromeVersion: process.versions.chrome || 'N/A',
+    webviewPreloadPath: 'file://' + path.join(__dirname, 'preload.js')
+  };
+});
+
 let currentTraySettings = {
   style: 'auto',
   showBadge: true
@@ -141,53 +169,59 @@ function getTrayIconPath(unreadCount = 0, style = 'auto', showBadge = true) {
 
 function updateTrayImage() {
   if (!tray) return;
-  const iconPath = getTrayIconPath(currentUnreadCount, currentTraySettings.style, currentTraySettings.showBadge);
-  tray.setImage(iconPath);
-  tray.setToolTip(currentUnreadCount > 0 ? `WhatsNexus (${currentUnreadCount} sin leer)` : 'WhatsNexus');
+  try {
+    const iconPath = getTrayIconPath(currentUnreadCount, currentTraySettings.style, currentTraySettings.showBadge);
+    tray.setImage(iconPath);
+    tray.setToolTip(currentUnreadCount > 0 ? `WhatsNexus (${currentUnreadCount} sin leer)` : 'WhatsNexus');
+  } catch (_) {}
 }
 
 function createTray() {
   if (tray) return;
 
-  const iconPath = getTrayIconPath(currentUnreadCount, currentTraySettings.style, currentTraySettings.showBadge);
-  tray = new Tray(iconPath);
-  tray.setToolTip('WhatsNexus');
+  try {
+    const iconPath = getTrayIconPath(currentUnreadCount, currentTraySettings.style, currentTraySettings.showBadge);
+    tray = new Tray(iconPath);
+    tray.setToolTip('WhatsNexus');
 
-  const contextMenu = Menu.buildFromTemplate([
-    {
-      label: 'Mostrar WhatsNexus',
-      click: () => {
-        if (mainWindow) {
+    const contextMenu = Menu.buildFromTemplate([
+      {
+        label: 'Mostrar WhatsNexus',
+        click: () => {
+          if (mainWindow) {
+            mainWindow.show();
+            mainWindow.focus();
+          }
+        }
+      },
+      { type: 'separator' },
+      {
+        label: 'Salir',
+        click: () => {
+          app.isQuitting = true;
+          app.quit();
+        }
+      }
+    ]);
+    tray.setContextMenu(contextMenu);
+
+    tray.on('click', () => {
+      if (mainWindow) {
+        if (mainWindow.isVisible()) {
+          if (mainWindow.isFocused()) {
+            mainWindow.hide();
+          } else {
+            mainWindow.focus();
+          }
+        } else {
           mainWindow.show();
           mainWindow.focus();
         }
       }
-    },
-    { type: 'separator' },
-    {
-      label: 'Salir',
-      click: () => {
-        app.isQuitting = true;
-        app.quit();
-      }
-    }
-  ]);
-  tray.setContextMenu(contextMenu);
-
-  tray.on('click', () => {
-    if (mainWindow) {
-      if (mainWindow.isVisible()) {
-        if (mainWindow.isFocused()) {
-          mainWindow.hide();
-        } else {
-          mainWindow.focus();
-        }
-      } else {
-        mainWindow.show();
-        mainWindow.focus();
-      }
-    }
-  });
+    });
+  } catch (err) {
+    console.warn('[Tray Warning]: No se pudo inicializar la bandeja del sistema (KDE/Wayland fallback):', err.message);
+  }
 }
 
 // IPC para actualizar el contador de notificaciones / badge de la bandeja
@@ -755,7 +789,7 @@ app.whenReady().then(() => {
   createWindow();
   createTray();
 
-  // Safety fallback: if splash hangs for more than 4s, reveal mainWindow
+  // Safety fallback: if splash hangs for more than 2.5s, reveal mainWindow
   setTimeout(() => {
     if (mainWindow && !mainWindow.isDestroyed() && !mainWindow.isVisible()) {
       mainWindow.show();
@@ -764,7 +798,7 @@ app.whenReady().then(() => {
         splashWindow.close();
       }
     }
-  }, 4000);
+  }, 2500);
   
   app.on('activate', function () {
     if (BrowserWindow.getAllWindows().length === 0) {
