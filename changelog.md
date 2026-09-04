@@ -6,6 +6,20 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ---
 
+## [1.0.3] - 2026-09-04
+### Fixed
+- **Classic Doom WebAssembly Engine Execution & Black Screen Resolution:**
+  - Resolved an engine startup deadlock in the Chocolate Doom WebAssembly port by suppressing unconfigured MIDI initialization via `-nomusic`, enabling instant WebGL canvas initialization and smooth 3D rendering.
+  - Corrected keybindings shown in the floating controls overlay: firing mapped to Spacebar and Left Click, and door interaction/activation mapped to `E`.
+  - Added horizontal steering controls to the overlay, supporting camera steering via mouse movement or keyboard keys `O` (turn left) and `P` (turn right).
+  - Integrated browser pointer lock (`canvas.requestPointerLock()`) on canvas click for fluid 360-degree mouse look, along with container click autofocus.
+  - Added an informational note regarding classic DOOM (1993) level design mechanics where vertical jumping does not exist in the original vanilla engine.
+### Changed
+- **CI/CD Multiplatform Pipeline Stability (Ubuntu 24.04 Runners):**
+  - Updated `.github/workflows/build.yml` with deb822 source list isolation for Ubuntu 24.04 (`noble`) runners, directing ARM64 cross-compilation toolchains exclusively to `ports.ubuntu.com`.
+- **Repository Governance Standards:**
+  - Updated operational rules in `.agents/rules/` and governance index in `.agents/README.md` to mandate automated push to `Dev` on every version bump, strict triad synchronization (`changelog-dev.md`, `package.json`, `package-lock.json`), and English-only documentation and notes policy.
+
 ## [1.0.1] - 2026-09-04
 ### Changed
 - **Governance & Strict Version Synchronization Triad:**
