@@ -1,6 +1,6 @@
 // Electron API exposed via contextBridge (src/preload-main.js)
 const electronAPI = window.electronAPI || {
-  appInfo: { version: '0.13.1', platform: 'linux', arch: 'x64', electronVersion: 'N/A', chromeVersion: 'N/A' },
+  appInfo: { version: '', appVersion: '', platform: 'linux', arch: 'x64', electronVersion: 'N/A', chromeVersion: 'N/A' },
   webviewPreloadPath: '',
   updateTrayBadge: () => {},
   setThemeMode: () => {},
@@ -428,9 +428,9 @@ function updateNetworkUI() {
 
   if (strictProxyStatusText) {
     if (net.proxyType === 'direct') {
-      strictProxyStatusText.innerText = lang.strict_proxy_status_none || 'No hay proxy configurado';
+      strictProxyStatusText.innerText = lang.strict_proxy_disabled_hint || lang.strict_proxy_status_none || 'No hay proxy configurado';
     } else {
-      strictProxyStatusText.innerText = lang.strict_proxy_status_available || 'Available only while an HTTP or SOCKS5 proxy is enabled';
+      strictProxyStatusText.innerText = lang.strict_proxy_enabled_hint || lang.strict_proxy_status_available || 'Disponible solo mientras un proxy HTTP o SOCKS5 esté habilitado';
     }
   }
 
@@ -455,7 +455,7 @@ function updateTotalUnread() {
 async function initDownloadPathUI() {
   if (!downloadPathInput) return;
 
-  if (electronAPI.getSystemSettings) {
+  if (window.electronAPI && electronAPI.getSystemSettings) {
     try {
       const sys = await electronAPI.getSystemSettings();
       if (sys && sys.downloadPath) {
@@ -468,7 +468,7 @@ async function initDownloadPathUI() {
     } catch (_) {}
   }
 
-  if (!downloadPathInput.value && electronAPI.getDefaultDownloadsPath) {
+  if ((!downloadPathInput.value || !settings.downloadPath) && window.electronAPI && electronAPI.getDefaultDownloadsPath) {
     try {
       const defPath = await electronAPI.getDefaultDownloadsPath();
       if (defPath) {
@@ -476,6 +476,10 @@ async function initDownloadPathUI() {
         downloadPathInput.value = defPath;
       }
     } catch (_) {}
+  }
+
+  if (settings.downloadPath && (!downloadPathInput.value || downloadPathInput.value === '')) {
+    downloadPathInput.value = settings.downloadPath;
   }
 }
 
@@ -559,6 +563,7 @@ function applySettings() {
   if (paletteSelect) paletteSelect.value = palette;
   if (trayStyleSelect) trayStyleSelect.value = settings.trayStyle || 'auto';
   if (trayBadgeToggle) trayBadgeToggle.checked = settings.trayShowBadge !== false;
+  if (downloadPathInput && settings.downloadPath) downloadPathInput.value = settings.downloadPath;
 
   // Sincronizar UI de Notificaciones
   if (settings.notifications) {
@@ -1007,6 +1012,8 @@ function openSettingsView() {
   if (settingsView) settingsView.classList.remove('hidden');
 
   renderSettingsAccounts();
+  initDownloadPathUI();
+  loadAboutInfo();
 }
 
 function activateAccount(id) {
@@ -1175,7 +1182,14 @@ tabBtns.forEach(btn => {
     settingsPanels.forEach(p => p.classList.remove('active'));
     
     btn.classList.add('active');
-    document.getElementById(btn.dataset.tab).classList.add('active');
+    const panel = document.getElementById(btn.dataset.tab);
+    if (panel) panel.classList.add('active');
+    if (btn.dataset.tab === 'tab-permissions') {
+      initDownloadPathUI();
+    }
+    if (btn.dataset.tab === 'tab-about') {
+      loadAboutInfo();
+    }
   });
 });
 
@@ -1659,7 +1673,10 @@ async function loadAboutInfo() {
 
   if (sysInfo) {
     if (versionEl) {
-      versionEl.innerText = `Versión ${sysInfo.version || '0.17.0'}`;
+      const activeVer = sysInfo.appVersion || sysInfo.version || (electronAPI.appInfo && (electronAPI.appInfo.appVersion || electronAPI.appInfo.version));
+      if (activeVer) {
+        versionEl.innerText = `Versión ${activeVer}`;
+      }
     }
     if (osEl) {
       const release = sysInfo.osRelease ? ` ${sysInfo.osRelease}` : '';
@@ -1713,7 +1730,7 @@ addAccountBtn.addEventListener('click', () => addAccount());
 if (reportBugBtn) {
   reportBugBtn.addEventListener('click', () => {
     const appInfo = electronAPI.appInfo || {};
-    const currentVer = appInfo.version || '0.13.1';
+    const currentVer = appInfo.appVersion || appInfo.version || '';
     const osInfo = `${appInfo.platform || ''} ${appInfo.arch || ''}`.trim() || 'N/A';
     const electronVer = appInfo.electronVersion || 'N/A';
     const chromeVer = appInfo.chromeVersion || 'N/A';
@@ -1819,8 +1836,9 @@ if (spTrigger && spOptions) {
 
 // Botones de Gestión de Descargas
 if (btnSelectDownloadDir) {
-  btnSelectDownloadDir.addEventListener('click', async () => {
-    if (electronAPI.selectDownloadDirectory) {
+  btnSelectDownloadDir.addEventListener('click', async (e) => {
+    e.preventDefault();
+    if (window.electronAPI && electronAPI.selectDownloadDirectory) {
       try {
         const chosen = await electronAPI.selectDownloadDirectory();
         if (chosen) {
@@ -1828,14 +1846,17 @@ if (btnSelectDownloadDir) {
           saveSettings();
           if (downloadPathInput) downloadPathInput.value = chosen;
         }
-      } catch (_) {}
+      } catch (err) {
+        console.error('Error al seleccionar carpeta de descargas:', err);
+      }
     }
   });
 }
 
 if (btnResetDownloadDir) {
-  btnResetDownloadDir.addEventListener('click', async () => {
-    if (electronAPI.resetDownloadDirectory) {
+  btnResetDownloadDir.addEventListener('click', async (e) => {
+    e.preventDefault();
+    if (window.electronAPI && electronAPI.resetDownloadDirectory) {
       try {
         const def = await electronAPI.resetDownloadDirectory();
         if (def) {
@@ -1843,7 +1864,9 @@ if (btnResetDownloadDir) {
           saveSettings();
           if (downloadPathInput) downloadPathInput.value = def;
         }
-      } catch (_) {}
+      } catch (err) {
+        console.error('Error al restablecer carpeta de descargas:', err);
+      }
     }
   });
 }

@@ -4,7 +4,8 @@ const pkg = require('../package.json');
 
 contextBridge.exposeInMainWorld('electronAPI', {
   appInfo: {
-    version: pkg.version || '0.13.1',
+    version: pkg.version,
+    appVersion: pkg.version,
     platform: process.platform,
     arch: process.arch,
     electronVersion: process.versions.electron || 'N/A',

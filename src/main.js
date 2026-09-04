@@ -1,4 +1,4 @@
-const { app, BrowserWindow, Menu, Tray, ipcMain, nativeImage, nativeTheme, Notification, session, dialog, shell } = require('electron');
+const { app, BrowserWindow, Menu, Tray, ipcMain, nativeImage, nativeTheme, Notification, session, dialog, shell, webContents } = require('electron');
 const path = require('path');
 const fs = require('fs');
 const os = require('os');
@@ -76,6 +76,17 @@ function createWindow() {
 
   // Hide the menu bar for a cleaner look
   mainWindow.setMenuBarVisibility(false);
+
+  mainWindow.webContents.on('did-attach-webview', (event, wc) => {
+    if (wc && wc.session) {
+      configureSession(wc.session);
+    }
+    if (wc && typeof wc.setWebRTCIPHandlingPolicy === 'function') {
+      const policy = currentNetworkSettings.webrtcProtection ? 'disable-non-proxied-udp' : 'default';
+      wc.setWebRTCIPHandlingPolicy(policy);
+      console.log(`[Backend WebRTC]: Synchronized policy '${policy}' on attached webview (id: ${wc.id})`);
+    }
+  });
 
   mainWindow.on('close', function (event) {
     if (!app.isQuitting) {
@@ -389,15 +400,17 @@ function getProxyConfig() {
     return { mode: 'system' };
   }
 
-  const host = (currentNetworkSettings.proxyHost || '').trim();
-  const port = (currentNetworkSettings.proxyPort || '').trim();
+  let host = (currentNetworkSettings.proxyHost || '').trim();
+  let port = (currentNetworkSettings.proxyPort || '').trim();
   if (!host) {
     return { mode: 'direct' };
   }
 
+  // Normalizar host para asegurar formato válido en Chromium
+  host = host.replace(/^https?:\/\//i, '').replace(/^socks[45]?:\/\//i, '').replace(/\/+$/, '');
   const endpoint = port ? `${host}:${port}` : host;
   const isSocks = currentNetworkSettings.proxyType === 'socks5';
-  const proxyRules = isSocks ? `socks5://${endpoint}` : `http://${endpoint};https://${endpoint}`;
+  const proxyRules = isSocks ? `socks5://${endpoint}` : `http=${endpoint};https=${endpoint}`;
   const proxyBypassRules = currentNetworkSettings.strictProxyIsolation ? '' : '<local>';
 
   return {
@@ -412,16 +425,40 @@ async function applyProxyToSession(ses) {
   try {
     const config = getProxyConfig();
     await ses.setProxy(config);
+    console.log('[Backend Proxy]: Proxy successfully applied on session:', JSON.stringify(config));
   } catch (err) {
     console.error('[Proxy Config Error]:', err);
   }
 }
 
+function attachSessionWebRTC(ses) {
+  if (!ses) return;
+  if (typeof ses.setWebRTCIPHandlingPolicy !== 'function') {
+    ses.setWebRTCIPHandlingPolicy = function(policy) {
+      this._webrtcPolicy = policy;
+      try {
+        const allWc = webContents.getAllWebContents();
+        for (const wc of allWc) {
+          if (wc && !wc.isDestroyed() && (wc.session === this || this === session.defaultSession)) {
+            if (typeof wc.setWebRTCIPHandlingPolicy === 'function') {
+              wc.setWebRTCIPHandlingPolicy(policy);
+            }
+          }
+        }
+      } catch (err) {
+        console.error('[WebRTC Policy Error]:', err);
+      }
+    };
+  }
+}
+
 function applyWebRTCToSession(ses) {
   if (!ses) return;
+  attachSessionWebRTC(ses);
+  const policy = currentNetworkSettings.webrtcProtection ? 'disable-non-proxied-udp' : 'default';
   try {
-    const policy = currentNetworkSettings.webrtcProtection ? 'disable-non-proxied-udp' : 'default';
     ses.setWebRTCIPHandlingPolicy(policy);
+    console.log(`[Backend WebRTC]: Applied policy '${policy}' to session and associated webContents`);
   } catch (err) {
     console.error('[WebRTC Policy Error]:', err);
   }
@@ -438,21 +475,19 @@ function updateNetworkAllSessions() {
 function configureSessionDownloads(ses) {
   if (!ses) return;
   ses.on('will-download', (event, item, webContents) => {
-    let targetDir = currentSystemSettings.downloadPath;
-    if (!targetDir) {
+    let rutaGuardada = currentSystemSettings.downloadPath;
+    if (!rutaGuardada) {
       try {
-        targetDir = app.getPath('downloads');
+        rutaGuardada = app.getPath('downloads');
       } catch (_) {}
     }
-    if (targetDir) {
+    if (rutaGuardada) {
       try {
-        if (!fs.existsSync(targetDir)) {
-          fs.mkdirSync(targetDir, { recursive: true });
+        if (!fs.existsSync(rutaGuardada)) {
+          fs.mkdirSync(rutaGuardada, { recursive: true });
         }
       } catch (_) {}
-      const fileName = item.getFilename();
-      const savePath = path.join(targetDir, fileName);
-      item.setSavePath(savePath);
+      item.setSavePath(path.join(rutaGuardada, item.getFilename()));
     }
   });
 }
@@ -483,10 +518,11 @@ ipcMain.handle('open-external-url', async (event, url) => {
 
 ipcMain.handle('select-download-directory', async () => {
   const defaultDir = currentSystemSettings.downloadPath || app.getPath('downloads');
-  const result = await dialog.showOpenDialog(mainWindow, {
+  const win = BrowserWindow.getFocusedWindow() || mainWindow;
+  const result = await dialog.showOpenDialog(win, {
     title: 'Seleccionar Carpeta de Descargas',
     defaultPath: defaultDir,
-    properties: ['openDirectory', 'createDirectory']
+    properties: ['openDirectory']
   });
 
   if (!result.canceled && result.filePaths && result.filePaths.length > 0) {
@@ -495,7 +531,7 @@ ipcMain.handle('select-download-directory', async () => {
     saveSystemSettings();
     return selected;
   }
-  return currentSystemSettings.downloadPath || app.getPath('downloads');
+  return null;
 });
 
 ipcMain.handle('get-default-downloads-path', () => {
@@ -538,17 +574,21 @@ ipcMain.handle('get-network-settings', () => {
 });
 
 ipcMain.handle('update-network-settings', (event, newSettings) => {
+  console.log('[Backend IPC: update-network-settings] Received payload:', JSON.stringify(newSettings));
   if (newSettings && typeof newSettings === 'object') {
     currentNetworkSettings = { ...currentNetworkSettings, ...newSettings };
     saveNetworkSettings();
     updateNetworkAllSessions();
   }
+  console.log('[Backend Network Settings] Active settings now:', JSON.stringify(currentNetworkSettings));
   return currentNetworkSettings;
 });
 
 ipcMain.handle('get-system-info', () => {
+  const currentAppVersion = app.getVersion();
   return {
-    version: app.getVersion(),
+    version: currentAppVersion,
+    appVersion: currentAppVersion,
     electron: process.versions.electron || 'N/A',
     chrome: process.versions.chrome || 'N/A',
     node: process.versions.node || 'N/A',

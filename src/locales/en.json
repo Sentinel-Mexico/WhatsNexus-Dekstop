@@ -127,6 +127,8 @@
   "network_strict_isolation_desc": "Prevent direct network connections when an explicit proxy is configured.",
   "strict_proxy_disabled_hint": "No proxy configured",
   "strict_proxy_enabled_hint": "Available only while an HTTP or SOCKS5 proxy is enabled",
+  "strict_proxy_status_none": "No proxy configured",
+  "strict_proxy_status_available": "Available only while an HTTP or SOCKS5 proxy is enabled",
   "network_restore_proxy_title": "Restore proxy...",
   "network_restore_proxy_desc": "Remove the global proxy settings and restore defaults.",
   "btn_restore_proxy": "Restore proxy",

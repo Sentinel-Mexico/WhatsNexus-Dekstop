@@ -4,6 +4,43 @@ This changelog records all granular updates, bug fixes, refactorings, and featur
 
 ---
 
+## [0.17.3] - 2026-09-03
+### Fixed
+- **Privacy & Network Section i18n Localization:**
+  - Audited `src/locales/es.json` and eliminated hardcoded English translation values for `network_proxy_desc`, `network_strict_isolation_title`, `network_strict_isolation_desc`, `strict_proxy_enabled_hint`, `network_restore_proxy_desc`, `network_webrtc_desc`, and `network_webrtc_badge`.
+  - Updated `src/renderer/index.html` replacing raw English fallback strings inside the Privacy & Network module with native Spanish defaults matching the rest of the application template.
+  - Sychronized dynamic strict proxy status hints (`strict_proxy_status_none`, `strict_proxy_status_available`) across both `es.json` and `en.json`.
+- **Proxy and WebRTC Subsystem Verification (Main Process):**
+  - Sanitized host and port parsing in `getProxyConfig()` (`main.js`), stripping accidental URI schemes (`http://`, `socks5://`) and trailing slashes to guarantee compliant Chromium proxy format (`http=host:port;https=host:port` or `socks5://host:port`).
+  - Resolved runtime `TypeError` on WebRTC policy handling: in Electron, `setWebRTCIPHandlingPolicy` operates at the `webContents` layer rather than the `session` prototype.
+  - Implemented `attachSessionWebRTC(ses)` polyfill and dynamic propagation to all active `webContents` instances (`webContents.getAllWebContents()`), as well as reactive policy enforcement on guest `<webview>` attachment (`did-attach-webview`).
+  - Added structured backend `console.log()` reporting for `[Backend IPC: update-network-settings]`, `[Backend Proxy]`, and `[Backend WebRTC]` to monitor incoming payload and network application events in real time.
+- **Dynamic Version Injection in "Acerca de":**
+  - Removed static fallback versions ("0.13.1") from `src/preload-main.js` and `src/renderer/renderer.js`.
+  - Updated `ipcMain.handle('get-system-info')` to explicitly return `appVersion: app.getVersion()` reading dynamically from `package.json`.
+  - Connected `loadAboutInfo()` in `src/renderer/renderer.js` to immediately update `#about-app-version` upon settings view initialization, tab activation (`tab-about`), and locale changes.
+
+---
+
+## [0.17.2] - 2026-09-03
+### Fixed
+- **Sidebar Button Geometry & Layout Unification (UI/UX):**
+  - Resolved visual sizing mismatch between upper account items and lower utility buttons (Configuración, Reportar Error, Donaciones, Añadir Cuenta).
+  - Enforced exact matching dimensions on `.sidebar-bottom .icon-btn` (`52px` width, `52px` height, `0` padding, and `var(--shape-full)` border-radius) matching `.account-item`.
+  - Scaled icon font size to `1.35rem` and aligned the M3 active rail indicator (`left: -12px; height: 36px`) to touch the sidebar boundary symmetrically.
+  - Set `.sidebar-bottom` to `gap: 14px; flex-shrink: 0; width: 100%` with `.sidebar` containing `overflow-x: hidden; box-sizing: border-box`, completely eliminating risk of container overflow.
+- **Appearance Settings Tray Icon Style Row Layout (CSS/HTML):**
+  - Fixed visual breakage in Settings > Apariencia where the "Estilo del Icono en Bandeja" custom dropdown rendered vertically underneath its label.
+  - Applied Flexbox styling with `.setting-row-between` (`display: flex; align-items: center; justify-content: space-between; gap: 16px;`) and aligned the label to the left with `margin-bottom: 0` and the dropdown to the right in the same horizontal row.
+  - Configured `.setting-row-double` with a vertical flex layout (`gap: 20px; margin-top: 14px`) providing clean visual rhythm across the Tray setting card.
+- **Download Management Pipeline & Session Interceptor (Main/Renderer IPC):**
+  - Ensured native OS default download directory (`app.getPath('downloads')`) is automatically resolved, displayed, and utilized on startup when no user path is specified.
+  - Bound the "Seleccionar Carpeta" action via `select-download-directory` IPC to `dialog.showOpenDialog` with `properties: ['openDirectory']`, safely updating user configuration, persisting to `system_settings.json`, and updating the read-only input view.
+  - Connected the "Restablecer por Defecto" button via `reset-download-directory` IPC, resetting user configuration to `app.getPath('downloads')` and refreshing the view.
+  - Hardened download interception via `configureSessionDownloads` across `session.defaultSession`, `session-created`, and `did-attach-webview` events, executing `item.setSavePath(path.join(rutaGuardada, item.getFilename()))` to guarantee all file downloads land in the designated directory.
+
+---
+
 ## [0.17.1] - 2026-09-03
 ### Performance & Refactoring
 - **Dynamic Modular i18n System (P-01 - Monolito de Diccionarios):**

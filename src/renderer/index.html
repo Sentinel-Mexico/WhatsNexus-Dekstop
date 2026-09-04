@@ -180,7 +180,7 @@
                 </div>
 
                 <div class="setting-row-double">
-                  <div class="setting-subgroup">
+                  <div class="setting-subgroup setting-row-between">
                     <label for="tray-style-select" data-i18n="label_tray_style">Estilo del Icono en Bandeja</label>
                     <div class="custom-select-wrapper" id="custom-tray-style-select-wrapper">
                       <div class="custom-select-trigger" id="tray-style-select-trigger" tabindex="0">
@@ -445,7 +445,7 @@
 
               <!-- Módulo 1: Proxy -->
               <h4 class="perm-group-title" data-i18n="network_group_proxy">Proxy</h4>
-              <p class="setting-hint" data-i18n="network_proxy_desc" style="margin-bottom: 12px;">Route WhatsApp Web traffic through a proxy server. Existing connections may require reloading.</p>
+              <p class="setting-hint" data-i18n="network_proxy_desc" style="margin-bottom: 12px;">Enrute el tráfico de WhatsApp Web a través de un servidor proxy. Las conexiones existentes pueden requerir recarga.</p>
               <div class="perm-card">
                 <!-- Fila 1: Usar proxy (Toggle) -->
                 <div class="perm-row">
@@ -499,8 +499,8 @@
                 <!-- Fila 4: Strict proxy isolation (Toggle) -->
                 <div class="perm-row">
                   <div class="perm-info">
-                    <h4 data-i18n="network_strict_isolation_title">Strict proxy isolation</h4>
-                    <p data-i18n="network_strict_isolation_desc">Prevent direct network connections when an explicit proxy is configured.</p>
+                    <h4 data-i18n="network_strict_isolation_title">Aislamiento estricto de proxy</h4>
+                    <p data-i18n="network_strict_isolation_desc">Evita conexiones directas de red cuando un proxy explícito esté configurado.</p>
                     <span class="strict-proxy-status-text" id="strict-proxy-status-text" data-i18n="strict_proxy_disabled_hint">No hay proxy configurado</span>
                   </div>
                   <label class="switch">
@@ -513,7 +513,7 @@
                 <div class="perm-row">
                   <div class="perm-info">
                     <h4 data-i18n="network_restore_proxy_title">Restaurar proxy...</h4>
-                    <p data-i18n="network_restore_proxy_desc">Remove the global proxy settings and restore defaults.</p>
+                    <p data-i18n="network_restore_proxy_desc">Elimina la configuración global de proxy y restaura los valores predeterminados.</p>
                   </div>
                   <button id="btn-restore-proxy" class="btn-secondary-action" type="button">
                     <i class="fa-solid fa-rotate-left"></i> <span data-i18n="btn_restore_proxy">Restaurar proxy</span>
@@ -529,8 +529,8 @@
                 <div class="perm-row">
                   <div class="perm-info">
                     <h4 data-i18n="network_webrtc_title">Protección WebRTC</h4>
-                    <p data-i18n="network_webrtc_desc">Blocks WebRTC APIs in page scripts. This is independent from strict proxy isolation.</p>
-                    <span class="webrtc-badge" data-i18n="network_webrtc_badge">Legacy script-based protection</span>
+                    <p data-i18n="network_webrtc_desc">Bloquea las API de WebRTC en scripts de página. Esto es independiente del aislamiento estricto de proxy.</p>
+                    <span class="webrtc-badge" data-i18n="network_webrtc_badge">Protección basada en script heredada</span>
                   </div>
                   <label class="switch">
                     <input type="checkbox" id="network-webrtc-toggle">
@@ -553,7 +553,7 @@
                   <img src="../assets/icon.png" alt="WhatsNexus" class="about-app-logo">
                 </div>
                 <h2 class="about-app-title">WhatsNexus</h2>
-                <p class="about-app-version" id="about-app-version">Cargando versión...</p>
+                <p class="about-app-version" id="about-app-version"></p>
                 <p class="about-app-tagline" data-i18n="about_tagline">Cliente de escritorio multi-cuenta para WhatsApp Web</p>
               </div>
 
