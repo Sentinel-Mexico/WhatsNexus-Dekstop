@@ -4,6 +4,26 @@ This changelog records all granular updates, bug fixes, refactorings, and featur
 
 ---
 
+## [0.17.4] - 2026-09-03
+### Fixed
+- **Dynamic i18n Locale Resolution & Language Selector:**
+  - Resolved universal fallback to English when switching languages: populated all 23 language JSON files (`fr.json`, `de.json`, `it.json`, `pt.json`, `zh.json`, etc.) with their complete dictionaries (184 keys) extracted from core definitions and translations.
+  - Added dedicated `zh-CN.json` locale and normalized language resolution in `ipcMain.handle('load-locale')` to seamlessly fallback to base language codes when regional variants are requested (e.g. `zh-CN` -> `zh`).
+  - Added granular `try/catch` error reporting with explicit `console.error` logs distinguishing between missing file paths and JSON syntax/parse errors both in the main process and renderer process.
+  - Fixed language dropdown change event and custom selector clicks in `renderer.js` to immediately call `updateTranslations()` to re-render all `[data-i18n]` DOM elements across the application.
+- **Download Management Pipeline & IPC Bridges (Main & Renderer):**
+  - Re-established and unified IPC bridges across `preload-main.js` and `main.js`, exposing `selectFolder()`, `selectDownloadDirectory()`, `resetFolder()`, `resetDownloadDirectory()`, and `getDefaultDownloadsPath()`.
+  - Configured `mainWindow.webContents.on('did-finish-load')` to emit `default-downloads-path` with `app.getPath('downloads')`, auto-populating the UI input on startup and settings load.
+  - Connected `ipcMain.handle('select-folder')` to open `dialog.showOpenDialog({ properties: ['openDirectory'] })` and return the selected path to the renderer to update UI and persist in `system_settings.json`.
+  - Audited `session.defaultSession.on('will-download')` and partitioned webview sessions, ensuring `rutaGuardada` is verified, directory is created if absent, and added explicit `console.log('Descargando en:', rutaGuardada)` debugging before invoking `item.setSavePath()`.
+- **Donations View Button Contrast in Light Theme (CSS):**
+  - Eliminated hardcoded `color: #ffffff;` from `.btn-donate` in `src/renderer/style.css`.
+  - Replaced hardcoded styles with dynamic theme tokens: `background-color: var(--bg-hover)`, `color: var(--text-color)`, and `border: 1px solid var(--border-color)`.
+  - Defined `--text-color: var(--text-primary)` in `:root` and `.theme-light` across all palettes, ensuring high-contrast dark text on light backgrounds in Light Theme and light text in Dark Theme.
+  - Unified `.btn-primary-action` and input focus states to use `var(--bg-active)` instead of undefined `--whatsapp-green`.
+
+---
+
 ## [0.17.3] - 2026-09-03
 ### Fixed
 - **Privacy & Network Section i18n Localization:**

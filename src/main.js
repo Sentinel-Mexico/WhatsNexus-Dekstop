@@ -74,6 +74,12 @@ function createWindow() {
   // Load the index.html of the app
   mainWindow.loadFile(path.join(__dirname, 'renderer', 'index.html'));
 
+  // Enviar ruta de descargas por defecto al renderer cuando termine de cargar
+  mainWindow.webContents.on('did-finish-load', () => {
+    const defaultDownloads = currentSystemSettings.downloadPath || app.getPath('downloads');
+    mainWindow.webContents.send('default-downloads-path', defaultDownloads);
+  });
+
   // Hide the menu bar for a cleaner look
   mainWindow.setMenuBarVisibility(false);
 
@@ -486,8 +492,12 @@ function configureSessionDownloads(ses) {
         if (!fs.existsSync(rutaGuardada)) {
           fs.mkdirSync(rutaGuardada, { recursive: true });
         }
-      } catch (_) {}
-      item.setSavePath(path.join(rutaGuardada, item.getFilename()));
+      } catch (err) {
+        console.error('[will-download Error]: No se pudo asegurar la ruta de descargas:', err);
+      }
+      const targetFile = path.join(rutaGuardada, item.getFilename());
+      console.log('Descargando en:', rutaGuardada);
+      item.setSavePath(targetFile);
     }
   });
 }
@@ -516,7 +526,7 @@ ipcMain.handle('open-external-url', async (event, url) => {
   return false;
 });
 
-ipcMain.handle('select-download-directory', async () => {
+async function handleSelectDownloadFolder() {
   const defaultDir = currentSystemSettings.downloadPath || app.getPath('downloads');
   const win = BrowserWindow.getFocusedWindow() || mainWindow;
   const result = await dialog.showOpenDialog(win, {
@@ -532,17 +542,23 @@ ipcMain.handle('select-download-directory', async () => {
     return selected;
   }
   return null;
-});
+}
 
-ipcMain.handle('get-default-downloads-path', () => {
-  return app.getPath('downloads');
-});
-
-ipcMain.handle('reset-download-directory', () => {
+function handleResetDownloadFolder() {
   const defaultDir = app.getPath('downloads');
   currentSystemSettings.downloadPath = defaultDir;
   saveSystemSettings();
   return defaultDir;
+}
+
+ipcMain.handle('select-folder', async () => handleSelectDownloadFolder());
+ipcMain.handle('select-download-directory', async () => handleSelectDownloadFolder());
+
+ipcMain.handle('reset-folder', () => handleResetDownloadFolder());
+ipcMain.handle('reset-download-directory', () => handleResetDownloadFolder());
+
+ipcMain.handle('get-default-downloads-path', () => {
+  return app.getPath('downloads');
 });
 
 ipcMain.handle('set-download-path', (event, newPath) => {
@@ -601,16 +617,44 @@ ipcMain.handle('get-system-info', () => {
 });
 
 ipcMain.handle('load-locale', (event, langCode) => {
-  const safeLang = (langCode || 'en').replace(/[^a-zA-Z0-9_-]/g, '');
-  const filePath = path.join(__dirname, 'locales', `${safeLang}.json`);
-  try {
-    if (fs.existsSync(filePath)) {
-      return JSON.parse(fs.readFileSync(filePath, 'utf8'));
+  if (!langCode || typeof langCode !== 'string') langCode = 'en';
+  const cleanCode = langCode.trim();
+  const safeLang = cleanCode.replace(/[^a-zA-Z0-9_-]/g, '').toLowerCase();
+
+  // Buscar coincidencia exacta o fallback a código base (ej: zh-CN -> zh)
+  const baseCode = safeLang.split('-')[0].split('_')[0];
+  const candidates = [
+    `${safeLang}.json`,
+    `${cleanCode}.json`,
+    `${baseCode}.json`
+  ];
+
+  let resolvedPath = null;
+  for (const filename of candidates) {
+    const p = path.join(__dirname, 'locales', filename);
+    if (fs.existsSync(p)) {
+      resolvedPath = p;
+      break;
     }
-  } catch (err) {
-    console.error('[Locale Load Error]:', err);
   }
-  return null;
+
+  if (!resolvedPath) {
+    console.error(`[Locale Load Error - Path]: Archivo no encontrado para código "${langCode}". Buscado en directorio: ${path.join(__dirname, 'locales')}`);
+    return null;
+  }
+
+  try {
+    const rawContent = fs.readFileSync(resolvedPath, 'utf8');
+    try {
+      return JSON.parse(rawContent);
+    } catch (parseErr) {
+      console.error(`[Locale Load Error - JSON Parse]: Error de parseo JSON en archivo ${resolvedPath}:`, parseErr);
+      return null;
+    }
+  } catch (fsErr) {
+    console.error(`[Locale Load Error - File Read]: Error de lectura en ruta ${resolvedPath}:`, fsErr);
+    return null;
+  }
 });
 
 function configureSessionPermissions(ses) {

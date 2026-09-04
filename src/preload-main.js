@@ -18,11 +18,18 @@ contextBridge.exposeInMainWorld('electronAPI', {
   updateTraySettings: (settings) => ipcRenderer.send('update-tray-settings', settings),
   showNativeNotification: (data) => ipcRenderer.send('show-native-notification', data),
   openExternal: (url) => ipcRenderer.send('open-external', url),
-  openExternalUrl: (url) => ipcRenderer.invoke('open-external-url', url),
-  selectDownloadDirectory: () => ipcRenderer.invoke('select-download-directory'),
+  selectFolder: () => ipcRenderer.invoke('select-folder'),
+  selectDownloadDirectory: () => ipcRenderer.invoke('select-folder'),
   getDefaultDownloadsPath: () => ipcRenderer.invoke('get-default-downloads-path'),
-  resetDownloadDirectory: () => ipcRenderer.invoke('reset-download-directory'),
+  resetFolder: () => ipcRenderer.invoke('reset-folder'),
+  resetDownloadDirectory: () => ipcRenderer.invoke('reset-folder'),
   setDownloadPath: (dir) => ipcRenderer.invoke('set-download-path', dir),
+  onDefaultDownloadsPath: (callback) => {
+    if (typeof callback !== 'function') return;
+    const handler = (_event, path) => callback(path);
+    ipcRenderer.on('default-downloads-path', handler);
+    return () => ipcRenderer.removeListener('default-downloads-path', handler);
+  },
   getSystemSettings: () => ipcRenderer.invoke('get-system-settings'),
   setSpellcheckerLanguage: (lang) => ipcRenderer.invoke('set-spellchecker-language', lang),
   updateNetworkSettings: (settings) => ipcRenderer.invoke('update-network-settings', settings),

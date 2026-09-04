@@ -134,41 +134,77 @@ let fallbackTranslations = {};
 let currentTranslations = {};
 
 async function fetchLocaleJson(langCode) {
+  const code = (langCode || 'en').trim();
   if (window.electronAPI && window.electronAPI.loadLocale) {
     try {
-      const data = await window.electronAPI.loadLocale(langCode);
-      if (data && typeof data === 'object') return data;
-    } catch (_) {}
-  }
-  try {
-    const res = await fetch(`../locales/${langCode}.json`);
-    if (res.ok) {
-      return await res.json();
+      const data = await window.electronAPI.loadLocale(code);
+      if (data && typeof data === 'object' && Object.keys(data).length > 0) {
+        return data;
+      }
+    } catch (ipcErr) {
+      console.error(`[fetchLocaleJson IPC Error]: Falló al solicitar idioma "${code}":`, ipcErr);
     }
-  } catch (_) {}
+  }
+
+  const baseCode = code.split('-')[0].split('_')[0];
+  const candidates = [code, code.toLowerCase(), baseCode];
+  for (const c of candidates) {
+    try {
+      const res = await fetch(`../locales/${c}.json`);
+      if (res.ok) {
+        const json = await res.json();
+        if (json && typeof json === 'object' && Object.keys(json).length > 0) {
+          return json;
+        }
+      }
+    } catch (fetchErr) {
+      console.error(`[fetchLocaleJson Fetch Error]: Falló la lectura de "../locales/${c}.json":`, fetchErr);
+    }
+  }
+
+  console.error(`[fetchLocaleJson Error]: No se encontró archivo de traducción para "${code}"`);
   return {};
 }
 
 async function loadActiveLocale(langCode) {
-  const code = langCode || 'en';
-  if (!fallbackTranslations || Object.keys(fallbackTranslations).length === 0) {
-    fallbackTranslations = (await fetchLocaleJson('en')) || {};
+  try {
+    const code = langCode || 'en';
+    if (!fallbackTranslations || Object.keys(fallbackTranslations).length === 0) {
+      try {
+        fallbackTranslations = (await fetchLocaleJson('en')) || {};
+      } catch (err) {
+        console.error('[loadActiveLocale Error]: Error al cargar fallback "en":', err);
+        fallbackTranslations = {};
+      }
+    }
+
+    let activeData = {};
+    if (code === 'en') {
+      activeData = fallbackTranslations;
+    } else {
+      try {
+        activeData = (await fetchLocaleJson(code)) || {};
+      } catch (err) {
+        console.error(`[loadActiveLocale Error]: Error al cargar idioma "${code}":`, err);
+        activeData = {};
+      }
+    }
+
+    currentTranslations = { ...fallbackTranslations, ...activeData };
+
+    // Liberar memoria: retener únicamente el idioma activo y el fallback en i18n
+    i18n = {};
+    i18n['en'] = fallbackTranslations;
+    i18n[code] = currentTranslations;
+    const baseCode = code.split('-')[0].split('_')[0];
+    if (baseCode !== code) {
+      i18n[baseCode] = currentTranslations;
+    }
+    return currentTranslations;
+  } catch (fatalErr) {
+    console.error(`[loadActiveLocale Fatal Error] para "${langCode}":`, fatalErr);
+    return fallbackTranslations || {};
   }
-
-  let activeData = {};
-  if (code === 'en') {
-    activeData = fallbackTranslations;
-  } else {
-    activeData = (await fetchLocaleJson(code)) || {};
-  }
-
-  currentTranslations = { ...fallbackTranslations, ...activeData };
-
-  // Liberar memoria: retener únicamente el idioma activo y el fallback en i18n
-  i18n = {};
-  i18n['en'] = fallbackTranslations;
-  i18n[code] = currentTranslations;
-  return currentTranslations;
 }
 
 function populateLanguageSelect() {
@@ -181,11 +217,11 @@ function populateLanguageSelect() {
   if (customOptions) customOptions.innerHTML = '';
   
   const currentLangCode = settings.language || 'en';
-  const dict = i18n[currentLangCode] || i18n['en'];
+  const dict = i18n[currentLangCode] || i18n['en'] || {};
   
   supportedLanguages.forEach(code => {
-    const translatedName = dict[`lang_${code}`] || nativeNames[code];
-    const nativeName = nativeNames[code];
+    const translatedName = dict[`lang_${code}`] || nativeNames[code] || code;
+    const nativeName = nativeNames[code] || code;
     const displayText = `${translatedName} (${nativeName})`;
 
     // Select nativo oculto
@@ -205,9 +241,15 @@ function populateLanguageSelect() {
 
       customOpt.addEventListener('click', async (e) => {
         e.stopPropagation();
-        await loadActiveLocale(code);
-        settings.language = code;
-        saveSettings();
+        const selectedCode = customOpt.dataset.value || code;
+        try {
+          await loadActiveLocale(selectedCode);
+          settings.language = selectedCode;
+          saveSettings();
+          updateTranslations();
+        } catch (err) {
+          console.error(`[Language Selector Click Error] para "${selectedCode}":`, err);
+        }
         if (customOptions) customOptions.classList.remove('open');
         if (trigger) trigger.classList.remove('open');
       });
@@ -218,15 +260,21 @@ function populateLanguageSelect() {
   
   if (langSelect) {
     langSelect.value = currentLangCode;
-    langSelect.onchange = async () => {
-      await loadActiveLocale(langSelect.value);
-      settings.language = langSelect.value;
-      saveSettings();
+    langSelect.onchange = async (e) => {
+      const selectedCode = (e && e.target && e.target.value) ? e.target.value : langSelect.value;
+      try {
+        await loadActiveLocale(selectedCode);
+        settings.language = selectedCode;
+        saveSettings();
+        updateTranslations();
+      } catch (err) {
+        console.error(`[Language Selector Change Error] para "${selectedCode}":`, err);
+      }
     };
   }
   if (triggerLabel) {
-    const activeTranslated = dict[`lang_${currentLangCode}`] || nativeNames[currentLangCode];
-    const activeNative = nativeNames[currentLangCode];
+    const activeTranslated = dict[`lang_${currentLangCode}`] || nativeNames[currentLangCode] || currentLangCode;
+    const activeNative = nativeNames[currentLangCode] || currentLangCode;
     triggerLabel.innerText = `${activeTranslated} (${activeNative})`;
   }
 }
@@ -1838,9 +1886,10 @@ if (spTrigger && spOptions) {
 if (btnSelectDownloadDir) {
   btnSelectDownloadDir.addEventListener('click', async (e) => {
     e.preventDefault();
-    if (window.electronAPI && electronAPI.selectDownloadDirectory) {
+    const selectMethod = window.electronAPI && (electronAPI.selectFolder || electronAPI.selectDownloadDirectory);
+    if (selectMethod) {
       try {
-        const chosen = await electronAPI.selectDownloadDirectory();
+        const chosen = await selectMethod();
         if (chosen) {
           settings.downloadPath = chosen;
           saveSettings();
@@ -1856,9 +1905,10 @@ if (btnSelectDownloadDir) {
 if (btnResetDownloadDir) {
   btnResetDownloadDir.addEventListener('click', async (e) => {
     e.preventDefault();
-    if (window.electronAPI && electronAPI.resetDownloadDirectory) {
+    const resetMethod = window.electronAPI && (electronAPI.resetFolder || electronAPI.resetDownloadDirectory);
+    if (resetMethod) {
       try {
-        const def = await electronAPI.resetDownloadDirectory();
+        const def = await resetMethod();
         if (def) {
           settings.downloadPath = def;
           saveSettings();
@@ -1866,6 +1916,21 @@ if (btnResetDownloadDir) {
         }
       } catch (err) {
         console.error('Error al restablecer carpeta de descargas:', err);
+      }
+    }
+  });
+}
+
+// Receptor IPC para ruta de descargas por defecto enviada desde el proceso principal
+if (window.electronAPI && electronAPI.onDefaultDownloadsPath) {
+  electronAPI.onDefaultDownloadsPath((defaultPath) => {
+    if (defaultPath) {
+      if (downloadPathInput && !downloadPathInput.value) {
+        downloadPathInput.value = defaultPath;
+      }
+      if (!settings.downloadPath) {
+        settings.downloadPath = defaultPath;
+        saveSettings();
       }
     }
   });
