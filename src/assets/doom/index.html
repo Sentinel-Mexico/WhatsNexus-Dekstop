@@ -185,19 +185,20 @@
       left: 50%;
       transform: translate(-50%, -50%);
       color: #00a884;
-      font-size: 16px;
+      font-size: 15px;
       font-weight: 600;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 12px;
+      gap: 14px;
       pointer-events: none;
       z-index: 10;
+      transition: opacity 0.3s ease;
     }
 
     .spinner {
-      width: 36px;
-      height: 36px;
+      width: 40px;
+      height: 40px;
       border: 3px solid rgba(0, 168, 132, 0.2);
       border-top-color: #00a884;
       border-radius: 50%;
@@ -213,7 +214,7 @@
   <div id="game-container">
     <div id="loading-indicator">
       <div class="spinner"></div>
-      <span id="loading-text">Cargando DOOM...</span>
+      <span id="loading-text">Cargando recursos de DOOM...</span>
     </div>
 
     <!-- Canvas Principal para WebAssembly -->
@@ -272,6 +273,8 @@
     const overlay = document.getElementById('controls-overlay');
     const toggleBtn = document.getElementById('toggle-controls-btn');
     const header = document.getElementById('controls-header');
+    const loadingIndicator = document.getElementById('loading-indicator');
+    const loadingText = document.getElementById('loading-text');
 
     function toggleOverlay(e) {
       if (e) e.stopPropagation();
@@ -299,13 +302,11 @@
     }
 
     function resumeAllAudioContexts() {
-      // Reanudar contextos capturados
       audioContextList.forEach(ctx => {
         if (ctx && ctx.state === 'suspended') {
           ctx.resume().catch(() => {});
         }
       });
-      // Reanudar contexto de SDL2 en Emscripten
       if (typeof Module !== 'undefined' && Module.SDL2 && Module.SDL2.audioContext) {
         if (Module.SDL2.audioContext.state === 'suspended') {
           Module.SDL2.audioContext.resume().catch(() => {});
@@ -320,61 +321,94 @@
     window.addEventListener('mousedown', resumeAllAudioContexts);
     window.addEventListener('click', resumeAllAudioContexts);
 
-    // 3. Configuración del módulo Emscripten para Cloudflare Doom-Wasm
-    var commonArgs = ["-iwad", "doom1.wad", "-window", "-nogui", "-config", "default.cfg"];
-
-    var Module = {
-      onRuntimeInitialized: function() {
-        const loadingIndicator = document.getElementById('loading-indicator');
-        if (loadingIndicator) {
-          loadingIndicator.style.display = 'none';
-        }
-        if (typeof callMain === 'function') {
-          callMain(commonArgs);
-        }
-        resumeAllAudioContexts();
-      },
-      noInitialRun: true,
-      preRun: [
-        function() {
-          Module.FS.createPreloadedFile("", "doom1.wad", "doom1.wad", true, true);
-          Module.FS.createPreloadedFile("", "default.cfg", "default.cfg", true, true);
-        }
-      ],
-      printErr: function(text) {
-        if (arguments.length > 1) text = Array.prototype.slice.call(arguments).join(" ");
-        console.error(text);
-      },
-      canvas: (function() {
-        var canvas = document.getElementById("canvas");
-        canvas.addEventListener("webglcontextlost", function(e) {
-          alert("WebGL context lost. Recargando...");
-          e.preventDefault();
-        }, false);
-        return canvas;
-      })(),
-      print: function(text) {
-        console.log(text);
-      },
-      setStatus: function(text) {
-        console.log("[Doom Status]", text);
-        const loadingText = document.getElementById('loading-text');
-        if (loadingText && text) {
-          loadingText.textContent = text;
-        }
-      },
-      totalDependencies: 0,
-      monitorRunDependencies: function(left) {
-        this.totalDependencies = Math.max(this.totalDependencies, left);
-        Module.setStatus(left ? ("Cargando recursos... (" + (this.totalDependencies - left) + "/" + this.totalDependencies + ")") : "Iniciando motor DOOM...");
+    // 3. Pre-carga segura y robusta de archivos sin bloqueos de XHR local
+    async function fetchBinary(url, label) {
+      if (loadingText) loadingText.textContent = `Cargando ${label}...`;
+      const res = await fetch(url);
+      if (!res.ok && res.status !== 0) {
+        throw new Error(`Error al leer ${url}: ${res.status}`);
       }
-    };
+      return await res.arrayBuffer();
+    }
 
-    window.onerror = function(event) {
-      console.error("[Doom Error]", event);
-      Module.setStatus("Error al cargar DOOM: ver consola.");
-    };
+    async function initDoom() {
+      try {
+        if (loadingText) loadingText.textContent = "Cargando motor WebAssembly...";
+        const [wasmBuffer, wadBuffer, cfgBuffer] = await Promise.all([
+          fetchBinary("websockets-doom.wasm", "WebAssembly"),
+          fetchBinary("doom1.wad", "datos DOOM (IWAD)"),
+          fetchBinary("default.cfg", "configuración")
+        ]);
+
+        if (loadingText) loadingText.textContent = "Iniciando motor DOOM...";
+
+        const commonArgs = ["-iwad", "doom1.wad", "-window", "-nogui", "-config", "default.cfg"];
+
+        window.Module = {
+          wasmBinary: wasmBuffer,
+          noInitialRun: true,
+          arguments: commonArgs,
+          preRun: [
+            function() {
+              Module.FS.createDataFile("/", "doom1.wad", new Uint8Array(wadBuffer), true, true);
+              Module.FS.createDataFile("/", "default.cfg", new Uint8Array(cfgBuffer), true, true);
+            }
+          ],
+          onRuntimeInitialized: function() {
+            if (loadingIndicator) {
+              loadingIndicator.style.opacity = '0';
+              setTimeout(() => { loadingIndicator.style.display = 'none'; }, 300);
+            }
+            if (typeof callMain === 'function') {
+              callMain(commonArgs);
+            }
+            resumeAllAudioContexts();
+            const canvas = document.getElementById("canvas");
+            if (canvas) canvas.focus();
+          },
+          canvas: (function() {
+            var canvas = document.getElementById("canvas");
+            canvas.addEventListener("webglcontextlost", function(e) {
+              alert("WebGL context lost. Recargando...");
+              e.preventDefault();
+            }, false);
+            return canvas;
+          })(),
+          print: function(text) {
+            console.log(text);
+          },
+          printErr: function(text) {
+            if (arguments.length > 1) text = Array.prototype.slice.call(arguments).join(" ");
+            console.error(text);
+          },
+          setStatus: function(text) {
+            console.log("[Doom Status]", text);
+            if (text === "Running..." || text === "") {
+              if (loadingIndicator) {
+                loadingIndicator.style.opacity = '0';
+                setTimeout(() => { loadingIndicator.style.display = 'none'; }, 300);
+              }
+            } else if (loadingText && text) {
+              loadingText.textContent = text;
+            }
+          }
+        };
+
+        const script = document.createElement("script");
+        script.type = "text/javascript";
+        script.src = "websockets-doom.js";
+        document.body.appendChild(script);
+
+      } catch (err) {
+        console.error("[Doom Init Error]", err);
+        if (loadingText) {
+          loadingText.textContent = "Error al iniciar DOOM. Revisa la consola.";
+        }
+      }
+    }
+
+    // Iniciar carga inmediatamente
+    initDoom();
   </script>
-  <script type="text/javascript" src="websockets-doom.js"></script>
 </body>
 </html>
