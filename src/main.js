@@ -5,7 +5,6 @@ const os = require('os');
 
 // 3. Flags de optimización de Chromium
 app.commandLine.appendSwitch('disable-features', 'HardwareMediaKeyHandling,MediaSessionService,WaylandWpColorManagerV1');
-app.commandLine.appendSwitch('disable-background-networking');
 
 // 1. Single Instance Lock
 const gotTheLock = app.requestSingleInstanceLock();
@@ -109,11 +108,6 @@ function createWindow() {
   mainWindow.webContents.on('did-attach-webview', (event, wc) => {
     if (wc && wc.session) {
       configureSession(wc.session);
-    }
-    if (wc && typeof wc.setWebRTCIPHandlingPolicy === 'function') {
-      const policy = currentNetworkSettings.webrtcProtection ? 'disable-non-proxied-udp' : 'default';
-      wc.setWebRTCIPHandlingPolicy(policy);
-      console.log(`[Backend WebRTC]: Synchronized policy '${policy}' on attached webview (id: ${wc.id})`);
     }
   });
 
@@ -407,116 +401,6 @@ function updateSpellCheckerAllSessions(langCode) {
   }
 }
 
-// Configuración de Privacidad y Red (Proxy y WebRTC)
-let currentNetworkSettings = {
-  useProxy: false,
-  proxyType: 'direct', // 'direct', 'http', 'socks5', 'system'
-  proxyHost: '',
-  proxyPort: '',
-  strictProxyIsolation: false,
-  webrtcProtection: false
-};
-
-function getNetworkSettingsFilePath() {
-  return path.join(app.getPath('userData'), 'network_settings.json');
-}
-
-function loadSavedNetworkSettings() {
-  try {
-    const filePath = getNetworkSettingsFilePath();
-    if (fs.existsSync(filePath)) {
-      const data = JSON.parse(fs.readFileSync(filePath, 'utf8'));
-      currentNetworkSettings = { ...currentNetworkSettings, ...data };
-    }
-  } catch (_) {}
-}
-
-function saveNetworkSettings() {
-  try {
-    const filePath = getNetworkSettingsFilePath();
-    fs.writeFileSync(filePath, JSON.stringify(currentNetworkSettings, null, 2), 'utf8');
-  } catch (_) {}
-}
-
-function getProxyConfig() {
-  if (!currentNetworkSettings.useProxy || currentNetworkSettings.proxyType === 'direct') {
-    return { mode: 'direct' };
-  }
-  if (currentNetworkSettings.proxyType === 'system') {
-    return { mode: 'system' };
-  }
-
-  let host = (currentNetworkSettings.proxyHost || '').trim();
-  let port = (currentNetworkSettings.proxyPort || '').trim();
-  if (!host) {
-    return { mode: 'direct' };
-  }
-
-  // Normalizar host para asegurar formato válido en Chromium
-  host = host.replace(/^https?:\/\//i, '').replace(/^socks[45]?:\/\//i, '').replace(/\/+$/, '');
-  const endpoint = port ? `${host}:${port}` : host;
-  const isSocks = currentNetworkSettings.proxyType === 'socks5';
-  const proxyRules = isSocks ? `socks5://${endpoint}` : `http=${endpoint};https=${endpoint}`;
-  const proxyBypassRules = currentNetworkSettings.strictProxyIsolation ? '' : '<local>';
-
-  return {
-    mode: 'fixed_servers',
-    proxyRules,
-    proxyBypassRules
-  };
-}
-
-async function applyProxyToSession(ses) {
-  if (!ses) return;
-  try {
-    const config = getProxyConfig();
-    await ses.setProxy(config);
-    console.log('[Backend Proxy]: Proxy successfully applied on session:', JSON.stringify(config));
-  } catch (err) {
-    console.error('[Proxy Config Error]:', err);
-  }
-}
-
-function attachSessionWebRTC(ses) {
-  if (!ses) return;
-  if (typeof ses.setWebRTCIPHandlingPolicy !== 'function') {
-    ses.setWebRTCIPHandlingPolicy = function(policy) {
-      this._webrtcPolicy = policy;
-      try {
-        const allWc = webContents.getAllWebContents();
-        for (const wc of allWc) {
-          if (wc && !wc.isDestroyed() && (wc.session === this || this === session.defaultSession)) {
-            if (typeof wc.setWebRTCIPHandlingPolicy === 'function') {
-              wc.setWebRTCIPHandlingPolicy(policy);
-            }
-          }
-        }
-      } catch (err) {
-        console.error('[WebRTC Policy Error]:', err);
-      }
-    };
-  }
-}
-
-function applyWebRTCToSession(ses) {
-  if (!ses) return;
-  attachSessionWebRTC(ses);
-  const policy = currentNetworkSettings.webrtcProtection ? 'disable-non-proxied-udp' : 'default';
-  try {
-    ses.setWebRTCIPHandlingPolicy(policy);
-    console.log(`[Backend WebRTC]: Applied policy '${policy}' to session and associated webContents`);
-  } catch (err) {
-    console.error('[WebRTC Policy Error]:', err);
-  }
-}
-
-function updateNetworkAllSessions() {
-  for (const ses of activeSessions) {
-    applyProxyToSession(ses);
-    applyWebRTCToSession(ses);
-  }
-}
-
 // Interceptar descargas en las sesiones para guardarlas en la ruta elegida por el usuario
 function configureSessionDownloads(ses) {
   if (!ses) return;
@@ -623,21 +507,6 @@ ipcMain.handle('set-spellchecker-language', (event, langCode) => {
     updateSpellCheckerAllSessions(langCode);
   }
   return true;
-});
-
-ipcMain.handle('get-network-settings', () => {
-  return currentNetworkSettings;
-});
-
-ipcMain.handle('update-network-settings', (event, newSettings) => {
-  console.log('[Backend IPC: update-network-settings] Received payload:', JSON.stringify(newSettings));
-  if (newSettings && typeof newSettings === 'object') {
-    currentNetworkSettings = { ...currentNetworkSettings, ...newSettings };
-    saveNetworkSettings();
-    updateNetworkAllSessions();
-  }
-  console.log('[Backend Network Settings] Active settings now:', JSON.stringify(currentNetworkSettings));
-  return currentNetworkSettings;
 });
 
 ipcMain.handle('get-system-info', () => {
@@ -778,14 +647,11 @@ function configureSession(ses) {
   configureSessionPermissions(ses);
   configureSessionDownloads(ses);
   applySpellChecker(ses, currentSystemSettings.spellcheckLanguage || 'es');
-  applyProxyToSession(ses);
-  applyWebRTCToSession(ses);
 }
 
 app.whenReady().then(() => {
   loadSavedPermissions();
   loadSavedSystemSettings();
-  loadSavedNetworkSettings();
   configureSession(session.defaultSession);
   app.on('session-created', (ses) => {
     configureSession(ses);

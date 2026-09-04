@@ -2,6 +2,18 @@
 
 This changelog records all granular updates, bug fixes, refactorings, and feature iterations developed on the `Dev` branch. Each version bump in `package.json` is documented here as it happens.
 
+## [0.17.6] - 2026-09-03
+### Removed
+- **Privacidad y Red (Proxy & WebRTC Subsystem Elimination):**
+  - Completely removed the "Privacidad y Red" settings tab and UI panel (`tab-network`) from `src/renderer/index.html`.
+  - Cleaned all proxy configuration, WebRTC manipulation, strict isolation, and network UI logic (`updateNetworkUI`) from `src/renderer/renderer.js`.
+  - Removed `update-network-settings` and WebRTC blocking overrides (`window.RTCPeerConnection`) from guest webviews in `src/preload.js`.
+  - Removed `updateNetworkSettings` and `getNetworkSettings` IPC invokers from `src/preload-main.js`.
+  - Removed backend network settings management, `ses.setProxy`, `setWebRTCIPHandlingPolicy`, and IPC handlers (`get-network-settings`, `update-network-settings`) in `src/main.js`, eliminating Linux `SIGSEGV` crashes and Chromium network service restarts.
+  - Removed `disable-background-networking` CLI switch in `src/main.js` preventing Network Service process crashes.
+
+---
+
 ## [0.17.5] - 2026-09-03
 ### Fixed
 - **Sidebar Buttons & Accounts Initialization (SyntaxError Fix):**

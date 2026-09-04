@@ -111,17 +111,6 @@ if (settings.spellcheckLanguage === undefined) {
   settings.spellcheckLanguage = settings.language || 'es';
 }
 
-if (!settings.network) {
-  settings.network = {
-    useProxy: false,
-    proxyType: 'direct',
-    proxyHost: '',
-    proxyPort: '',
-    strictProxyIsolation: false,
-    webrtcProtection: false
-  };
-}
-
 // URLs para donaciones y apoyo externo (reemplazar con los enlaces deseados)
 const DONATION_URLS = {
   github: 'https://github.com/sponsors/Sentinel-Mexico', // Reemplazar con tu enlace de GitHub Sponsors
@@ -361,9 +350,6 @@ function updateTranslations() {
   populateLanguageSelect();
   populateSpellcheckSelect();
   renderSettingsAccounts();
-  if (typeof updateNetworkUI === 'function') {
-    updateNetworkUI();
-  }
   if (typeof loadAboutInfo === 'function') {
     loadAboutInfo();
   }
@@ -417,78 +403,6 @@ const spellcheckSelect = document.getElementById('spellcheck-select');
 const spellcheckTrigger = document.getElementById('spellcheck-select-trigger');
 const spellcheckOptions = document.getElementById('spellcheck-select-options');
 const spellcheckLabel = document.getElementById('spellcheck-select-label');
-
-// Elementos de la Pestaña Privacidad y Red
-const networkUseProxyToggle = document.getElementById('network-use-proxy-toggle');
-const proxyTypeSelect = document.getElementById('proxy-type-select');
-const dynamicProxyFields = document.getElementById('dynamic-proxy-fields');
-const proxyHostInput = document.getElementById('proxy-host-input');
-const proxyPortInput = document.getElementById('proxy-port-input');
-const networkStrictProxyToggle = document.getElementById('network-strict-proxy-toggle');
-const strictProxyStatusText = document.getElementById('strict-proxy-status-text');
-const btnRestoreProxy = document.getElementById('btn-restore-proxy');
-const networkWebrtcToggle = document.getElementById('network-webrtc-toggle');
-
-function updateNetworkUI() {
-  if (!settings.network) {
-    settings.network = {
-      useProxy: false,
-      proxyType: 'direct',
-      proxyHost: '',
-      proxyPort: '',
-      strictProxyIsolation: false,
-      webrtcProtection: false
-    };
-  }
-
-  const net = settings.network;
-  const lang = i18n[settings.language] || i18n['en'];
-
-  if (networkUseProxyToggle) {
-    networkUseProxyToggle.checked = !!net.useProxy;
-  }
-  if (proxyTypeSelect) {
-    proxyTypeSelect.value = net.proxyType || 'direct';
-    const label = document.getElementById('proxy-type-select-label');
-    if (label) {
-      const selectedOpt = proxyTypeSelect.options[proxyTypeSelect.selectedIndex];
-      if (selectedOpt) label.innerText = selectedOpt.innerText;
-    }
-  }
-  if (proxyHostInput) {
-    proxyHostInput.value = net.proxyHost || '';
-  }
-  if (proxyPortInput) {
-    proxyPortInput.value = net.proxyPort || '';
-  }
-
-  const isExplicitProxy = net.proxyType === 'http' || net.proxyType === 'socks5';
-  if (dynamicProxyFields) {
-    if (isExplicitProxy) {
-      dynamicProxyFields.classList.remove('hidden');
-    } else {
-      dynamicProxyFields.classList.add('hidden');
-    }
-  }
-
-  if (networkStrictProxyToggle) {
-    const canEnableStrict = !!net.useProxy && isExplicitProxy;
-    networkStrictProxyToggle.disabled = !canEnableStrict || net.proxyType === 'direct';
-    networkStrictProxyToggle.checked = canEnableStrict && !!net.strictProxyIsolation;
-  }
-
-  if (strictProxyStatusText) {
-    if (net.proxyType === 'direct') {
-      strictProxyStatusText.innerText = lang.strict_proxy_disabled_hint || lang.strict_proxy_status_none || 'No hay proxy configurado';
-    } else {
-      strictProxyStatusText.innerText = lang.strict_proxy_enabled_hint || lang.strict_proxy_status_available || 'Disponible solo mientras un proxy HTTP o SOCKS5 esté habilitado';
-    }
-  }
-
-  if (networkWebrtcToggle) {
-    networkWebrtcToggle.checked = !!net.webrtcProtection;
-  }
-}
 
 // Rastreo de mensajes no leídos por cuenta para el System Tray
 const accountUnreadCounts = {};
@@ -640,9 +554,6 @@ function applySettings() {
       try {
         wv.send('update-notification-settings', settings.notifications);
         wv.send('set-dark-mode', isDark);
-        if (settings.network) {
-          wv.send('update-network-settings', settings.network);
-        }
       } catch (_) {}
     });
 
@@ -654,14 +565,6 @@ function applySettings() {
         } catch (_) {}
       }
     });
-  }
-
-  // Sincronizar UI y proceso principal de Privacidad y Red
-  if (settings.network) {
-    updateNetworkUI();
-    if (electronAPI.updateNetworkSettings) {
-      electronAPI.updateNetworkSettings(settings.network);
-    }
   }
 
   // Sincronizar modo oscuro/claro a nivel global de Chromium
@@ -883,9 +786,6 @@ function buildWebviewDOM(account, parentContainer) {
     try {
       if (settings && settings.notifications) {
         webview.send('update-notification-settings', settings.notifications);
-      }
-      if (settings && settings.network) {
-        webview.send('update-network-settings', settings.network);
       }
       webview.send('update-account-settings', { dnd: !!account.dnd });
       webview.send('set-dark-mode', isDark);
@@ -1491,7 +1391,6 @@ initCustomDropdown('palette-select');
 initCustomDropdown('theme-select');
 initCustomDropdown('tray-style-select');
 initCustomDropdown('privacy-preset-select');
-initCustomDropdown('proxy-type-select');
 
 // Manejo del selector de idioma personalizado con scroll limitado a 10 elementos
 const langTrigger = document.getElementById('language-select-trigger');
@@ -1618,74 +1517,6 @@ if (permDenyAllBtn) {
     settings.permissions.location = false;
     settings.permissions.screenShare = false;
     settings.permissions.screenShareAudio = false;
-    saveSettings();
-  });
-}
-
-// ========================================================
-// Manejadores de la Pestaña Privacidad y Red
-// ========================================================
-if (networkUseProxyToggle) {
-  networkUseProxyToggle.addEventListener('change', () => {
-    if (!settings.network) settings.network = {};
-    settings.network.useProxy = networkUseProxyToggle.checked;
-    saveSettings();
-  });
-}
-
-if (proxyTypeSelect) {
-  proxyTypeSelect.addEventListener('change', () => {
-    if (!settings.network) settings.network = {};
-    settings.network.proxyType = proxyTypeSelect.value;
-    saveSettings();
-  });
-}
-
-if (proxyHostInput) {
-  proxyHostInput.addEventListener('input', () => {
-    if (!settings.network) settings.network = {};
-    settings.network.proxyHost = proxyHostInput.value.trim();
-    saveSettings();
-  });
-}
-
-if (proxyPortInput) {
-  proxyPortInput.addEventListener('input', () => {
-    if (!settings.network) settings.network = {};
-    settings.network.proxyPort = proxyPortInput.value.trim();
-    saveSettings();
-  });
-}
-
-if (networkStrictProxyToggle) {
-  networkStrictProxyToggle.addEventListener('change', () => {
-    if (!settings.network) settings.network = {};
-    settings.network.strictProxyIsolation = networkStrictProxyToggle.checked;
-    saveSettings();
-  });
-}
-
-if (btnRestoreProxy) {
-  btnRestoreProxy.addEventListener('click', () => {
-    settings.network = {
-      useProxy: false,
-      proxyType: 'direct',
-      proxyHost: '',
-      proxyPort: '',
-      strictProxyIsolation: false,
-      webrtcProtection: settings.network ? !!settings.network.webrtcProtection : false
-    };
-    saveSettings();
-    if (typeof refreshAllCustomDropdowns === 'function') {
-      refreshAllCustomDropdowns();
-    }
-  });
-}
-
-if (networkWebrtcToggle) {
-  networkWebrtcToggle.addEventListener('change', () => {
-    if (!settings.network) settings.network = {};
-    settings.network.webrtcProtection = networkWebrtcToggle.checked;
     saveSettings();
   });
 }

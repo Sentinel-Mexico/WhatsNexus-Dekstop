@@ -7,8 +7,8 @@ try {
 
 contextBridge.exposeInMainWorld('electronAPI', {
   appInfo: {
-    version: initInfo.version || '0.17.5',
-    appVersion: initInfo.version || '0.17.5',
+    version: initInfo.version || '0.17.6',
+    appVersion: initInfo.version || '0.17.6',
     platform: initInfo.platform || process.platform,
     arch: initInfo.arch || process.arch,
     electronVersion: initInfo.electronVersion || process.versions.electron || 'N/A',
@@ -36,8 +36,6 @@ contextBridge.exposeInMainWorld('electronAPI', {
   },
   getSystemSettings: () => ipcRenderer.invoke('get-system-settings'),
   setSpellcheckerLanguage: (lang) => ipcRenderer.invoke('set-spellchecker-language', lang),
-  updateNetworkSettings: (settings) => ipcRenderer.invoke('update-network-settings', settings),
-  getNetworkSettings: () => ipcRenderer.invoke('get-network-settings'),
   getSystemInfo: () => ipcRenderer.invoke('get-system-info'),
   loadLocale: (lang) => ipcRenderer.invoke('load-locale', lang),
   onSelectAccount: (callback) => {

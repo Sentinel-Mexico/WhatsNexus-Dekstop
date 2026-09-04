@@ -28,43 +28,6 @@ ipcRenderer.on('update-notification-settings', (event, data) => {
   }
 });
 
-// Bloqueo de APIs WebRTC en scripts de la página cuando la protección WebRTC está activa
-let webrtcProtection = false;
-const origRTCPeerConnection = window.RTCPeerConnection;
-const origWebkitRTCPeerConnection = window.webkitRTCPeerConnection;
-
-function applyWebRTCBlock(enabled) {
-  webrtcProtection = !!enabled;
-  if (webrtcProtection) {
-    const dummyRTC = function() {
-      throw new Error('WebRTC is blocked by WhatsNexus privacy settings.');
-    };
-    try {
-      window.RTCPeerConnection = dummyRTC;
-      if ('webkitRTCPeerConnection' in window) {
-        window.webkitRTCPeerConnection = dummyRTC;
-      }
-      if ('RTCSessionDescription' in window) {
-        window.RTCSessionDescription = dummyRTC;
-      }
-      if ('RTCIceCandidate' in window) {
-        window.RTCIceCandidate = dummyRTC;
-      }
-    } catch (_) {}
-  } else {
-    try {
-      if (origRTCPeerConnection) window.RTCPeerConnection = origRTCPeerConnection;
-      if (origWebkitRTCPeerConnection) window.webkitRTCPeerConnection = origWebkitRTCPeerConnection;
-    } catch (_) {}
-  }
-}
-
-ipcRenderer.on('update-network-settings', (event, data) => {
-  if (data && typeof data.webrtcProtection === 'boolean') {
-    applyWebRTCBlock(data.webrtcProtection);
-  }
-});
-
 // Silenciar ÚNICAMENTE la alerta de notificación cuando DND está activo o el sonido de notificación
 // está desactivado, preservando siempre la reproducción de audios y videos de los chats.
 const origAudioPlay = HTMLAudioElement.prototype.play;
