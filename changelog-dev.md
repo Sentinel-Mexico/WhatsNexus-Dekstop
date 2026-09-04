@@ -2,6 +2,21 @@
 
 This changelog records all granular updates, bug fixes, refactorings, and feature iterations developed on the `Dev` branch. Each version bump in `package.json` is documented here as it happens.
 
+## [0.18.2] - 2026-09-03
+### Changed
+- **Renovación de Marca y Logotipos Oficiales de WhatsNexus:**
+  - Se actualizaron los assets oficiales de la aplicación (`src/assets/`) a partir de las fuentes vectoriales maestras:
+    - `icon.png` (256x256) & `tray-green.png` (64x64) generados a partir de `whatsnexus-logo.png` / `.svg`.
+    - `tray-light.png` (64x64) generado a partir de `whatsnexus-logo-monocrome-white.png`.
+    - `tray-dark.png` (64x64) generado a partir de `whatsnexus-logo-monocrome-black.png`.
+    - `tray-green-badge.png` (64x64) generado a partir de `whatsnexus-logo-badge.png`.
+    - `tray-light-badge.png` (64x64) generado a partir de `whatsnexus-logo-monocrome-white-badge.png`.
+    - `tray-dark-badge.png` (64x64) generado a partir de `whatsnexus-logo-monocrome-black-badge.png`.
+  - Se actualizó la pantalla de carga (*Splash Screen*) para renderizar el logo vectorial nítido `whatsnexus-logo.svg`.
+  - Se actualizó la sección *"Acerca de"* (`#tab-about`) para mostrar el logo oficial vectorial `whatsnexus-logo.svg`.
+
+---
+
 ## [0.18.1] - 2026-09-03
 ### Fixed
 - **Subtítulos Descriptivos en Módulos de Permisos/Sistema:**
