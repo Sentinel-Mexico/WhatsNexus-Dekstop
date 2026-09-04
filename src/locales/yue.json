@@ -146,7 +146,7 @@
   "about_spec_arch": "Architecture",
   "about_license_links": "License & Links",
   "about_license_title": "License",
-  "about_license_desc": "Free and open source software distributed under the MIT License.",
+  "about_license_desc": "Free and open source software distributed under the GNU GPL v3 License.",
   "about_repo_title": "Official Repository",
   "about_repo_desc": "Source code, releases, and documentation on GitHub.",
   "about_btn_repo": "Visit GitHub repository",
@@ -203,8 +203,6 @@
   "variant_trad_hk": "繁体 - 香港",
   "label_interface_language": "界面语言",
   "about_btn_zapzap": "访问 ZapZap 仓库",
-  "modal_mit_title": "MIT 许可证 (MIT License)",
-  "modal_mit_body": "WhatsNexus 基于 MIT 许可证分发。这是一个宽松的开源许可证，授予用户使用、复制、修改、合并、发布、分发、再许可和/或销售软件副本的权利。条件：版权声明和本许可声明应包含在软件的所有副本或重要部分中。本软件按“原样”提供，不提供任何形式的明示或暗示保证。",
   "btn_understood": "我知道了",
   "about_btn_sentinel": "访问 Sentinel Studio",
   "about_disclaimer": "WhatsNexus 与 WhatsApp、Messenger、Telegram、Signal、Viber 或其任何母公司或开发公司没有任何附属、赞助或认可关系。",
@@ -212,5 +210,13 @@
   "region_in": "印度",
   "region_nz": "新西兰",
   "region_za": "南非",
-  "region_russia": "俄罗斯"
+  "region_russia": "俄罗斯",
+  "about_badge_gpl": "GNU GPL v3 License",
+  "modal_gpl_title": "GNU GPL v3 License",
+  "modal_gpl_intro": "WhatsNexus is distributed under the GNU General Public License (GPL v3).",
+  "modal_gpl_p1": "This is a free and open-source (copyleft) license that guarantees your freedom to use, study, share, and modify the software.",
+  "modal_gpl_conditions_label": "Conditions:",
+  "modal_gpl_conditions_body": "You have complete freedom to modify and distribute this software. However, if you choose to distribute a modified version (even commercially), you are legally obligated to release the source code of your modifications under this same GPL v3 license.",
+  "modal_gpl_warranty_label": "Limitation of Liability:",
+  "modal_gpl_warranty_body": "The software is provided 'as is', without warranty of any kind, express or implied. In no event shall the authors or copyright holders be liable for any claim or damages."
 }

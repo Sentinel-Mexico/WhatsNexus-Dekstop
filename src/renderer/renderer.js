@@ -1725,56 +1725,56 @@ if (btnAboutSentinel) {
   });
 }
 
-// Control del Modal de Licencia MIT
-const mitModal = document.getElementById('mit-license-modal');
-const btnOpenMitLicense = document.getElementById('btn-open-mit-license');
-const btnCloseMitModal = document.getElementById('btn-close-mit-modal');
-const btnCloseMitModalAction = document.getElementById('btn-close-mit-modal-action');
+// Control del Modal de Licencia GNU GPL v3
+const gplModal = document.getElementById('gpl-license-modal');
+const btnOpenGplLicense = document.getElementById('btn-open-gpl-license');
+const btnCloseGplModal = document.getElementById('btn-close-gpl-modal');
+const btnCloseGplModalAction = document.getElementById('btn-close-gpl-modal-action');
 
-function openMitModal() {
-  if (mitModal) {
-    mitModal.classList.remove('hidden');
+function openGplModal() {
+  if (gplModal) {
+    gplModal.classList.remove('hidden');
   }
 }
 
-function closeMitModal() {
-  if (mitModal) {
-    mitModal.classList.add('hidden');
+function closeGplModal() {
+  if (gplModal) {
+    gplModal.classList.add('hidden');
   }
 }
 
-if (btnOpenMitLicense) {
-  btnOpenMitLicense.addEventListener('click', (e) => {
+if (btnOpenGplLicense) {
+  btnOpenGplLicense.addEventListener('click', (e) => {
     e.preventDefault();
-    openMitModal();
+    openGplModal();
   });
 }
 
-if (btnCloseMitModal) {
-  btnCloseMitModal.addEventListener('click', (e) => {
+if (btnCloseGplModal) {
+  btnCloseGplModal.addEventListener('click', (e) => {
     e.preventDefault();
-    closeMitModal();
+    closeGplModal();
   });
 }
 
-if (btnCloseMitModalAction) {
-  btnCloseMitModalAction.addEventListener('click', (e) => {
+if (btnCloseGplModalAction) {
+  btnCloseGplModalAction.addEventListener('click', (e) => {
     e.preventDefault();
-    closeMitModal();
+    closeGplModal();
   });
 }
 
-if (mitModal) {
-  mitModal.addEventListener('click', (e) => {
-    if (e.target === mitModal) {
-      closeMitModal();
+if (gplModal) {
+  gplModal.addEventListener('click', (e) => {
+    if (e.target === gplModal) {
+      closeGplModal();
     }
   });
 }
 
 document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape' && mitModal && !mitModal.classList.contains('hidden')) {
-    closeMitModal();
+  if (e.key === 'Escape' && gplModal && !gplModal.classList.contains('hidden')) {
+    closeGplModal();
   }
 });
 

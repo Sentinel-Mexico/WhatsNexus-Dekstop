@@ -2,6 +2,19 @@
 
 This changelog records all granular updates, bug fixes, refactorings, and feature iterations developed on the `Dev` branch. Each version bump in `package.json` is documented here as it happens.
 
+## [0.17.11] - 2026-09-03
+### Changed
+- **Migración Integral de Licencia a GNU GPL v3:**
+  - Se incorporó el archivo oficial [`LICENSE`](LICENSE) con los términos íntegros de la **GNU General Public License v3 (GPL v3)** bajo titularidad de Sentinel Studio (`Copyright (C) 2026 Sentinel Studio`).
+  - Se actualizó el campo `"license"` en `package.json` a `"GPL-3.0-or-later"`.
+  - Se actualizaron los badges en el `README.md` incorporando la insignia de versión actual (`v0.17.11`) y el badge oficial de GPL v3 (`![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)`), junto con la sección formal de licencia.
+- **Refactorización Completa en Interfaz y Modal de Licencia:**
+  - Se renombró el botón de la sección "Acerca de" a **"Licencia GNU GPL v3"**.
+  - Se refactorizó todo el código frontend (HTML, CSS y JS) eliminando cualquier identificador o variable residual de `mit` en favor de `gpl` (`#btn-open-gpl-license`, `#gpl-license-modal`, `openGplModal()`, etc.).
+  - Se implementó la nueva redacción explicativa estructurada de la GPL v3 en el modal popup, incluyendo condiciones de copyleft y limitación de responsabilidad, con soporte multilingüe en los 26 idiomas de la aplicación.
+
+---
+
 ## [0.17.10] - 2026-09-03
 ### Changed
 - **Corrector Ortográfico con Layout Horizontal Fluido (Chips/Etiquetas):**

@@ -146,7 +146,7 @@
   "about_spec_arch": "Architektur",
   "about_license_links": "Lizenz & Referenzen",
   "about_license_title": "Open-Source-Lizenz",
-  "about_license_desc": "Diese Software steht unter der freien MIT-Lizenz. Du kannst sie frei verwenden, studieren und modifizieren.",
+  "about_license_desc": "Free and open source software distributed under the GNU GPL v3 License.",
   "about_repo_title": "Quellcode-Repository",
   "about_repo_desc": "Erkunde den Quellcode, verfolge Updates und beteilige dich auf GitHub.",
   "about_btn_repo": "Auf GitHub ansehen",
@@ -203,8 +203,6 @@
   "variant_trad_hk": "Traditionell - Hongkong",
   "label_interface_language": "Sprache der Benutzeroberfläche",
   "about_btn_zapzap": "ZapZap-Repository besuchen",
-  "modal_mit_title": "MIT-Lizenz (MIT License)",
-  "modal_mit_body": "WhatsNexus wird unter der MIT-Lizenz vertrieben. Dies ist eine freie Softwarelizenz, die Benutzern das Recht einräumt, die Software zu nutzen, zu kopieren, zu modifizieren, zusammenzuführen, zu veröffentlichen, zu verbreiten, unterzulizenzieren und/oder Kopien der Software zu verkaufen. Bedingungen: Der Urheberrechtshinweis und dieser Genehmigungshinweis müssen in allen Kopien oder wesentlichen Teilen der Software enthalten sein. Die Software wird 'wie besehen' ohne jegliche Gewährleistung bereitgestellt.",
   "btn_understood": "Verstanden",
   "about_btn_sentinel": "Sentinel Studio besuchen",
   "about_disclaimer": "WhatsNexus steht in keinerlei Verbindung, Sponsoring oder Unterstützung durch WhatsApp, Messenger, Telegram, Signal, Viber oder eines ihrer Entwickler- oder Mutterunternehmen.",
@@ -212,5 +210,13 @@
   "region_in": "Indien",
   "region_nz": "Neuseeland",
   "region_za": "Südafrika",
-  "region_russia": "Russland"
+  "region_russia": "Russland",
+  "about_badge_gpl": "GNU GPL v3 License",
+  "modal_gpl_title": "GNU GPL v3 License",
+  "modal_gpl_intro": "WhatsNexus is distributed under the GNU General Public License (GPL v3).",
+  "modal_gpl_p1": "This is a free and open-source (copyleft) license that guarantees your freedom to use, study, share, and modify the software.",
+  "modal_gpl_conditions_label": "Conditions:",
+  "modal_gpl_conditions_body": "You have complete freedom to modify and distribute this software. However, if you choose to distribute a modified version (even commercially), you are legally obligated to release the source code of your modifications under this same GPL v3 license.",
+  "modal_gpl_warranty_label": "Limitation of Liability:",
+  "modal_gpl_warranty_body": "The software is provided 'as is', without warranty of any kind, express or implied. In no event shall the authors or copyright holders be liable for any claim or damages."
 }
