@@ -5,6 +5,7 @@ To maintain clear traceability between active development and production release
 1. **Development Changelog (`changelog-dev.md`):**
    - Tracks all granular changes, fixes, refactorings, and feature additions applied in the `Dev` branch.
    - **Continuous Trigger:** Every time a change or set of changes modifies the project version in `package.json`, the agent must immediately document the modifications under the corresponding version section in `changelog-dev.md`.
+   - **Mandatory Version Synchronization Triad:** Every time `changelog-dev.md` is updated (or a new version entry is added), the agent **must explicitly verify and guarantee** that both `package.json` and `package-lock.json` are updated to the exact same version number. The three files (`changelog-dev.md`, `package.json`, and `package-lock.json`) must always stay in 100% version synchronization. When updating versions, execute `npm install --package-lock-only` (or verify `package-lock.json`) to guarantee complete lockfile parity before committing.
    - **Automatic Push to Dev:** Whenever a change is recorded in `changelog-dev.md`, the agent must create the corresponding commit and immediately push to `origin/Dev`.
    - Each entry should clearly classify changes (e.g., Features, Fixes, Performance, Refactoring, Documentation).
 

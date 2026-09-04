@@ -11,10 +11,10 @@ All rules are defined as standalone markdown documents in the [`rules/`](rules/)
 | Rule | File | Purpose & Mandate |
 | :--- | :--- | :--- |
 | **Branching & Releases** | [`rules/branching.md`](rules/branching.md) | Enforces development exclusively on the `Dev` branch. The `main` branch is strictly reserved for production releases authorized by the user. |
-| **Changelog Maintenance** | [`rules/changelog.md`](rules/changelog.md) | Separates granular development tracking in `changelog-dev.md` from high-level stable release milestones in `changelog.md`. |
+| **Changelog Maintenance** | [`rules/changelog.md`](rules/changelog.md) | Separates granular development tracking in `changelog-dev.md` from high-level stable release milestones in `changelog.md`. Enforces mandatory version synchronization across the triad (`changelog-dev.md`, `package.json`, `package-lock.json`). |
 | **Documentation Sync** | [`rules/documentation.md`](rules/documentation.md) | Mandates continuous synchronization of `docs/` technical documentation and this `.agents/README.md` index whenever code or rules change. Enforces relative markdown links. |
 | **Documentation Language** | [`rules/language.md`](rules/language.md) | Enforces neutral English for all documentation, inline comments, markdown files, commit messages, and in-app text. |
-| **Semantic Versioning** | [`rules/versioning.md`](rules/versioning.md) | Defines strict SemVer (MAJOR.MINOR.PATCH), lockfile synchronization (`npm install`), and standardized commit message formatting (`"v.<VERSION> <type>: <summary>"`). |
+| **Semantic Versioning** | [`rules/versioning.md`](rules/versioning.md) | Defines strict SemVer (MAJOR.MINOR.PATCH), triad lockfile synchronization (`npm install --package-lock-only`), and standardized commit message formatting (`"v.<VERSION> <type>: <summary>"`). |
 
 ---
 
@@ -28,6 +28,7 @@ All rules are defined as standalone markdown documents in the [`rules/`](rules/)
 ### 2. [Changelog Management (`rules/changelog.md`)](rules/changelog.md)
 - **`changelog-dev.md`:** Updated continuously on every version change on the `Dev` branch, detailing changes under categorized sections (`Added`, `Changed`, `Fixed`, `Performance`).
 - **`changelog.md`:** Updated only during stable production releases to `main`, providing a consolidated, user-facing summary of milestone improvements.
+- **Mandatory Version Synchronization Triad:** Whenever `changelog-dev.md` is updated with a version, both `package.json` and `package-lock.json` must be strictly verified and synchronized to the exact same version before committing.
 
 ### 3. [Documentation Synchronization (`rules/documentation.md`)](rules/documentation.md)
 - **Living Documentation:** Any change to architecture, lifecycle, memory, or testing must be immediately reflected in the corresponding files within `docs/`.
@@ -38,7 +39,7 @@ All rules are defined as standalone markdown documents in the [`rules/`](rules/)
 - All repository documentation, code comments, JSDoc annotations, commit messages, and default in-app strings must be authored in neutral English.
 
 ### 5. [Semantic Versioning & Commits (`rules/versioning.md`)](rules/versioning.md)
-- **SemVer Format:** `MAJOR.MINOR.PATCH` (currently in `0.x.x` beta phase).
+- **SemVer Format:** `MAJOR.MINOR.PATCH` (post-`1.0.0` stable production phase).
 - **Increments:** PATCH for backward-compatible fixes and refactors; MINOR for new features; MAJOR for breaking changes.
-- **Lockfile Synchronization:** Every version change in `package.json` must be immediately followed by `npm install` to synchronize `package-lock.json`.
+- **Triad Lockfile Parity:** Every version change in `package.json` and `changelog-dev.md` must be immediately matched in `package-lock.json` via `npm install --package-lock-only`.
 - **Commit Formatting:** Messages must strictly adhere to `"v.<VERSION> <type>: <summary>"`.

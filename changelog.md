@@ -6,6 +6,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ---
 
+## [1.0.1] - 2026-09-04
+### Changed
+- **Gobernanza y Sincronización Estricta de Versiones:**
+  - Estandarización de reglas operativas en `.agents/rules/` estableciendo la tríada obligatoria de sincronización de versiones (`changelog-dev.md`, `package.json` y `package-lock.json`).
+  - Verificación e integración de paridad al 100% en el archivo de bloqueo de dependencias (`package-lock.json`) en cada incremento.
+### Fixed
+- **Optimización y Estabilidad en Gestión de Paquetes:**
+  - Optimización en rutinas de empaquetado y mitigación de bloqueos en verificación de dependencias.
+
 ## [1.0.0] - 2026-09-04
 ### Added
 - **Primer Lanzamiento Oficial Estable (Salida de Beta):**
