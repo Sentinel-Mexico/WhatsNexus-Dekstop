@@ -1,17 +1,20 @@
 const { contextBridge, ipcRenderer } = require('electron');
-const path = require('path');
-const pkg = require('../package.json');
+
+let initInfo = {};
+try {
+  initInfo = ipcRenderer.sendSync('get-init-info') || {};
+} catch (_) {}
 
 contextBridge.exposeInMainWorld('electronAPI', {
   appInfo: {
-    version: pkg.version,
-    appVersion: pkg.version,
-    platform: process.platform,
-    arch: process.arch,
-    electronVersion: process.versions.electron || 'N/A',
-    chromeVersion: process.versions.chrome || 'N/A'
+    version: initInfo.version || '0.17.4',
+    appVersion: initInfo.version || '0.17.4',
+    platform: initInfo.platform || process.platform,
+    arch: initInfo.arch || process.arch,
+    electronVersion: initInfo.electronVersion || process.versions.electron || 'N/A',
+    chromeVersion: initInfo.chromeVersion || process.versions.chrome || 'N/A'
   },
-  webviewPreloadPath: 'file://' + path.join(__dirname, 'preload.js'),
+  webviewPreloadPath: initInfo.webviewPreloadPath || ('file://' + __dirname + '/preload.js'),
   updateTrayBadge: (count) => ipcRenderer.send('update-tray-badge', count),
   setThemeMode: (mode) => ipcRenderer.send('set-theme-mode', mode),
   updatePermissionSettings: (perms) => ipcRenderer.send('update-permission-settings', perms),
