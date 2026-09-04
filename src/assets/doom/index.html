@@ -341,12 +341,6 @@
           Module.FS.createPreloadedFile("", "default.cfg", "default.cfg", true, true);
         }
       ],
-      locateFile: function(filename, prefix) {
-        if (filename.endsWith('.wasm')) {
-          return 'doom.wasm';
-        }
-        return prefix + filename;
-      },
       printErr: function(text) {
         if (arguments.length > 1) text = Array.prototype.slice.call(arguments).join(" ");
         console.error(text);

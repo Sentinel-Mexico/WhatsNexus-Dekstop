@@ -12,6 +12,7 @@ This changelog records all granular updates, bug fixes, refactorings, and featur
   - Designed and implemented a floating, semi-transparent controls overlay card in the top-right corner of the Doom view styled with WhatsNexus dark theme aesthetics:
     - Lists Chocolate Doom keybindings: Movement (Arrows or W/A/S/D), Fire (Ctrl or Left Click), Open/Interact (Space), Run/Speed (Shift), Change Weapon (1-7).
     - Includes a collapsible/expandable chevron toggle button allowing users to hide controls for an unobstructed gameplay view.
+  - Purged redundant legacy files (`doom.js` and duplicated `doom.wasm`), optimizing offline payload exclusively to Cloudflare's `websockets-doom.wasm`, `websockets-doom.js`, `default.cfg`, and `doom1.wad`.
 - **Automated Multiplatform CI/CD Pipeline (`.github/workflows/build.yml`):**
   - Created GitHub Actions workflow `.github/workflows/build.yml` configured to execute strictly on pushes to `main` and release tags (`v*`).
   - Implemented multiplatform build matrix across `ubuntu-latest`, `windows-latest`, and `macos-latest` leveraging `samuelmeuli/action-electron-builder@v1` with `${{ secrets.GITHUB_TOKEN }}`.

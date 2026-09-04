@@ -72,11 +72,18 @@ async function main() {
     }
   }
 
-  const wsWasm = path.join(doomDir, 'websockets-doom.wasm');
-  const doomWasm = path.join(doomDir, 'doom.wasm');
-  if (fs.existsSync(wsWasm) && (!fs.existsSync(doomWasm) || fs.statSync(doomWasm).size !== fs.statSync(wsWasm).size)) {
-    fs.copyFileSync(wsWasm, doomWasm);
-    console.log('[Doom Setup] Synced doom.wasm with websockets-doom.wasm');
+  // Clean up legacy/redundant files from older Doom implementations if present
+  const legacyFiles = ['doom.wasm', 'doom.js'];
+  for (const legacy of legacyFiles) {
+    const legacyPath = path.join(doomDir, legacy);
+    if (fs.existsSync(legacyPath)) {
+      try {
+        fs.unlinkSync(legacyPath);
+        console.log(`[Doom Setup] Cleaned up legacy file: ${legacy}`);
+      } catch (err) {
+        // ignore
+      }
+    }
   }
 }
 
