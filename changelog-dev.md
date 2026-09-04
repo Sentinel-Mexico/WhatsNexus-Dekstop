@@ -2,6 +2,17 @@
 
 This changelog records all granular updates, bug fixes, refactorings, and feature iterations developed on the `Dev` branch. Each version bump in `package.json` is documented here as it happens.
 
+## [1.0.2] - 2026-09-04
+### Fixed
+- **Classic Doom WebAssembly Engine Execution & Black Screen Resolution:**
+  - Resolved the startup freeze / black screen issue in the Chocolate Doom WebAssembly launcher by passing the `-nomusic` parameter in `commonArgs`, preventing the Emscripten runtime from deadlocking when attempting to initialize MIDI audio hardware without native soundfont backends.
+  - Enhanced canvas interaction handling in `src/assets/doom/index.html` by adding explicit click focus listeners, ensuring immediate capture of keyboard events upon user interaction.
+### Changed
+- **CI/CD Ubuntu 24.04 Multiarch Deb822 Repository Isolation:**
+  - Updated `.github/workflows/build.yml` with deb822 source list isolation for Ubuntu 24.04 (`noble`) runners, ensuring ARM64 cross-compilation toolchains pull exclusively from `ports.ubuntu.com` and prevent architecture collisions with `archive.ubuntu.com`.
+- **Governance Rules Enforcement & Version Triad Parity:**
+  - Updated behavioral rules in `.agents/rules/` and governance index in `.agents/README.md` to mandate push to `Dev` on every version change, strict triad synchronization (`changelog-dev.md`, `package.json`, `package-lock.json`), and English-only policy across all code notes and text files.
+
 ## [1.0.1] - 2026-09-04
 ### Changed
 - **Governance & Version Synchronization Triad Enforcement:**

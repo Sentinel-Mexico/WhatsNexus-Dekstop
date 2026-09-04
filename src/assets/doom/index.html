@@ -342,7 +342,7 @@
 
         if (loadingText) loadingText.textContent = "Iniciando motor DOOM...";
 
-        const commonArgs = ["-iwad", "doom1.wad", "-window", "-nogui", "-config", "default.cfg"];
+        const commonArgs = ["-iwad", "doom1.wad", "-window", "-nogui", "-nomusic", "-config", "default.cfg"];
 
         window.Module = {
           wasmBinary: wasmBuffer,
@@ -364,7 +364,10 @@
             }
             resumeAllAudioContexts();
             const canvas = document.getElementById("canvas");
-            if (canvas) canvas.focus();
+            if (canvas) {
+              canvas.focus();
+              canvas.addEventListener("click", () => canvas.focus());
+            }
           },
           canvas: (function() {
             var canvas = document.getElementById("canvas");

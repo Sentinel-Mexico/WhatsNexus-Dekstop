@@ -36,15 +36,31 @@ jobs:
           npm install || npm ci
           npm install --save-dev electron-builder
 
-      # Configuración de repositorios de ports para compilar ARM64 en Linux x86_64
+      # En Ubuntu 24.04 aislamos deb822 y apuntamos arm64 estrictamente a ports.ubuntu.com
       - name: Dependencias de compilación para Linux
         if: startsWith(matrix.os, 'ubuntu')
         run: |
           sudo dpkg --add-architecture arm64
-          sudo sed -i 's/deb http/deb [arch=amd64] http/g' /etc/apt/sources.list /etc/apt/sources.list.d/* 2>/dev/null || true
-          echo "deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports/ noble main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/arm64-ports.list
-          echo "deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports/ noble-updates main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/arm64-ports.list
-          echo "deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports/ noble-security main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/arm64-ports.list
+          # Si existe el nuevo formato deb822 de Ubuntu 24.04, restringir a amd64
+          if [ -f /etc/apt/sources.list.d/ubuntu.sources ]; then
+            sudo sed -i 's/Architectures: .*/Architectures: amd64/g' /etc/apt/sources.list.d/ubuntu.sources || true
+            if ! grep -q "Architectures:" /etc/apt/sources.list.d/ubuntu.sources; then
+              sudo sed -i '/Suites:/i Architectures: amd64' /etc/apt/sources.list.d/ubuntu.sources
+            fi
+          fi
+          # Si existe el archivo clásico sources.list, restringir a amd64
+          if [ -f /etc/apt/sources.list ]; then
+            sudo sed -i 's/deb http/deb [arch=amd64] http/g' /etc/apt/sources.list || true
+          fi
+          
+          # Crear lista exclusiva de ports.ubuntu.com para ARM64
+          sudo tee /etc/apt/sources.list.d/arm64-ports.list << 'EOF'
+          deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports/ noble main restricted universe multiverse
+          deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports/ noble-updates main restricted universe multiverse
+          deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports/ noble-backports main restricted universe multiverse
+          deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports/ noble-security main restricted universe multiverse
+          EOF
+
           sudo apt-get update
           sudo apt-get install --no-install-recommends -y gcc-aarch64-linux-gnu g++-aarch64-linux-gnu
 
