@@ -1,12 +1,11 @@
-const { app, BrowserWindow, Menu, Tray, ipcMain, nativeImage, nativeTheme, Notification, session } = require('electron');
+const { app, BrowserWindow, Menu, Tray, ipcMain, nativeImage, nativeTheme, Notification, session, dialog, shell, webContents } = require('electron');
 const path = require('path');
 const fs = require('fs');
+const os = require('os');
 
 // 3. Flags de optimización de Chromium
 app.commandLine.appendSwitch('disable-features', 'HardwareMediaKeyHandling,MediaSessionService,WaylandWpColorManagerV1');
-app.commandLine.appendSwitch('disable-site-isolation-trials'); // Reduce overhead de memoria entre orígenes
 app.commandLine.appendSwitch('disable-background-networking');
-app.commandLine.appendSwitch('disable-ipc-flooding-protection');
 
 // 1. Single Instance Lock
 const gotTheLock = app.requestSingleInstanceLock();
@@ -37,8 +36,9 @@ function createSplashWindow() {
     center: true,
     show: false,
     webPreferences: {
-      nodeIntegration: true,
-      contextIsolation: false
+      nodeIntegration: false,
+      contextIsolation: true,
+      preload: path.join(__dirname, 'splash', 'splash-preload.js')
     }
   });
 
@@ -63,18 +63,36 @@ function createWindow() {
     title: 'WhatsNexus',
     icon: path.join(__dirname, 'assets', 'icon.png'), // Placeholder icon path
     webPreferences: {
-      nodeIntegration: true,
-      contextIsolation: false, // For simplicity in this scaffolding, though contextBridge is recommended for prod
+      nodeIntegration: false,
+      contextIsolation: true,
       webviewTag: true, // CRITICAL: This allows the use of <webview> tags for session isolation
-      backgroundThrottling: true // Asegura throttling en background
+      backgroundThrottling: true, // Asegura throttling en background
+      preload: path.join(__dirname, 'preload-main.js')
     }
   });
 
   // Load the index.html of the app
   mainWindow.loadFile(path.join(__dirname, 'renderer', 'index.html'));
 
+  // Enviar ruta de descargas por defecto al renderer cuando termine de cargar
+  mainWindow.webContents.on('did-finish-load', () => {
+    const defaultDownloads = currentSystemSettings.downloadPath || app.getPath('downloads');
+    mainWindow.webContents.send('default-downloads-path', defaultDownloads);
+  });
+
   // Hide the menu bar for a cleaner look
   mainWindow.setMenuBarVisibility(false);
+
+  mainWindow.webContents.on('did-attach-webview', (event, wc) => {
+    if (wc && wc.session) {
+      configureSession(wc.session);
+    }
+    if (wc && typeof wc.setWebRTCIPHandlingPolicy === 'function') {
+      const policy = currentNetworkSettings.webrtcProtection ? 'disable-non-proxied-udp' : 'default';
+      wc.setWebRTCIPHandlingPolicy(policy);
+      console.log(`[Backend WebRTC]: Synchronized policy '${policy}' on attached webview (id: ${wc.id})`);
+    }
+  });
 
   mainWindow.on('close', function (event) {
     if (!app.isQuitting) {
@@ -94,6 +112,11 @@ ipcMain.on('splash-finished', () => {
   if (splashWindow && !splashWindow.isDestroyed()) {
     splashWindow.close();
   }
+});
+
+// Provide current dynamic application version
+ipcMain.on('get-app-version', (event) => {
+  event.returnValue = app.getVersion();
 });
 
 let currentTraySettings = {
@@ -236,9 +259,401 @@ let currentPermissions = {
   screenShareAudio: false
 };
 
+function getPermissionsFilePath() {
+  return path.join(app.getPath('userData'), 'permissions.json');
+}
+
+function loadSavedPermissions() {
+  try {
+    const filePath = getPermissionsFilePath();
+    if (fs.existsSync(filePath)) {
+      const data = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+      currentPermissions = { ...currentPermissions, ...data };
+    }
+  } catch (_) {}
+}
+
+function savePermissions() {
+  try {
+    const filePath = getPermissionsFilePath();
+    fs.writeFileSync(filePath, JSON.stringify(currentPermissions, null, 2), 'utf8');
+  } catch (_) {}
+}
+
 ipcMain.on('update-permission-settings', (event, permissions) => {
   if (permissions) {
     currentPermissions = { ...currentPermissions, ...permissions };
+    savePermissions();
+  }
+});
+
+// Configuración de Sistema (Descargas y Corrector Ortográfico)
+let currentSystemSettings = {
+  downloadPath: '',
+  spellcheckLanguage: 'es'
+};
+
+function getSystemSettingsFilePath() {
+  return path.join(app.getPath('userData'), 'system_settings.json');
+}
+
+function loadSavedSystemSettings() {
+  try {
+    const filePath = getSystemSettingsFilePath();
+    if (fs.existsSync(filePath)) {
+      const data = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+      currentSystemSettings = { ...currentSystemSettings, ...data };
+    }
+  } catch (_) {}
+  if (!currentSystemSettings.downloadPath) {
+    try {
+      currentSystemSettings.downloadPath = app.getPath('downloads');
+    } catch (_) {}
+  }
+}
+
+function saveSystemSettings() {
+  try {
+    const filePath = getSystemSettingsFilePath();
+    fs.writeFileSync(filePath, JSON.stringify(currentSystemSettings, null, 2), 'utf8');
+  } catch (_) {}
+}
+
+// Mapeo de códigos de interfaz (25 idiomas) a códigos BCP-47 para el corrector nativo de Chromium
+const SPELLCHECK_MAP = {
+  en: 'en-US',
+  zh: 'zh-CN',
+  hi: 'hi',
+  es: 'es',
+  fr: 'fr',
+  ar: 'ar',
+  bn: 'bn',
+  pt: 'pt-BR',
+  ru: 'ru',
+  ur: 'ur',
+  id: 'id',
+  de: 'de',
+  ja: 'ja',
+  mr: 'mr',
+  te: 'te',
+  tr: 'tr',
+  ta: 'ta',
+  yue: 'zh-TW',
+  vi: 'vi',
+  fil: 'fil',
+  ko: 'ko',
+  fa: 'fa',
+  ha: 'ha',
+  sw: 'sw',
+  it: 'it'
+};
+
+const activeSessions = new Set();
+
+function applySpellChecker(ses, langCode) {
+  if (!ses) return;
+  const targetCode = SPELLCHECK_MAP[langCode] || langCode || 'en-US';
+  try {
+    ses.setSpellCheckerLanguages([targetCode]);
+  } catch (err) {
+    console.error('[Spellchecker Error]:', err);
+  }
+}
+
+function updateSpellCheckerAllSessions(langCode) {
+  applySpellChecker(session.defaultSession, langCode);
+  for (const ses of activeSessions) {
+    applySpellChecker(ses, langCode);
+  }
+}
+
+// Configuración de Privacidad y Red (Proxy y WebRTC)
+let currentNetworkSettings = {
+  useProxy: false,
+  proxyType: 'direct', // 'direct', 'http', 'socks5', 'system'
+  proxyHost: '',
+  proxyPort: '',
+  strictProxyIsolation: false,
+  webrtcProtection: false
+};
+
+function getNetworkSettingsFilePath() {
+  return path.join(app.getPath('userData'), 'network_settings.json');
+}
+
+function loadSavedNetworkSettings() {
+  try {
+    const filePath = getNetworkSettingsFilePath();
+    if (fs.existsSync(filePath)) {
+      const data = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+      currentNetworkSettings = { ...currentNetworkSettings, ...data };
+    }
+  } catch (_) {}
+}
+
+function saveNetworkSettings() {
+  try {
+    const filePath = getNetworkSettingsFilePath();
+    fs.writeFileSync(filePath, JSON.stringify(currentNetworkSettings, null, 2), 'utf8');
+  } catch (_) {}
+}
+
+function getProxyConfig() {
+  if (!currentNetworkSettings.useProxy || currentNetworkSettings.proxyType === 'direct') {
+    return { mode: 'direct' };
+  }
+  if (currentNetworkSettings.proxyType === 'system') {
+    return { mode: 'system' };
+  }
+
+  let host = (currentNetworkSettings.proxyHost || '').trim();
+  let port = (currentNetworkSettings.proxyPort || '').trim();
+  if (!host) {
+    return { mode: 'direct' };
+  }
+
+  // Normalizar host para asegurar formato válido en Chromium
+  host = host.replace(/^https?:\/\//i, '').replace(/^socks[45]?:\/\//i, '').replace(/\/+$/, '');
+  const endpoint = port ? `${host}:${port}` : host;
+  const isSocks = currentNetworkSettings.proxyType === 'socks5';
+  const proxyRules = isSocks ? `socks5://${endpoint}` : `http=${endpoint};https=${endpoint}`;
+  const proxyBypassRules = currentNetworkSettings.strictProxyIsolation ? '' : '<local>';
+
+  return {
+    mode: 'fixed_servers',
+    proxyRules,
+    proxyBypassRules
+  };
+}
+
+async function applyProxyToSession(ses) {
+  if (!ses) return;
+  try {
+    const config = getProxyConfig();
+    await ses.setProxy(config);
+    console.log('[Backend Proxy]: Proxy successfully applied on session:', JSON.stringify(config));
+  } catch (err) {
+    console.error('[Proxy Config Error]:', err);
+  }
+}
+
+function attachSessionWebRTC(ses) {
+  if (!ses) return;
+  if (typeof ses.setWebRTCIPHandlingPolicy !== 'function') {
+    ses.setWebRTCIPHandlingPolicy = function(policy) {
+      this._webrtcPolicy = policy;
+      try {
+        const allWc = webContents.getAllWebContents();
+        for (const wc of allWc) {
+          if (wc && !wc.isDestroyed() && (wc.session === this || this === session.defaultSession)) {
+            if (typeof wc.setWebRTCIPHandlingPolicy === 'function') {
+              wc.setWebRTCIPHandlingPolicy(policy);
+            }
+          }
+        }
+      } catch (err) {
+        console.error('[WebRTC Policy Error]:', err);
+      }
+    };
+  }
+}
+
+function applyWebRTCToSession(ses) {
+  if (!ses) return;
+  attachSessionWebRTC(ses);
+  const policy = currentNetworkSettings.webrtcProtection ? 'disable-non-proxied-udp' : 'default';
+  try {
+    ses.setWebRTCIPHandlingPolicy(policy);
+    console.log(`[Backend WebRTC]: Applied policy '${policy}' to session and associated webContents`);
+  } catch (err) {
+    console.error('[WebRTC Policy Error]:', err);
+  }
+}
+
+function updateNetworkAllSessions() {
+  for (const ses of activeSessions) {
+    applyProxyToSession(ses);
+    applyWebRTCToSession(ses);
+  }
+}
+
+// Interceptar descargas en las sesiones para guardarlas en la ruta elegida por el usuario
+function configureSessionDownloads(ses) {
+  if (!ses) return;
+  ses.on('will-download', (event, item, webContents) => {
+    let rutaGuardada = currentSystemSettings.downloadPath;
+    if (!rutaGuardada) {
+      try {
+        rutaGuardada = app.getPath('downloads');
+      } catch (_) {}
+    }
+    if (rutaGuardada) {
+      try {
+        if (!fs.existsSync(rutaGuardada)) {
+          fs.mkdirSync(rutaGuardada, { recursive: true });
+        }
+      } catch (err) {
+        console.error('[will-download Error]: No se pudo asegurar la ruta de descargas:', err);
+      }
+      const targetFile = path.join(rutaGuardada, item.getFilename());
+      console.log('Descargando en:', rutaGuardada);
+      item.setSavePath(targetFile);
+    }
+  });
+}
+
+ipcMain.on('open-external', (event, url) => {
+  if (typeof url === 'string') {
+    try {
+      const parsed = new URL(url);
+      if (parsed.protocol === 'http:' || parsed.protocol === 'https:') {
+        shell.openExternal(url);
+      }
+    } catch (_) {}
+  }
+});
+
+ipcMain.handle('open-external-url', async (event, url) => {
+  if (typeof url === 'string') {
+    try {
+      const parsed = new URL(url);
+      if (parsed.protocol === 'http:' || parsed.protocol === 'https:') {
+        await shell.openExternal(url);
+        return true;
+      }
+    } catch (_) {}
+  }
+  return false;
+});
+
+async function handleSelectDownloadFolder() {
+  const defaultDir = currentSystemSettings.downloadPath || app.getPath('downloads');
+  const win = BrowserWindow.getFocusedWindow() || mainWindow;
+  const result = await dialog.showOpenDialog(win, {
+    title: 'Seleccionar Carpeta de Descargas',
+    defaultPath: defaultDir,
+    properties: ['openDirectory']
+  });
+
+  if (!result.canceled && result.filePaths && result.filePaths.length > 0) {
+    const selected = result.filePaths[0];
+    currentSystemSettings.downloadPath = selected;
+    saveSystemSettings();
+    return selected;
+  }
+  return null;
+}
+
+function handleResetDownloadFolder() {
+  const defaultDir = app.getPath('downloads');
+  currentSystemSettings.downloadPath = defaultDir;
+  saveSystemSettings();
+  return defaultDir;
+}
+
+ipcMain.handle('select-folder', async () => handleSelectDownloadFolder());
+ipcMain.handle('select-download-directory', async () => handleSelectDownloadFolder());
+
+ipcMain.handle('reset-folder', () => handleResetDownloadFolder());
+ipcMain.handle('reset-download-directory', () => handleResetDownloadFolder());
+
+ipcMain.handle('get-default-downloads-path', () => {
+  return app.getPath('downloads');
+});
+
+ipcMain.handle('set-download-path', (event, newPath) => {
+  if (typeof newPath === 'string' && newPath.trim()) {
+    currentSystemSettings.downloadPath = newPath.trim();
+    saveSystemSettings();
+  }
+  return currentSystemSettings.downloadPath;
+});
+
+ipcMain.handle('get-system-settings', () => {
+  return {
+    downloadPath: currentSystemSettings.downloadPath || app.getPath('downloads'),
+    spellcheckLanguage: currentSystemSettings.spellcheckLanguage || 'es'
+  };
+});
+
+ipcMain.handle('set-spellchecker-language', (event, langCode) => {
+  if (typeof langCode === 'string') {
+    currentSystemSettings.spellcheckLanguage = langCode;
+    saveSystemSettings();
+    updateSpellCheckerAllSessions(langCode);
+  }
+  return true;
+});
+
+ipcMain.handle('get-network-settings', () => {
+  return currentNetworkSettings;
+});
+
+ipcMain.handle('update-network-settings', (event, newSettings) => {
+  console.log('[Backend IPC: update-network-settings] Received payload:', JSON.stringify(newSettings));
+  if (newSettings && typeof newSettings === 'object') {
+    currentNetworkSettings = { ...currentNetworkSettings, ...newSettings };
+    saveNetworkSettings();
+    updateNetworkAllSessions();
+  }
+  console.log('[Backend Network Settings] Active settings now:', JSON.stringify(currentNetworkSettings));
+  return currentNetworkSettings;
+});
+
+ipcMain.handle('get-system-info', () => {
+  const currentAppVersion = app.getVersion();
+  return {
+    version: currentAppVersion,
+    appVersion: currentAppVersion,
+    electron: process.versions.electron || 'N/A',
+    chrome: process.versions.chrome || 'N/A',
+    node: process.versions.node || 'N/A',
+    v8: process.versions.v8 || 'N/A',
+    osType: os.type(),
+    osRelease: os.release(),
+    osArch: os.arch(),
+    platform: process.platform
+  };
+});
+
+ipcMain.handle('load-locale', (event, langCode) => {
+  if (!langCode || typeof langCode !== 'string') langCode = 'en';
+  const cleanCode = langCode.trim();
+  const safeLang = cleanCode.replace(/[^a-zA-Z0-9_-]/g, '').toLowerCase();
+
+  // Buscar coincidencia exacta o fallback a código base (ej: zh-CN -> zh)
+  const baseCode = safeLang.split('-')[0].split('_')[0];
+  const candidates = [
+    `${safeLang}.json`,
+    `${cleanCode}.json`,
+    `${baseCode}.json`
+  ];
+
+  let resolvedPath = null;
+  for (const filename of candidates) {
+    const p = path.join(__dirname, 'locales', filename);
+    if (fs.existsSync(p)) {
+      resolvedPath = p;
+      break;
+    }
+  }
+
+  if (!resolvedPath) {
+    console.error(`[Locale Load Error - Path]: Archivo no encontrado para código "${langCode}". Buscado en directorio: ${path.join(__dirname, 'locales')}`);
+    return null;
+  }
+
+  try {
+    const rawContent = fs.readFileSync(resolvedPath, 'utf8');
+    try {
+      return JSON.parse(rawContent);
+    } catch (parseErr) {
+      console.error(`[Locale Load Error - JSON Parse]: Error de parseo JSON en archivo ${resolvedPath}:`, parseErr);
+      return null;
+    }
+  } catch (fsErr) {
+    console.error(`[Locale Load Error - File Read]: Error de lectura en ruta ${resolvedPath}:`, fsErr);
+    return null;
   }
 });
 
@@ -269,6 +684,11 @@ function configureSessionPermissions(ses) {
     }
 
     if (permission === 'display-capture') {
+      const mediaTypes = (details && details.mediaTypes) || [];
+      const wantsAudio = mediaTypes.includes('audio');
+      if (wantsAudio) {
+        return callback(!!currentPermissions.screenShare && !!currentPermissions.screenShareAudio);
+      }
       return callback(!!currentPermissions.screenShare);
     }
 
@@ -300,6 +720,11 @@ function configureSessionPermissions(ses) {
     }
 
     if (permission === 'display-capture') {
+      const mediaTypes = (details && details.mediaTypes) || [];
+      const wantsAudio = mediaTypes.includes('audio');
+      if (wantsAudio) {
+        return !!currentPermissions.screenShare && !!currentPermissions.screenShareAudio;
+      }
       return !!currentPermissions.screenShare;
     }
 
@@ -307,10 +732,23 @@ function configureSessionPermissions(ses) {
   });
 }
 
+function configureSession(ses) {
+  if (!ses || activeSessions.has(ses)) return;
+  activeSessions.add(ses);
+  configureSessionPermissions(ses);
+  configureSessionDownloads(ses);
+  applySpellChecker(ses, currentSystemSettings.spellcheckLanguage || 'es');
+  applyProxyToSession(ses);
+  applyWebRTCToSession(ses);
+}
+
 app.whenReady().then(() => {
-  configureSessionPermissions(session.defaultSession);
+  loadSavedPermissions();
+  loadSavedSystemSettings();
+  loadSavedNetworkSettings();
+  configureSession(session.defaultSession);
   app.on('session-created', (ses) => {
-    configureSessionPermissions(ses);
+    configureSession(ses);
   });
 
   createSplashWindow();

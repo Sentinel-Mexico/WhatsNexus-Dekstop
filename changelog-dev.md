@@ -4,6 +4,249 @@ This changelog records all granular updates, bug fixes, refactorings, and featur
 
 ---
 
+## [0.17.4] - 2026-09-03
+### Fixed
+- **Dynamic i18n Locale Resolution & Language Selector:**
+  - Resolved universal fallback to English when switching languages: populated all 23 language JSON files (`fr.json`, `de.json`, `it.json`, `pt.json`, `zh.json`, etc.) with their complete dictionaries (184 keys) extracted from core definitions and translations.
+  - Added dedicated `zh-CN.json` locale and normalized language resolution in `ipcMain.handle('load-locale')` to seamlessly fallback to base language codes when regional variants are requested (e.g. `zh-CN` -> `zh`).
+  - Added granular `try/catch` error reporting with explicit `console.error` logs distinguishing between missing file paths and JSON syntax/parse errors both in the main process and renderer process.
+  - Fixed language dropdown change event and custom selector clicks in `renderer.js` to immediately call `updateTranslations()` to re-render all `[data-i18n]` DOM elements across the application.
+- **Download Management Pipeline & IPC Bridges (Main & Renderer):**
+  - Re-established and unified IPC bridges across `preload-main.js` and `main.js`, exposing `selectFolder()`, `selectDownloadDirectory()`, `resetFolder()`, `resetDownloadDirectory()`, and `getDefaultDownloadsPath()`.
+  - Configured `mainWindow.webContents.on('did-finish-load')` to emit `default-downloads-path` with `app.getPath('downloads')`, auto-populating the UI input on startup and settings load.
+  - Connected `ipcMain.handle('select-folder')` to open `dialog.showOpenDialog({ properties: ['openDirectory'] })` and return the selected path to the renderer to update UI and persist in `system_settings.json`.
+  - Audited `session.defaultSession.on('will-download')` and partitioned webview sessions, ensuring `rutaGuardada` is verified, directory is created if absent, and added explicit `console.log('Descargando en:', rutaGuardada)` debugging before invoking `item.setSavePath()`.
+- **Donations View Button Contrast in Light Theme (CSS):**
+  - Eliminated hardcoded `color: #ffffff;` from `.btn-donate` in `src/renderer/style.css`.
+  - Replaced hardcoded styles with dynamic theme tokens: `background-color: var(--bg-hover)`, `color: var(--text-color)`, and `border: 1px solid var(--border-color)`.
+  - Defined `--text-color: var(--text-primary)` in `:root` and `.theme-light` across all palettes, ensuring high-contrast dark text on light backgrounds in Light Theme and light text in Dark Theme.
+  - Unified `.btn-primary-action` and input focus states to use `var(--bg-active)` instead of undefined `--whatsapp-green`.
+
+---
+
+## [0.17.3] - 2026-09-03
+### Fixed
+- **Privacy & Network Section i18n Localization:**
+  - Audited `src/locales/es.json` and eliminated hardcoded English translation values for `network_proxy_desc`, `network_strict_isolation_title`, `network_strict_isolation_desc`, `strict_proxy_enabled_hint`, `network_restore_proxy_desc`, `network_webrtc_desc`, and `network_webrtc_badge`.
+  - Updated `src/renderer/index.html` replacing raw English fallback strings inside the Privacy & Network module with native Spanish defaults matching the rest of the application template.
+  - Sychronized dynamic strict proxy status hints (`strict_proxy_status_none`, `strict_proxy_status_available`) across both `es.json` and `en.json`.
+- **Proxy and WebRTC Subsystem Verification (Main Process):**
+  - Sanitized host and port parsing in `getProxyConfig()` (`main.js`), stripping accidental URI schemes (`http://`, `socks5://`) and trailing slashes to guarantee compliant Chromium proxy format (`http=host:port;https=host:port` or `socks5://host:port`).
+  - Resolved runtime `TypeError` on WebRTC policy handling: in Electron, `setWebRTCIPHandlingPolicy` operates at the `webContents` layer rather than the `session` prototype.
+  - Implemented `attachSessionWebRTC(ses)` polyfill and dynamic propagation to all active `webContents` instances (`webContents.getAllWebContents()`), as well as reactive policy enforcement on guest `<webview>` attachment (`did-attach-webview`).
+  - Added structured backend `console.log()` reporting for `[Backend IPC: update-network-settings]`, `[Backend Proxy]`, and `[Backend WebRTC]` to monitor incoming payload and network application events in real time.
+- **Dynamic Version Injection in "Acerca de":**
+  - Removed static fallback versions ("0.13.1") from `src/preload-main.js` and `src/renderer/renderer.js`.
+  - Updated `ipcMain.handle('get-system-info')` to explicitly return `appVersion: app.getVersion()` reading dynamically from `package.json`.
+  - Connected `loadAboutInfo()` in `src/renderer/renderer.js` to immediately update `#about-app-version` upon settings view initialization, tab activation (`tab-about`), and locale changes.
+
+---
+
+## [0.17.2] - 2026-09-03
+### Fixed
+- **Sidebar Button Geometry & Layout Unification (UI/UX):**
+  - Resolved visual sizing mismatch between upper account items and lower utility buttons (Configuración, Reportar Error, Donaciones, Añadir Cuenta).
+  - Enforced exact matching dimensions on `.sidebar-bottom .icon-btn` (`52px` width, `52px` height, `0` padding, and `var(--shape-full)` border-radius) matching `.account-item`.
+  - Scaled icon font size to `1.35rem` and aligned the M3 active rail indicator (`left: -12px; height: 36px`) to touch the sidebar boundary symmetrically.
+  - Set `.sidebar-bottom` to `gap: 14px; flex-shrink: 0; width: 100%` with `.sidebar` containing `overflow-x: hidden; box-sizing: border-box`, completely eliminating risk of container overflow.
+- **Appearance Settings Tray Icon Style Row Layout (CSS/HTML):**
+  - Fixed visual breakage in Settings > Apariencia where the "Estilo del Icono en Bandeja" custom dropdown rendered vertically underneath its label.
+  - Applied Flexbox styling with `.setting-row-between` (`display: flex; align-items: center; justify-content: space-between; gap: 16px;`) and aligned the label to the left with `margin-bottom: 0` and the dropdown to the right in the same horizontal row.
+  - Configured `.setting-row-double` with a vertical flex layout (`gap: 20px; margin-top: 14px`) providing clean visual rhythm across the Tray setting card.
+- **Download Management Pipeline & Session Interceptor (Main/Renderer IPC):**
+  - Ensured native OS default download directory (`app.getPath('downloads')`) is automatically resolved, displayed, and utilized on startup when no user path is specified.
+  - Bound the "Seleccionar Carpeta" action via `select-download-directory` IPC to `dialog.showOpenDialog` with `properties: ['openDirectory']`, safely updating user configuration, persisting to `system_settings.json`, and updating the read-only input view.
+  - Connected the "Restablecer por Defecto" button via `reset-download-directory` IPC, resetting user configuration to `app.getPath('downloads')` and refreshing the view.
+  - Hardened download interception via `configureSessionDownloads` across `session.defaultSession`, `session-created`, and `did-attach-webview` events, executing `item.setSavePath(path.join(rutaGuardada, item.getFilename()))` to guarantee all file downloads land in the designated directory.
+
+---
+
+## [0.17.1] - 2026-09-03
+### Performance & Refactoring
+- **Dynamic Modular i18n System (P-01 - Monolito de Diccionarios):**
+  - Eliminated the monolithic 3,130-line hardcoded translation dictionary from `renderer.js`, reducing file size from 4,990 lines down to 1,860 lines and significantly improving RAM utilization.
+  - Created modular directory `src/locales/` housing individual JSON translation files for each of the 25 supported languages.
+  - Extracted complete 182-key dictionaries for English (`en.json`) and Spanish (`es.json`), and generated valid baseline JSON files for the remaining 23 languages.
+  - Implemented lazy-loading mechanism (`loadActiveLocale`): loads solely the user-selected language with `en.json` retained in memory as an automatic fallback for missing keys.
+  - Added secure IPC channel `load-locale` in `src/main.js` and exposed `electronAPI.loadLocale` in `src/preload-main.js`.
+  - Switching language in Settings now dynamically loads the target `.json` file from disk and instantly updates DOM text nodes.
+- **Native Chromium Spellchecker Alignment:**
+  - Standardized `SPELLCHECK_MAP` in `src/main.js` mapping all 25 supported interface languages to their exact Electron/Chromium BCP-47 identifiers (`en-US`, `zh-CN`, `hi`, `es`, `fr`, `ar`, `bn`, `pt-BR`, `ru`, `ur`, `id`, `de`, `ja`, `mr`, `te`, `tr`, `ta`, `zh-TW`, `vi`, `fil`, `ko`, `fa`, `ha`, `sw`, `it`).
+  - Confined spellchecker dictionary provisioning exclusively to native Chromium background management via `session.setSpellCheckerLanguages()` without external HTTP fetch or manual `.bdic` manipulation.
+  - Sychronized spellchecker selection across `session.defaultSession` and all active/partitioned guest sessions (`persist:acc_*`).
+- **Visual Styles & Themes Layout Optimization:**
+  - Adjusted the flexbox layout in the "Temas y Estilo Visual" card (`.setting-row-inline-pair`):
+    - Configured the "Modo de Apariencia" (Theme) dropdown container (`.setting-item-theme`) with `flex: 0 0 max-content` to occupy strictly the space needed for its longest label.
+    - Set the "Paleta de Color" dropdown container (`.setting-item-palette`) to `flex: 1 1 auto` to absorb all freed horizontal space.
+
+---
+
+## [0.17.0] - 2026-09-03
+### Added
+- **"Acerca de" (About) Settings Section (UI/UX):**
+  - Integrated a new settings tab "Acerca de" positioned strictly below "Privacidad y Red", with tab button (`data-tab="tab-about"`), info icon (`fa-solid fa-circle-info`), and full i18n support across 25 interface languages.
+  - Centered App Header card with official WhatsNexus emblem, prominent title, tagline, and real-time version pill (`#about-app-version`).
+  - **Technical Details Card:** Displays an elegant, monospace-styled grid of core system and runtime metrics:
+    - Operating System (`os.type()` and `os.release()`).
+    - CPU Architecture (`os.arch()`).
+    - Electron version (`process.versions.electron`).
+    - Chromium engine version (`process.versions.chrome`).
+    - Node.js runtime version (`process.versions.node`).
+    - V8 JavaScript engine version (`process.versions.v8`).
+  - **License & Links Card:**
+    - MIT License declaration with accent badge.
+    - "Visitar repositorio en GitHub" primary button opening `https://github.com/Sentinel-Mexico/WhatsNexus-Dekstop` safely in the external OS browser via `openExternalUrl`.
+    - "Reportar en GitHub Issues" secondary action button navigating directly to project issues.
+  - **Credits & Acknowledgments Card:**
+    - Community development attribution (Sentinel-Mexico / elChauriMx).
+    - Design and concept acknowledgment crediting the original ZapZap project by Rafael Tosta.
+- **Real-Time System Diagnostics IPC Bridge:**
+  - Implemented `get-system-info` IPC handler in `src/main.js` importing native `os` and returning accurate runtime diagnostics.
+  - Exposed `electronAPI.getSystemInfo()` in `src/preload-main.js` via `contextBridge.exposeInMainWorld()`.
+
+---
+
+## [0.16.0] - 2026-09-03
+### Added
+- **Privacy & Network Settings Section (UI/UX):**
+  - Integrated a new settings tab "Privacidad y Red" placed strictly below "Permisos", with tab navigation (`data-tab="tab-network"`), shield icon (`fa-solid fa-shield-halved`), and full i18n translation across 25 interface languages.
+  - Added **Proxy Configuration Module**:
+    - "Usar proxy" primary toggle (`#network-use-proxy-toggle`) routing traffic through the configured proxy.
+    - Custom styled dropdown (`#proxy-type-select`) supporting "Sin proxy", "HTTP", "SOCKS5", and "Sistema".
+    - Dynamic Server/Host (`#proxy-host-input`) and Port (`#proxy-port-input`) input fields shown only when HTTP or SOCKS5 is selected.
+    - "Strict proxy isolation" toggle (`#network-strict-proxy-toggle`) with dynamic status text (`#strict-proxy-status-text`) stating "Available only while an HTTP or SOCKS5 proxy is enabled" or "No hay proxy configurado", automatically disabled when direct connection is selected.
+    - "Restaurar proxy..." action button (`#btn-restore-proxy`) resetting proxy settings to "Sin proxy" and disabling proxy toggles.
+  - Added **WebRTC Privacy & Protection Module**:
+    - "Protección WebRTC" toggle (`#network-webrtc-toggle`) with secondary description and "Legacy script-based protection" badge.
+- **Multi-Session Proxy Routing & Strict Isolation (Main Process):**
+  - Implemented `session.setProxy()` routing across `session.defaultSession` and all current and future partitioned guest sessions (`persist:acc_*`).
+  - Added proxy configuration builder for HTTP (`http=...;https=...`), SOCKS5 (`socks5://...`), and System (`mode: 'auto_detect'`).
+  - Strict Proxy Isolation eliminates bypass rules (`proxyBypassRules: ''`), enforcing all traffic through the proxy tunnel.
+  - Clean proxy teardown via `{ mode: 'direct' }` upon restore or selection of "Sin proxy".
+  - Persisted network configuration in `userData/network_settings.json`.
+- **Multi-Layer WebRTC Leak Prevention:**
+  - **Chromium Network Layer:** Configured `session.setWebRTCIPHandlingPolicy('disable-non-proxied-udp')` on all sessions to eliminate public IP leakage over non-proxied UDP interfaces.
+  - **Guest Preload Layer (`src/preload.js`):** Intercepts and blocks `window.RTCPeerConnection`, `window.webkitRTCPeerConnection`, `window.RTCSessionDescription`, and `window.RTCIceCandidate` within WhatsApp Web guest pages, preventing scripts from establishing unauthorized P2P connections.
+  - **Reactive Webview IPC Synchronization:** Webviews receive real-time `update-network-settings` IPC events upon settings modification and upon `dom-ready`.
+- **Context Isolation & Preload APIs:**
+  - Securely exposed `electronAPI.getNetworkSettings()` and `electronAPI.updateNetworkSettings()` in `src/preload-main.js` via `contextBridge.exposeInMainWorld()`.
+
+---
+
+## [0.15.0] - 2026-09-03
+### Added
+- **Donations Module (UI/UX):**
+  - Integrated a new sidebar action button with heart icon (`fa-solid fa-heart`) positioned strictly between "Report Bug" and "Settings", equipped with unified tooltip positioning.
+  - Implemented a full-window Donations view (`#donations-view`) inside `<main id="webview-container">` featuring a responsive CSS card grid for support platforms (GitHub Sponsors, PayPal, Ko-fi).
+  - Configured each donation card with platform icon, descriptive copy, an external navigation indicator, and a green primary "Donate" button.
+  - Centralized donation URLs in a configurable `DONATION_URLS` object in `renderer.js` for maintainability.
+- **Secure External URL IPC Dispatch:**
+  - Implemented `open-external-url` IPC handler in `src/main.js` and exposed `openExternalUrl` via `src/preload-main.js` to dispatch support links safely to the OS default browser with protocol validation.
+- **System Downloads Management:**
+  - Added a dedicated "Download Management" block in the Permissions/System settings panel featuring a read-only input, "Select Folder" button, and "Reset to Default" button.
+  - Initialized default download path to the system native downloads directory (`app.getPath('downloads')`).
+  - Integrated `dialog.showOpenDialog` folder picker via IPC, persisting user folder choice in `userData/system_settings.json`.
+  - Intercepted `will-download` on `session.defaultSession` and all partitioned guest sessions (`persist:acc_*`), applying `item.setSavePath()` to automatically save incoming WhatsApp Web files in the designated directory.
+- **Native Chromium Spellchecker Integration:**
+  - Added a custom dropdown selector in the Permissions/System tab dynamically populated with the 25 interface languages.
+  - Integrated Chromium's native Electron spellchecking engine without external APIs.
+  - Mapped interface language codes to corresponding Chromium `.bdic` dictionary tags (e.g., `es-MX`, `en-US`, `pt-BR`, `de-DE`, `fr-FR`).
+  - Automatically applied `session.setSpellCheckerLanguages()` across `session.defaultSession` and all current and future partitioned sessions.
+
+---
+
+## [0.14.0] - 2026-09-03
+### Security
+- **Strict Context Isolation & Node Integration Disabled (S-01):**
+  - Enforced `contextIsolation: true` and `nodeIntegration: false` across all application windows (`mainWindow` and `splashWindow`).
+  - Created secure preload scripts (`src/preload-main.js` and `src/splash/splash-preload.js`) exposing minimal, validated APIs via `contextBridge.exposeInMainWorld()`.
+  - Refactored `renderer.js` and `splash.js` to eliminate all direct usages of `require()`, `process`, `ipcRenderer`, and `shell`.
+- **Content Security Policy (S-02):**
+  - Added strict CSP meta tags in `src/renderer/index.html` and `src/splash/splash.html` preventing execution of unauthorized remote scripts and objects.
+- **XSS Prevention on InnerHTML (S-03):**
+  - Implemented `escapeHtml(str)` utility in `renderer.js` to sanitize dynamic account names, IDs, status labels, and avatar URLs prior to DOM interpolation.
+- **Dangerous Chromium Flag Cleanup (S-05, S-06):**
+  - Removed `disable-site-isolation-trials` and `disable-ipc-flooding-protection` from `main.js`.
+- **Safe External Link Dispatch (S-08):**
+  - Intercepted external URL opening in `main.js` via IPC with strict protocol verification restricted to `http:` and `https:`.
+
+### Added
+- **Global Hardware Permissions Engine:**
+  - Implemented centralized session permission control using `session.setPermissionRequestHandler` and `session.setPermissionCheckHandler` in `main.js` for Microphone, Camera, Location, and Screen Sharing (with audio detection).
+  - Persisted user permission preferences to `userData/permissions.json` and automatically applied them across all partitioned sessions (`persist:acc_*`).
+- **Unified Sidebar Floating Tooltip System:**
+  - Decoupled tooltips from transformed action buttons by attaching a single `floatingTooltip` element to `document.body`.
+  - Unified vertical tooltip positioning to an exact 8px offset from the right boundary of the sidebar for accounts, add account, report bug, and settings.
+
+### Changed
+- **Account Do Not Disturb (DND) Full Lockdown:**
+  - Enhanced DND toggle to completely suppress native OS notifications and sound alerts at the guest preload layer and renderer dispatcher.
+- **Global Notification Customization Strings:**
+  - Standardized privacy replacements: contact name is overridden with `"Nombre oculto"`, message preview with `"Mensaje oculto"`, and contact photo falls back to local WhatsNexus branding when disabled.
+  - Implemented `silent: true` native notification dispatching when notification sounds are disabled.
+- **Zero-Mute Chat Multimedia Architecture:**
+  - Completely removed `webContents.setAudioMuted(true)` from the codebase, guaranteeing that voice messages, videos, and media playback in chat tabs remain fully audible even when notifications are muted or DND is active.
+  - Implemented selective `HTMLAudioElement.prototype.play` suppression in `preload.js` targeting solely automated alert chimes without affecting user-initiated media.
+- **Sidebar Action Button Alignment:**
+  - Removed unwanted hover rotation and custom background overrides from `#add-account-btn`, harmonizing its design with the standard M3 `.icon-btn` system.
+
+---
+
+## [0.13.1] - 2026-09-03
+### Changed
+- **Inline Theme & Color Palette Layout:**
+  - Aligned "Paleta de Color" and "Modo de Apariencia" controls side-by-side on a single cohesive horizontal line (`.setting-row-inline-pair`), eliminating fragmented multi-line stacking in the Appearance panel.
+- **Universal Material 3 Expressive Custom Dropdowns:**
+  - Migrated every select element across the entire application (`#palette-select`, `#theme-select`, `#tray-style-select`, and `#privacy-preset-select`) to the unified, rounded custom dropdown component previously designed for the language selector.
+  - Implemented dynamic label and active state synchronization through `initCustomDropdown` and `refreshAllCustomDropdowns()`, ensuring mutual exclusivity upon open, click-outside auto-dismiss, and theme-adaptive scrollbars.
+
+---
+
+## [0.13.0] - 2026-09-03
+### Added
+- **Material 3 Expressive (M3 Expressive) Design System:**
+  - Modernized the overall graphical environment and component construction to adhere to Google's **Material 3 Expressive** design principles while maintaining 100% fidelity to all 5 color palettes (WhatsApp Emerald, Messenger, Telegram, Signal, Forest) in both Dark and Light modes.
+  - **Navigation Rail:** Upgraded sidebar into an M3 Navigation Rail (`76px`) featuring responsive pill-shaped active rail indicators, squircle FAB for `#add-account-btn` with hover rotation, and full pill badges.
+  - **M3 Expressive Switches:** Re-engineered toggle switches to the official M3 standard (`52x32px` pill track, dynamic thumb scaling from `16px` unchecked to `24px` checked, and spring morphing to `28px` on active press with `cubic-bezier(0.2, 0, 0, 1)`).
+  - **Expressive Containers & Cards:** Applied M3 Large shape scale (`border-radius: 24px`) with soft ambient shadows and tonal hover transitions to `.setting-card`, `.notif-card`, `.perm-card`, and `.settings-account-card`.
+  - **Pill-shaped Segmented Tabs:** Redesigned settings navigation tabs into expressive pill buttons (`border-radius: 9999px`) with tactile active feedback.
+  - **Inputs, Buttons, and Selects:** Upgraded all text fields, select triggers, back buttons, and permission actions to M3 Medium/Full shape scales (`16px` to `9999px`) with expressive focus outlines.
+
+---
+
+## [0.12.5] - 2026-09-03
+### Fixed
+- **Dynamic Splash Screen Version Display:**
+  - Corrected relative package lookup path in `src/splash/splash.js` (`../../package.json`).
+  - Added synchronous IPC channel `get-app-version` in `src/main.js` (`app.getVersion()`) for dynamic, authoritative version retrieval.
+  - Removed static `v0.5.0` fallback in `src/splash/splash.html`, guaranteeing the splash badge automatically and accurately renders the latest SemVer release on every startup.
+
+---
+
+## [0.12.4] - 2026-09-03
+### Fixed
+- **Permissions Module Title Capitalization:**
+  - Capitalized the labels for the hardware access options under "Acceso al dispositivo" in `src/renderer/index.html` and across all dictionaries in `src/renderer/renderer.js` (`Micrófono` and `Cámara`, `Microphone` and `Camera`).
+
+---
+
+## [0.12.3] - 2026-09-03
+### Fixed
+- **Bilingual Language Label Formatting:**
+  - Corrected language label formatting across all 25 language dictionaries to strictly follow `"{translated name in active language} ({native name})"`.
+  - Injected complete 25x25 translation matrices so selecting any language (e.g. Spanish) renders options like `Inglés (English)`, `Chino Mandarín (中文 (普通话))`, `Francés (Français)`, instead of repeating the native name.
+
+---
+
+## [0.12.2] - 2026-09-03
+### Fixed
+- **Language Selector Dropdown Viewport Height (10 Items Max):**
+  - Replaced native unconstrained OS `<select>` popup with a styled custom dropdown component (`.custom-select-wrapper`).
+  - Constrained popup height strictly to `max-height: 380px` (`overflow-y: auto`), ensuring exactly 10 language options are visible at a time before vertical scrolling.
+  - Added smooth scroll-to-selected behavior on open, click-outside auto-dismiss, and theme-adaptive scrollbar styling.
+
+---
+
 ## [0.12.1] - 2026-09-03
 ### Fixed
 - **Language Selector Population:**

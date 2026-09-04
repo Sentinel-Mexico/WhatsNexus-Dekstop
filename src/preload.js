@@ -7,6 +7,83 @@ let intervalId = null;
 let attempts = 0;
 const MAX_ATTEMPTS = 30; // Máximo ~5 minutos de reintentos lentos
 
+let isDnd = false;
+let notificationSettings = {
+  desktopNotifications: true,
+  contactPhoto: true,
+  contactName: true,
+  messagePreview: true,
+  notificationSound: true
+};
+
+ipcRenderer.on('update-account-settings', (event, data) => {
+  if (data && typeof data.dnd === 'boolean') {
+    isDnd = data.dnd;
+  }
+});
+
+ipcRenderer.on('update-notification-settings', (event, data) => {
+  if (data) {
+    notificationSettings = { ...notificationSettings, ...data };
+  }
+});
+
+// Bloqueo de APIs WebRTC en scripts de la página cuando la protección WebRTC está activa
+let webrtcProtection = false;
+const origRTCPeerConnection = window.RTCPeerConnection;
+const origWebkitRTCPeerConnection = window.webkitRTCPeerConnection;
+
+function applyWebRTCBlock(enabled) {
+  webrtcProtection = !!enabled;
+  if (webrtcProtection) {
+    const dummyRTC = function() {
+      throw new Error('WebRTC is blocked by WhatsNexus privacy settings.');
+    };
+    try {
+      window.RTCPeerConnection = dummyRTC;
+      if ('webkitRTCPeerConnection' in window) {
+        window.webkitRTCPeerConnection = dummyRTC;
+      }
+      if ('RTCSessionDescription' in window) {
+        window.RTCSessionDescription = dummyRTC;
+      }
+      if ('RTCIceCandidate' in window) {
+        window.RTCIceCandidate = dummyRTC;
+      }
+    } catch (_) {}
+  } else {
+    try {
+      if (origRTCPeerConnection) window.RTCPeerConnection = origRTCPeerConnection;
+      if (origWebkitRTCPeerConnection) window.webkitRTCPeerConnection = origWebkitRTCPeerConnection;
+    } catch (_) {}
+  }
+}
+
+ipcRenderer.on('update-network-settings', (event, data) => {
+  if (data && typeof data.webrtcProtection === 'boolean') {
+    applyWebRTCBlock(data.webrtcProtection);
+  }
+});
+
+// Silenciar ÚNICAMENTE la alerta de notificación cuando DND está activo o el sonido de notificación
+// está desactivado, preservando siempre la reproducción de audios y videos de los chats.
+const origAudioPlay = HTMLAudioElement.prototype.play;
+HTMLAudioElement.prototype.play = function() {
+  const shouldMuteAlert = isDnd || (notificationSettings && notificationSettings.notificationSound === false);
+  if (shouldMuteAlert) {
+    const isUserGesture = (navigator.userActivation && navigator.userActivation.isActive) ||
+      (window.event && (window.event.type === 'click' || window.event.type === 'pointerdown' || window.event.type === 'pointerup'));
+    
+    const isMedia = isUserGesture || (this.duration && this.duration > 2.5);
+    if (!isMedia) {
+      this.muted = true;
+      this.volume = 0;
+      return Promise.resolve();
+    }
+  }
+  return origAudioPlay.apply(this, arguments);
+};
+
 // ========================================================
 // 1. Procesamiento de Notificaciones y Recorte Circular
 // ========================================================
@@ -43,6 +120,9 @@ function makeCircularAvatar(src, callback) {
 }
 
 function dispatchNotificationToHost(title, options = {}) {
+  if (isDnd || notificationSettings.desktopNotifications === false) {
+    return;
+  }
   const rawIcon = options.icon;
   if (rawIcon) {
     makeCircularAvatar(rawIcon, (circularIcon) => {
@@ -62,6 +142,17 @@ function dispatchNotificationToHost(title, options = {}) {
 }
 
 function CustomNotification(title, options = {}) {
+  if (isDnd || notificationSettings.desktopNotifications === false) {
+    return {
+      onclick: null,
+      onclose: null,
+      onerror: null,
+      onshow: null,
+      addEventListener: function() {},
+      removeEventListener: function() {},
+      close: function() {}
+    };
+  }
   dispatchNotificationToHost(title, options);
   return {
     onclick: null,
@@ -114,6 +205,9 @@ if (navigator.serviceWorker) {
 // Interceptar también ServiceWorkerRegistration si llegara a existir
 if (window.ServiceWorkerRegistration && window.ServiceWorkerRegistration.prototype.showNotification) {
   window.ServiceWorkerRegistration.prototype.showNotification = function(title, options) {
+    if (isDnd || notificationSettings.desktopNotifications === false) {
+      return Promise.resolve();
+    }
     dispatchNotificationToHost(title, options);
     return Promise.resolve();
   };
