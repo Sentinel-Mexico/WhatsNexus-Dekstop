@@ -231,5 +231,12 @@
   "about_license_desc_header": "Términos de uso legal y acceso al código fuente abierto.",
   "about_credits_desc_header": "Comunidad, desarrolladores e inspiración del proyecto.",
   "about_doom_desc_header": "Protocolo de entretenimiento clásico en WebAssembly.",
-  "palette_whatsnexus": "WhatsNexus"
+  "palette_whatsnexus": "WhatsNexus",
+  "btn_check_updates": "Buscar actualizaciones",
+  "btn_checking_updates": "Buscando...",
+  "btn_up_to_date": "Tienes la última versión",
+  "btn_update_available": "Actualización disponible: Descargar ahora",
+  "btn_downloading_update": "Descargando...",
+  "btn_install_restart": "Instalar y Reiniciar",
+  "btn_update_error": "Error al buscar actualizaciones"
 }

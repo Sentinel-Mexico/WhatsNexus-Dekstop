@@ -570,6 +570,7 @@ async function init() {
   initDownloadPathUI();
   renderSpellcheckList();
   loadAboutInfo();
+  initAutoUpdater();
   if (electronAPI.setSpellcheckerLanguages) {
     electronAPI.setSpellcheckerLanguages(settings.spellcheckLanguages || ['es-ES']);
   }
@@ -1863,6 +1864,150 @@ document.addEventListener('keydown', (e) => {
     closeGplModal();
   }
 });
+
+// ========================================================
+// Auto-Updater State Machine (OTA Updates)
+// ========================================================
+function initAutoUpdater() {
+  const btnUpdate = document.getElementById('btn-update');
+  const progressContainer = document.getElementById('update-progress-container');
+  const progressBar = document.getElementById('update-progress-bar');
+  const progressText = document.getElementById('update-progress-text');
+
+  if (!btnUpdate) return;
+
+  const updater = window.electronAPI && window.electronAPI.updater;
+  if (!updater) {
+    console.warn('[AutoUpdater] electronAPI.updater is not available');
+    return;
+  }
+
+  // Update States: 'IDLE' | 'CHECKING' | 'UP_TO_DATE' | 'AVAILABLE' | 'DOWNLOADING' | 'DOWNLOADED' | 'ERROR'
+  let currentState = 'IDLE';
+  let revertTimer = null;
+
+  function getTranslation(key, fallback) {
+    if (typeof currentTranslations !== 'undefined' && currentTranslations && currentTranslations[key]) {
+      return currentTranslations[key];
+    }
+    const lang = (typeof settings !== 'undefined' && settings && settings.language) || 'es';
+    if (typeof i18n !== 'undefined' && i18n && i18n[lang] && i18n[lang][key]) {
+      return i18n[lang][key];
+    }
+    return fallback;
+  }
+
+  function setButtonState(state, payload) {
+    if (revertTimer) {
+      clearTimeout(revertTimer);
+      revertTimer = null;
+    }
+    currentState = state;
+
+    btnUpdate.classList.remove('update-available', 'update-ready');
+
+    switch (state) {
+      case 'IDLE':
+        btnUpdate.disabled = false;
+        if (progressContainer) progressContainer.style.display = 'none';
+        btnUpdate.innerHTML = `<i class="fa-solid fa-arrows-rotate"></i> <span id="btn-update-text" data-i18n="btn_check_updates">${getTranslation('btn_check_updates', 'Buscar actualizaciones')}</span>`;
+        break;
+
+      case 'CHECKING':
+        btnUpdate.disabled = true;
+        if (progressContainer) progressContainer.style.display = 'none';
+        btnUpdate.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> <span id="btn-update-text" data-i18n="btn_checking_updates">${getTranslation('btn_checking_updates', 'Buscando...')}</span>`;
+        break;
+
+      case 'UP_TO_DATE':
+        btnUpdate.disabled = true;
+        if (progressContainer) progressContainer.style.display = 'none';
+        btnUpdate.innerHTML = `<i class="fa-solid fa-circle-check"></i> <span id="btn-update-text" data-i18n="btn_up_to_date">${getTranslation('btn_up_to_date', 'Tienes la última versión')}</span>`;
+        revertTimer = setTimeout(() => {
+          setButtonState('IDLE');
+        }, 3000);
+        break;
+
+      case 'AVAILABLE':
+        btnUpdate.disabled = false;
+        btnUpdate.classList.add('update-available');
+        if (progressContainer) progressContainer.style.display = 'none';
+        btnUpdate.innerHTML = `<i class="fa-solid fa-cloud-arrow-down"></i> <span id="btn-update-text" data-i18n="btn_update_available">${getTranslation('btn_update_available', 'Actualización disponible: Descargar ahora')}</span>`;
+        break;
+
+      case 'DOWNLOADING':
+        btnUpdate.disabled = true;
+        if (progressContainer) progressContainer.style.display = 'flex';
+        const percent = (payload && typeof payload.percent === 'number') ? Math.round(payload.percent) : 0;
+        if (progressBar) progressBar.style.width = `${percent}%`;
+        if (progressText) progressText.innerText = `${percent}%`;
+        btnUpdate.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> <span id="btn-update-text">${getTranslation('btn_downloading_update', 'Descargando...')} ${percent > 0 ? percent + '%' : ''}</span>`;
+        break;
+
+      case 'DOWNLOADED':
+        btnUpdate.disabled = false;
+        btnUpdate.classList.add('update-ready');
+        if (progressContainer) progressContainer.style.display = 'none';
+        btnUpdate.innerHTML = `<i class="fa-solid fa-bolt"></i> <span id="btn-update-text" data-i18n="btn_install_restart">${getTranslation('btn_install_restart', 'Instalar y Reiniciar')}</span>`;
+        break;
+
+      case 'ERROR':
+        btnUpdate.disabled = true;
+        if (progressContainer) progressContainer.style.display = 'none';
+        btnUpdate.innerHTML = `<i class="fa-solid fa-circle-exclamation"></i> <span id="btn-update-text" data-i18n="btn_update_error">${getTranslation('btn_update_error', 'Error al buscar actualizaciones')}</span>`;
+        revertTimer = setTimeout(() => {
+          setButtonState('IDLE');
+        }, 3500);
+        break;
+    }
+  }
+
+  btnUpdate.addEventListener('click', async () => {
+    if (currentState === 'IDLE') {
+      setButtonState('CHECKING');
+      try {
+        await updater.checkForUpdates();
+      } catch (err) {
+        console.error('[AutoUpdater] checkForUpdates error:', err);
+        setButtonState('ERROR');
+      }
+    } else if (currentState === 'AVAILABLE') {
+      setButtonState('DOWNLOADING', { percent: 0 });
+      try {
+        await updater.downloadUpdate();
+      } catch (err) {
+        console.error('[AutoUpdater] downloadUpdate error:', err);
+        setButtonState('ERROR');
+      }
+    } else if (currentState === 'DOWNLOADED') {
+      try {
+        updater.installUpdate();
+      } catch (err) {
+        console.error('[AutoUpdater] installUpdate error:', err);
+      }
+    }
+  });
+
+  updater.onUpdateAvailable((info) => {
+    setButtonState('AVAILABLE', info);
+  });
+
+  updater.onUpdateNotAvailable((info) => {
+    setButtonState('UP_TO_DATE', info);
+  });
+
+  updater.onDownloadProgress((progressObj) => {
+    setButtonState('DOWNLOADING', progressObj);
+  });
+
+  updater.onUpdateDownloaded((info) => {
+    setButtonState('DOWNLOADED', info);
+  });
+
+  updater.onError((err) => {
+    setButtonState('ERROR', err);
+  });
+}
 
 addAccountBtn.addEventListener('click', () => addAccount());
 

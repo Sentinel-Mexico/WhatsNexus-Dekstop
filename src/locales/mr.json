@@ -231,5 +231,12 @@
   "about_license_desc_header": "कायदेशीर वापर अटी आणि मुक्त स्त्रोत कोड प्रवेश.",
   "about_credits_desc_header": "समुदाय, विकासक आणि प्रकल्पाची प्रेरणा.",
   "about_doom_desc_header": "WebAssembly मधील क्लासिक मनोरंजन प्रोटोकॉल.",
-  "palette_whatsnexus": "WhatsNexus"
+  "palette_whatsnexus": "WhatsNexus",
+  "btn_check_updates": "Check for updates",
+  "btn_checking_updates": "Checking...",
+  "btn_up_to_date": "You have the latest version",
+  "btn_update_available": "Update available: Download now",
+  "btn_downloading_update": "Downloading...",
+  "btn_install_restart": "Install & Restart",
+  "btn_update_error": "Error checking for updates"
 }

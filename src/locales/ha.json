@@ -231,5 +231,12 @@
   "about_license_desc_header": "Sharuɗɗan amfani na doka da samun damar lambar buɗe ido.",
   "about_credits_desc_header": "Al'umma, masu haɓakawa, da kuma kwarin gwiwar aikin.",
   "about_doom_desc_header": "Yarjejeniyar nishaɗi na gargajiya a cikin WebAssembly.",
-  "palette_whatsnexus": "WhatsNexus"
+  "palette_whatsnexus": "WhatsNexus",
+  "btn_check_updates": "Check for updates",
+  "btn_checking_updates": "Checking...",
+  "btn_up_to_date": "You have the latest version",
+  "btn_update_available": "Update available: Download now",
+  "btn_downloading_update": "Downloading...",
+  "btn_install_restart": "Install & Restart",
+  "btn_update_error": "Error checking for updates"
 }

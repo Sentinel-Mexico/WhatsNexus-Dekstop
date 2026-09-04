@@ -231,5 +231,12 @@
   "about_license_desc_header": "சட்டப்பூர்வ பயன்பாட்டு விதிமுறைகள் மற்றும் திறந்த மூல குறியீடு அணுகல்.",
   "about_credits_desc_header": "சமூகம், டெவலப்பர்கள் மற்றும் திட்ட உத்வேகம்.",
   "about_doom_desc_header": "WebAssembly இல் கிளாசிக் பொழுதுபோக்கு நெறிமுறை.",
-  "palette_whatsnexus": "WhatsNexus"
+  "palette_whatsnexus": "WhatsNexus",
+  "btn_check_updates": "Check for updates",
+  "btn_checking_updates": "Checking...",
+  "btn_up_to_date": "You have the latest version",
+  "btn_update_available": "Update available: Download now",
+  "btn_downloading_update": "Downloading...",
+  "btn_install_restart": "Install & Restart",
+  "btn_update_error": "Error checking for updates"
 }

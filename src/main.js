@@ -2,6 +2,15 @@ const { app, BrowserWindow, Menu, Tray, ipcMain, nativeImage, nativeTheme, Notif
 const path = require('path');
 const fs = require('fs');
 const os = require('os');
+const { autoUpdater } = require('electron-updater');
+const log = require('electron-log');
+
+// Configure autoUpdater logging with electron-log
+autoUpdater.logger = log;
+if (autoUpdater.logger.transports && autoUpdater.logger.transports.file) {
+  autoUpdater.logger.transports.file.level = 'info';
+}
+autoUpdater.autoDownload = false;
 
 // 3. Flags de optimización de Chromium
 app.commandLine.appendSwitch('disable-features', 'HardwareMediaKeyHandling,MediaSessionService,WaylandWpColorManagerV1');
@@ -678,6 +687,67 @@ ipcMain.handle('load-locale', (event, langCode) => {
   } catch (fsErr) {
     console.error(`[Locale Load Error - File Read]: File read error at path ${resolvedPath}:`, fsErr);
     return null;
+  }
+});
+
+// Helper for sending IPC messages to mainWindow
+function sendToRenderer(channel, ...args) {
+  if (mainWindow && !mainWindow.isDestroyed() && mainWindow.webContents) {
+    mainWindow.webContents.send(channel, ...args);
+  }
+}
+
+// AutoUpdater Event Listeners
+autoUpdater.on('update-available', (info) => {
+  log.info('[AutoUpdater] update-available:', info);
+  sendToRenderer('update-available', info);
+});
+
+autoUpdater.on('update-not-available', (info) => {
+  log.info('[AutoUpdater] update-not-available:', info);
+  sendToRenderer('update-not-available', info);
+});
+
+autoUpdater.on('download-progress', (progressObj) => {
+  sendToRenderer('download-progress', progressObj);
+});
+
+autoUpdater.on('update-downloaded', (info) => {
+  log.info('[AutoUpdater] update-downloaded:', info);
+  sendToRenderer('update-downloaded', info);
+});
+
+autoUpdater.on('error', (err) => {
+  log.error('[AutoUpdater] error:', err);
+  sendToRenderer('update-error', err == null ? 'Error checking for updates' : (err.message || String(err)));
+});
+
+// AutoUpdater IPC Handlers
+ipcMain.handle('check-for-updates', async () => {
+  try {
+    return await autoUpdater.checkForUpdates();
+  } catch (err) {
+    log.error('[AutoUpdater] Check for updates failed:', err);
+    sendToRenderer('update-error', err.message || 'Check for updates failed');
+    throw err;
+  }
+});
+
+ipcMain.handle('download-update', async () => {
+  try {
+    return await autoUpdater.downloadUpdate();
+  } catch (err) {
+    log.error('[AutoUpdater] Download update failed:', err);
+    sendToRenderer('update-error', err.message || 'Download update failed');
+    throw err;
+  }
+});
+
+ipcMain.handle('install-update', () => {
+  try {
+    autoUpdater.quitAndInstall();
+  } catch (err) {
+    log.error('[AutoUpdater] Install update failed:', err);
   }
 });
 

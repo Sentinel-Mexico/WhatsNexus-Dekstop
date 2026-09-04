@@ -231,5 +231,12 @@
   "about_license_desc_header": "చట్టపరమైన ఉపయోగ నిబంధనలు మరియు ఓపెన్ సోర్స్ కోడ్ యాక్సెస్.",
   "about_credits_desc_header": "కమ్యూనిటీ, డెవలపర్లు మరియు ప్రాజెక్ట్ ప్రేరణ.",
   "about_doom_desc_header": "WebAssembly లో క్లాసిక్ వినోద ప్రోటోకాల్.",
-  "palette_whatsnexus": "WhatsNexus"
+  "palette_whatsnexus": "WhatsNexus",
+  "btn_check_updates": "Check for updates",
+  "btn_checking_updates": "Checking...",
+  "btn_up_to_date": "You have the latest version",
+  "btn_update_available": "Update available: Download now",
+  "btn_downloading_update": "Downloading...",
+  "btn_install_restart": "Install & Restart",
+  "btn_update_error": "Error checking for updates"
 }

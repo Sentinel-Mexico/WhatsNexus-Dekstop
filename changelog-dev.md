@@ -2,6 +2,27 @@
 
 This changelog records all granular updates, bug fixes, refactorings, and feature iterations developed on the `Dev` branch. Each version bump in `package.json` is documented here as it happens.
 
+## [0.20.0] - 2026-09-03
+### Added
+- **Complete Auto-Updater Architecture (OTA Updates via `electron-updater`):**
+  - Integrated `electron-updater` and `electron-log` for automated GitHub releases and background update verification.
+  - Configured `electron-builder` `publish` metadata in `package.json` pointing to `Sentinel-Mexico/WhatsNexus-Dekstop` on GitHub.
+  - Configured manual update flow via `autoUpdater.autoDownload = false;` to guarantee explicit user agency before downloading updates.
+  - Implemented secure IPC handlers in main process (`check-for-updates`, `download-update`, `install-update`) with fallback error handling.
+  - Forwarded real-time updater events (`update-available`, `update-not-available`, `download-progress`, `update-downloaded`, `update-error`) to the renderer via `mainWindow.webContents.send`.
+  - Safely exposed updater methods and event listeners under `window.electronAPI.updater` via `contextBridge` in `preload-main.js`.
+- **Interactive Update UI & State Machine in "About" View:**
+  - Added modern `#btn-update` action button directly beneath the version badge in the "About" section header card.
+  - Implemented a resilient UI state machine in `renderer.js`:
+    - **Idle State:** Displays "Buscar actualizaciones" / "Check for updates" (interactive).
+    - **Checking State:** Calls `check-for-updates`, transitions to "Buscando..." / "Checking..." with a spinner (disabled).
+    - **Up-to-Date State:** Informs user with "Tienes la última versión" / "You have the latest version" and automatically reverts to Idle.
+    - **Update Available State:** Highlights button with "Actualización disponible: Descargar ahora" / "Update available: Download now".
+    - **Downloading State:** Calls `download-update`, disables button with live percentage readout, and reveals a sleek dual-gradient animated progress bar.
+    - **Downloaded State:** Emphasizes action button in vibrant emerald green with "Instalar y Reiniciar" / "Install & Restart" triggering `quitAndInstall()`.
+    - **Error State:** Gracefully displays error indicator and reverts to Idle without crashing.
+  - Added localization strings across all 26 supported languages (`src/locales/*.json`).
+
 ## [0.19.0] - 2026-09-03
 ### Added
 - **Official "WhatsNexus" Flagship Color Palette (Default Preset):**

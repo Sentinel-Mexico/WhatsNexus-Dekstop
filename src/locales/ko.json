@@ -231,5 +231,12 @@
   "about_license_desc_header": "법적 이용 약관 및 오픈 소스 코드 접근.",
   "about_credits_desc_header": "커뮤니티, 개발자 및 프로젝트 영감.",
   "about_doom_desc_header": "WebAssembly 클래식 엔터테인먼트 프로토콜.",
-  "palette_whatsnexus": "WhatsNexus"
+  "palette_whatsnexus": "WhatsNexus",
+  "btn_check_updates": "Check for updates",
+  "btn_checking_updates": "Checking...",
+  "btn_up_to_date": "You have the latest version",
+  "btn_update_available": "Update available: Download now",
+  "btn_downloading_update": "Downloading...",
+  "btn_install_restart": "Install & Restart",
+  "btn_update_error": "Error checking for updates"
 }

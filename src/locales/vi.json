@@ -231,5 +231,12 @@
   "about_license_desc_header": "Điều khoản sử dụng hợp pháp và quyền truy cập mã nguồn mở.",
   "about_credits_desc_header": "Cộng đồng, nhà phát triển và nguồn cảm hứng của dự án.",
   "about_doom_desc_header": "Giao thức giải trí cổ điển trong WebAssembly.",
-  "palette_whatsnexus": "WhatsNexus"
+  "palette_whatsnexus": "WhatsNexus",
+  "btn_check_updates": "Check for updates",
+  "btn_checking_updates": "Checking...",
+  "btn_up_to_date": "You have the latest version",
+  "btn_update_available": "Update available: Download now",
+  "btn_downloading_update": "Downloading...",
+  "btn_install_restart": "Install & Restart",
+  "btn_update_error": "Error checking for updates"
 }

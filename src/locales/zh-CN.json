@@ -231,5 +231,12 @@
   "about_license_desc_header": "合法使用条款与开源代码访问。",
   "about_credits_desc_header": "社区、开发者与项目灵感来源。",
   "about_doom_desc_header": "基于 WebAssembly 的经典娱乐协议。",
-  "palette_whatsnexus": "WhatsNexus"
+  "palette_whatsnexus": "WhatsNexus",
+  "btn_check_updates": "Check for updates",
+  "btn_checking_updates": "Checking...",
+  "btn_up_to_date": "You have the latest version",
+  "btn_update_available": "Update available: Download now",
+  "btn_downloading_update": "Downloading...",
+  "btn_install_restart": "Install & Restart",
+  "btn_update_error": "Error checking for updates"
 }
