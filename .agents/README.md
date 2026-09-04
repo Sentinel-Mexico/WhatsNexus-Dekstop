@@ -11,10 +11,10 @@ All rules are defined as standalone markdown documents in the [`rules/`](rules/)
 | Rule | File | Purpose & Mandate |
 | :--- | :--- | :--- |
 | **Branching & Releases** | [`rules/branching.md`](rules/branching.md) | Enforces development exclusively on `Dev` with mandatory push to `Dev` on every version change. The `main` branch is strictly reserved for user-authorized production releases. |
-| **Changelog Maintenance** | [`rules/changelog.md`](rules/changelog.md) | Tracks granular development in `changelog-dev.md` and enforces mandatory version triad synchronization (`changelog-dev.md`, `package.json`, `package-lock.json`). Restricts modifying `changelog.md` strictly to user-requested pushes to `main`, generating a milestone summary from `changelog-dev.md`. |
+| **Changelog Maintenance** | [`rules/changelog.md`](rules/changelog.md) | Tracks granular development in `changelog-dev.md` and enforces mandatory version quartet synchronization (`changelog-dev.md`, `package.json`, `package-lock.json`, root `README.md` badge). Restricts modifying `changelog.md` strictly to user-requested pushes to `main`, generating a milestone summary from `changelog-dev.md`. |
 | **Documentation Sync** | [`rules/documentation.md`](rules/documentation.md) | Mandates continuous synchronization of `docs/` technical documentation and this `.agents/README.md` index whenever code or rules change. Enforces relative markdown links. |
 | **Documentation & Code Language** | [`rules/language.md`](rules/language.md) | Enforces neutral English strictly for all code comments/notes, text files (`.md`, `.txt`), commit messages, and in-app strings without exception. |
-| **Semantic Versioning** | [`rules/versioning.md`](rules/versioning.md) | Defines strict SemVer (MAJOR.MINOR.PATCH), mandatory push to `Dev` on every version change, triad lockfile synchronization (`npm install --package-lock-only`), and commit message format (`"v.<VERSION> <type>: <summary>"`). |
+| **Semantic Versioning** | [`rules/versioning.md`](rules/versioning.md) | Defines strict SemVer (MAJOR.MINOR.PATCH), mandatory push to `Dev` on every version change, quartet synchronization (`changelog-dev.md`, `package.json`, `package-lock.json`, root `README.md` badge), and commit message format (`"v.<VERSION> <type>: <summary>"`). |
 
 ---
 
@@ -28,7 +28,7 @@ All rules are defined as standalone markdown documents in the [`rules/`](rules/)
 
 ### 2. [Changelog Management (`rules/changelog.md`)](rules/changelog.md)
 - **`changelog-dev.md`:** Updated continuously on every version change on the `Dev` branch, detailing changes under categorized sections (`Added`, `Changed`, `Fixed`, `Performance`).
-- **Triad Parity:** Whenever `changelog-dev.md` is updated with a version, both `package.json` and `package-lock.json` must be strictly verified to match the exact same version before committing.
+- **Quartet Parity:** Whenever `changelog-dev.md` is updated with a version, `package.json`, `package-lock.json`, and the root `README.md` version badge must be strictly verified to match the exact same version before committing.
 - **`changelog.md` Constraint:** Modified **strictly and only** when the user requests a push to `main`. It must never be touched during normal development.
 - **Milestone Summary on Push to Main:** Compiles a high-level, user-facing summary of changes since the last `changelog.md` entry, taking the version entries in `changelog-dev.md` as reference.
 
@@ -43,6 +43,6 @@ All rules are defined as standalone markdown documents in the [`rules/`](rules/)
 ### 5. [Semantic Versioning & Commits (`rules/versioning.md`)](rules/versioning.md)
 - **SemVer Format:** `MAJOR.MINOR.PATCH` (post-`1.0.0` stable production phase).
 - **Increments:** PATCH for backward-compatible fixes and refactors; MINOR for new features; MAJOR for breaking changes.
-- **Triad Lockfile Parity:** Every version change in `package.json` and `changelog-dev.md` must be immediately matched in `package-lock.json` via `npm install --package-lock-only`.
+- **Quartet Parity:** Every version change in `package.json` and `changelog-dev.md` must be immediately matched in `package-lock.json` via `npm install --package-lock-only` and in the root `README.md` badge (`v<VERSION>`).
 - **Push to Dev:** Every version change must be pushed to `Dev` (`origin/Dev`).
 - **Commit Formatting:** Messages must strictly adhere to `"v.<VERSION> <type>: <summary>"`.
