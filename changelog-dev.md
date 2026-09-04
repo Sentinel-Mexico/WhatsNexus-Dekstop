@@ -2,6 +2,25 @@
 
 This changelog records all granular updates, bug fixes, refactorings, and feature iterations developed on the `Dev` branch. Each version bump in `package.json` is documented here as it happens.
 
+## [0.21.1] - 2026-09-04
+### Added
+- **Cloudflare Doom-Wasm Port Migration & Audio Pipeline Fixes:**
+  - Migrated Classic Doom Easter Egg to Cloudflare's official Chocolate Doom WebAssembly port (`cloudflare/doom-wasm`).
+  - Integrated local engine assets into `src/assets/doom/`: `websockets-doom.js`, `websockets-doom.wasm` / `doom.wasm`, `default.cfg`, and shareware `doom1.wad`.
+  - Added `--autoplay-policy=no-user-gesture-required` Chromium command line switch in `src/main.js` before `app.whenReady()` to prevent WebAudio autoplay policy restrictions.
+  - Implemented explicit `AudioContext` unlocking logic in Doom's `index.html` on first keydown, mousedown, or touch event, immediately resuming any suspended contexts across WebAudio and Emscripten SDL2.
+  - Designed and implemented a floating, semi-transparent controls overlay card in the top-right corner of the Doom view styled with WhatsNexus dark theme aesthetics:
+    - Lists Chocolate Doom keybindings: Movement (Arrows or W/A/S/D), Fire (Ctrl or Left Click), Open/Interact (Space), Run/Speed (Shift), Change Weapon (1-7).
+    - Includes a collapsible/expandable chevron toggle button allowing users to hide controls for an unobstructed gameplay view.
+- **Automated Multiplatform CI/CD Pipeline (`.github/workflows/build.yml`):**
+  - Created GitHub Actions workflow `.github/workflows/build.yml` configured to execute strictly on pushes to `main` and release tags (`v*`).
+  - Implemented multiplatform build matrix across `ubuntu-latest`, `windows-latest`, and `macos-latest` leveraging `samuelmeuli/action-electron-builder@v1` with `${{ secrets.GITHUB_TOKEN }}`.
+  - Configured Linux ARM64 multiarch cross-compilation toolchains (`gcc-aarch64-linux-gnu`, `g++-aarch64-linux-gnu`, `snapcraft`) producing `.deb`, `.AppImage`, `.snap` (x64 and arm64), macOS `.dmg` (x64 and arm64), and Windows NSIS `.exe` (x64).
+- **Global Typography Migration to Google Fonts "Poppins":**
+  - Adopted Google Fonts "Poppins" as the official typography across WhatsNexus.
+  - Integrated Poppins font links (weights 300, 400, 500, 600, 700) with preconnect directives in `src/renderer/index.html` and `src/splash/splash.html`.
+  - Updated global `font-family` styles across `src/renderer/style.css` and `src/splash/splash.css`.
+
 ## [0.21.0] - 2026-09-03
 ### Added
 - **Comprehensive Offline Protections & Network Reconnection Architecture:**

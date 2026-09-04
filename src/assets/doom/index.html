@@ -1,32 +1,386 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Classic Doom (WASM)</title>
+  <title>WhatsNexus DOOM</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
+    * {
+      box-sizing: border-box;
+      user-select: none;
+    }
+
     html, body {
       margin: 0;
       padding: 0;
       width: 100vw;
       height: 100vh;
       overflow: hidden;
-      background-color: #000;
+      background-color: #0c1317;
+      font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       display: flex;
       justify-content: center;
       align-items: center;
     }
-    /* Forzar al canvas de WebAssembly a estirarse manteniendo la proporción (o cubriendo todo) */
-    canvas {
+
+    #game-container {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: #000;
+    }
+
+    /* Forzar al canvas a estirarse manteniendo la proporción */
+    canvas#canvas {
       width: 100% !important;
       height: 100% !important;
       object-fit: contain;
       outline: none;
+      background-color: #000;
+      image-rendering: pixelated;
+    }
+
+    /* Superposición de Controles Flotante acorde a WhatsNexus Dark Theme */
+    .doom-controls-overlay {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      z-index: 1000;
+      background: rgba(17, 27, 33, 0.9);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(76, 158, 95, 0.4);
+      border-radius: 12px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.05);
+      color: #e9edef;
+      font-size: 12px;
+      max-width: 320px;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      overflow: hidden;
+    }
+
+    .doom-controls-overlay:hover {
+      border-color: rgba(76, 158, 95, 0.7);
+    }
+
+    .controls-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 14px;
+      background: rgba(255, 255, 255, 0.03);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      cursor: pointer;
+    }
+
+    .controls-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 600;
+      font-size: 13px;
+      letter-spacing: 0.3px;
+      color: #00a884;
+    }
+
+    .controls-title svg {
+      color: #00a884;
+    }
+
+    .toggle-btn {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #8696a0;
+      width: 24px;
+      height: 24px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      padding: 0;
+      transition: all 0.2s ease;
+    }
+
+    .toggle-btn:hover {
+      background: rgba(255, 255, 255, 0.15);
+      color: #e9edef;
+    }
+
+    .toggle-btn .chevron-icon {
+      transition: transform 0.25s ease;
+    }
+
+    .controls-body {
+      padding: 12px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      transition: max-height 0.25s ease, opacity 0.2s ease, padding 0.25s ease;
+      max-height: 400px;
+      opacity: 1;
+    }
+
+    .doom-controls-overlay.collapsed .controls-body {
+      max-height: 0;
+      opacity: 0;
+      padding-top: 0;
+      padding-bottom: 0;
+      pointer-events: none;
+    }
+
+    .doom-controls-overlay.collapsed .controls-header {
+      border-bottom: none;
+    }
+
+    .doom-controls-overlay.collapsed .chevron-icon {
+      transform: rotate(180deg);
+    }
+
+    .control-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      line-height: 1.4;
+    }
+
+    .control-label {
+      color: #8696a0;
+      font-weight: 500;
+      font-size: 11.5px;
+    }
+
+    .control-keys {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    kbd {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      box-shadow: 0 2px 0 rgba(0, 0, 0, 0.4);
+      border-radius: 4px;
+      padding: 2px 6px;
+      font-size: 11px;
+      font-family: inherit;
+      font-weight: 600;
+      color: #e9edef;
+      white-space: nowrap;
+    }
+
+    /* Estado de carga */
+    #loading-indicator {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: #00a884;
+      font-size: 16px;
+      font-weight: 600;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    .spinner {
+      width: 36px;
+      height: 36px;
+      border: 3px solid rgba(0, 168, 132, 0.2);
+      border-top-color: #00a884;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
     }
   </style>
 </head>
 <body>
-  <canvas id="screen" width="640" height="400" tabindex="0"></canvas>
-  <script src="doom.js"></script>
+  <div id="game-container">
+    <div id="loading-indicator">
+      <div class="spinner"></div>
+      <span id="loading-text">Cargando DOOM...</span>
+    </div>
+
+    <!-- Canvas Principal para WebAssembly -->
+    <canvas id="canvas" oncontextmenu="event.preventDefault()" tabindex="0"></canvas>
+
+    <!-- Overlay de Controles Chocolate Doom -->
+    <div id="controls-overlay" class="doom-controls-overlay">
+      <div class="controls-header" id="controls-header">
+        <div class="controls-title">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="4" width="20" height="16" rx="2" ry="2"></rect>
+            <line x1="6" y1="8" x2="6.01" y2="8"></line>
+            <line x1="10" y1="8" x2="10.01" y2="8"></line>
+            <line x1="14" y1="8" x2="14.01" y2="8"></line>
+            <line x1="18" y1="8" x2="18.01" y2="8"></line>
+            <line x1="8" y1="12" x2="8.01" y2="12"></line>
+            <line x1="12" y1="12" x2="12.01" y2="12"></line>
+            <line x1="16" y1="12" x2="16.01" y2="12"></line>
+            <line x1="7" y1="16" x2="17" y2="16"></line>
+          </svg>
+          <span>Controles DOOM</span>
+        </div>
+        <button id="toggle-controls-btn" class="toggle-btn" title="Ocultar / Mostrar controles" aria-label="Toggle Controls">
+          <svg class="chevron-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="18 15 12 9 6 15"></polyline>
+          </svg>
+        </button>
+      </div>
+      <div id="controls-body" class="controls-body">
+        <div class="control-row">
+          <span class="control-label">Moverse:</span>
+          <span class="control-keys"><kbd>▲</kbd><kbd>◄</kbd><kbd>▼</kbd><kbd>►</kbd> o <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd></span>
+        </div>
+        <div class="control-row">
+          <span class="control-label">Disparar:</span>
+          <span class="control-keys"><kbd>Ctrl</kbd> o <kbd>Clic Izq</kbd></span>
+        </div>
+        <div class="control-row">
+          <span class="control-label">Abrir / Interactuar:</span>
+          <span class="control-keys"><kbd>Espacio</kbd></span>
+        </div>
+        <div class="control-row">
+          <span class="control-label">Correr / Acelerar:</span>
+          <span class="control-keys"><kbd>Shift</kbd></span>
+        </div>
+        <div class="control-row">
+          <span class="control-label">Cambiar de arma:</span>
+          <span class="control-keys"><kbd>1</kbd> - <kbd>7</kbd></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // 1. Control de visualización del overlay de controles
+    const overlay = document.getElementById('controls-overlay');
+    const toggleBtn = document.getElementById('toggle-controls-btn');
+    const header = document.getElementById('controls-header');
+
+    function toggleOverlay(e) {
+      if (e) e.stopPropagation();
+      overlay.classList.toggle('collapsed');
+    }
+
+    toggleBtn.addEventListener('click', toggleOverlay);
+    header.addEventListener('click', (e) => {
+      if (e.target !== toggleBtn && !toggleBtn.contains(e.target)) {
+        toggleOverlay(e);
+      }
+    });
+
+    // 2. Desbloqueo y gestión del AudioContext de Chromium/WebAudio
+    const audioContextList = [];
+    const OrigAudioContext = window.AudioContext || window.webkitAudioContext;
+    if (OrigAudioContext) {
+      const origProto = OrigAudioContext.prototype;
+      window.AudioContext = function() {
+        const ctx = new OrigAudioContext(...arguments);
+        audioContextList.push(ctx);
+        return ctx;
+      };
+      window.AudioContext.prototype = origProto;
+    }
+
+    function resumeAllAudioContexts() {
+      // Reanudar contextos capturados
+      audioContextList.forEach(ctx => {
+        if (ctx && ctx.state === 'suspended') {
+          ctx.resume().catch(() => {});
+        }
+      });
+      // Reanudar contexto de SDL2 en Emscripten
+      if (typeof Module !== 'undefined' && Module.SDL2 && Module.SDL2.audioContext) {
+        if (Module.SDL2.audioContext.state === 'suspended') {
+          Module.SDL2.audioContext.resume().catch(() => {});
+        }
+      }
+      if (typeof SDL2 !== 'undefined' && SDL2.audioContext && SDL2.audioContext.state === 'suspended') {
+        SDL2.audioContext.resume().catch(() => {});
+      }
+    }
+
+    window.addEventListener('keydown', resumeAllAudioContexts);
+    window.addEventListener('mousedown', resumeAllAudioContexts);
+    window.addEventListener('click', resumeAllAudioContexts);
+
+    // 3. Configuración del módulo Emscripten para Cloudflare Doom-Wasm
+    var commonArgs = ["-iwad", "doom1.wad", "-window", "-nogui", "-config", "default.cfg"];
+
+    var Module = {
+      onRuntimeInitialized: function() {
+        const loadingIndicator = document.getElementById('loading-indicator');
+        if (loadingIndicator) {
+          loadingIndicator.style.display = 'none';
+        }
+        if (typeof callMain === 'function') {
+          callMain(commonArgs);
+        }
+        resumeAllAudioContexts();
+      },
+      noInitialRun: true,
+      preRun: [
+        function() {
+          Module.FS.createPreloadedFile("", "doom1.wad", "doom1.wad", true, true);
+          Module.FS.createPreloadedFile("", "default.cfg", "default.cfg", true, true);
+        }
+      ],
+      locateFile: function(filename, prefix) {
+        if (filename.endsWith('.wasm')) {
+          return 'doom.wasm';
+        }
+        return prefix + filename;
+      },
+      printErr: function(text) {
+        if (arguments.length > 1) text = Array.prototype.slice.call(arguments).join(" ");
+        console.error(text);
+      },
+      canvas: (function() {
+        var canvas = document.getElementById("canvas");
+        canvas.addEventListener("webglcontextlost", function(e) {
+          alert("WebGL context lost. Recargando...");
+          e.preventDefault();
+        }, false);
+        return canvas;
+      })(),
+      print: function(text) {
+        console.log(text);
+      },
+      setStatus: function(text) {
+        console.log("[Doom Status]", text);
+        const loadingText = document.getElementById('loading-text');
+        if (loadingText && text) {
+          loadingText.textContent = text;
+        }
+      },
+      totalDependencies: 0,
+      monitorRunDependencies: function(left) {
+        this.totalDependencies = Math.max(this.totalDependencies, left);
+        Module.setStatus(left ? ("Cargando recursos... (" + (this.totalDependencies - left) + "/" + this.totalDependencies + ")") : "Iniciando motor DOOM...");
+      }
+    };
+
+    window.onerror = function(event) {
+      console.error("[Doom Error]", event);
+      Module.setStatus("Error al cargar DOOM: ver consola.");
+    };
+  </script>
+  <script type="text/javascript" src="websockets-doom.js"></script>
 </body>
 </html>

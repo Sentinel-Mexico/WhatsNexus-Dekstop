@@ -6,9 +6,19 @@ const doomDir = path.join(__dirname, '..', 'src', 'assets', 'doom');
 
 const files = [
   {
-    name: 'doom.wasm',
-    url: 'https://diekmann.github.io/wasm-fizzbuzz/doom/doom.wasm',
-    minSize: 6000000
+    name: 'websockets-doom.js',
+    url: 'https://silentspacemarine.com/websockets-doom.js',
+    minSize: 200000
+  },
+  {
+    name: 'websockets-doom.wasm',
+    url: 'https://silentspacemarine.com/websockets-doom.wasm',
+    minSize: 2000000
+  },
+  {
+    name: 'default.cfg',
+    url: 'https://silentspacemarine.com/default.cfg',
+    minSize: 500
   },
   {
     name: 'doom1.wad',
@@ -60,6 +70,13 @@ async function main() {
         console.error(`[Doom Setup] Error downloading ${item.name}:`, err);
       }
     }
+  }
+
+  const wsWasm = path.join(doomDir, 'websockets-doom.wasm');
+  const doomWasm = path.join(doomDir, 'doom.wasm');
+  if (fs.existsSync(wsWasm) && (!fs.existsSync(doomWasm) || fs.statSync(doomWasm).size !== fs.statSync(wsWasm).size)) {
+    fs.copyFileSync(wsWasm, doomWasm);
+    console.log('[Doom Setup] Synced doom.wasm with websockets-doom.wasm');
   }
 }
 

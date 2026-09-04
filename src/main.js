@@ -14,6 +14,7 @@ autoUpdater.autoDownload = false;
 
 // 3. Flags de optimización de Chromium
 app.commandLine.appendSwitch('disable-features', 'HardwareMediaKeyHandling,MediaSessionService,WaylandWpColorManagerV1');
+app.commandLine.appendSwitch('autoplay-policy', 'no-user-gesture-required');
 
 // 1. Single Instance Lock
 const gotTheLock = app.requestSingleInstanceLock();
