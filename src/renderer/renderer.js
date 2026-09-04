@@ -276,55 +276,56 @@ function populateLanguageSelect() {
 }
 
 const SPELLCHECK_LANGUAGES = [
-  // Español
+  // Español: es, es-AR (Argentina 🇦🇷), es-ES (España 🇪🇸), es-MX (México 🇲🇽), es-US (EE.UU. 🇺🇸), es-419 (Latinoamérica 🌎)
+  { code: 'es', flag: '🇪🇸', base: 'es' },
+  { code: 'es-AR', flag: '🇦🇷', base: 'es', regionKey: 'region_argentina', defaultRegion: 'Argentina' },
   { code: 'es-ES', flag: '🇪🇸', base: 'es', regionKey: 'region_spain', defaultRegion: 'España' },
   { code: 'es-MX', flag: '🇲🇽', base: 'es', regionKey: 'region_mexico', defaultRegion: 'México' },
-  { code: 'es-AR', flag: '🇦🇷', base: 'es', regionKey: 'region_argentina', defaultRegion: 'Argentina' },
-  { code: 'es-CO', flag: '🇨🇴', base: 'es', regionKey: 'region_colombia', defaultRegion: 'Colombia' },
+  { code: 'es-US', flag: '🇺🇸', base: 'es', regionKey: 'region_us', defaultRegion: 'EE.UU.' },
+  { code: 'es-419', flag: '🌎', base: 'es', regionKey: 'region_latam', defaultRegion: 'Latinoamérica' },
 
-  // Inglés
-  { code: 'en-US', flag: '🇺🇸', base: 'en', regionKey: 'region_us', defaultRegion: 'Estados Unidos' },
+  // Inglés: en-US (EE.UU. 🇺🇸), en-GB (Reino Unido 🇬🇧), en-CA (Canadá 🇨🇦), en-AU (Australia 🇦🇺), en-IN (India 🇮🇳), en-NZ (Nueva Zelanda 🇳🇿), en-ZA (Sudáfrica 🇿🇦)
+  { code: 'en-US', flag: '🇺🇸', base: 'en', regionKey: 'region_us', defaultRegion: 'EE.UU.' },
   { code: 'en-GB', flag: '🇬🇧', base: 'en', regionKey: 'region_uk', defaultRegion: 'Reino Unido' },
   { code: 'en-CA', flag: '🇨🇦', base: 'en', regionKey: 'region_ca', defaultRegion: 'Canadá' },
   { code: 'en-AU', flag: '🇦🇺', base: 'en', regionKey: 'region_au', defaultRegion: 'Australia' },
+  { code: 'en-IN', flag: '🇮🇳', base: 'en', regionKey: 'region_in', defaultRegion: 'India' },
+  { code: 'en-NZ', flag: '🇳🇿', base: 'en', regionKey: 'region_nz', defaultRegion: 'Nueva Zelanda' },
+  { code: 'en-ZA', flag: '🇿🇦', base: 'en', regionKey: 'region_za', defaultRegion: 'Sudáfrica' },
 
-  // Portugués
+  // Portugués: pt-BR (Brasil 🇧🇷), pt-PT (Portugal 🇵🇹)
   { code: 'pt-BR', flag: '🇧🇷', base: 'pt', regionKey: 'region_brazil', defaultRegion: 'Brasil' },
   { code: 'pt-PT', flag: '🇵🇹', base: 'pt', regionKey: 'region_portugal', defaultRegion: 'Portugal' },
 
-  // Francés
+  // Francés: fr, fr-FR (Francia 🇫🇷), fr-CA (Canadá 🇨🇦), fr-CH (Suiza 🇨🇭)
+  { code: 'fr', flag: '🇫🇷', base: 'fr' },
   { code: 'fr-FR', flag: '🇫🇷', base: 'fr', regionKey: 'region_france', defaultRegion: 'Francia' },
   { code: 'fr-CA', flag: '🇨🇦', base: 'fr', regionKey: 'region_ca', defaultRegion: 'Canadá' },
+  { code: 'fr-CH', flag: '🇨🇭', base: 'fr', regionKey: 'region_switzerland', defaultRegion: 'Suiza' },
 
-  // Alemán
+  // Alemán: de, de-DE (Alemania 🇩🇪), de-AT (Austria 🇦🇹), de-CH (Suiza 🇨🇭)
+  { code: 'de', flag: '🇩🇪', base: 'de' },
   { code: 'de-DE', flag: '🇩🇪', base: 'de', regionKey: 'region_germany', defaultRegion: 'Alemania' },
   { code: 'de-AT', flag: '🇦🇹', base: 'de', regionKey: 'region_austria', defaultRegion: 'Austria' },
   { code: 'de-CH', flag: '🇨🇭', base: 'de', regionKey: 'region_switzerland', defaultRegion: 'Suiza' },
 
-  // Chino
-  { code: 'zh-CN', flag: '🇨🇳', base: 'zh', regionKey: 'variant_simplified', defaultRegion: 'Simplificado' },
-  { code: 'zh-TW', flag: '🇹🇼', base: 'zh', regionKey: 'variant_trad_taiwan', defaultRegion: 'Tradicional - Taiwán' },
-  { code: 'zh-HK', flag: '🇭🇰', base: 'zh', regionKey: 'variant_trad_hk', defaultRegion: 'Tradicional - Hong Kong' },
-
-  // Resto de idiomas base
-  { code: 'hi', flag: '🇮🇳', base: 'hi' },
-  { code: 'ar', flag: '🇸🇦', base: 'ar' },
-  { code: 'bn', flag: '🇧🇩', base: 'bn' },
+  // Italiano / Ruso: it, it-IT (Italia 🇮🇹), ru, ru-RU (Rusia 🇷🇺)
+  { code: 'it', flag: '🇮🇹', base: 'it' },
+  { code: 'it-IT', flag: '🇮🇹', base: 'it', regionKey: 'region_italy', defaultRegion: 'Italia' },
   { code: 'ru', flag: '🇷🇺', base: 'ru' },
-  { code: 'ur', flag: '🇵🇰', base: 'ur' },
-  { code: 'id', flag: '🇮🇩', base: 'id' },
-  { code: 'ja', flag: '🇯🇵', base: 'ja' },
-  { code: 'mr', flag: '🇮🇳', base: 'mr' },
-  { code: 'te', flag: '🇮🇳', base: 'te' },
-  { code: 'tr', flag: '🇹🇷', base: 'tr' },
-  { code: 'ta', flag: '🇮🇳', base: 'ta' },
-  { code: 'vi', flag: '🇻🇳', base: 'vi' },
-  { code: 'fil', flag: '🇵🇭', base: 'fil' },
-  { code: 'ko', flag: '🇰🇷', base: 'ko' },
+  { code: 'ru-RU', flag: '🇷🇺', base: 'ru', regionKey: 'region_russia', defaultRegion: 'Rusia' },
+
+  // Árabe / Persa: ar (🇸🇦), fa (🇮🇷)
+  { code: 'ar', flag: '🇸🇦', base: 'ar' },
   { code: 'fa', flag: '🇮🇷', base: 'fa' },
-  { code: 'ha', flag: '🇳🇬', base: 'ha' },
-  { code: 'sw', flag: '🇹🇿', base: 'sw' },
-  { code: 'it-IT', flag: '🇮🇹', base: 'it', regionKey: 'region_italy', defaultRegion: 'Italia' }
+
+  // Asiáticos / Otros: hi (Hindi 🇮🇳), id (Indonesio 🇮🇩), ko (Coreano 🇰🇷), ta (Tamil 🇮🇳), tr (Turco 🇹🇷), vi (Vietnamita 🇻🇳)
+  { code: 'hi', flag: '🇮🇳', base: 'hi' },
+  { code: 'id', flag: '🇮🇩', base: 'id' },
+  { code: 'ko', flag: '🇰🇷', base: 'ko' },
+  { code: 'ta', flag: '🇮🇳', base: 'ta' },
+  { code: 'tr', flag: '🇹🇷', base: 'tr' },
+  { code: 'vi', flag: '🇻🇳', base: 'vi' }
 ];
 
 function renderSpellcheckList() {
@@ -332,7 +333,8 @@ function renderSpellcheckList() {
   if (!container) return;
 
   container.innerHTML = '';
-  const dict = i18n[settings.language] || i18n['en'] || {};
+  const currentLang = settings.language || 'es';
+  const dict = i18n[currentLang] || i18n['en'] || {};
 
   if (!Array.isArray(settings.spellcheckLanguages)) {
     if (settings.spellcheckLanguage) {
@@ -344,7 +346,24 @@ function renderSpellcheckList() {
 
   const selectedSet = new Set(settings.spellcheckLanguages);
 
-  SPELLCHECK_LANGUAGES.forEach(item => {
+  // Mapear cada elemento con su nombre traducido formateado
+  const items = SPELLCHECK_LANGUAGES.map(item => {
+    const langName = dict[`lang_${item.base}`] || nativeNames[item.base] || item.base;
+    let labelContent = langName;
+    if (item.regionKey) {
+      const regionText = dict[item.regionKey] || item.defaultRegion;
+      labelContent += ` (${regionText})`;
+    }
+    return {
+      ...item,
+      nombreTraducido: labelContent
+    };
+  });
+
+  // Ordenamiento alfabético dinámico estricto basado en el texto traducido que el usuario ve
+  items.sort((a, b) => a.nombreTraducido.localeCompare(b.nombreTraducido, currentLang));
+
+  items.forEach(item => {
     const itemLabel = document.createElement('label');
     itemLabel.className = 'spellcheck-checkbox-item' + (selectedSet.has(item.code) ? ' selected' : '');
 
@@ -360,17 +379,7 @@ function renderSpellcheckList() {
 
     const nameSpan = document.createElement('span');
     nameSpan.className = 'spellcheck-item-name';
-    const langName = dict[`lang_${item.base}`] || nativeNames[item.base] || item.base;
-    let labelContent = langName;
-    if (item.regionKey) {
-      const regionText = dict[item.regionKey] || item.defaultRegion;
-      labelContent += ` (${regionText})`;
-    }
-    nameSpan.innerText = labelContent;
-
-    const codeSpan = document.createElement('span');
-    codeSpan.className = 'spellcheck-item-code';
-    codeSpan.innerText = item.code;
+    nameSpan.innerText = item.nombreTraducido;
 
     cb.addEventListener('change', () => {
       const currentSelected = new Set(settings.spellcheckLanguages || []);
@@ -393,7 +402,6 @@ function renderSpellcheckList() {
     itemLabel.appendChild(cb);
     itemLabel.appendChild(flagSpan);
     itemLabel.appendChild(nameSpan);
-    itemLabel.appendChild(codeSpan);
 
     container.appendChild(itemLabel);
   });
@@ -1701,6 +1709,18 @@ if (btnAboutZapzap) {
       electronAPI.openExternalUrl(zapzapUrl);
     } else if (electronAPI && electronAPI.openExternal) {
       electronAPI.openExternal(zapzapUrl);
+    }
+  });
+}
+
+const btnAboutSentinel = document.getElementById('btn-about-sentinel');
+if (btnAboutSentinel) {
+  btnAboutSentinel.addEventListener('click', () => {
+    const sentinelUrl = 'https://somossentinel.com/studio';
+    if (electronAPI && electronAPI.openExternalUrl) {
+      electronAPI.openExternalUrl(sentinelUrl);
+    } else if (electronAPI && electronAPI.openExternal) {
+      electronAPI.openExternal(sentinelUrl);
     }
   });
 }

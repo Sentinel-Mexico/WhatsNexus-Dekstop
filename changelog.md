@@ -6,6 +6,26 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ---
 
+## [0.17.10] - 2026-09-03
+### Changed
+- **Fluid Horizontal Tag Layout for Spellchecker:**
+  - Updated the spellchecker options container to use `display: flex; flex-wrap: wrap; gap: 10px;` allowing options to adapt dynamically as modular chips.
+  - Re-styled spellchecker items with rounded corners, subtle borders, and smooth interaction states.
+- **Dynamic Alphabetical Collation for Spellchecker:**
+  - Implemented dynamic alphabetical sorting based strictly on the translated label currently viewed by the user via `.localeCompare()`.
+- **Extended BCP-47 Regional Variants:**
+  - Added exhaustive regional variants for Spanish, English, Portuguese, French, German, Italian, Russian, Arabic, Persian, and Asian languages.
+- **Development Credits & Sentinel Studio Portal:**
+  - Updated development copy to acknowledge Sentinel Studio and GitHub contributors, adding a direct button to `https://somossentinel.com/studio`.
+- **Legal Disclaimer Notice:**
+  - Appended an official multi-platform non-affiliation disclaimer to the About section across all 26 supported languages.
+
+### Fixed
+- **Transparent Background in MIT License Modal:**
+  - Fixed modal card background using solid opaque theme-aware variables (`var(--bg-modal, var(--bg-sidebar, #111b21))`) ensuring crisp readability across light and dark themes.
+
+---
+
 ## [0.17.9] - 2026-09-03
 ### Added
 - **Multilingual Spellchecker with Checklist UI & Regional BCP-47 Variants:**
