@@ -230,5 +230,6 @@
   "about_version_desc": "當前建置資訊同埋系統更新。",
   "about_license_desc_header": "合法使用條款與開源代碼訪問。",
   "about_credits_desc_header": "社群、開發者同埋項目靈感來源。",
-  "about_doom_desc_header": "基於 WebAssembly 嘅經典娛樂協議。"
+  "about_doom_desc_header": "基於 WebAssembly 嘅經典娛樂協議。",
+  "palette_whatsnexus": "WhatsNexus"
 }

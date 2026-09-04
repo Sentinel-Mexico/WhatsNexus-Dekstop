@@ -230,5 +230,6 @@
   "about_version_desc": "Kasalukuyang impormasyon sa build at mga update sa system.",
   "about_license_desc_header": "Legal na mga tuntunin ng paggamit at pag-access sa open-source code.",
   "about_credits_desc_header": "Komunidad, mga developer, at inspirasyon sa proyekto.",
-  "about_doom_desc_header": "Klasikong protocol ng libangan sa WebAssembly."
+  "about_doom_desc_header": "Klasikong protocol ng libangan sa WebAssembly.",
+  "palette_whatsnexus": "WhatsNexus"
 }

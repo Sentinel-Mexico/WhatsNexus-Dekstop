@@ -230,5 +230,6 @@
   "about_version_desc": "தற்போதைய பில்ட் தகவல் மற்றும் கணினி புதுப்பிப்புகள்.",
   "about_license_desc_header": "சட்டப்பூர்வ பயன்பாட்டு விதிமுறைகள் மற்றும் திறந்த மூல குறியீடு அணுகல்.",
   "about_credits_desc_header": "சமூகம், டெவலப்பர்கள் மற்றும் திட்ட உத்வேகம்.",
-  "about_doom_desc_header": "WebAssembly இல் கிளாசிக் பொழுதுபோக்கு நெறிமுறை."
+  "about_doom_desc_header": "WebAssembly இல் கிளாசிக் பொழுதுபோக்கு நெறிமுறை.",
+  "palette_whatsnexus": "WhatsNexus"
 }

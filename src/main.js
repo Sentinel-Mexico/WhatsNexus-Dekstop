@@ -12,7 +12,7 @@ if (!gotTheLock) {
   app.quit();
 } else {
   app.on('second-instance', (event, commandLine, workingDirectory) => {
-    // Si el usuario intenta abrir otra instancia, enfocamos la original
+    // Focus original window if user attempts to launch second instance
     if (mainWindow) {
       if (mainWindow.isMinimized()) mainWindow.restore();
       mainWindow.focus();
@@ -82,7 +82,7 @@ function createWindow() {
       contextIsolation: true,
       sandbox: false,
       webviewTag: true, // CRITICAL: This allows the use of <webview> tags for session isolation
-      backgroundThrottling: true, // Asegura throttling en background
+      backgroundThrottling: true, // Ensure background throttling
       preload: path.join(__dirname, 'preload-main.js')
     }
   });
@@ -90,7 +90,7 @@ function createWindow() {
   // Load the index.html of the app
   mainWindow.loadFile(path.join(__dirname, 'renderer', 'index.html'));
 
-  // Enviar ruta de descargas por defecto al renderer cuando termine de cargar
+  // Send default downloads path to renderer once load finishes
   mainWindow.webContents.on('did-finish-load', () => {
     const defaultDownloads = currentSystemSettings.downloadPath || app.getPath('downloads');
     mainWindow.webContents.send('default-downloads-path', defaultDownloads);
@@ -221,17 +221,17 @@ function createTray() {
       }
     });
   } catch (err) {
-    console.warn('[Tray Warning]: No se pudo inicializar la bandeja del sistema (KDE/Wayland fallback):', err.message);
+    console.warn('[Tray Warning]: Failed to initialize system tray (KDE/Wayland fallback):', err.message);
   }
 }
 
-// IPC para actualizar el contador de notificaciones / badge de la bandeja
+// IPC to update notification unread counter / tray badge
 ipcMain.on('update-tray-badge', (event, count) => {
   currentUnreadCount = Math.max(0, parseInt(count, 10) || 0);
   updateTrayImage();
 });
 
-// IPC para actualizar la apariencia de la bandeja (estilo de icono y visibilidad de contador)
+// IPC to update tray appearance (icon style and badge counter visibility)
 ipcMain.on('update-tray-settings', (event, settings) => {
   if (settings) {
     if (settings.style !== undefined) currentTraySettings.style = settings.style;
@@ -240,7 +240,7 @@ ipcMain.on('update-tray-settings', (event, settings) => {
   }
 });
 
-// IPC para sincronizar el modo de tema (dark/light/system) a nivel de sistema Chromium
+// IPC to synchronize theme mode (dark/light/system) at Chromium system level
 ipcMain.on('set-theme-mode', (event, mode) => {
   if (mode === 'dark' || mode === 'light' || mode === 'system') {
     nativeTheme.themeSource = mode;
@@ -260,13 +260,13 @@ nativeTheme.on('updated', () => {
   }
 });
 
-// IPC para emitir notificaciones nativas con avatar circular respaldado en disco
+// IPC to dispatch native notification with disk-cached circular avatar
 ipcMain.on('show-native-notification', (event, data) => {
   if (!Notification.isSupported()) return;
 
   let iconPath = path.join(__dirname, 'assets', 'icon.png');
 
-  // Si se envió un avatar circular en base64, guardarlo en caché en disco
+  // If a base64 circular avatar was provided, cache it to disk
   if (data.iconDataUrl && data.iconDataUrl.startsWith('data:image/png;base64,')) {
     try {
       const base64Data = data.iconDataUrl.replace(/^data:image\/png;base64,/, '');
@@ -335,7 +335,7 @@ ipcMain.on('update-permission-settings', (event, permissions) => {
   }
 });
 
-// Configuración de Sistema (Descargas y Corrector Ortográfico)
+// System Configuration (Downloads and Spellchecker)
 let currentSystemSettings = {
   downloadPath: '',
   spellcheckLanguages: ['es-ES']
@@ -345,7 +345,7 @@ function getSystemSettingsFilePath() {
   return path.join(app.getPath('userData'), 'system_settings.json');
 }
 
-// Mapeo de fallback para compatibilidad con versiones previas
+// Fallback mapping for backwards compatibility
 const SPELLCHECK_MAP = {
   en: 'en-US',
   zh: 'zh-CN',
@@ -464,14 +464,14 @@ function removeDictionariesForLanguages(removedLangs) {
               fs.unlinkSync(fullPath);
               console.log(`[Spellchecker Disk Cleanup] Removed dictionary file: ${fullPath}`);
             } catch (_) {
-              // Silencioso ante archivos bloqueados o permisos
+              // Silent fallback on locked files or permissions
             }
           }
         }
       }
     }
   } catch (_) {
-    // Falla silenciosa
+    // Silent fallback
   }
 }
 
@@ -495,7 +495,7 @@ function updateSpellCheckerAllSessions(languages) {
   }
 }
 
-// Interceptar descargas en las sesiones para guardarlas en la ruta elegida por el usuario
+// Intercept session downloads to save them to user-selected path
 function configureSessionDownloads(ses) {
   if (!ses) return;
   ses.on('will-download', (event, item, webContents) => {
@@ -645,7 +645,7 @@ ipcMain.handle('load-locale', (event, langCode) => {
   const cleanCode = langCode.trim();
   const safeLang = cleanCode.replace(/[^a-zA-Z0-9_-]/g, '').toLowerCase();
 
-  // Buscar coincidencia exacta o fallback a código base (ej: zh-CN -> zh)
+  // Exact match or fallback to base language code (e.g. zh-CN -> zh)
   const baseCode = safeLang.split('-')[0].split('_')[0];
   const candidates = [
     `${safeLang}.json`,
@@ -663,7 +663,7 @@ ipcMain.handle('load-locale', (event, langCode) => {
   }
 
   if (!resolvedPath) {
-    console.error(`[Locale Load Error - Path]: Archivo no encontrado para código "${langCode}". Buscado en directorio: ${path.join(__dirname, 'locales')}`);
+    console.error(`[Locale Load Error - Path]: File not found for code "${langCode}". Looked in directory: ${path.join(__dirname, 'locales')}`);
     return null;
   }
 
@@ -672,11 +672,11 @@ ipcMain.handle('load-locale', (event, langCode) => {
     try {
       return JSON.parse(rawContent);
     } catch (parseErr) {
-      console.error(`[Locale Load Error - JSON Parse]: Error de parseo JSON en archivo ${resolvedPath}:`, parseErr);
+      console.error(`[Locale Load Error - JSON Parse]: JSON parse error in file ${resolvedPath}:`, parseErr);
       return null;
     }
   } catch (fsErr) {
-    console.error(`[Locale Load Error - File Read]: Error de lectura en ruta ${resolvedPath}:`, fsErr);
+    console.error(`[Locale Load Error - File Read]: File read error at path ${resolvedPath}:`, fsErr);
     return null;
   }
 });
@@ -685,7 +685,7 @@ function configureSessionPermissions(ses) {
   if (!ses) return;
   ses.setPermissionRequestHandler((webContents, permission, callback, details) => {
     if (permission === 'notifications') {
-      return callback(false); // Bloquear notificaciones web nativas de Chromium
+      return callback(false); // Block Chromium native web notifications
     }
 
     if (permission === 'media') {
@@ -721,7 +721,7 @@ function configureSessionPermissions(ses) {
 
   ses.setPermissionCheckHandler((webContents, permission, requestingOrigin, details) => {
     if (permission === 'notifications') {
-      return false; // Bloquear comprobación de permisos nativos de Chromium
+      return false; // Block Chromium native permission check
     }
 
     if (permission === 'media') {
@@ -805,7 +805,7 @@ app.on('before-quit', () => {
 
 app.on('window-all-closed', function () {
   if (process.platform !== 'darwin') {
-    // Si no se está forzando salida, la app permanece viva en segundo plano en la bandeja
+    // Keep app alive in system tray background unless explicitly quitting
     if (app.isQuitting) {
       app.quit();
     }

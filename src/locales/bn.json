@@ -230,5 +230,6 @@
   "about_version_desc": "বর্তমান বিল্ড তথ্য এবং সিস্টেম আপডেট।",
   "about_license_desc_header": "আইনি ব্যবহারের শর্তাবলী এবং ওপেন সোর্স কোড অ্যাক্সেস।",
   "about_credits_desc_header": "সম্প্রদায়, বিকাশকারী এবং প্রকল্পের অনুপ্রেরণা।",
-  "about_doom_desc_header": "WebAssembly তে ক্লাসিক বিনোদন প্রোটোকল।"
+  "about_doom_desc_header": "WebAssembly তে ক্লাসিক বিনোদন প্রোটোকল।",
+  "palette_whatsnexus": "WhatsNexus"
 }

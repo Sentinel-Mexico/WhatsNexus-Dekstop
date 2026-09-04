@@ -1,4 +1,4 @@
-// Fallback si corre fuera de Electron (src/preload-main.js expone window.electronAPI)
+// Fallback if running outside Electron (src/preload-main.js exposes window.electronAPI)
 if (typeof window.electronAPI === 'undefined') {
   window.electronAPI = {
     appInfo: { version: '', appVersion: '', platform: 'linux', arch: 'x64', electronVersion: 'N/A', chromeVersion: 'N/A' },
@@ -25,7 +25,7 @@ function escapeHtml(str) {
     .replace(/'/g, '&#039;');
 }
 
-// Idiomas soportados (Los 25 más hablados del mundo en orden proporcional)
+// Supported languages (Top 25 most spoken world languages in proportional order)
 const supportedLanguages = [
   'en', 'zh', 'hi', 'es', 'fr',
   'ar', 'bn', 'pt', 'ru', 'ur',
@@ -34,7 +34,7 @@ const supportedLanguages = [
   'ko', 'fa', 'ha', 'sw', 'it'
 ];
 
-// Nombres nativos de cada idioma
+// Native names for each language
 const nativeNames = {
   en: "English",
   zh: "中文 (普通话)",
@@ -68,7 +68,7 @@ function getOSLanguage() {
   return supportedLanguages.includes(lang) ? lang : 'en';
 }
 
-// El estado de nuestras cuentas
+// Account state tracking
 let accounts = JSON.parse(localStorage.getItem('whatsNexusAccounts')) || [];
 let activeAccountId = null;
 const HIBERNATION_TIMEOUT = 20 * 60 * 1000; // 20 minutos (en milisegundos)
@@ -76,6 +76,7 @@ const HIBERNATION_TIMEOUT = 20 * 60 * 1000; // 20 minutos (en milisegundos)
 // Settings
 let settings = JSON.parse(localStorage.getItem('whatsNexusSettings')) || {
   theme: 'theme-dark',
+  themePalette: 'whatsnexus',
   language: getOSLanguage(),
   privacy: 'broad'
 };
@@ -119,15 +120,19 @@ if (settings.doomizate === undefined) {
   settings.doomizate = false;
 }
 
-// URLs para donaciones y apoyo externo (reemplazar con los enlaces deseados)
+if (!settings.themePalette) {
+  settings.themePalette = 'whatsnexus';
+}
+
+// URLs for donations and external support
 const DONATION_URLS = {
-  github: 'https://github.com/sponsors/Sentinel-Mexico', // Reemplazar con tu enlace de GitHub Sponsors
-  paypal: 'https://www.paypal.me/SentinelMexico',       // Reemplazar con tu enlace de PayPal
-  kofi:   'https://ko-fi.com/sentinelmexico'            // Reemplazar con tu enlace de Ko-fi
+  github: 'https://github.com/sponsors/Sentinel-Mexico',
+  paypal: 'https://www.paypal.me/SentinelMexico',
+  kofi:   'https://ko-fi.com/sentinelmexico'
 };
 
 // ==========================================================================
-// Sistema de Traducción Dinámica (Lazy Loading - P-01)
+// Dynamic Translation System (Lazy Loading - P-01)
 // ==========================================================================
 let i18n = {};
 let fallbackTranslations = {};
@@ -192,7 +197,7 @@ async function loadActiveLocale(langCode) {
 
     currentTranslations = { ...fallbackTranslations, ...activeData };
 
-    // Liberar memoria: retener únicamente el idioma activo y el fallback en i18n
+    // Free memory: retain only the active language and fallback in i18n
     i18n = {};
     i18n['en'] = fallbackTranslations;
     i18n[code] = currentTranslations;
@@ -224,7 +229,7 @@ function populateLanguageSelect() {
     const nativeName = nativeNames[code] || code;
     const displayText = `${translatedName} (${nativeName})`;
 
-    // Select nativo oculto
+    // Hidden native select
     if (langSelect) {
       const option = document.createElement('option');
       option.value = code;
@@ -232,7 +237,7 @@ function populateLanguageSelect() {
       langSelect.appendChild(option);
     }
 
-    // Selector visual personalizado
+    // Custom visual dropdown
     if (customOptions) {
       const customOpt = document.createElement('div');
       customOpt.className = 'custom-option' + (code === currentLangCode ? ' selected' : '');
@@ -280,14 +285,14 @@ function populateLanguageSelect() {
 }
 
 const SPELLCHECK_LANGUAGES = [
-  // Español: es-AR (Argentina 🇦🇷), es-ES (España 🇪🇸), es-MX (México 🇲🇽), es-US (EE.UU. 🇺🇸), es-419 (Latinoamérica 🌎)
+  // Spanish: es-AR (Argentina), es-ES (Spain), es-MX (Mexico), es-US (USA), es-419 (Latin America)
   { code: 'es-AR', flag: '🇦🇷', base: 'es', regionKey: 'region_argentina', defaultRegion: 'Argentina' },
   { code: 'es-ES', flag: '🇪🇸', base: 'es', regionKey: 'region_spain', defaultRegion: 'España' },
   { code: 'es-MX', flag: '🇲🇽', base: 'es', regionKey: 'region_mexico', defaultRegion: 'México' },
   { code: 'es-US', flag: '🇺🇸', base: 'es', regionKey: 'region_us', defaultRegion: 'EE.UU.' },
   { code: 'es-419', flag: '🌎', base: 'es', regionKey: 'region_latam', defaultRegion: 'Latinoamérica' },
 
-  // Inglés: en-US (EE.UU. 🇺🇸), en-GB (Reino Unido 🇬🇧), en-CA (Canadá 🇨🇦), en-AU (Australia 🇦🇺), en-IN (India 🇮🇳), en-NZ (Nueva Zelanda 🇳🇿), en-ZA (Sudáfrica 🇿🇦)
+  // English: en-US (USA), en-GB (UK), en-CA (Canada), en-AU (Australia), en-IN (India), en-NZ (New Zealand), en-ZA (South Africa)
   { code: 'en-US', flag: '🇺🇸', base: 'en', regionKey: 'region_us', defaultRegion: 'EE.UU.' },
   { code: 'en-GB', flag: '🇬🇧', base: 'en', regionKey: 'region_uk', defaultRegion: 'Reino Unido' },
   { code: 'en-CA', flag: '🇨🇦', base: 'en', regionKey: 'region_ca', defaultRegion: 'Canadá' },
@@ -296,29 +301,29 @@ const SPELLCHECK_LANGUAGES = [
   { code: 'en-NZ', flag: '🇳🇿', base: 'en', regionKey: 'region_nz', defaultRegion: 'Nueva Zelanda' },
   { code: 'en-ZA', flag: '🇿🇦', base: 'en', regionKey: 'region_za', defaultRegion: 'Sudáfrica' },
 
-  // Portugués: pt-BR (Brasil 🇧🇷), pt-PT (Portugal 🇵🇹)
+  // Portuguese: pt-BR (Brazil), pt-PT (Portugal)
   { code: 'pt-BR', flag: '🇧🇷', base: 'pt', regionKey: 'region_brazil', defaultRegion: 'Brasil' },
   { code: 'pt-PT', flag: '🇵🇹', base: 'pt', regionKey: 'region_portugal', defaultRegion: 'Portugal' },
 
-  // Francés: fr-FR (Francia 🇫🇷), fr-CA (Canadá 🇨🇦), fr-CH (Suiza 🇨🇭)
+  // French: fr-FR (France), fr-CA (Canada), fr-CH (Switzerland)
   { code: 'fr-FR', flag: '🇫🇷', base: 'fr', regionKey: 'region_france', defaultRegion: 'Francia' },
   { code: 'fr-CA', flag: '🇨🇦', base: 'fr', regionKey: 'region_ca', defaultRegion: 'Canadá' },
   { code: 'fr-CH', flag: '🇨🇭', base: 'fr', regionKey: 'region_switzerland', defaultRegion: 'Suiza' },
 
-  // Alemán: de-DE (Alemania 🇩🇪), de-AT (Austria 🇦🇹), de-CH (Suiza 🇨🇭)
+  // German: de-DE (Germany), de-AT (Austria), de-CH (Switzerland)
   { code: 'de-DE', flag: '🇩🇪', base: 'de', regionKey: 'region_germany', defaultRegion: 'Alemania' },
   { code: 'de-AT', flag: '🇦🇹', base: 'de', regionKey: 'region_austria', defaultRegion: 'Austria' },
   { code: 'de-CH', flag: '🇨🇭', base: 'de', regionKey: 'region_switzerland', defaultRegion: 'Suiza' },
 
-  // Italiano / Ruso (Códigos base directos sin duplicidad)
+  // Italian / Russian (Direct root codes without duplication)
   { code: 'it', flag: '🇮🇹', base: 'it' },
   { code: 'ru', flag: '🇷🇺', base: 'ru' },
 
-  // Árabe / Persa: ar (🇸🇦), fa (🇮🇷)
+  // Arabic / Persian: ar, fa
   { code: 'ar', flag: '🇸🇦', base: 'ar' },
   { code: 'fa', flag: '🇮🇷', base: 'fa' },
 
-  // Asiáticos / Otros: hi (Hindi 🇮🇳), id (Indonesio 🇮🇩), ko (Coreano 🇰🇷), ta (Tamil 🇮🇳), tr (Turco 🇹🇷), vi (Vietnamita 🇻🇳)
+  // Asian & Other Languages: hi (Hindi), id (Indonesian), ko (Korean), ta (Tamil), tr (Turkish), vi (Vietnamese)
   { code: 'hi', flag: '🇮🇳', base: 'hi' },
   { code: 'id', flag: '🇮🇩', base: 'id' },
   { code: 'ko', flag: '🇰🇷', base: 'ko' },
@@ -344,7 +349,7 @@ function renderSpellcheckList() {
     }
   }
 
-  // Mapear códigos redundantes/obsoletos que hayan sido guardados previamente
+  // Map legacy/redundant codes previously saved
   const DEPRECATED_SPELLCHECK_MAP = {
     'es': 'es-ES',
     'fr': 'fr-FR',
@@ -358,7 +363,7 @@ function renderSpellcheckList() {
 
   const selectedSet = new Set(settings.spellcheckLanguages);
 
-  // Mapear cada elemento con su nombre traducido formateado
+  // Map each item with its translated formatted name
   const items = SPELLCHECK_LANGUAGES.map(item => {
     const langName = dict[`lang_${item.base}`] || nativeNames[item.base] || item.base;
     let labelContent = langName;
@@ -372,7 +377,7 @@ function renderSpellcheckList() {
     };
   });
 
-  // Ordenamiento alfabético dinámico estricto basado en el texto traducido que el usuario ve
+  // Strict dynamic alphabetical collation based on user-visible translated text
   items.sort((a, b) => a.nombreTraducido.localeCompare(b.nombreTraducido, currentLang));
 
   items.forEach(item => {
@@ -477,7 +482,7 @@ const notifNameToggle = document.getElementById('notif-name-toggle');
 const notifPreviewToggle = document.getElementById('notif-preview-toggle');
 const notifSoundToggle = document.getElementById('notif-sound-toggle');
 
-// Elementos de la Pestaña Permisos / Sistema
+// Permissions / System Tab Elements
 const permAllowAllBtn = document.getElementById('perm-allow-all-btn');
 const permDenyAllBtn = document.getElementById('perm-deny-all-btn');
 const permMicToggle = document.getElementById('perm-mic-toggle');
@@ -490,7 +495,7 @@ const downloadPathInput = document.getElementById('download-path-input');
 const btnSelectDownloadDir = document.getElementById('btn-select-download-dir');
 const btnResetDownloadDir = document.getElementById('btn-reset-download-dir');
 
-// Rastreo de mensajes no leídos por cuenta para el System Tray
+// Unread messages tracking per account for System Tray
 const accountUnreadCounts = {};
 
 function updateTotalUnread() {
@@ -540,7 +545,7 @@ function getEffectiveThemeIsDark() {
   if (settings.theme === 'theme-dark') return true;
   if (settings.theme === 'theme-light') return false;
 
-  // Modo Automático (Sistema)
+  // Automatic Mode (System)
   if (window.electronAPI && typeof window.electronAPI.systemIsDark === 'boolean') {
     return window.electronAPI.systemIsDark;
   }
@@ -569,7 +574,7 @@ async function init() {
     electronAPI.setSpellcheckerLanguages(settings.spellcheckLanguages || ['es-ES']);
   }
   
-  // Garantizar propiedad enabled en cuentas existentes
+  // Ensure enabled property on existing accounts
   accounts.forEach(acc => {
     if (acc.enabled === undefined) acc.enabled = true;
   });
@@ -578,7 +583,7 @@ async function init() {
     const lang = i18n[settings.language] || i18n['en'];
     addAccount(`${lang.default_account_name} 1`);
   } else {
-    // Solo cuentas activadas pueden mostrarse y seleccionarse
+    // Only enabled accounts can be displayed and selected
     const enabledAccounts = accounts.filter(a => a.enabled !== false);
     const savedActiveId = localStorage.getItem('whatsNexusActiveAccount');
     const targetActiveId = (savedActiveId && enabledAccounts.some(a => a.id === savedActiveId))
@@ -589,7 +594,7 @@ async function init() {
 
     accounts.forEach(acc => {
       acc.lastAccessed = Date.now();
-      // Lazy loading: solo instanciamos el webview si está habilitada y es el objetivo inicial
+      // Lazy loading: only instantiate webview if enabled and initial active target
       const isTarget = (acc.id === targetActiveId && acc.enabled !== false);
       acc.hibernated = !isTarget;
       createWebviewContainer(acc, !isTarget);
@@ -607,7 +612,7 @@ async function init() {
 }
 
 function saveAccounts() {
-  // Garantizar persistencia limpia sin estados transitorios
+  // Ensure clean persistence without transient states
   const toSave = accounts.map(a => ({
     id: a.id,
     name: a.name,
@@ -629,9 +634,9 @@ function applySettings() {
   const isAuto = (settings.theme === 'theme-auto' || !settings.theme);
   const isDark = getEffectiveThemeIsDark();
 
-  const palette = settings.themePalette || 'whatsapp';
+  const palette = settings.themePalette || 'whatsnexus';
   
-  // Establecer paleta y modo de luz/oscuridad en el body
+  // Set palette and light/dark mode on body
   document.body.className = `palette-${palette} ${isDark ? 'theme-dark' : 'theme-light'}`;
   
   if (themeSelect) themeSelect.value = settings.theme || 'theme-auto';
@@ -640,7 +645,7 @@ function applySettings() {
   if (trayBadgeToggle) trayBadgeToggle.checked = settings.trayShowBadge !== false;
   if (downloadPathInput && settings.downloadPath) downloadPathInput.value = settings.downloadPath;
 
-  // Sincronizar UI de Notificaciones
+  // Synchronize Notifications UI
   if (settings.notifications) {
     if (privacyPresetSelect) privacyPresetSelect.value = settings.notifications.preset || 'broad';
     if (notifDesktopToggle) notifDesktopToggle.checked = settings.notifications.desktopNotifications !== false;
@@ -649,7 +654,7 @@ function applySettings() {
     if (notifPreviewToggle) notifPreviewToggle.checked = settings.notifications.messagePreview !== false;
     if (notifSoundToggle) notifSoundToggle.checked = settings.notifications.notificationSound !== false;
 
-    // Atenuar controles secundarios si las notificaciones de escritorio están apagadas
+    // Dim secondary controls if desktop notifications are turned off
     const isDesktopEnabled = settings.notifications.desktopNotifications !== false;
     document.querySelectorAll('.notif-sub-option').forEach(el => {
       if (!isDesktopEnabled) {
@@ -659,7 +664,7 @@ function applySettings() {
       }
     });
 
-    // Enviar configuración a las webviews activas
+    // Send settings to active webviews
     document.querySelectorAll('webview').forEach(wv => {
       try {
         wv.send('update-notification-settings', settings.notifications);
@@ -677,7 +682,7 @@ function applySettings() {
     });
   }
 
-  // Sincronizar modo oscuro/claro a nivel global de Chromium y Electron
+  // Synchronize dark/light mode across Chromium and Electron system level
   if (window.electronAPI && electronAPI.setThemeMode) {
     electronAPI.setThemeMode(isAuto ? 'system' : (isDark ? 'dark' : 'light'));
   }
@@ -686,7 +691,7 @@ function applySettings() {
     refreshAllCustomDropdowns();
   }
 
-  // Sincronizar UI de Permisos
+  // Synchronize Permissions UI
   if (settings.permissions) {
     if (permMicToggle) permMicToggle.checked = settings.permissions.microphone !== false;
     if (permCameraToggle) permCameraToggle.checked = !!settings.permissions.camera;
@@ -694,17 +699,17 @@ function applySettings() {
     if (permScreenToggle) permScreenToggle.checked = settings.permissions.screenShare !== false;
     if (permScreenAudioToggle) permScreenAudioToggle.checked = !!settings.permissions.screenShareAudio;
 
-    // Sincronizar permisos con el proceso principal
+    // Synchronize permissions with main process
     electronAPI.updatePermissionSettings(settings.permissions);
   }
 
-  // Sincronizar apariencia de la bandeja con el proceso principal
+  // Synchronize tray appearance with main process
   electronAPI.updateTraySettings({
     style: settings.trayStyle || 'auto',
     showBadge: settings.trayShowBadge !== false
   });
   
-  // Sincronizar UI de Doomizate (Easter Egg)
+  // Synchronize Doomizate UI (Easter Egg)
   if (doomizateToggle) {
     doomizateToggle.checked = !!settings.doomizate;
   }
@@ -788,12 +793,12 @@ function renderAllSidebarAccounts() {
   }
 }
 
-// Globo de texto / Tooltip flotante desacoplado del overflow de la sidebar
+// Floating tooltip decoupled from sidebar overflow
 const floatingTooltip = document.createElement('div');
 floatingTooltip.className = 'sidebar-floating-tooltip';
 document.body.appendChild(floatingTooltip);
 
-// Posición unificada: exactamente a 8px del límite derecho de la sidebar
+// Unified position: exactly 8px from right edge of sidebar
 const TOOLTIP_GAP = 8; // px desde el borde derecho de la sidebar
 
 function getSidebarRight() {
@@ -815,7 +820,7 @@ function attachSidebarTooltip(el, getTooltipText) {
   });
 }
 
-// Inicializar tooltips unificados para los botones inferiores de la sidebar
+// Initialize unified tooltips for bottom sidebar buttons
 function initSidebarBottomTooltips() {
   const addBtn = document.getElementById('add-account-btn');
   const bugBtn = document.getElementById('report-bug-btn');
@@ -885,7 +890,7 @@ function createWebviewContainer(account, startHibernated = false) {
   
   const lang = i18n[settings.language] || i18n['en'];
   
-  // Overlay de Hibernación (Visible si startHibernated es true)
+  // Hibernation Overlay (Visible if startHibernated is true)
   const overlay = document.createElement('div');
   overlay.className = `hibernation-overlay ${startHibernated ? '' : 'hidden'}`;
   overlay.id = `hibernation_${account.id}`;
@@ -899,7 +904,7 @@ function createWebviewContainer(account, startHibernated = false) {
   container.appendChild(overlay);
   webviewContainer.appendChild(container);
 
-  // Solo crear el webview en el DOM si NO empieza hibernado (Lazy Loading)
+  // Only create webview in DOM if NOT starting hibernated (Lazy Loading)
   if (!startHibernated) {
     buildWebviewDOM(account, container);
   }
@@ -910,7 +915,7 @@ function buildWebviewDOM(account, parentContainer) {
   webview.id = `webview_${account.id}`;
   webview.setAttribute('src', 'https://web.whatsapp.com/');
   webview.setAttribute('partition', account.partition);
-  webview.setAttribute('webpreferences', 'backgroundThrottling=yes, contextIsolation=no'); // CRITICO: Throttling de memoria y acceso a contexto principal
+  webview.setAttribute('webpreferences', 'backgroundThrottling=yes, contextIsolation=no'); // CRITICAL: Memory throttling and main context access
   
   const preloadPath = electronAPI.webviewPreloadPath || '';
   if (preloadPath) {
@@ -919,7 +924,7 @@ function buildWebviewDOM(account, parentContainer) {
   webview.setAttribute('useragent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36');
   webview.className = 'webview-active';
 
-  // Sincronizar configuración de notificaciones, DND y tema al cargar la sesión
+  // Synchronize notifications, DND, and theme configuration upon session load
   webview.addEventListener('dom-ready', () => {
     const isDark = getEffectiveThemeIsDark();
     try {
@@ -1105,8 +1110,8 @@ function openDoomView() {
       doomWebview.setAttribute('allowpopups', 'false');
       doomView.appendChild(doomWebview);
     }
-    if (doomWebview && (!doomWebview.src || doomWebview.src === 'about:blank' || !doomWebview.src.includes('wasm-doom'))) {
-      doomWebview.src = 'https://diekmann.github.io/wasm-doom/';
+    if (doomWebview && (!doomWebview.src || doomWebview.src === 'about:blank' || !doomWebview.src.includes('wasm-fizzbuzz'))) {
+      doomWebview.src = 'https://diekmann.github.io/wasm-fizzbuzz/doom/';
     }
   }
 }
@@ -1912,11 +1917,11 @@ if (donateBtn) {
   });
 }
 
-// Controladores del Easter Egg: Doom Clásico
+// Easter Egg Controllers: Classic Doom
 if (doomBtn) {
   doomBtn.addEventListener('click', () => {
     if (doomView && !doomView.classList.contains('hidden')) {
-      // Si ya está activo, volver al chat activo o empty state
+      // If already active, return to active chat or empty state
       const enabledAccounts = accounts.filter(a => a.enabled !== false);
       if (activeAccountId && enabledAccounts.some(a => a.id === activeAccountId)) {
         activateAccount(activeAccountId);

@@ -230,5 +230,6 @@
   "about_version_desc": "Informasi build saat ini dan pembaruan sistem.",
   "about_license_desc_header": "Ketentuan hukum penggunaan dan akses ke kode sumber terbuka.",
   "about_credits_desc_header": "Komunitas, pengembang, dan inspirasi proyek.",
-  "about_doom_desc_header": "Protokol hiburan klasik di WebAssembly."
+  "about_doom_desc_header": "Protokol hiburan klasik di WebAssembly.",
+  "palette_whatsnexus": "WhatsNexus"
 }

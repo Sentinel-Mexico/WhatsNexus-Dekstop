@@ -230,5 +230,6 @@
   "about_version_desc": "当前构建信息与系统更新。",
   "about_license_desc_header": "合法使用条款与开源代码访问。",
   "about_credits_desc_header": "社区、开发者与项目灵感来源。",
-  "about_doom_desc_header": "基于 WebAssembly 的经典娱乐协议。"
+  "about_doom_desc_header": "基于 WebAssembly 的经典娱乐协议。",
+  "palette_whatsnexus": "WhatsNexus"
 }

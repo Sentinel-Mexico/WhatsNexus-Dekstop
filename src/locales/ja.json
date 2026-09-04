@@ -230,5 +230,6 @@
   "about_version_desc": "現在のビルド情報およびシステムアップデート。",
   "about_license_desc_header": "法的な利用規約およびオープンソースコードへのアクセス。",
   "about_credits_desc_header": "コミュニティ、開発者、およびプロジェクトのインスピレーション。",
-  "about_doom_desc_header": "WebAssembly クラシック エンターテインメント プロトコル。"
+  "about_doom_desc_header": "WebAssembly クラシック エンターテインメント プロトコル。",
+  "palette_whatsnexus": "WhatsNexus"
 }

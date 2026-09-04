@@ -230,5 +230,6 @@
   "about_version_desc": "Informazioni attuali sulla compilazione e aggiornamenti di sistema.",
   "about_license_desc_header": "Termini legali d'uso e accesso al codice sorgente aperto.",
   "about_credits_desc_header": "Comunità, sviluppatori e ispirazione del progetto.",
-  "about_doom_desc_header": "Protocollo di intrattenimento classico in WebAssembly."
+  "about_doom_desc_header": "Protocollo di intrattenimento classico in WebAssembly.",
+  "palette_whatsnexus": "WhatsNexus"
 }

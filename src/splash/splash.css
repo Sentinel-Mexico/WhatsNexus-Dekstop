@@ -19,10 +19,10 @@ html, body {
 .splash-card {
   width: 100%;
   height: 100%;
-  background: linear-gradient(145deg, #161b22 0%, #0d1117 100%);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: linear-gradient(145deg, #1e2922 0%, #131a15 100%);
+  border: 1px solid rgba(76, 158, 95, 0.22);
   border-radius: 16px;
-  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.7), 0 0 1px rgba(255, 255, 255, 0.1);
+  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.75), 0 0 1px rgba(76, 158, 95, 0.3);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -37,9 +37,9 @@ html, body {
   position: absolute;
   top: -40px;
   right: -40px;
-  width: 180px;
-  height: 180px;
-  background: radial-gradient(circle, rgba(37, 211, 102, 0.15) 0%, transparent 70%);
+  width: 190px;
+  height: 190px;
+  background: radial-gradient(circle, rgba(76, 158, 95, 0.22) 0%, transparent 70%);
   pointer-events: none;
 }
 
@@ -63,7 +63,7 @@ html, body {
   width: 58px;
   height: 58px;
   z-index: 2;
-  filter: drop-shadow(0 6px 14px rgba(37, 211, 102, 0.4));
+  filter: drop-shadow(0 6px 16px rgba(76, 158, 95, 0.45));
 }
 
 .logo-pulse {
@@ -73,7 +73,7 @@ html, body {
   width: 100%;
   height: 100%;
   border-radius: 50%;
-  background: rgba(37, 211, 102, 0.3);
+  background: rgba(76, 158, 95, 0.35);
   animation: pulse-ring 2s infinite cubic-bezier(0.215, 0.61, 0.355, 1);
   z-index: 1;
 }
@@ -107,14 +107,14 @@ html, body {
 .brand-title {
   font-size: 24px;
   font-weight: 700;
-  color: #ffffff;
+  color: #edf4ef;
   letter-spacing: -0.5px;
 }
 
 .version-badge {
-  background: rgba(37, 211, 102, 0.15);
-  color: #25D366;
-  border: 1px solid rgba(37, 211, 102, 0.3);
+  background: rgba(76, 158, 95, 0.18);
+  color: #4C9E5F;
+  border: 1px solid rgba(76, 158, 95, 0.35);
   font-size: 11px;
   font-weight: 600;
   padding: 2px 8px;
@@ -124,7 +124,7 @@ html, body {
 
 .brand-tagline {
   font-size: 12px;
-  color: #8b949e;
+  color: #9cb0a2;
   margin-top: 3px;
   font-weight: 400;
 }
@@ -141,17 +141,17 @@ html, body {
   justify-content: space-between;
   align-items: center;
   font-size: 11.5px;
-  color: #8b949e;
+  color: #9cb0a2;
 }
 
 .status-text {
-  color: #c9d1d9;
+  color: #d6e3d9;
   font-weight: 500;
   transition: opacity 0.2s ease;
 }
 
 .percentage-text {
-  color: #25D366;
+  color: #4C9E5F;
   font-weight: 600;
   font-variant-numeric: tabular-nums;
 }
@@ -159,7 +159,7 @@ html, body {
 .progress-track {
   width: 100%;
   height: 7px;
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(45, 61, 51, 0.6);
   border-radius: 999px;
   overflow: hidden;
   position: relative;
@@ -168,8 +168,8 @@ html, body {
 .progress-fill {
   height: 100%;
   width: 0%;
-  background: linear-gradient(90deg, #128C7E 0%, #25D366 100%);
+  background: linear-gradient(90deg, #6E9E4C 0%, #4C9E5F 100%);
   border-radius: 999px;
-  box-shadow: 0 0 12px rgba(37, 211, 102, 0.6);
+  box-shadow: 0 0 14px rgba(76, 158, 95, 0.65);
   transition: width 0.1s linear;
 }

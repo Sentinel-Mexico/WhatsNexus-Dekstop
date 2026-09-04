@@ -230,5 +230,6 @@
   "about_version_desc": "Geçerli derleme bilgileri ve sistem güncellemeleri.",
   "about_license_desc_header": "Yasal kullanım şartları ve açık kaynak koduna erişim.",
   "about_credits_desc_header": "Topluluk, geliştiriciler ve proje ilhamı.",
-  "about_doom_desc_header": "WebAssembly'de klasik eğlence protokolü."
+  "about_doom_desc_header": "WebAssembly'de klasik eğlence protokolü.",
+  "palette_whatsnexus": "WhatsNexus"
 }
