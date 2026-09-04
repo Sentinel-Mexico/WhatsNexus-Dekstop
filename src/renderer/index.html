@@ -476,11 +476,11 @@
                 <div class="perm-row">
                   <div class="perm-info">
                     <h4 data-i18n="about_license_title">Licencia</h4>
-                    <p data-i18n="about_license_desc">Software libre y de código abierto distribuido bajo la Licencia MIT.</p>
+                    <p data-i18n="about_license_desc">Software libre y de código abierto distribuido bajo la Licencia GNU GPL v3.</p>
                   </div>
-                  <button type="button" class="badge-license-btn" id="btn-open-mit-license" title="Ver detalles de la licencia MIT">
+                  <button type="button" class="badge-license-btn" id="btn-open-gpl-license" title="Ver detalles de la Licencia GNU GPL v3">
                     <i class="fa-solid fa-scale-balanced"></i>
-                    <span>MIT License</span>
+                    <span data-i18n="about_badge_gpl">Licencia GNU GPL v3</span>
                   </button>
                 </div>
                 <div class="perm-row">
@@ -606,24 +606,29 @@
     </main>
   </div>
 
-  <!-- Modal Popup: Licencia MIT -->
-  <div id="mit-license-modal" class="app-modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="mit-license-title">
+  <!-- Modal Popup: Licencia GNU GPL v3 -->
+  <div id="gpl-license-modal" class="app-modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="gpl-license-title">
     <div class="app-modal-card">
       <div class="app-modal-header">
         <div class="app-modal-header-info">
           <div class="app-modal-icon-wrapper">
             <i class="fa-solid fa-scale-balanced"></i>
           </div>
-          <h3 id="mit-license-title" class="app-modal-title" data-i18n="modal_mit_title">Licencia MIT (MIT License)</h3>
+          <h3 id="gpl-license-title" class="app-modal-title" data-i18n="modal_gpl_title">Licencia GNU GPL v3</h3>
         </div>
-        <button type="button" id="btn-close-mit-modal" class="app-modal-close-btn" aria-label="Cerrar">
+        <button type="button" id="btn-close-gpl-modal" class="app-modal-close-btn" aria-label="Cerrar">
           <i class="fa-solid fa-xmark"></i>
         </button>
       </div>
       <div class="app-modal-body">
-        <p class="mit-license-text" data-i18n="modal_mit_body">WhatsNexus se distribuye bajo la Licencia MIT. Esta es una licencia de software libre permisiva que otorga a los usuarios derechos para usar, copiar, modificar, fusionar, publicar, distribuir, sublicenciar y/o vender copias del software. Condiciones: El aviso de derechos de autor y el aviso de permiso deben incluirse en todas las copias o partes sustanciales del software. El software se proporciona 'tal cual', sin garantía.</p>
+        <div class="gpl-license-text">
+          <p data-i18n="modal_gpl_intro">WhatsNexus se distribuye bajo la Licencia Pública General de GNU (GPL v3).</p>
+          <p data-i18n="modal_gpl_p1">Esta es una licencia de software libre y código abierto (copyleft) que garantiza tu libertad para usar, estudiar, compartir y modificar el software.</p>
+          <p><strong data-i18n="modal_gpl_conditions_label">Condiciones:</strong> <span data-i18n="modal_gpl_conditions_body">Tienes total libertad para modificar y distribuir este software. Sin embargo, si decides distribuir una versión modificada (incluso con fines comerciales), estás legalmente obligado a liberar el código fuente de tus modificaciones bajo esta misma licencia GPL v3.</span></p>
+          <p><strong data-i18n="modal_gpl_warranty_label">Limitación de responsabilidad:</strong> <span data-i18n="modal_gpl_warranty_body">El software se proporciona 'tal cual', sin garantía de ningún tipo, expresa o implícita. En ningún caso los autores o titulares de los derechos de autor serán responsables de ninguna reclamación o daño.</span></p>
+        </div>
         <div class="app-modal-footer">
-          <button type="button" id="btn-close-mit-modal-action" class="btn-primary" data-i18n="btn_understood">Entendido</button>
+          <button type="button" id="btn-close-gpl-modal-action" class="btn-primary" data-i18n="btn_understood">Entendido</button>
         </div>
       </div>
     </div>

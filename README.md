@@ -1,7 +1,8 @@
 # WhatsNexus ⚡
 
 ![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey)
-![License](https://img.shields.io/badge/license-MIT-blue)
+![Version](https://img.shields.io/badge/version-v0.17.11-brightgreen.svg)
+![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)
 
 **WhatsNexus** is a cross-platform desktop application designed to manage multiple WhatsApp Web accounts simultaneously. It goes a step further by offering strict session isolation, allowing you to keep your personal and work accounts active in a single, tab-organized interface without data crossover.
 
@@ -61,4 +62,4 @@ The graphical user interface, layout, and core functional concept of WhatsNexus 
 Contributions, issue reports, and feature requests are welcome! Feel free to check the [issues](https://github.com/Sentinel-Mexico/WhatsNexus-Dekstop/issues) page.
 
 ## 📝 License
-This project is licensed under the [MIT](https://choosealicense.com/licenses/mit/) License.
+This project is licensed under the GNU GPL v3 License - see the [LICENSE](LICENSE) file for details.

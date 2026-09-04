@@ -6,6 +6,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ---
 
+## [0.17.11] - 2026-09-03
+### Changed
+- **Full License Migration to GNU GPL v3:**
+  - Added official [`LICENSE`](LICENSE) file featuring the standard terms of the **GNU General Public License v3 (GPL v3)** with Sentinel Studio copyright.
+  - Updated package configuration (`package.json`) to specify `"GPL-3.0-or-later"`.
+  - Updated `README.md` with version badge (`v0.17.11`), GPL v3 license badge, and updated licensing section.
+- **UI & Modal Modernization:**
+  - Renamed About section license trigger to **"Licencia GNU GPL v3"**.
+  - Refactored frontend source code (HTML, CSS, JS) to replace all legacy `mit` references with clean `gpl` identifiers (`gplModal`, `#btn-open-gpl-license`, etc.).
+  - Updated modal popup dialog to showcase structured explanation of GNU GPL v3 copyleft provisions, freedoms, conditions, and warranty limitations across all 26 supported locales.
+
+---
+
 ## [0.17.10] - 2026-09-03
 ### Changed
 - **Fluid Horizontal Tag Layout for Spellchecker:**

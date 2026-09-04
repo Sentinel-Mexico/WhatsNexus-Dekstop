@@ -1981,7 +1981,7 @@ body.theme-light .permissions-notice-box {
 }
 
 /* ==========================================================================
-   Botón Interactivo Licencia MIT y Modal Popup
+   Botón Interactivo Licencia GNU GPL v3 y Modal Popup
    ========================================================================== */
 .badge-license-btn {
   display: inline-flex;
@@ -2114,7 +2114,7 @@ body.theme-light .permissions-notice-box {
   background-color: var(--bg-modal, var(--bg-sidebar, #111b21));
 }
 
-.mit-license-text {
+.gpl-license-text {
   margin: 0;
   font-size: 0.92rem;
   line-height: 1.6;
@@ -2123,6 +2123,13 @@ body.theme-light .permissions-notice-box {
   padding: 16px 18px;
   border-radius: var(--shape-md, 12px);
   border: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.gpl-license-text p {
+  margin: 0;
 }
 
 .app-modal-footer {
