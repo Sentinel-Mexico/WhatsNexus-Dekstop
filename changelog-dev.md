@@ -2,6 +2,31 @@
 
 This changelog records all granular updates, bug fixes, refactorings, and feature iterations developed on the `Dev` branch. Each version bump in `package.json` is documented here as it happens.
 
+## [1.0.0] - 2026-09-04
+### Added
+- **Official Stable Production Release (Out of Beta):**
+  - Officially concluded the initial beta development phase and promoted WhatsNexus to its first production-grade milestone (`1.0.0`).
+  - Consolidated complete documentation suite across `README.md` and `docs/` reflecting all production capabilities, architectures, and testing matrices.
+- **Comprehensive Auto-Updater Architecture (OTA Updates):**
+  - Integrated `electron-updater` and `electron-log` targeting GitHub Releases (`Sentinel-Mexico/WhatsNexus-Dekstop`).
+  - Added interactive visual state machine in the "About" settings module with manual update checks, live percentage readouts, and one-click install/restart workflows.
+- **Offline Protection & Automatic Network Reconnection Subsystem:**
+  - Implemented container-level offline screens with visual status badges and retry actions on network load failure (`did-fail-load`).
+  - Added global high-z-index `#reconnecting-modal` preventing accidental chat manipulation during network loss, with reactive auto-reconnect on `online` events.
+- **Cloudflare Doom-Wasm Port Migration with Audio & Overlay:**
+  - Migrated Classic Doom Easter Egg to Cloudflare's Chocolate Doom WebAssembly engine running completely offline.
+  - Solved resource loading deadlocks via concurrent `fetch()` and direct virtual filesystem population (`FS.createDataFile`).
+  - Added `--autoplay-policy=no-user-gesture-required` and explicit WebAudio unlocking for instant sound.
+  - Built dark-themed floating controls overlay card with collapsible toggle.
+- **Official Typography Migration to Google Fonts "Poppins":**
+  - Adopted Poppins font family globally across main interface, splash screen, and Doom launcher.
+- **Official WhatsNexus Brand Palette & Visual Identity:**
+  - Configured default WhatsNexus color scheme (dark & light variants) engineered for long-session readability and visual comfort.
+- **Multiplatform CI/CD Pipeline (`.github/workflows/build.yml`):**
+  - Configured automated GitHub Actions matrix producing `.deb`, `.AppImage`, `.snap` (x64/arm64), `.dmg` (x64/arm64), and `.exe` (NSIS x64).
+- **Account Deletion Safety Dialog:**
+  - Added modal confirmation `#delete-account-modal` preventing accidental account and session purges.
+
 ## [0.21.1] - 2026-09-04
 ### Added
 - **Cloudflare Doom-Wasm Port Migration & Audio Pipeline Fixes:**

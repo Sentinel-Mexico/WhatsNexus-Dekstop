@@ -1,19 +1,26 @@
 # WhatsNexus ⚡
 
 ![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey)
-![Version](https://img.shields.io/badge/version-v0.21.1-brightgreen.svg)
+![Version](https://img.shields.io/badge/version-v1.0.0-brightgreen.svg)
 ![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)
 
-**WhatsNexus** is a cross-platform desktop application designed to manage multiple WhatsApp Web accounts simultaneously. It goes a step further by offering strict session isolation, allowing you to keep your personal and work accounts active in a single, tab-organized interface without data crossover.
+**WhatsNexus** is an open-source, production-ready desktop application built to manage multiple WhatsApp Web accounts concurrently. Built on top of Electron.js with strict session isolation (`StoragePartition`), dynamic tab hibernation, comprehensive offline protection, and 26 global languages, WhatsNexus keeps your personal, freelance, and business communications organized without data crossover.
 
 ## ✨ Key Features
 
-*   **Multi-Account Support:** Run multiple WhatsApp accounts in separate tabs.
-*   **Session Isolation:** Each tab operates in a completely encapsulated environment (different cookies, cache, and local storage) to prevent data crossover.
-*   **Persistent Sessions:** Sessions are saved securely. You only need to scan the QR code the first time you add an account.
-*   **Cross-Platform:** Seamless experience on Windows, macOS, and Linux distributions.
-*   **System Tray Integration:** Keep it running in the background and receive notifications without cluttering your taskbar.
-*   **Native Notifications:** Fully integrated with your operating system's notification system.
+*   **Multi-Account Management:** Run multiple WhatsApp accounts simultaneously in a clean, vertical sidebar.
+*   **Strict Session Isolation:** Every account operates in a sandboxed, persistent storage partition (`persist:acc_*`) with completely segregated cookies, cache, local storage, and IndexedDB.
+*   **Persistent Login Sessions:** QR codes only need to be scanned once. Sessions persist securely on disk across application restarts.
+*   **Intelligent Tab Hibernation:** Inactive accounts automatically hibernate after 20 minutes of idle time, destroying unneeded `<webview>` instances to reclaim up to 450 MB RAM per tab.
+*   **Comprehensive Offline Protections:** Built-in offline container screens with retry buttons and a system-wide reconnection modal with reactive network state listeners.
+*   **Automated OTA Updates:** Integrated auto-updater powered by `electron-updater` and `electron-log` that checks, downloads, and restarts to apply new versions from GitHub Releases.
+*   **Native System Tray & Notification Badges:** Runs discreetly in the background, minimizing to the system tray with dynamic unread message count badges.
+*   **Privacy Presets & DND:** Configurable notification privacy presets (Broad, Medium, Strict, Custom) and account-specific Do Not Disturb controls.
+*   **Official Poppins Typography:** Elegant and readable typography using Google Fonts Poppins across all interface elements.
+*   **Curated Theme Engine:** Beautiful default WhatsNexus theme (dark and light modes), plus Dracula, Nord, Monokai, and custom color presets.
+*   **Global Internationalization (i18n):** Modular on-demand translations across 26 global languages.
+*   **Classic Doom Easter Egg:** 100% offline, native WebAssembly Chocolate Doom port (Cloudflare) with immediate audio playback and a floating controls overlay.
+*   **Multiplatform CI/CD:** Automated GitHub Actions build pipeline generating `.deb`, `.AppImage`, `.snap` (x64 and arm64), `.dmg` (x64 and arm64), and `.exe` (NSIS x64).
 
 ## ⚖️ Comparison: WhatsApp Web vs. ZapZap vs. WhatsNexus
 
@@ -31,8 +38,9 @@
 | **Spell checking with regional dictionaries** | Browser dependent | ✅ | ✅ |
 | **Curated theme engine & brand palettes** | ❌ *(Light/Dark only)* | Limited | ✅ *(WhatsNexus, Dracula, Nord, etc.)* |
 | **Cross-platform support** | Browser / Store app | Linux focused (PyQt) | ✅ (Linux, Windows, macOS) |
-| **Linux package support (AppImage, Flatpak, DEB)** | ❌ | ✅ | ✅ |
+| **Linux package support (AppImage, Snap, DEB)** | ❌ | ✅ | ✅ |
 | **Automatic OTA updates** | ❌ | AppImage (`.zsync`) | ✅ (`electron-updater` / GitHub) |
+| **Offline protection & auto-reconnect** | ❌ | ❌ | ✅ |
 | **Custom CSS & JavaScript injection** | ❌ | ✅ | ✅ |
 | **Multi-language internationalization (i18n)** | Official languages | Partial | ✅ (26 Languages) |
 | **Open source license** | ❌ Proprietary | ✅ GPL-3.0 | ✅ GPL-3.0 |
@@ -42,27 +50,35 @@
 ## 🚀 Getting Started
 
 ### Prerequisites
-*   Node.js or Python 3.10+ (depending on the chosen development framework)
-*   Git
+*   **Node.js**: Version 18.x or higher (LTS recommended)
+*   **npm**: Version 9.x or higher
+*   **Git**
 
 ### Installation
 
 1.  **Clone the repository:**
     ```bash
-    git clone [https://github.com/Sentinel-Mexico/WhatsNexus-Dekstop.git](https://github.com/Sentinel-Mexico/WhatsNexus-Dekstop.git)
+    git clone https://github.com/Sentinel-Mexico/WhatsNexus-Dekstop.git
     cd WhatsNexus-Dekstop
     ```
 
-2.  **Install dependencies and run:**
-    *(Exact commands will depend on the final framework)*
+2.  **Install dependencies:**
     ```bash
-    # Example for Node.js / Electron:
     npm install
+    ```
+
+3.  **Run in development mode:**
+    ```bash
     npm start
     ```
 
 ## 🛠️ Tech Stack
-*   **Core:** Electron.js
+*   **Core Framework:** Electron.js (Chromium + Node.js)
+*   **Frontend UI:** Vanilla HTML5, CSS3, Modern ES6+ JavaScript
+*   **Typography:** Google Fonts Poppins
+*   **Engine & Runtime:** WebAssembly (Wasm), Emscripten, WebAudio API
+*   **Updates & Logging:** `electron-updater`, `electron-log`
+*   **Build & Distribution:** `electron-builder`, GitHub Actions CI/CD matrix
 *   **Frontend:** HTML, CSS, JavaScript
 
 ## 📖 Documentation
