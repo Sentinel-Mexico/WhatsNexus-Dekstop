@@ -1,7 +1,7 @@
 name: Build & Release Multiplataforma
 
 on:
-  workflow_dispatch: # Permite ejecutarlo manualmente desde la web de GitHub
+  workflow_dispatch:
   push:
     branches:
       - main
@@ -31,21 +31,37 @@ jobs:
           node-version: 20
           cache: 'npm'
 
-      - name: Instalar dependencias
-        run: npm ci
+      - name: Instalar dependencias del proyecto
+        run: |
+          npm install || npm ci
+          npm install --save-dev electron-builder
 
-      # Requisitos adicionales para arquitecturas ARM y Snap en Linux
+      # Configuración de repositorios de ports para compilar ARM64 en Linux x86_64
       - name: Dependencias de compilación para Linux
         if: startsWith(matrix.os, 'ubuntu')
         run: |
           sudo dpkg --add-architecture arm64
+          sudo sed -i 's/deb http/deb [arch=amd64] http/g' /etc/apt/sources.list /etc/apt/sources.list.d/* 2>/dev/null || true
+          echo "deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports/ noble main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/arm64-ports.list
+          echo "deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports/ noble-updates main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/arm64-ports.list
+          echo "deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports/ noble-security main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/arm64-ports.list
           sudo apt-get update
-          sudo apt-get install --no-install-recommends -y gcc-aarch64-linux-gnu g++-aarch64-linux-gnu snapcraft
+          sudo apt-get install --no-install-recommends -y gcc-aarch64-linux-gnu g++-aarch64-linux-gnu
 
-      - name: Compilar y Desplegar Binarios
-        uses: samuelmeuli/action-electron-builder@v1
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          release: true
-          # Para Linux compila x64 y arm64
-          args: ${{ startsWith(matrix.os, 'ubuntu') && '--linux deb AppImage snap --x64 --arm64' || (startsWith(matrix.os, 'macos') && '--mac dmg --x64 --arm64' || '--win nsis --x64') }}
+      - name: Compilar y Desplegar (Linux)
+        if: startsWith(matrix.os, 'ubuntu')
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npx electron-builder --linux deb AppImage snap --x64 --arm64 --publish always
+
+      - name: Compilar y Desplegar (macOS)
+        if: startsWith(matrix.os, 'macos')
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npx electron-builder --mac dmg --x64 --arm64 --publish always
+
+      - name: Compilar y Desplegar (Windows)
+        if: startsWith(matrix.os, 'windows')
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npx electron-builder --win nsis --x64 --publish always
