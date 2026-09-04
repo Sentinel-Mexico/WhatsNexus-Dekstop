@@ -6,6 +6,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ---
 
+## [0.18.2] - 2026-09-03
+### Changed
+- **Official WhatsNexus Brand Identity & Icons Refresh:**
+  - Regenerated master application icons and tray icons (`src/assets/`) from official high-resolution vector sources (`icon.png`, `tray-green.png`, `tray-light.png`, `tray-dark.png`, and badge variants).
+  - Updated the Splash Screen to present the vector `whatsnexus-logo.svg` asset.
+  - Updated the About view (`#tab-about`) with crisp vector `whatsnexus-logo.svg` branding.
+
+---
+
 ## [0.18.1] - 2026-09-03
 ### Fixed
 - **Descriptive Subtitles for Permission & System Modules:**
