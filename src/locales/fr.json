@@ -155,7 +155,7 @@
   "about_btn_issues": "Ouvrir un ticket",
   "about_credits_title": "Crédits & Remerciements",
   "about_dev_title": "Développé par Sentinel Studio",
-  "about_dev_desc": "Architecture, intégration Electron et maintien de l'expérience utilisateur globale.",
+  "about_dev_desc": "WhatsNexus est maintenu par Sentinel Studio et la communauté GitHub.",
   "about_inspiration_title": "Inspiration",
   "about_inspiration_desc": "Inspiré par le design et l'utilité de ZapZap, adapté et amélioré pour des environnements de bureau modernes.",
   "lang_en": "Anglais",
@@ -205,5 +205,12 @@
   "about_btn_zapzap": "Visiter le dépôt de ZapZap",
   "modal_mit_title": "Licence MIT (MIT License)",
   "modal_mit_body": "WhatsNexus est distribué sous la Licence MIT. Il s'agit d'une licence de logiciel libre permissive qui accorde aux utilisateurs le droit d'utiliser, copier, modifier, fusionner, publier, distribuer, sous-licencier et/ou vendre des copies du logiciel. Conditions : L'avis de droit d'auteur et cet avis d'autorisation doivent être inclus dans toutes les copies ou parties substantielles du logiciel. Le logiciel est fourni 'en l'état', sans garantie d'aucune sorte.",
-  "btn_understood": "Compris"
+  "btn_understood": "Compris",
+  "about_btn_sentinel": "Visiter Sentinel Studio",
+  "about_disclaimer": "WhatsNexus n'a aucune affiliation, parrainage ou approbation de la part de WhatsApp, Messenger, Telegram, Signal, Viber ou de l'une de leurs sociétés mères ou de développement.",
+  "region_latam": "Amérique latine",
+  "region_in": "Inde",
+  "region_nz": "Nouvelle-Zélande",
+  "region_za": "Afrique du Sud",
+  "region_russia": "Russie"
 }

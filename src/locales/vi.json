@@ -155,7 +155,7 @@
   "about_btn_issues": "Report on GitHub Issues",
   "about_credits_title": "Credits & Acknowledgments",
   "about_dev_title": "Development",
-  "about_dev_desc": "WhatsNexus is maintained by the community (Sentinel-Mexico / elChauriMx).",
+  "about_dev_desc": "WhatsNexus is maintained by Sentinel Studio and the GitHub community.",
   "about_inspiration_title": "Inspiration",
   "about_inspiration_desc": "The original concept and design were deeply inspired by the ZapZap project created by Rafael Tosta.",
   "lang_en": "Tiếng Anh",
@@ -187,7 +187,7 @@
   "region_mexico": "Mexico",
   "region_argentina": "Argentina",
   "region_colombia": "Colombia",
-  "region_us": "United States",
+  "region_us": "USA",
   "region_uk": "United Kingdom",
   "region_ca": "Canada",
   "region_au": "Australia",
@@ -205,5 +205,12 @@
   "about_btn_zapzap": "Visit ZapZap repository",
   "modal_mit_title": "MIT License",
   "modal_mit_body": "WhatsNexus is distributed under the MIT License. This is a permissive open source license that grants users rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the software. Conditions: The copyright notice and this permission notice shall be included in all copies or substantial portions of the software. The software is provided 'as is', without warranty of any kind.",
-  "btn_understood": "Understood"
+  "btn_understood": "Understood",
+  "about_btn_sentinel": "Visit Sentinel Studio",
+  "about_disclaimer": "WhatsNexus has no affiliation, sponsorship, or endorsement by WhatsApp, Messenger, Telegram, Signal, Viber, or any of their developer or parent companies.",
+  "region_latam": "Latin America",
+  "region_in": "India",
+  "region_nz": "New Zealand",
+  "region_za": "South Africa",
+  "region_russia": "Russia"
 }

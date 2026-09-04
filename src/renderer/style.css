@@ -1917,44 +1917,52 @@ body.theme-light .permissions-notice-box {
 }
 
 /* ========================================================
-   Corrector Ortográfico Multilingüe (Checkbox Multi-Select)
+   Corrector Ortográfico Multilingüe (Horizontal Wrap Chips)
    ======================================================== */
 .spellcheck-multiselect-container {
-  max-height: 200px;
+  max-height: 220px;
   overflow-y: auto;
-  background-color: var(--bg-card);
+  background-color: var(--bg-sidebar);
   border: 1px solid var(--border-color);
-  border-radius: var(--shape-md, 8px);
-  padding: 6px;
+  border-radius: var(--shape-md, 12px);
+  padding: 12px;
   display: flex;
-  flex-direction: column;
-  gap: 2px;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
 }
 
 .spellcheck-checkbox-item {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 10px;
-  padding: 8px 10px;
-  border-radius: var(--shape-sm, 6px);
+  gap: 8px;
+  padding: 8px 14px;
+  border-radius: var(--shape-sm, 10px);
   cursor: pointer;
   user-select: none;
-  transition: background-color 0.15s ease, color 0.15s ease;
+  background-color: var(--bg-hover);
+  border: 1px solid var(--border-color);
+  transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
   color: var(--text-primary);
   font-size: 0.88rem;
+  flex: 0 0 auto;
 }
 
 .spellcheck-checkbox-item:hover {
   background-color: var(--bg-hover);
+  border-color: var(--bg-active);
+  transform: translateY(-1px);
 }
 
 .spellcheck-checkbox-item.selected {
-  background-color: rgba(0, 168, 132, 0.08);
+  background-color: rgba(0, 168, 132, 0.14);
+  border-color: var(--bg-active);
+  box-shadow: 0 2px 8px rgba(0, 168, 132, 0.18);
 }
 
 .spellcheck-cb {
-  width: 17px;
-  height: 17px;
+  width: 16px;
+  height: 16px;
   cursor: pointer;
   accent-color: var(--bg-active);
   flex-shrink: 0;
@@ -1962,29 +1970,14 @@ body.theme-light .permissions-notice-box {
 }
 
 .spellcheck-item-flag {
-  font-size: 1.15rem;
+  font-size: 1.1rem;
   line-height: 1;
   flex-shrink: 0;
 }
 
 .spellcheck-item-name {
-  flex: 1;
   font-weight: 500;
   white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.spellcheck-item-code {
-  font-size: 0.74rem;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  color: var(--text-secondary);
-  opacity: 0.75;
-  background: var(--bg-hover);
-  padding: 2px 6px;
-  border-radius: 4px;
-  border: 1px solid var(--border-color);
-  flex-shrink: 0;
 }
 
 /* ==========================================================================
@@ -2017,7 +2010,7 @@ body.theme-light .permissions-notice-box {
   transform: translateY(0);
 }
 
-/* Modal Popup Nativo con Backdrop Blur */
+/* Modal Popup Nativo con Fondo Sólido y Backdrop Blur */
 .app-modal-backdrop {
   position: fixed;
   inset: 0;
@@ -2025,9 +2018,9 @@ body.theme-light .permissions-notice-box {
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: rgba(0, 0, 0, 0.65);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  background-color: rgba(0, 0, 0, 0.72);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   opacity: 1;
   visibility: visible;
   transition: opacity 0.25s cubic-bezier(0.2, 0, 0, 1), visibility 0.25s cubic-bezier(0.2, 0, 0, 1);
@@ -2042,11 +2035,11 @@ body.theme-light .permissions-notice-box {
 
 .app-modal-card {
   width: 100%;
-  max-width: 520px;
-  background-color: var(--bg-card);
+  max-width: 540px;
+  background-color: var(--bg-modal, var(--bg-sidebar, #111b21));
   border: 1px solid var(--border-color);
   border-radius: var(--shape-lg, 20px);
-  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.6);
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -2064,7 +2057,7 @@ body.theme-light .permissions-notice-box {
   justify-content: space-between;
   padding: 20px 24px;
   border-bottom: 1px solid var(--border-color);
-  background-color: var(--bg-header);
+  background-color: var(--bg-modal, var(--bg-sidebar, #111b21));
 }
 
 .app-modal-header-info {
@@ -2118,6 +2111,7 @@ body.theme-light .permissions-notice-box {
   display: flex;
   flex-direction: column;
   gap: 20px;
+  background-color: var(--bg-modal, var(--bg-sidebar, #111b21));
 }
 
 .mit-license-text {
@@ -2141,4 +2135,20 @@ body.theme-light .permissions-notice-box {
   border-radius: var(--shape-sm, 8px);
   font-size: 0.9rem;
   cursor: pointer;
+}
+
+/* Leyenda de Exención de Responsabilidad (Disclaimer) */
+.about-disclaimer-box {
+  margin-top: 24px;
+  margin-bottom: 8px;
+  text-align: center;
+  padding: 12px 20px;
+}
+
+.about-disclaimer-box p {
+  margin: 0;
+  font-size: 0.85em;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  opacity: 0.85;
 }

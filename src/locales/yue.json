@@ -155,7 +155,7 @@
   "about_btn_issues": "Report on GitHub Issues",
   "about_credits_title": "Credits & Acknowledgments",
   "about_dev_title": "Development",
-  "about_dev_desc": "WhatsNexus is maintained by the community (Sentinel-Mexico / elChauriMx).",
+  "about_dev_desc": "WhatsNexus 由 Sentinel Studio 和 GitHub 社区共同维护。",
   "about_inspiration_title": "Inspiration",
   "about_inspiration_desc": "The original concept and design were deeply inspired by the ZapZap project created by Rafael Tosta.",
   "lang_en": "英文",
@@ -205,5 +205,12 @@
   "about_btn_zapzap": "访问 ZapZap 仓库",
   "modal_mit_title": "MIT 许可证 (MIT License)",
   "modal_mit_body": "WhatsNexus 基于 MIT 许可证分发。这是一个宽松的开源许可证，授予用户使用、复制、修改、合并、发布、分发、再许可和/或销售软件副本的权利。条件：版权声明和本许可声明应包含在软件的所有副本或重要部分中。本软件按“原样”提供，不提供任何形式的明示或暗示保证。",
-  "btn_understood": "我知道了"
+  "btn_understood": "我知道了",
+  "about_btn_sentinel": "访问 Sentinel Studio",
+  "about_disclaimer": "WhatsNexus 与 WhatsApp、Messenger、Telegram、Signal、Viber 或其任何母公司或开发公司没有任何附属、赞助或认可关系。",
+  "region_latam": "拉丁美洲",
+  "region_in": "印度",
+  "region_nz": "新西兰",
+  "region_za": "南非",
+  "region_russia": "俄罗斯"
 }

@@ -2,6 +2,27 @@
 
 This changelog records all granular updates, bug fixes, refactorings, and feature iterations developed on the `Dev` branch. Each version bump in `package.json` is documented here as it happens.
 
+## [0.17.10] - 2026-09-03
+### Changed
+- **Corrector Ortográfico con Layout Horizontal Fluido (Chips/Etiquetas):**
+  - Se modificó `.spellcheck-multiselect-container` con `display: flex; flex-wrap: wrap; gap: 10px;` para que las opciones se distribuyan modularmente de izquierda a derecha con salto de línea automático.
+  - Se rediseñaron los ítems como chips estilizados (`.spellcheck-checkbox-item`) con bordes redondeados y padding adaptativo.
+- **Ordenamiento Alfabético Dinámico según Idioma Activo:**
+  - Se implementó ordenamiento previo a la renderización con `.sort((a, b) => a.nombreTraducido.localeCompare(b.nombreTraducido, currentLang))` garantizando que el orden visual responda estrictamente al texto localizado mostrado en pantalla.
+- **Ampliación del Catálogo de Variantes BCP-47:**
+  - Se incorporó la lista completa de variantes requeridas para Español (`es`, `es-AR`, `es-ES`, `es-MX`, `es-US`, `es-419`), Inglés (`en-US`, `en-GB`, `en-CA`, `en-AU`, `en-IN`, `en-NZ`, `en-ZA`), Portugués (`pt-BR`, `pt-PT`), Francés (`fr`, `fr-FR`, `fr-CA`, `fr-CH`), Alemán (`de`, `de-DE`, `de-AT`, `de-CH`), Italiano/Ruso (`it`, `it-IT`, `ru`, `ru-RU`), Árabe/Persa (`ar`, `fa`), y Asiáticos/Otros (`hi`, `id`, `ko`, `ta`, `tr`, `vi`).
+- **Créditos de Desarrollo y Enlace a Sentinel Studio:**
+  - Se actualizó el texto descriptivo de desarrollo a: *"WhatsNexus es mantenido por Sentinel Studio y la comunidad de Github."*.
+  - Se añadió el botón interactivo `#btn-about-sentinel` con redirección externa segura a `https://somossentinel.com/studio`.
+- **Aviso Legal y Descargo de Responsabilidad (Disclaimer):**
+  - Se agregó al final de la pestaña Acerca de un bloque centrado con el descargo legal formal: *"WhatsNexus no tiene ninguna afiliación, patrocinio ni respaldo por parte de WhatsApp, Messenger, Telegram, Signal, Viber o cualquiera de sus empresas desarrolladoras o matrices."* con soporte i18n en los 26 idiomas.
+
+### Fixed
+- **Fondo Sólido Opaco en Modal de Licencia MIT:**
+  - Se corrigió la transparencia no deseada en `.app-modal-card`, `.app-modal-header` y `.app-modal-body` configurando un fondo opaco coherente con el tema activo (`background-color: var(--bg-modal, var(--bg-sidebar, #111b21));`).
+
+---
+
 ## [0.17.9] - 2026-09-03
 ### Changed
 - **Ancho Dinámico del Dropdown "Estilo del Icono en Bandeja":**

@@ -508,11 +508,15 @@
               <!-- Tarjeta 3: Créditos y Agradecimientos -->
               <h4 class="perm-group-title" data-i18n="about_credits_title">Créditos y Agradecimientos</h4>
               <div class="perm-card">
-                <div class="perm-row">
+                <div class="perm-row" style="align-items: center;">
                   <div class="perm-info">
                     <h4 data-i18n="about_dev_title">Desarrollo</h4>
-                    <p data-i18n="about_dev_desc">WhatsNexus es mantenido por la comunidad (Sentinel-Mexico / elChauriMx).</p>
+                    <p data-i18n="about_dev_desc">WhatsNexus es mantenido por Sentinel Studio y la comunidad de Github.</p>
                   </div>
+                  <button type="button" class="btn-primary" id="btn-about-sentinel" style="display: inline-flex; align-items: center; gap: 8px; font-size: 0.88rem; padding: 9px 18px; cursor: pointer; border-radius: var(--shape-sm); flex-shrink: 0;">
+                    <i class="fa-solid fa-globe"></i>
+                    <span data-i18n="about_btn_sentinel">Visitar Sentinel Studio</span>
+                  </button>
                 </div>
                 <div class="perm-row">
                   <div class="perm-info">
@@ -524,6 +528,11 @@
                     <span data-i18n="about_btn_zapzap">Visitar repositorio de ZapZap</span>
                   </button>
                 </div>
+              </div>
+
+              <!-- Leyenda de Exención de Responsabilidad (Disclaimer) -->
+              <div class="about-disclaimer-box">
+                <p data-i18n="about_disclaimer">WhatsNexus no tiene ninguna afiliación, patrocinio ni respaldo por parte de WhatsApp, Messenger, Telegram, Signal, Viber o cualquiera de sus empresas desarrolladoras o matrices.</p>
               </div>
             </div>
           </div>
