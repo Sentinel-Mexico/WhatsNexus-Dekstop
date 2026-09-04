@@ -1398,6 +1398,65 @@ body.theme-light .segmented-btn.active.status-inactive-btn {
   opacity: 0.9;
 }
 
+/* Offline Account Overlay (No connection on account load) */
+.offline-overlay {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: var(--whatsapp-bg);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 15;
+  text-align: center;
+  padding: 32px 24px;
+  color: var(--text-secondary);
+}
+
+.offline-overlay.hidden {
+  display: none !important;
+}
+
+.offline-icon-wrapper {
+  width: 84px;
+  height: 84px;
+  border-radius: 50%;
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.28);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 22px;
+  color: #ef4444;
+  font-size: 2.3rem;
+  box-shadow: 0 4px 16px rgba(239, 68, 68, 0.15);
+}
+
+.offline-overlay h3 {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 10px 0;
+  letter-spacing: -0.01em;
+}
+
+.offline-overlay p {
+  font-size: 0.96rem;
+  line-height: 1.55;
+  max-width: 440px;
+  margin: 0 0 24px 0;
+  color: var(--text-secondary);
+}
+
+.offline-overlay .retry-btn {
+  padding: 10px 24px;
+  font-size: 0.92rem;
+  border-radius: var(--shape-sm);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
 /* Floating Sidebar Tooltip (Globo informativo desacoplado) */
 .sidebar-floating-tooltip {
   position: fixed;
@@ -2335,6 +2394,103 @@ body.theme-light .permissions-notice-box {
   color: var(--text-secondary);
   line-height: 1.5;
   opacity: 0.85;
+}
+
+/* Modal Popup: Reconexión Activa a Internet */
+.reconnecting-card {
+  max-width: 400px;
+  padding: 38px 28px 32px;
+  text-align: center;
+  background-color: var(--bg-modal, var(--bg-sidebar, #111b21));
+  border: 1px solid var(--border-color);
+  border-radius: var(--shape-lg, 16px);
+  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.45);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.reconnecting-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.reconnecting-spinner-wrapper {
+  position: relative;
+  width: 76px;
+  height: 76px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 22px;
+}
+
+.reconnecting-spinner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 3px solid rgba(76, 158, 95, 0.18);
+  border-top-color: var(--accent-color, #4C9E5F);
+  animation: reconnecting-spin 1s infinite linear;
+}
+
+@keyframes reconnecting-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.reconnecting-icon {
+  font-size: 1.75rem;
+  color: var(--accent-color, #4C9E5F);
+}
+
+.reconnecting-title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 10px 0;
+}
+
+.reconnecting-desc {
+  font-size: 0.92rem;
+  line-height: 1.55;
+  color: var(--text-secondary);
+  margin: 0 0 22px 0;
+  max-width: 320px;
+}
+
+.reconnecting-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 6px 16px;
+  background: var(--bg-hover);
+  border: 1px solid var(--border-color);
+  border-radius: 9999px;
+  font-size: 0.84rem;
+  font-weight: 600;
+  color: var(--accent-color, #4C9E5F);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+.pulse-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--accent-color, #4C9E5F);
+  animation: dot-pulse 1.4s infinite ease-in-out;
+}
+
+@keyframes dot-pulse {
+  0%, 100% { opacity: 0.3; transform: scale(0.8); }
+  50% { opacity: 1; transform: scale(1.2); }
 }
 
 /* ==========================================================================

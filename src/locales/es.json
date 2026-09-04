@@ -242,5 +242,12 @@
   "modal_delete_account_title": "Eliminar cuenta",
   "modal_delete_account_msg": "¿Estás seguro de que deseas eliminar esta cuenta? Se cerrará la sesión y se perderán los datos locales asociados.",
   "btn_confirm_delete": "Eliminar",
-  "btn_cancel": "Cancelar"
+  "btn_cancel": "Cancelar",
+  "offline_screen_title": "Sin conexión a internet",
+  "offline_screen_desc": "No se puede conectar a WhatsApp Web. Comprueba tu conexión de red y vuelve a intentarlo.",
+  "btn_retry": "Reintentar",
+  "status_connecting": "Conectando...",
+  "reconnecting_title": "Sin conexión a internet",
+  "reconnecting_desc": "Se perdió la conexión a la red. Intentando reconectar automáticamente...",
+  "reconnecting_status": "Buscando señal..."
 }

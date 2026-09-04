@@ -707,6 +707,24 @@
     </div>
   </div>
 
+  <!-- Modal Popup: Reconectando a Internet (Offline durante uso activo) -->
+  <div id="reconnecting-modal" class="app-modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="reconnecting-modal-title">
+    <div class="app-modal-card reconnecting-card">
+      <div class="reconnecting-content">
+        <div class="reconnecting-spinner-wrapper">
+          <div class="reconnecting-spinner"></div>
+          <i class="fa-solid fa-wifi reconnecting-icon"></i>
+        </div>
+        <h3 id="reconnecting-modal-title" class="reconnecting-title" data-i18n="reconnecting_title">Sin conexión a internet</h3>
+        <p class="reconnecting-desc" data-i18n="reconnecting_desc">Se perdió la conexión a la red. Intentando reconectar automáticamente...</p>
+        <div class="reconnecting-badge">
+          <span class="pulse-dot"></span>
+          <span data-i18n="reconnecting_status">Buscando señal...</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script src="renderer.js"></script>
 </body>
 </html>

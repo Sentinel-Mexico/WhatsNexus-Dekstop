@@ -571,6 +571,7 @@ async function init() {
   renderSpellcheckList();
   loadAboutInfo();
   initAutoUpdater();
+  initNetworkMonitor();
   if (electronAPI.setSpellcheckerLanguages) {
     electronAPI.setSpellcheckerLanguages(settings.spellcheckLanguages || ['es-ES']);
   }
@@ -901,8 +902,25 @@ function createWebviewContainer(account, startHibernated = false) {
     <p data-i18n="hibernation_desc">${escapeHtml(lang.hibernation_desc)}</p>
     <button class="wake-btn" onclick="wakeWebview('${escapeHtml(account.id)}')" data-i18n="wake_button">${escapeHtml(lang.wake_button)}</button>
   `;
-  
   container.appendChild(overlay);
+
+  // Offline Overlay (Shown if account fails to load or app opened offline)
+  const offlineOverlay = document.createElement('div');
+  offlineOverlay.className = 'offline-overlay hidden';
+  offlineOverlay.id = `offline_${account.id}`;
+  offlineOverlay.innerHTML = `
+    <div class="offline-icon-wrapper">
+      <i class="fa-solid fa-wifi-slash"></i>
+    </div>
+    <h3 data-i18n="offline_screen_title">${escapeHtml(lang.offline_screen_title || 'Sin conexión a internet')}</h3>
+    <p data-i18n="offline_screen_desc">${escapeHtml(lang.offline_screen_desc || 'No se puede conectar a WhatsApp Web. Comprueba tu conexión de red y vuelve a intentarlo.')}</p>
+    <button type="button" class="btn-primary-action retry-btn" onclick="retryLoadAccount('${escapeHtml(account.id)}')">
+      <i class="fa-solid fa-rotate-right"></i>
+      <span data-i18n="btn_retry">${escapeHtml(lang.btn_retry || 'Reintentar')}</span>
+    </button>
+  `;
+  container.appendChild(offlineOverlay);
+
   webviewContainer.appendChild(container);
 
   // Only create webview in DOM if NOT starting hibernated (Lazy Loading)
@@ -910,6 +928,65 @@ function createWebviewContainer(account, startHibernated = false) {
     buildWebviewDOM(account, container);
   }
 }
+
+function showAccountOfflineScreen(accountId) {
+  const offlineEl = document.getElementById(`offline_${accountId}`);
+  const webview = document.getElementById(`webview_${accountId}`);
+  if (offlineEl) {
+    offlineEl.classList.remove('hidden');
+  }
+  if (webview) {
+    webview.style.display = 'none';
+  }
+}
+
+function hideAccountOfflineScreen(accountId) {
+  const offlineEl = document.getElementById(`offline_${accountId}`);
+  const webview = document.getElementById(`webview_${accountId}`);
+  if (offlineEl) {
+    offlineEl.classList.add('hidden');
+  }
+  if (webview) {
+    webview.style.display = '';
+  }
+}
+
+function retryLoadAccount(accountId) {
+  const btn = document.querySelector(`#offline_${accountId} .retry-btn`);
+  const originalHtml = btn ? btn.innerHTML : '';
+  if (btn) {
+    btn.disabled = true;
+    const connectingText = (typeof currentTranslations !== 'undefined' && currentTranslations && currentTranslations.status_connecting) || 'Conectando...';
+    btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> <span>${escapeHtml(connectingText)}</span>`;
+  }
+
+  setTimeout(() => {
+    const webview = document.getElementById(`webview_${accountId}`);
+    if (webview) {
+      webview.style.display = '';
+      if (!webview.src || webview.src === 'about:blank') {
+        webview.src = 'https://web.whatsapp.com/';
+      } else {
+        webview.reload();
+      }
+    } else {
+      const container = document.getElementById(`container_${accountId}`);
+      const acc = accounts.find(a => a.id === accountId);
+      if (container && acc) {
+        buildWebviewDOM(acc, container);
+      }
+    }
+
+    setTimeout(() => {
+      if (btn) {
+        btn.disabled = false;
+        btn.innerHTML = originalHtml;
+      }
+    }, 2000);
+  }, 350);
+}
+
+window.retryLoadAccount = retryLoadAccount;
 
 function buildWebviewDOM(account, parentContainer) {
   const webview = document.createElement('webview');
@@ -925,8 +1002,26 @@ function buildWebviewDOM(account, parentContainer) {
   webview.setAttribute('useragent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36');
   webview.className = 'webview-active';
 
+  // Si no hay conexión al iniciar o cargar la cuenta, mostrar la pantalla offline
+  if (!navigator.onLine) {
+    showAccountOfflineScreen(account.id);
+  }
+
+  // Detección de errores de carga de red
+  webview.addEventListener('did-fail-load', (e) => {
+    if (e.isMainFrame && e.errorCode !== -3) {
+      console.warn(`[Webview ${account.id}] Falló la carga (código ${e.errorCode}):`, e.errorDescription);
+      showAccountOfflineScreen(account.id);
+    }
+  });
+
+  webview.addEventListener('did-finish-load', () => {
+    hideAccountOfflineScreen(account.id);
+  });
+
   // Synchronize notifications, DND, and theme configuration upon session load
   webview.addEventListener('dom-ready', () => {
+    hideAccountOfflineScreen(account.id);
     const isDark = getEffectiveThemeIsDark();
     try {
       if (settings && settings.notifications) {
@@ -2083,6 +2178,72 @@ function initAutoUpdater() {
   updater.onError((err) => {
     setButtonState('ERROR', err);
   });
+}
+
+// ========================================================
+// Network Connectivity Monitoring & Offline Protections
+// ========================================================
+let hadInitialConnection = navigator.onLine;
+
+function initNetworkMonitor() {
+  const reconnectingModal = document.getElementById('reconnecting-modal');
+  let pollTimer = null;
+
+  function showReconnectingModal() {
+    if (reconnectingModal) {
+      reconnectingModal.classList.remove('hidden');
+    }
+    if (!pollTimer) {
+      pollTimer = setInterval(verifyConnectionOnline, 3000);
+    }
+  }
+
+  function hideReconnectingModal() {
+    if (reconnectingModal) {
+      reconnectingModal.classList.add('hidden');
+    }
+    if (pollTimer) {
+      clearInterval(pollTimer);
+      pollTimer = null;
+    }
+    // Reconnection succeeded: reload any accounts showing the offline overlay
+    accounts.forEach(acc => {
+      const offlineEl = document.getElementById(`offline_${acc.id}`);
+      if (offlineEl && !offlineEl.classList.contains('hidden')) {
+        retryLoadAccount(acc.id);
+      }
+    });
+  }
+
+  async function verifyConnectionOnline() {
+    if (navigator.onLine) {
+      try {
+        await fetch('https://web.whatsapp.com/favicon.ico', { method: 'HEAD', mode: 'no-cors', cache: 'no-store' });
+        console.log('[Network] Connectivity restored verified by ping.');
+        hadInitialConnection = true;
+        hideReconnectingModal();
+      } catch (_) {
+        // Still unreachable, keep reconnecting modal active
+      }
+    }
+  }
+
+  window.addEventListener('online', () => {
+    console.log('[Network] Online event received.');
+    hadInitialConnection = true;
+    hideReconnectingModal();
+  });
+
+  window.addEventListener('offline', () => {
+    console.log('[Network] Offline event received.');
+    if (hadInitialConnection) {
+      showReconnectingModal();
+    }
+  });
+
+  if (navigator.onLine) {
+    hadInitialConnection = true;
+  }
 }
 
 addAccountBtn.addEventListener('click', () => addAccount());

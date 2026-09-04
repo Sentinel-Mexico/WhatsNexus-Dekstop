@@ -2,6 +2,14 @@
 
 This changelog records all granular updates, bug fixes, refactorings, and feature iterations developed on the `Dev` branch. Each version bump in `package.json` is documented here as it happens.
 
+## [0.21.0] - 2026-09-03
+### Added
+- **Comprehensive Offline Protections & Network Reconnection Architecture:**
+  - **Account Offline Screen:** Implemented dedicated `.offline-overlay` displayed inside individual account containers when the app is launched offline or when a webview encounters a network loading failure (`did-fail-load`). Displays offline status iconography, clear explanatory text, and an interactive "Reintentar" / "Retry" button that attempts reconnection with visual loading feedback.
+  - **Active Disconnection Reconnecting Overlay:** Introduced `#reconnecting-modal` with high z-index backdrop that activates automatically if network connectivity drops while using the application. Completely blocks accidental interactions across accounts, displays a spinning progress indicator, pulse badge, and reconnecting status message.
+  - **Seamless Auto-Reconnection:** Integrated reactive listeners (`window.addEventListener('online')` and verification ping) that automatically dismiss the reconnecting modal and reloads any account webviews showing the offline screen once the network connection is restored.
+  - **Full Internationalization:** Added localization tokens across all 26 supported languages (`offline_screen_title`, `offline_screen_desc`, `btn_retry`, `status_connecting`, `reconnecting_title`, `reconnecting_desc`, `reconnecting_status`).
+
 ## [0.20.1] - 2026-09-03
 ### Added
 - **Offline & Responsive Native WebAssembly Doom:**
