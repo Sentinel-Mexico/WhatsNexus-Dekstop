@@ -62,7 +62,7 @@ jobs:
           EOF
 
           sudo apt-get update
-          sudo apt-get install --no-install-recommends -y gcc-aarch64-linux-gnu g++-aarch64-linux-gnu
+          sudo apt-get install --no-install-recommends -y gcc-aarch64-linux-gnu g++-aarch64-linux-gnu snapcraft
 
       - name: Compilar y Desplegar (Linux)
         if: startsWith(matrix.os, 'ubuntu')

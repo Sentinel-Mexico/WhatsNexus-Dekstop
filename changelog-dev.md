@@ -2,6 +2,13 @@
 
 This changelog records all granular updates, bug fixes, refactorings, and feature iterations developed on the `Dev` branch. Each version bump in `package.json` is documented here as it happens.
 
+## [1.0.4] - 2026-09-05
+### Fixed
+- **Linux Packaging Metadata (.deb Specification):**
+  - Configured structured `author` object with institutional name and email (`"Sentinel Studio <studio@sentinelstudio.com>"`) in `package.json` to satisfy Debian package maintainer email specifications.
+- **Linux Snapcraft Runner Dependency:**
+  - Added `snapcraft` package to the APT installation step in `.github/workflows/build.yml` on Ubuntu runners, resolving the `ENOENT` process execution failure during multiplatform Linux release jobs.
+
 ## [1.0.3] - 2026-09-04
 ### Fixed
 - **DOOM Controls Overlay Accuracy & Interaction Enhancements:**
