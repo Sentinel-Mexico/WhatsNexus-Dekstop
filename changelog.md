@@ -6,26 +6,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ---
 
-## [1.7.0] - 2026-09-05
-### Added
-- **Modular Theme Engine (`src/themes/`):**
-  - Modularized all 16 theme palettes into independent JSON files validating against a strict schema (`id`, `nameKey`, `category`, `labels`, and `modes`).
-  - Implemented startup dynamic scanning via IPC channel `load-themes` in `main.js` with defensive error handling for corrupt files.
-  - Implemented category access control protecting Tier 1 (`own`) and Tier 2 (`custom`) palettes from external tampering, demoting unauthorized additions to Tier 5 (`community`).
-- **Interactive Customization Studio ("Personalización"):**
-  - Added a dedicated "Personalización" section in Settings directly above "Acerca de".
-  - Offers real-time Light/Dark editing controls, reset button, and visual token editors organized into Fondos, Tipografía, and Acentos.
-  - Bidirectional synchronization between native HTML5 color pickers and HEX text inputs with immediate `:root` CSS variable reflection.
-  - Automatic activation of "Personalizado" palette upon editing, stored persistently in user settings.
-- **Visual Improvements & System Mode:**
-  - Redesigned `palette-select` dropdown with 100% width, non-interactive symmetric headers (`-- Categoría --`), and internal alphabetical ordering across all categories.
-  - Simplified appearance mode label to "Sistema" (`theme_system`) with dynamic labels populated from the active theme.
-  - Synchronized translation keys across all 55 languages in `src/locales/`.
-
-### Changed
-- **Dynamic `:root` Variable Engine:**
-  - Replaced hardcoded CSS palette blocks in `style.css` with dynamic DOM CSS variable injection on `:root` and automatic derived token computation.
-
 ## [1.6.1] - 2026-09-05
 ### Added
 - **Account Cache Reset (Hard Reset) per Session:**
