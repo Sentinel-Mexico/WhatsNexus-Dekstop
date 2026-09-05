@@ -823,24 +823,31 @@ function hexToRgba(hex, alpha = 0.85) {
 
 function applyThemeTokens(palette, isDark) {
   const mode = isDark ? 'dark' : 'light';
-  const rootStyle = document.documentElement.style;
+  const root = document.documentElement;
+  const body = document.body;
+
+  const setCssVar = (prop, val) => {
+    if (!val) return;
+    root.style.setProperty(prop, val);
+    if (body) body.style.setProperty(prop, val);
+  };
 
   if (palette === 'custom') {
     const userTokens = (settings.customTheme && settings.customTheme[mode]) || DEFAULT_CUSTOM_THEME[mode];
     Object.entries(userTokens).forEach(([prop, val]) => {
-      if (val) rootStyle.setProperty(prop, val);
+      if (val) setCssVar(prop, val);
     });
-    if (userTokens['--bg-sidebar']) rootStyle.setProperty('--bg-surface', userTokens['--bg-sidebar']);
-    if (userTokens['--text-primary']) rootStyle.setProperty('--text-color', userTokens['--text-primary']);
+    if (userTokens['--bg-sidebar']) setCssVar('--bg-surface', userTokens['--bg-sidebar']);
+    if (userTokens['--text-primary']) setCssVar('--text-color', userTokens['--text-primary']);
     if (userTokens['--bg-active']) {
-      rootStyle.setProperty('--accent-color', userTokens['--bg-active']);
-      rootStyle.setProperty('--whatsapp-green', userTokens['--bg-active']);
+      setCssVar('--accent-color', userTokens['--bg-active']);
+      setCssVar('--whatsapp-green', userTokens['--bg-active']);
     }
     if (userTokens['--accent-hover']) {
-      rootStyle.setProperty('--whatsapp-green-hover', userTokens['--accent-hover']);
+      setCssVar('--whatsapp-green-hover', userTokens['--accent-hover']);
     }
     if (userTokens['--bg-modal']) {
-      rootStyle.setProperty('--bg-modal-overlay', hexToRgba(userTokens['--bg-modal'], 0.85));
+      setCssVar('--bg-modal-overlay', hexToRgba(userTokens['--bg-modal'], 0.85));
     }
     return;
   }
@@ -849,19 +856,19 @@ function applyThemeTokens(palette, isDark) {
   if (themeObj && themeObj.modes && themeObj.modes[mode]) {
     const tokens = themeObj.modes[mode];
     Object.entries(tokens).forEach(([prop, val]) => {
-      if (val) rootStyle.setProperty(prop, val);
+      if (val) setCssVar(prop, val);
     });
-    if (tokens['--bg-sidebar']) rootStyle.setProperty('--bg-surface', tokens['--bg-sidebar']);
-    if (tokens['--text-primary']) rootStyle.setProperty('--text-color', tokens['--text-primary']);
+    if (tokens['--bg-sidebar']) setCssVar('--bg-surface', tokens['--bg-sidebar']);
+    if (tokens['--text-primary']) setCssVar('--text-color', tokens['--text-primary']);
     if (tokens['--bg-active']) {
-      rootStyle.setProperty('--accent-color', tokens['--bg-active']);
-      rootStyle.setProperty('--whatsapp-green', tokens['--bg-active']);
+      setCssVar('--accent-color', tokens['--bg-active']);
+      setCssVar('--whatsapp-green', tokens['--bg-active']);
     }
     if (tokens['--accent-hover']) {
-      rootStyle.setProperty('--whatsapp-green-hover', tokens['--accent-hover']);
+      setCssVar('--whatsapp-green-hover', tokens['--accent-hover']);
     }
     if (tokens['--bg-modal']) {
-      rootStyle.setProperty('--bg-modal-overlay', hexToRgba(tokens['--bg-modal'], 0.85));
+      setCssVar('--bg-modal-overlay', hexToRgba(tokens['--bg-modal'], 0.85));
     }
   }
 }

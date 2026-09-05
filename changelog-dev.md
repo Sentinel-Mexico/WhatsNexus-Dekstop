@@ -2,6 +2,23 @@
 
 This changelog records all granular updates, bug fixes, refactorings, and feature iterations developed on the `Dev` branch. Each version bump in `package.json` is documented here as it happens.
 
+## [1.7.2] - 2026-09-05
+### Fixed
+- **Critical Dynamic Light Theme Override Bug:**
+  - Resolved an issue where selecting light mode on custom themes (e.g., Dracula, Bosque) erroneously rendered the default WhatsNexus light palette.
+  - Eliminated the static `body.theme-light` token block in `src/renderer/style.css` which had high child specificity and overrode dynamic CSS variables.
+  - Upgraded `applyThemeTokens()` in `src/renderer/renderer.js` to inject variables on both `document.documentElement.style` and `document.body.style`, ensuring complete runtime cascade without stylesheet collisions.
+- **High Contrast Dark Mode Dropdown Contrast:**
+  - Updated `.custom-option.selected` in `src/renderer/style.css` to consume `color: var(--text-on-accent, #ffffff);` rather than hardcoded white.
+  - Ensured that in High Contrast dark mode (`#FFE600` accent background), selected items render in bold black (`#000000`) for maximum legibility.
+- **Dracula Palette Aesthetic Overhaul:**
+  - Redesigned `src/themes/dracula.json` to feature deep, elegant crimson red accents (`#991111`, `#8B0000`, `#B21818`) and near-black/charcoal dark gray backgrounds (`#121214`, `#1A1A1E`), preventing eye strain while embodying the Dracula identity.
+  - Updated localized palette title across all 55 translation files in `src/locales/` to "Dracula (Carmesí y Gris Oscuro)" / "Dracula (Crimson & Dark Gray)".
+
+### Changed
+- **Version Quartet Synchronization:**
+  - Bumped patch version to `1.7.2` across `package.json`, `package-lock.json`, `README.md`, `docs/README.md`, and `changelog-dev.md`.
+
 ## [1.7.1] - 2026-09-05
 ### Changed
 - **Visual Polish on Theme Dropdown Category Separators:**

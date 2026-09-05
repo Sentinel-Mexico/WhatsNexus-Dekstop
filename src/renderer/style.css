@@ -37,27 +37,6 @@ body.palette-whatsnexus {
   --motion-expressive: cubic-bezier(0.2, 0, 0, 1);
 }
 
-/* WhatsNexus (Official Flagship) - Light Mode */
-body.theme-light,
-body.palette-whatsnexus.theme-light {
-  --bg-primary: #f3f6f4;
-  --bg-sidebar: #ffffff;
-  --bg-hover: #e8eee9;
-  --bg-active: #3f8851;
-  --bg-modal: #ffffff;
-  --bg-modal-overlay: rgba(243, 246, 244, 0.85);
-  --text-primary: #152219;
-  --text-secondary: #506456;
-  --text-color: var(--text-primary);
-  --border-color: #d6e0d8;
-  --whatsapp-bg: #ebf0ec;
-  --whatsapp-green: #3f8851;
-  --whatsapp-green-hover: #347243;
-  --accent-secondary: #5c8c3e;
-  --accent-terracotta: #9e624c;
-  --accent-crimson: #9e4c53;
-}
-
 /* Note: Palettes are modularized in src/themes/*.json and dynamically injected into :root via JavaScript */
 
 /* ========================================================
@@ -924,7 +903,7 @@ body.theme-light .dropdown-menu ul::-webkit-scrollbar-thumb {
 
 .custom-option.selected {
   background-color: var(--bg-active);
-  color: #ffffff;
+  color: var(--text-on-accent, #ffffff);
   font-weight: 600;
 }
 
