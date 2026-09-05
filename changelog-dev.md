@@ -2,6 +2,15 @@
 
 This changelog records all granular updates, bug fixes, refactorings, and feature iterations developed on the `Dev` branch. Each version bump in `package.json` is documented here as it happens.
 
+## [1.6.2] - 2026-09-05
+### Changed
+- **Comprehensive Four-Way Comparison Table in `README.md`:**
+  - Expanded the comparison matrix (`⚖️ Comparison: WhatsApp Web vs. WhatsApp Desktop vs. ZapZap vs. WhatsNexus`) by introducing an official "WhatsApp Desktop" column between WhatsApp Web and ZapZap.
+  - Formulated precise evaluation across all 19 operational criteria, highlighting WhatsApp Desktop's limitations (single active account without multi-account tabs, absence of official Linux support/packaging, lack of dynamic tray counters, lack of RAM tab hibernation, and closed-source proprietary distribution).
+  - Updated WhatsNexus capabilities in the comparison matrix to reflect current production features (16 curated palettes across 4 tiers + custom styling, 55 languages + conlangs with in-memory caching, in-memory circular avatars, and strict sandboxed storage partitions).
+- **Version Quartet Synchronization:**
+  - Synchronized project version to `1.6.2` across `package.json`, `package-lock.json`, `README.md` badge, and `docs/README.md`.
+
 ## [1.6.1] - 2026-09-05
 ### Changed
 - **Standardized Packaging Artifact Naming Convention (`artifactName`):**

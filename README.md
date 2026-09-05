@@ -1,7 +1,7 @@
 # WhatsNexus ⚡
 
 ![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey)
-![Version](https://img.shields.io/badge/version-v1.6.1-brightgreen.svg)
+![Version](https://img.shields.io/badge/version-v1.6.2-brightgreen.svg)
 ![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)
 
 **WhatsNexus** is an open-source, production-ready desktop application built to manage multiple WhatsApp Web accounts concurrently. Built on top of Electron.js with strict session isolation (`StoragePartition`), dynamic tab hibernation, comprehensive offline protection, and 55 global languages, WhatsNexus keeps your personal, freelance, and business communications organized without data crossover.
@@ -21,29 +21,29 @@
 *   **Global Internationalization (i18n):** Modular on-demand translations across 55 global languages, including constructed languages (Elvish Tengwar and Klingon) with in-memory caching.
 *   **Multiplatform CI/CD:** Automated GitHub Actions build pipeline generating `.deb`, `.AppImage` (Linux x64 and arm64), `.dmg` (macOS x64 and arm64), and `.exe` (Windows NSIS x64).
 
-## ⚖️ Comparison: WhatsApp Web vs. ZapZap vs. WhatsNexus
+## ⚖️ Comparison: WhatsApp Web vs. WhatsApp Desktop vs. ZapZap vs. WhatsNexus
 
-| Feature | WhatsApp Web | ZapZap | WhatsNexus ⚡ |
-| :--- | :---: | :---: | :---: |
-| **Runs in your default browser** | ✅ | ❌ | ❌ |
-| **Standalone desktop application** | ❌ | ✅ | ✅ |
-| **Multiple accounts (simultaneous tabs)** | ❌ | ✅ | ✅ |
-| **Strict session isolation (cookies & cache)** | ❌ | ✅ | ✅ |
-| **Native system tray integration** | ❌ | ✅ | ✅ |
-| **Unread badge counter on tray icon** | ❌ | ❌ | ✅ |
-| **Native desktop notifications** | Limited | ✅ | ✅ *(In-memory avatars)* |
-| **Granular notification privacy presets** | ❌ | ❌ | ✅ |
-| **Memory management & tab hibernation** | ❌ | ❌ | ✅ |
-| **Spell checking with regional dictionaries** | Browser dependent | ✅ | ✅ |
-| **Curated theme engine & brand palettes** | ❌ *(Light/Dark only)* | Limited | ✅ *(16 Palettes across 4 categories)* |
-| **Cross-platform support** | Browser / Store app | Linux focused (PyQt) | ✅ (Linux, Windows, macOS) |
-| **Linux package support (AppImage, DEB)** | ❌ | ✅ | ✅ |
-| **Automatic OTA updates** | ❌ | AppImage (`.zsync`) | ✅ (`electron-updater` / GitHub) |
-| **Offline protection & auto-reconnect** | ❌ | ❌ | ✅ |
-| **Custom CSS & JavaScript injection** | ❌ | ✅ | ✅ |
-| **Multi-language internationalization (i18n)** | Official languages | Partial | ✅ (55 Languages + Conlangs) |
-| **Open source license** | ❌ Proprietary | ✅ GPL-3.0 | ✅ GPL-3.0 |
-| **Privacy model** | Browser shared session | Dedicated application | Dedicated isolated partitions + Sandbox |
+| Feature | WhatsApp Web | WhatsApp Desktop | ZapZap | WhatsNexus ⚡ |
+| :--- | :---: | :---: | :---: | :---: |
+| **Runs in your default browser** | ✅ | ❌ | ❌ | ❌ |
+| **Standalone desktop application** | ❌ | ✅ | ✅ | ✅ |
+| **Multiple accounts (simultaneous tabs)** | ❌ | ❌ *(Single active account)* | ✅ | ✅ *(Simultaneous vertical tabs)* |
+| **Strict session isolation (cookies & cache)** | ❌ | ❌ *(Single profile instance)* | ✅ | ✅ *(Independent `StoragePartition`)* |
+| **Native system tray integration** | ❌ | ✅ *(Minimizes to tray)* | ✅ | ✅ *(Minimize to tray & background)* |
+| **Unread badge counter on tray icon** | ❌ | ⚠️ *(Taskbar/Dock only; limited tray)* | ❌ | ✅ *(Dynamic numeric badge)* |
+| **Native desktop notifications** | Limited | ✅ | ✅ | ✅ *(In-memory circular avatars & audio)* |
+| **Granular notification privacy presets** | ❌ | ❌ *(Basic mute / preview toggle)* | ❌ | ✅ *(Broad, Medium, Strict, Custom)* |
+| **Memory management & tab hibernation** | ❌ | ❌ *(Monolithic process)* | ❌ | ✅ *(Auto-hibernation after 20m idle)* |
+| **Spell checking with regional dictionaries** | Browser dependent | ✅ *(OS spellchecker)* | ✅ | ✅ *(Multilingual regional dictionaries)* |
+| **Curated theme engine & brand palettes** | ❌ *(Light/Dark only)* | ❌ *(Light/Dark only)* | Limited | ✅ *(16 Palettes across 4 tiers + Custom)* |
+| **Cross-platform support** | Browser / Store app | ⚠️ *(Windows & macOS only; No Linux)* | Linux focused (PyQt) | ✅ *(Linux, Windows, macOS)* |
+| **Linux package support (AppImage, DEB)** | ❌ | ❌ *(No official Linux client)* | ✅ | ✅ *(`.deb`, `.AppImage` x64 & arm64)* |
+| **Automatic OTA updates** | ❌ | ✅ *(Store / background updater)* | AppImage (`.zsync`) | ✅ (`electron-updater` / GitHub Releases) |
+| **Offline protection & auto-reconnect** | ❌ | ❌ *(Generic retry screen)* | ❌ | ✅ *(Reactive offline container & modal)* |
+| **Custom CSS & JavaScript injection** | ❌ | ❌ *(Closed-source binary)* | ✅ | ✅ *(Preload script & DOM styling)* |
+| **Multi-language internationalization (i18n)** | Official languages | Official languages | Partial | ✅ *(55 Languages + Conlangs with cache)* |
+| **Open source license** | ❌ Proprietary | ❌ Proprietary | ✅ GPL-3.0 | ✅ GPL-3.0 |
+| **Privacy model** | Browser shared session | Proprietary telemetry & local sandbox | Dedicated application | Dedicated isolated partitions + Sandbox |
 
 ## 🚀 Getting Started
 
