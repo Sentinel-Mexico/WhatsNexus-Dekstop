@@ -2,6 +2,36 @@
 
 This changelog records all granular updates, bug fixes, refactorings, and feature iterations developed on the `Dev` branch. Each version bump in `package.json` is documented here as it happens.
 
+## [1.3.0] - 2026-09-05
+### Added
+- **New Theme Color Palettes (CSS Design Tokens):**
+  - **Dracula:** Added Light Mode ("Alucard") (`--bg-primary: #F8F8F2`, `--bg-surface: #E6E6E6`, `--text-primary: #282A36`, `--accent-color: #BD93F9`) and Dark Mode ("Dracula Official") (`--bg-primary: #282A36`, `--bg-surface: #44475A`, `--text-primary: #F8F8F2`, `--accent-color: #BD93F9`).
+  - **Nord:** Added Light Mode ("Snow Storm") (`--bg-primary: #ECEFF4`, `--bg-surface: #E5E9F0`, `--text-primary: #2E3440`, `--accent-color: #5E81AC`) and Dark Mode ("Nord Official") (`--bg-primary: #2E3440`, `--bg-surface: #3B4252`, `--text-primary: #ECEFF4`, `--accent-color: #88C0D0`).
+  - **Star Wars:** Added Light Mode ("Jedi") (`--bg-primary: #F3F1E6`, `--bg-surface: #E8E5D5`, `--text-primary: #2C2A28`, `--border-color: #D1CEB8`, `--accent-color: #2E67F8`) and Dark Mode ("Sith") (`--bg-primary: #0A0A0A`, `--bg-surface: #1A1A1A`, `--text-primary: #E0E0E0`, `--border-color: #2A2A2A`, `--accent-color: #E52020`).
+- **Dynamic Theme Switch Labels:**
+  - Implemented `updateThemeLabels()` in `src/renderer/renderer.js` to dynamically mutate light/dark mode labels based on active palette:
+    - "Alto Contraste" palette dynamically displays `"Día"` / `"Noche"` (`theme_day` / `theme_night`).
+    - "Star Wars" palette dynamically displays `"Jedi"` / `"Sith"` (`theme_jedi` / `theme_sith`).
+    - Standard palettes display default `"Claro"` / `"Oscuro"` (`theme_light` / `theme_dark`).
+- **Internationalization (i18n) Leveling (312 Keys Total):**
+  - Added full translation support across all 55 JSON files in `src/locales/` for the new and updated keys: `palette_retro`, `palette_steampunk`, `palette_highcontrast`, `palette_dracula`, `palette_nord`, `palette_starwars`, `theme_day`, `theme_night`, `theme_jedi`, and `theme_sith`.
+  - Achieved 100% key parity with zero missing or untranslated keys across all 50+ world languages and conlangs (including Elvish Tengwar CSUR and Klingon pIqaD CSUR encodings).
+
+### Changed
+- **Theme Selector Color Descriptions:**
+  - Standardized palette selector strings in `src/renderer/index.html` and localization files with concise parenthetical color descriptions:
+    - `Retro (Beige y Neón)`
+    - `Steampunk (Pergamino y Latón)`
+    - `Alto Contraste (Blanco y Negro)`
+    - `Dracula (Morado y Gris Oscuro)`
+    - `Nord (Hielo y Escarcha)`
+    - `Star Wars (Sable de Luz)`
+
+### Fixed
+- **Custom Dropdown Scrollbar Overflow & Border-Radius Containment:**
+  - Applied `overflow: hidden;` to `.custom-select-options` and `.dropdown-menu` parent containers in `src/renderer/style.css` to enforce strict border-radius clipping.
+  - Implemented nested `.custom-options-list` scroll container with `overflow-y: auto;` and internal padding/margins, ensuring scrollbar track and thumb remain fully contained within the menu boundaries without clipping rounded corners.
+
 ## [1.2.4] - 2026-09-05
 ### Fixed
 - **Language Selector Conlang Native Glyph Rendering (Tengwar & Klingon pIqaD):**

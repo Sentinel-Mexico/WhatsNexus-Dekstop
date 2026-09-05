@@ -355,6 +355,153 @@ body.palette-highcontrast.theme-dark {
 }
 
 /* ========================================================
+   Temática: Dracula
+   - Modo Claro: "Alucard"
+   - Modo Oscuro: "Dracula Official"
+   ======================================================== */
+
+/* Alucard (Modo Claro) */
+body.palette-dracula.theme-light {
+  --bg-primary: #F8F8F2;
+  --bg-surface: #E6E6E6;
+  --bg-sidebar: #E6E6E6;
+  --bg-hover: #D8D8D8;
+  --bg-active: #BD93F9;
+  --bg-modal: #E6E6E6;
+  --bg-modal-overlay: rgba(248, 248, 242, 0.85);
+  --text-primary: #282A36;
+  --text-secondary: #6272A4;
+  --text-color: var(--text-primary);
+  --border-color: #D0D0D0;
+  --accent-color: #BD93F9;
+  --accent-hover: #A370F7;
+  --whatsapp-bg: #F8F8F2;
+  --whatsapp-green: #BD93F9;
+  --whatsapp-green-hover: #A370F7;
+  --text-on-accent: #282A36;
+}
+
+/* Dracula Official (Modo Oscuro) */
+body.palette-dracula,
+body.palette-dracula.theme-dark {
+  --bg-primary: #282A36;
+  --bg-surface: #44475A;
+  --bg-sidebar: #44475A;
+  --bg-hover: #6272A4;
+  --bg-active: #BD93F9;
+  --bg-modal: #44475A;
+  --bg-modal-overlay: rgba(40, 42, 54, 0.85);
+  --text-primary: #F8F8F2;
+  --text-secondary: #BD93F9;
+  --text-color: var(--text-primary);
+  --border-color: #6272A4;
+  --accent-color: #BD93F9;
+  --accent-hover: #FF79C6;
+  --whatsapp-bg: #282A36;
+  --whatsapp-green: #BD93F9;
+  --whatsapp-green-hover: #FF79C6;
+  --text-on-accent: #282A36;
+}
+
+/* ========================================================
+   Temática: Nord
+   - Modo Claro: "Snow Storm"
+   - Modo Oscuro: "Nord Official"
+   ======================================================== */
+
+/* Snow Storm (Modo Claro) */
+body.palette-nord.theme-light {
+  --bg-primary: #ECEFF4;
+  --bg-surface: #E5E9F0;
+  --bg-sidebar: #E5E9F0;
+  --bg-hover: #D8DEE9;
+  --bg-active: #5E81AC;
+  --bg-modal: #E5E9F0;
+  --bg-modal-overlay: rgba(236, 239, 244, 0.85);
+  --text-primary: #2E3440;
+  --text-secondary: #4C566A;
+  --text-color: var(--text-primary);
+  --border-color: #D8DEE9;
+  --accent-color: #5E81AC;
+  --accent-hover: #81A1C1;
+  --whatsapp-bg: #ECEFF4;
+  --whatsapp-green: #5E81AC;
+  --whatsapp-green-hover: #81A1C1;
+  --text-on-accent: #ffffff;
+}
+
+/* Nord Official (Modo Oscuro) */
+body.palette-nord,
+body.palette-nord.theme-dark {
+  --bg-primary: #2E3440;
+  --bg-surface: #3B4252;
+  --bg-sidebar: #3B4252;
+  --bg-hover: #434C5E;
+  --bg-active: #88C0D0;
+  --bg-modal: #3B4252;
+  --bg-modal-overlay: rgba(46, 52, 64, 0.85);
+  --text-primary: #ECEFF4;
+  --text-secondary: #D8DEE9;
+  --text-color: var(--text-primary);
+  --border-color: #4C566A;
+  --accent-color: #88C0D0;
+  --accent-hover: #8FBCBB;
+  --whatsapp-bg: #2E3440;
+  --whatsapp-green: #88C0D0;
+  --whatsapp-green-hover: #8FBCBB;
+  --text-on-accent: #2E3440;
+}
+
+/* ========================================================
+   Temática: Star Wars
+   - Modo Claro: "Jedi"
+   - Modo Oscuro: "Sith"
+   ======================================================== */
+
+/* Jedi (Modo Claro) */
+body.palette-starwars.theme-light {
+  --bg-primary: #F3F1E6;
+  --bg-surface: #E8E5D5;
+  --bg-sidebar: #E8E5D5;
+  --bg-hover: #DCD8C5;
+  --bg-active: #2E67F8;
+  --bg-modal: #E8E5D5;
+  --bg-modal-overlay: rgba(243, 241, 230, 0.85);
+  --text-primary: #2C2A28;
+  --text-secondary: #65615B;
+  --text-color: var(--text-primary);
+  --border-color: #D1CEB8;
+  --accent-color: #2E67F8;
+  --accent-hover: #1B4ED8;
+  --whatsapp-bg: #F3F1E6;
+  --whatsapp-green: #2E67F8;
+  --whatsapp-green-hover: #1B4ED8;
+  --text-on-accent: #ffffff;
+}
+
+/* Sith (Modo Oscuro) */
+body.palette-starwars,
+body.palette-starwars.theme-dark {
+  --bg-primary: #0A0A0A;
+  --bg-surface: #1A1A1A;
+  --bg-sidebar: #1A1A1A;
+  --bg-hover: #262626;
+  --bg-active: #E52020;
+  --bg-modal: #1A1A1A;
+  --bg-modal-overlay: rgba(10, 10, 10, 0.85);
+  --text-primary: #E0E0E0;
+  --text-secondary: #999999;
+  --text-color: var(--text-primary);
+  --border-color: #2A2A2A;
+  --accent-color: #E52020;
+  --accent-hover: #FF3B3B;
+  --whatsapp-bg: #0A0A0A;
+  --whatsapp-green: #E52020;
+  --whatsapp-green-hover: #FF3B3B;
+  --text-on-accent: #ffffff;
+}
+
+/* ========================================================
    Conlang Custom Typography: Tengwar & Klingon pIqaD
    ======================================================== */
 
@@ -1116,7 +1263,8 @@ body.theme-light .custom-select-trigger:hover {
   transform: rotate(180deg);
 }
 
-.custom-select-options {
+.custom-select-options,
+.dropdown-menu {
   position: absolute;
   top: calc(100% + 6px);
   left: 0;
@@ -1126,33 +1274,59 @@ body.theme-light .custom-select-trigger:hover {
   border: 1.5px solid var(--border-color);
   border-radius: var(--shape-md); /* 16px */
   box-shadow: 0 12px 36px rgba(0, 0, 0, 0.45);
-  /* Exactly 10 items visible before scroll */
   max-height: 380px;
-  overflow-y: auto;
-  overflow-x: hidden;
+  overflow: hidden; /* Fuerza el respeto estricto al border-radius */
   display: none;
-  padding: 6px;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-.custom-select-options.open {
+.custom-select-options.open,
+.dropdown-menu.open {
   display: block;
   animation: fadeIn 0.2s var(--motion-expressive);
 }
 
-.custom-select-options::-webkit-scrollbar {
+.custom-select-options-list,
+.custom-options-list,
+.custom-select-options ul,
+.dropdown-menu ul {
+  max-height: 380px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 6px;
+  margin: 0;
+  list-style: none;
+  box-sizing: border-box;
+}
+
+.custom-select-options-list::-webkit-scrollbar,
+.custom-options-list::-webkit-scrollbar,
+.custom-select-options ul::-webkit-scrollbar,
+.dropdown-menu ul::-webkit-scrollbar {
   width: 6px;
 }
 
-.custom-select-options::-webkit-scrollbar-track {
+.custom-select-options-list::-webkit-scrollbar-track,
+.custom-options-list::-webkit-scrollbar-track,
+.custom-select-options ul::-webkit-scrollbar-track,
+.dropdown-menu ul::-webkit-scrollbar-track {
   background: transparent;
+  margin: 6px 0;
 }
 
-.custom-select-options::-webkit-scrollbar-thumb {
+.custom-select-options-list::-webkit-scrollbar-thumb,
+.custom-options-list::-webkit-scrollbar-thumb,
+.custom-select-options ul::-webkit-scrollbar-thumb,
+.dropdown-menu ul::-webkit-scrollbar-thumb {
   background-color: rgba(255, 255, 255, 0.2);
   border-radius: var(--shape-full);
 }
 
-body.theme-light .custom-select-options::-webkit-scrollbar-thumb {
+body.theme-light .custom-select-options-list::-webkit-scrollbar-thumb,
+body.theme-light .custom-options-list::-webkit-scrollbar-thumb,
+body.theme-light .custom-select-options ul::-webkit-scrollbar-thumb,
+body.theme-light .dropdown-menu ul::-webkit-scrollbar-thumb {
   background-color: rgba(0, 0, 0, 0.2);
 }
 

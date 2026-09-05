@@ -266,7 +266,13 @@ function populateLanguageSelect() {
   const trigger = document.getElementById('language-select-trigger');
   
   if (langSelect) langSelect.innerHTML = '';
-  if (customOptions) customOptions.innerHTML = '';
+  let langList = null;
+  if (customOptions) {
+    customOptions.innerHTML = '';
+    langList = document.createElement('div');
+    langList.className = 'custom-options-list';
+    customOptions.appendChild(langList);
+  }
   
   const currentLangCode = settings.language || 'en';
   const dict = i18n[currentLangCode] || i18n['en'] || {};
@@ -285,7 +291,7 @@ function populateLanguageSelect() {
     }
 
     // Custom visual dropdown
-    if (customOptions) {
+    if (customOptions && langList) {
       const customOpt = document.createElement('div');
       customOpt.className = 'custom-option' + (code === currentLangCode ? ' selected' : '');
       if (code === 'tengwar') {
@@ -312,7 +318,7 @@ function populateLanguageSelect() {
         if (trigger) trigger.classList.remove('open');
       });
 
-      customOptions.appendChild(customOpt);
+      langList.appendChild(customOpt);
     }
   });
   
@@ -527,6 +533,7 @@ function updateTranslations() {
   if (typeof loadAboutInfo === 'function') {
     loadAboutInfo();
   }
+  updateThemeLabels();
   if (typeof refreshAllCustomDropdowns === 'function') {
     refreshAllCustomDropdowns();
   }
@@ -715,6 +722,40 @@ function saveSettings() {
   applySettings();
 }
 
+function updateThemeLabels() {
+  const currentLang = settings.language || 'en';
+  const dict = i18n[currentLang] || i18n['en'] || {};
+  const palette = settings.themePalette || 'whatsnexus';
+  
+  let lightKey = 'theme_light';
+  let darkKey = 'theme_dark';
+  
+  if (palette === 'highcontrast') {
+    lightKey = 'theme_day';
+    darkKey = 'theme_night';
+  } else if (palette === 'starwars') {
+    lightKey = 'theme_jedi';
+    darkKey = 'theme_sith';
+  }
+  
+  if (themeSelect) {
+    const lightOpt = themeSelect.querySelector('option[value="theme-light"]');
+    const darkOpt = themeSelect.querySelector('option[value="theme-dark"]');
+    if (lightOpt) {
+      lightOpt.setAttribute('data-i18n', lightKey);
+      lightOpt.innerText = dict[lightKey] || (lightKey === 'theme_day' ? 'Día' : lightKey === 'theme_jedi' ? 'Jedi' : 'Claro');
+    }
+    if (darkOpt) {
+      darkOpt.setAttribute('data-i18n', darkKey);
+      darkOpt.innerText = dict[darkKey] || (darkKey === 'theme_night' ? 'Noche' : darkKey === 'theme_sith' ? 'Sith' : 'Oscuro');
+    }
+  }
+  
+  if (typeof customDropdowns['theme-select'] === 'function') {
+    customDropdowns['theme-select']();
+  }
+}
+
 function applySettings() {
   const isAuto = (settings.theme === 'theme-auto' || !settings.theme);
   const isDark = getEffectiveThemeIsDark();
@@ -735,6 +776,7 @@ function applySettings() {
       triggerLabel.innerText = paletteSelect.options[paletteSelect.selectedIndex].innerText;
     }
   }
+  updateThemeLabels();
   if (trayStyleSelect) trayStyleSelect.value = settings.trayStyle || 'auto';
   if (trayBadgeToggle) trayBadgeToggle.checked = settings.trayShowBadge !== false;
   if (downloadPathInput && settings.downloadPath) downloadPathInput.value = settings.downloadPath;
@@ -1732,6 +1774,10 @@ function initCustomDropdown(selectId) {
 
   function render() {
     optionsContainer.innerHTML = '';
+    const list = document.createElement('div');
+    list.className = 'custom-options-list';
+    optionsContainer.appendChild(list);
+
     const currentVal = select.value;
     Array.from(select.options).forEach(opt => {
       const item = document.createElement('div');
@@ -1750,7 +1796,7 @@ function initCustomDropdown(selectId) {
         select.dispatchEvent(new Event('change', { bubbles: true }));
       });
 
-      optionsContainer.appendChild(item);
+      list.appendChild(item);
     });
 
     const selectedOpt = select.options[select.selectedIndex] || select.options[0];
