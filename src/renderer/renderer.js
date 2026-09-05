@@ -25,13 +25,14 @@ function escapeHtml(str) {
     .replace(/'/g, '&#039;');
 }
 
-// Supported languages (Top 25 most spoken world languages in proportional order)
+// Supported languages (World languages + Conlangs Tengwar & Klingon)
 const supportedLanguages = [
   'en', 'zh', 'hi', 'es', 'fr',
   'ar', 'bn', 'pt', 'ru', 'ur',
   'id', 'de', 'ja', 'mr', 'te',
   'tr', 'ta', 'yue', 'vi', 'fil',
-  'ko', 'fa', 'ha', 'sw', 'it'
+  'ko', 'fa', 'ha', 'sw', 'it',
+  'tengwar', 'klingon'
 ];
 
 // Native names for each language
@@ -60,7 +61,9 @@ const nativeNames = {
   fa: "فارسی",
   ha: "Hausa",
   sw: "Kiswahili",
-  it: "Italiano"
+  it: "Italiano",
+  tengwar: "Tengwar (Élfico / Elvish)",
+  klingon: "tlhIngan Hol (Klingon / pIqaD)"
 };
 
 function getOSLanguage() {
@@ -180,6 +183,8 @@ async function fetchLocaleJson(langCode) {
 async function loadActiveLocale(langCode) {
   try {
     const code = langCode || 'en';
+    document.documentElement.setAttribute('data-language', code);
+    document.documentElement.setAttribute('lang', code);
     if (!fallbackTranslations || Object.keys(fallbackTranslations).length === 0) {
       try {
         fallbackTranslations = (await fetchLocaleJson('en')) || {};
@@ -431,7 +436,10 @@ function renderSpellcheckList() {
 }
 
 function updateTranslations() {
-  const lang = i18n[settings.language] || i18n['en'];
+  const currentLang = settings.language || 'en';
+  document.documentElement.setAttribute('data-language', currentLang);
+  document.documentElement.setAttribute('lang', currentLang);
+  const lang = i18n[currentLang] || i18n['en'];
   
   document.querySelectorAll('[data-i18n]').forEach(el => {
     const key = el.getAttribute('data-i18n');
@@ -643,6 +651,9 @@ function applySettings() {
   const isDark = getEffectiveThemeIsDark();
 
   const palette = settings.themePalette || 'whatsnexus';
+  const currentLang = settings.language || 'en';
+  document.documentElement.setAttribute('data-language', currentLang);
+  document.documentElement.setAttribute('lang', currentLang);
   
   // Set palette and light/dark mode on body
   document.body.className = `palette-${palette} ${isDark ? 'theme-dark' : 'theme-light'}`;

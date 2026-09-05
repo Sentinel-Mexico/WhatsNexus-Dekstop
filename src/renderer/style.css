@@ -354,6 +354,48 @@ body.palette-highcontrast.theme-dark {
   --text-on-accent: #000000;
 }
 
+/* ========================================================
+   Conlang Custom Typography: Tengwar & Klingon pIqaD
+   ======================================================== */
+
+@font-face {
+  font-family: 'Tengwar';
+  src: url('../assets/fonts/TengwarTelcontar.woff2') format('woff2'),
+       url('../assets/fonts/TengwarTelcontar.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Klingon pIqaD';
+  src: url('../assets/fonts/Klingon-pIqaD.woff2') format('woff2'),
+       url('../assets/fonts/Klingon-pIqaD.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+/* Conlang Dynamic Font Overrides */
+html[data-language="tengwar"] body,
+html[data-language="tengwar"] button,
+html[data-language="tengwar"] input,
+html[data-language="tengwar"] select,
+html[data-language="tengwar"] textarea {
+  font-family: 'Tengwar', sans-serif !important;
+}
+
+html[data-language="klingon"] body,
+html[data-language="klingon"] button,
+html[data-language="klingon"] input,
+html[data-language="klingon"] select,
+html[data-language="klingon"] textarea,
+html[data-language="tlh"] body,
+html[data-language="tlh"] button,
+html[data-language="tlh"] input,
+html[data-language="tlh"] select,
+html[data-language="tlh"] textarea {
+  font-family: 'Klingon pIqaD', sans-serif !important;
+}
+
 * {
   margin: 0;
   padding: 0;

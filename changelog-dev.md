@@ -2,6 +2,18 @@
 
 This changelog records all granular updates, bug fixes, refactorings, and feature iterations developed on the `Dev` branch. Each version bump in `package.json` is documented here as it happens.
 
+## [1.2.0] - 2026-09-05
+### Added
+- **Conlang Custom Typography Architecture (Elvish Tengwar & Klingon pIqaD):**
+  - Added dedicated fonts directory at `src/assets/fonts/` for local asset distribution.
+  - Downloaded official "Tengwar Telcontar" font (`TengwarTelcontar.ttf` and optimized `TengwarTelcontar.woff2`) from the Free Tengwar Font Project.
+  - Downloaded official "Klingon pIqaD" font (`Klingon-pIqaD.ttf` and optimized `Klingon-pIqaD.woff2`) from the Klingon Language Institute / Evertype CSUR archive.
+  - Declared local `@font-face` rules in `src/renderer/style.css` for `'Tengwar'` and `'Klingon pIqaD'` with WOFF2 and TrueType format fallbacks.
+  - Implemented dynamic attribute selectors (`html[data-language="tengwar"]`, `html[data-language="klingon"]`, `html[data-language="tlh"]`) targeting `body`, `button`, `input`, `select`, and `textarea` with `!important` font family enforcement.
+  - Added full locale dictionaries for `src/locales/tengwar.json` and `src/locales/klingon.json`.
+  - Expanded `supportedLanguages` and `nativeNames` in `src/renderer/renderer.js` to register Tengwar and Klingon in the language selection dropdown with respective native naming.
+  - Updated `loadActiveLocale`, `updateTranslations`, and `applySettings` in `src/renderer/renderer.js` to dynamically synchronize `data-language` and `lang` on the root `<html>` element upon language selection or application launch.
+
 ## [1.1.1] - 2026-09-05
 ### Fixed
 - **Palette Selector Streamlining & Redundant Variant Clean Up:**
