@@ -2,6 +2,15 @@
 
 This changelog records all granular updates, bug fixes, refactorings, and feature iterations developed on the `Dev` branch. Each version bump in `package.json` is documented here as it happens.
 
+## [1.7.1] - 2026-09-05
+### Changed
+- **Visual Polish on Theme Dropdown Category Separators:**
+  - Removed surrounding hyphens (`--`) across all category headers in `src/renderer/index.html`, `src/renderer/renderer.js`, and the 55 localization files in `src/locales/` (`category_main`, `category_custom`, `category_messaging`, `category_pop_culture`, `category_user`).
+  - Added CSS rule `text-transform: uppercase;` to `.custom-option-separator` in `src/renderer/style.css` so that categories are rendered cleanly in uppercase while maintaining raw casing and linguistic accuracy in translation files.
+  - Retained non-interactive (`pointer-events: none; user-select: none;`) and full-width (100%) constraints on all dropdown separator elements.
+- **Version Quartet Synchronization:**
+  - Bumped patch version to `1.7.1` across `package.json`, `package-lock.json`, `README.md`, `docs/README.md`, and `changelog-dev.md`.
+
 ## [1.7.0] - 2026-09-05
 ### Added
 - **Modular Theme Architecture (`src/themes/`):**

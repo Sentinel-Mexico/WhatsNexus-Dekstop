@@ -9,22 +9,22 @@ This document governs the creation, insertion, ordering, validation, and categor
 The palette selection dropdown (`#palette-select` in `src/renderer/index.html`) is populated dynamically via `buildPaletteDropdown()` and organizes themes into 5 structured visual categories separated by non-interactive symmetric headers (`-- Categoría --`):
 
 1. **Tier 1: Tema Principal (`own`)**
-   - Header: `-- Tema Principal --`
+   - Header: `Tema Principal` (displayed in uppercase via CSS `text-transform: uppercase`)
    - Exclusively reserved for official WhatsNexus brand identity (`whatsnexus`).
 2. **Tier 2: Temas Personalizados (`custom`)**
-   - Header: `-- Temas Personalizados --`
+   - Header: `Temas Personalizados`
    - Curated original built-in themes (e.g., `highcontrast`, `forest`, `cybernexus`, `dracula`, `nord`, `retro`, `steampunk`).
 3. **Tier 3: Aplicaciones de Mensajería (`messaging`)**
-   - Header: `-- Aplicaciones de Mensajería --`
+   - Header: `Aplicaciones de Mensajería`
    - Themes inspired by major messaging clients (e.g., `messenger`, `signal`, `telegram`, `whatsapp`).
 4. **Tier 4: Cultura Pop (`pop_culture`)**
-   - Header: `-- Cultura Pop --`
+   - Header: `Cultura Pop`
    - Themes inspired by media franchises, games, and pop culture (e.g., `doom`, `startrek`, `starwars`, `voxel`).
 5. **Tier 5: Comunidad (`community`)**
-   - Header: `-- Comunidad --`
+   - Header: `Comunidad`
    - External, community-contributed, or third-party themes.
 
-*Note:* The user's live custom palette is presented in its own dedicated trailing category: `-- Personalización Usuario --` (`custom`).
+*Note:* The user's live custom palette is presented in its own dedicated trailing category: `Personalización Usuario` (`custom`).
 
 ### Internal Alphabetical Ordering
 **Every category must be sorted alphabetically internally** based on the theme's localized name for the current language. The dynamic dropdown renderer (`buildPaletteDropdown()`) enforces this ordering automatically at runtime.

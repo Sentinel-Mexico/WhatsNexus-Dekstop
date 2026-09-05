@@ -874,11 +874,11 @@ function buildPaletteDropdown() {
   paletteSelect.innerHTML = '';
 
   const categories = [
-    { key: 'category_main', cat: 'own', defaultHeader: '-- Tema Principal --' },
-    { key: 'category_custom', cat: 'custom', defaultHeader: '-- Temas Personalizados --' },
-    { key: 'category_messaging', cat: 'messaging', defaultHeader: '-- Aplicaciones de Mensajería --' },
-    { key: 'category_pop_culture', cat: 'pop_culture', defaultHeader: '-- Cultura Pop --' },
-    { key: 'category_community', cat: 'community', defaultHeader: '-- Comunidad --' }
+    { key: 'category_main', cat: 'own', defaultHeader: 'Tema Principal' },
+    { key: 'category_custom', cat: 'custom', defaultHeader: 'Temas Personalizados' },
+    { key: 'category_messaging', cat: 'messaging', defaultHeader: 'Aplicaciones de Mensajería' },
+    { key: 'category_pop_culture', cat: 'pop_culture', defaultHeader: 'Cultura Pop' },
+    { key: 'category_community', cat: 'community', defaultHeader: 'Comunidad' }
   ];
 
   categories.forEach(c => {
@@ -913,7 +913,7 @@ function buildPaletteDropdown() {
   userSep.disabled = true;
   userSep.className = 'select-separator';
   userSep.setAttribute('data-i18n', 'category_user');
-  userSep.innerText = dict['category_user'] || '-- Personalización Usuario --';
+  userSep.innerText = dict['category_user'] || 'Personalización Usuario';
   paletteSelect.appendChild(userSep);
 
   const customOpt = document.createElement('option');

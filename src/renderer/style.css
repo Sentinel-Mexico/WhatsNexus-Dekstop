@@ -937,6 +937,7 @@ body.theme-light .dropdown-menu ul::-webkit-scrollbar-thumb {
   font-size: 0.72rem;
   font-weight: 700;
   letter-spacing: 0.06em;
+  text-transform: uppercase;
   color: var(--text-secondary);
   background: transparent !important;
   text-align: center;
