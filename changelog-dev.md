@@ -2,6 +2,14 @@
 
 This changelog records all granular updates, bug fixes, refactorings, and feature iterations developed on the `Dev` branch. Each version bump in `package.json` is documented here as it happens.
 
+## [1.2.3] - 2026-09-05
+### Fixed
+- **Comprehensive Internationalization (i18n) Leveling & Fallback Elimination:**
+  - Audited all 55 JSON localization files in `src/locales/` against `en.json` as the single canonical Source of Truth (305 keys).
+  - Resolved English fallback leakage across all foreign language files, providing complete native translations for navigation labels, settings tabs, Appearance options, "About" tab headers, interface language pickers, auto-updater alerts, offline/reconnection dialogs, proxy isolation controls, and Freedoom WebAssembly overlay controls.
+  - Achieved comprehensive translation coverage across major languages (Hindi `hi.json`, Arabic `ar.json`, Russian `ru.json`, Telugu `te.json`, Japanese `ja.json`, Bengali `bn.json`, Urdu `ur.json`, Persian `fa.json`, Korean `ko.json`, Marathi `mr.json`, Tamil `ta.json`, Vietnamese `vi.json`, Indonesian `id.json`, Thai `th.json`, Dutch `nl.json`, Polish `pl.json`, Ukrainian `uk.json`, Romanian `ro.json`, Turkish `tr.json`, Esperanto `eo.json`, and all regional dialects).
+  - Verified 100% key parity (exactly 305 keys in all 55 locale files) and confirmed zero orphaned English strings in critical interface elements.
+
 ## [1.2.2] - 2026-09-05
 ### Fixed
 - **Deduplication of Klingon in Language Selector:**
