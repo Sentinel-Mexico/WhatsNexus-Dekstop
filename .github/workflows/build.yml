@@ -1,25 +1,20 @@
-name: Build & Release Multiplataforma
+name: Build & Release
 
 on:
-  workflow_dispatch:
   push:
-    branches:
-      - main
     tags:
       - 'v*'
-
-permissions:
-  contents: write
+  workflow_dispatch:
 
 jobs:
-  release:
+  # 1. Compilación de cada plataforma
+  build:
     name: Compilar para ${{ matrix.os }}
-    runs-on: ${{ matrix.os }}
-
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        os: [windows-latest, macos-latest, ubuntu-latest]
+    runs-on: ${{ matrix.os }}
 
     steps:
       - name: Clonar repositorio
@@ -31,29 +26,24 @@ jobs:
           node-version: 20
           cache: 'npm'
 
-      - name: Instalar dependencias del proyecto
-        run: |
-          npm install || npm ci
-          npm install --save-dev electron-builder
+      - name: Instalar dependencias
+        run: npm ci
 
       # En Ubuntu 24.04 aislamos deb822 y apuntamos arm64 estrictamente a ports.ubuntu.com
       - name: Dependencias de compilación para Linux
         if: startsWith(matrix.os, 'ubuntu')
         run: |
           sudo dpkg --add-architecture arm64
-          # Si existe el nuevo formato deb822 de Ubuntu 24.04, restringir a amd64
           if [ -f /etc/apt/sources.list.d/ubuntu.sources ]; then
             sudo sed -i 's/Architectures: .*/Architectures: amd64/g' /etc/apt/sources.list.d/ubuntu.sources || true
             if ! grep -q "Architectures:" /etc/apt/sources.list.d/ubuntu.sources; then
               sudo sed -i '/Suites:/i Architectures: amd64' /etc/apt/sources.list.d/ubuntu.sources
             fi
           fi
-          # Si existe el archivo clásico sources.list, restringir a amd64
           if [ -f /etc/apt/sources.list ]; then
             sudo sed -i 's/deb http/deb [arch=amd64] http/g' /etc/apt/sources.list || true
           fi
           
-          # Crear lista exclusiva de ports.ubuntu.com para ARM64
           sudo tee /etc/apt/sources.list.d/arm64-ports.list << 'EOF'
           deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports/ noble main restricted universe multiverse
           deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports/ noble-updates main restricted universe multiverse
@@ -64,20 +54,61 @@ jobs:
           sudo apt-get update
           sudo apt-get install --no-install-recommends -y gcc-aarch64-linux-gnu g++-aarch64-linux-gnu
 
-      - name: Compilar y Desplegar (Linux)
-        if: startsWith(matrix.os, 'ubuntu')
+      - name: Compilar instaladores (sin publicar directo)
+        run: npm run build
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: npx electron-builder --linux deb AppImage --x64 --arm64 --publish always
 
-      - name: Compilar y Desplegar (macOS)
-        if: startsWith(matrix.os, 'macos')
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: npx electron-builder --mac dmg --x64 --arm64 --publish always
+      # Guarda los instaladores resultantes temporalmente
+      - name: Guardar instaladores como artefactos
+        uses: actions/upload-artifact@v4
+        with:
+          name: assets-${{ matrix.os }}
+          path: |
+            dist/*.exe
+            dist/*.dmg
+            dist/*.AppImage
+            dist/*.deb
+            dist/*.zip
+            dist/*.blockmap
+            dist/latest*.yml
+          if-no-files-found: warn
 
-      - name: Compilar y Desplegar (Windows)
-        if: startsWith(matrix.os, 'windows')
+  # 2. Publicación unificada
+  release:
+    name: Publicar Release Única
+    needs: build # Espera a que Windows, Mac y Linux terminen
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Clonar repositorio
+        uses: actions/checkout@v4
+
+      # Descarga todos los archivos de los 3 sistemas en una sola carpeta
+      - name: Descargar todos los artefactos
+        uses: actions/download-artifact@v4
+        with:
+          path: release-assets
+          merge-multiple: true
+
+      - name: Resolver Tag de Release
+        id: release_tag
+        run: |
+          if [ "${{ github.ref_type }}" = "tag" ]; then
+            echo "tag=${{ github.ref_name }}" >> $GITHUB_OUTPUT
+          else
+            VERSION=$(node -p "require('./package.json').version")
+            echo "tag=v${VERSION}" >> $GITHUB_OUTPUT
+          fi
+
+      # Crea una única release con todos los instaladores juntos
+      - name: Publicar Release Única
+        uses: softprops/action-gh-release@v2
+        with:
+          draft: true
+          tag_name: ${{ steps.release_tag.outputs.tag }}
+          files: release-assets/*
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: npx electron-builder --win nsis --x64 --publish always
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
