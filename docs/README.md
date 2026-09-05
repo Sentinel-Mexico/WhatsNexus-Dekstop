@@ -1,6 +1,6 @@
 # WhatsNexus Technical Documentation 📚
 
-Welcome to the technical documentation for **WhatsNexus** (v1.0.0 Production Release), a multi-account WhatsApp Web desktop client built on Electron.js with strict session isolation, dynamic resource hibernation, offline protections, and full 26-language internationalization.
+Welcome to the technical documentation for **WhatsNexus** (v1.4.0 Production Release), a multi-account WhatsApp Web desktop client built on Electron.js with strict session isolation, Chromium sandboxing, Deny-by-Default permissions, dynamic resource hibernation, offline protections, and comprehensive 55-language internationalization (including Elvish Tengwar and Klingon).
 
 This directory serves as the definitive reference for architects, maintainers, and contributors to understand the codebase structure, engineering decisions, performance strategies, and operational workflows.
 

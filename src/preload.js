@@ -292,6 +292,11 @@ window.addEventListener('load', () => {
 
   let debounceTimer = null;
   observer = new MutationObserver(() => {
+    // Stop the fallback polling interval immediately as MutationObserver has taken over
+    if (intervalId) {
+      clearInterval(intervalId);
+      intervalId = null;
+    }
     if (debounceTimer) return;
     debounceTimer = setTimeout(() => {
       debounceTimer = null;

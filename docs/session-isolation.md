@@ -42,9 +42,10 @@ In Electron, partition names without a prefix are stored in-memory and wiped whe
 - The session is written directly to the host filesystem under `~/.config/whatsnexus/Partitions/acc_<timestamp>/` (on Linux) or equivalent app data paths on Windows/macOS.
 - Users **only need to scan the QR code once**. On subsequent launches, the session restores immediately without re-authentication.
 
-### 2.2 Strict Boundary Guarantees
+### 2.2 Strict Boundary & Security Guarantees
 - **Zero Cross-Talk**: Network requests, cookies, and indexed databases for Account A are physically impossible to access from Account B's renderer process.
-- **Sandboxed Execution**: Each `<webview>` runs in its own sandboxed renderer thread managed by Chromium's multi-process architecture.
+- **Sandboxed Execution (`sandbox: true`)**: Each window and `<webview>` operates under full Chromium sandboxing with `contextIsolation: true` and `nodeIntegration: false`, preventing guest scripts from accessing local system APIs.
+- **Deny-by-Default Hardware Permissions**: Hardware access requests across all sessions (`session.setPermissionRequestHandler` and `session.setPermissionCheckHandler`) default strictly to `false` unless explicitly authorized by the user for camera, microphone, screen sharing, or geolocation.
 - **Independent Notification Subsystems**: Preload scripts attached to each partition handle message notifications independently, preventing cross-account state confusion.
 
 ---

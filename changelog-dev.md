@@ -2,6 +2,38 @@
 
 This changelog records all granular updates, bug fixes, refactorings, and feature iterations developed on the `Dev` branch. Each version bump in `package.json` is documented here as it happens.
 
+## [1.4.0] - 2026-09-05
+### Security
+- **Strict "Deny by Default" Session Permissions:**
+  - Configured `session.setPermissionRequestHandler` and `session.setPermissionCheckHandler` in `src/main.js` to reject any unspecified or unexpected hardware capability requests by default (`callback(false)` and `return false`), permitting only explicitly configured user rules (Microphone, Camera, Location, Screen Share).
+- **Chromium Process Sandboxing Enabled:**
+  - Enforced `sandbox: true` across all application windows (`mainWindow` and `splashWindow`) in `src/main.js`.
+  - Fortified `src/preload-main.js` to safely execute in sandboxed renderer environments with guarded system property accesses and updated fallback version.
+- **Content Security Policy (CSP) Hardening:**
+  - Eliminated `'unsafe-inline'` from `script-src` in `src/renderer/index.html` to mitigate cross-site scripting (XSS) vectors.
+- **Safe External Navigation & URL Sanitization:**
+  - Implemented `isSafeExternalUrl()` validation helper for `open-external` IPC event and `open-external-url` invoke channel in `src/main.js`.
+  - Enforced strict filtering that blocks loopback addresses (`localhost`, `127.0.0.1`, `0.0.0.0`, `::1`), link-local IPs, and URLs containing embedded user credentials (`user:pass@host`).
+  - Integrated `mainWindow.webContents.setWindowOpenHandler` using `isSafeExternalUrl` to prevent unauthorized popup window creation.
+
+### Performance
+- **Asynchronous Locale I/O with In-Memory Map Caching:**
+  - Refactored `load-locale` IPC channel in `src/main.js` from synchronous file reads to non-blocking asynchronous I/O (`fs.promises.readFile` and `fs.promises.access`).
+  - Added module-level `localeCache = new Map()` to eliminate disk I/O on repetitive language lookups and interface switching.
+- **Zero-Disk In-Memory Notification Avatars:**
+  - Refactored `show-native-notification` IPC handler in `src/main.js` to construct native images directly in RAM using `nativeImage.createFromDataURL(data.iconDataUrl)`.
+  - Completely eliminated temporary avatar file writes (`fs.writeFileSync` to `avatar_notif_*.png`), avoiding disk thrashing and SSD wear during incoming message bursts.
+- **Guest Preload Observer Optimization:**
+  - Optimized `src/preload.js` inside WhatsApp Web to immediately clear the fallback `setInterval` polling loop (`clearInterval(intervalId); intervalId = null;`) as soon as `MutationObserver` triggers, saving background CPU cycles and battery.
+
+### Documentation
+- **Comprehensive Technical Documentation Suite Synchronization:**
+  - Updated root `README.md` and all 8 documents in `docs/` (`docs/README.md`, `architecture.md`, `commit-convention.md`, `maintenance.md`, `memory-and-performance.md`, `reporting.md`, `session-isolation.md`, `testing.md`).
+  - Synchronized documentation to reflect version `1.4.0`, full 55-language support (including conlangs Elvish Tengwar and Klingon pIqaD), 12-palette theme catalog, and Freedoom: Phase 1 BSD compliance.
+  - Formally removed Snapcraft (`.snap`) from Linux distribution documentation, focusing Linux CI/CD on `.deb` and `.AppImage`.
+  - Completely purged outdated Ko-fi references from architecture and donation documentation.
+  - Documented the Version Quartet rule (`package.json`, `package-lock.json`, `README.md`, `changelog-dev.md`) in `docs/commit-convention.md`.
+
 ## [1.3.0] - 2026-09-05
 ### Added
 - **New Theme Color Palettes (CSS Design Tokens):**

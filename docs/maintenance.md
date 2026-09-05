@@ -32,7 +32,7 @@ npx electron .
 
 ### 2.1 Automated Multiplatform CI/CD Pipeline (GitHub Actions)
 WhatsNexus includes a fully automated build pipeline defined in `.github/workflows/build.yml`. When changes are pushed directly to `main` or a release tag (`v*`) is published, GitHub Actions matrix builds standalone release artifacts for all supported desktop targets:
-- **Linux (x64 & arm64)**: `.deb`, `.AppImage`, and `.snap` (via Snapcraft).
+- **Linux (x64 & arm64)**: `.deb` and `.AppImage`.
 - **macOS (x64 & Apple Silicon arm64)**: `.dmg`.
 - **Windows (x64)**: NSIS installer `.exe`.
 
@@ -64,16 +64,16 @@ Before tagging or releasing any update:
    node -c src/preload.js
    node -c scripts/download-doom.js
    ```
-2. **Synchronize Offline Doom Assets:**
+2. **Synchronize Offline Freedoom Assets:**
    ```bash
    npm run download-doom
    ```
-3. **SemVer Compliance:**
+3. **SemVer Compliance & Version Quartet:**
    - Determine increment type (PATCH, MINOR, or MAJOR).
-   - Bump version in `package.json`.
+   - Synchronize the Version Quartet (`package.json`, `package-lock.json`, root `README.md`, and `changelog-dev.md`).
 4. **Changelog Updates:**
-   - On `Dev`: Document granular changes under `[VERSION] - YYYY-MM-DD` in `changelog-dev.md` (in English).
-   - On `main` (Production Releases): Summarize all milestone features into `changelog.md` (in Spanish).
+   - On `Dev`: Document granular changes under `[VERSION] - YYYY-MM-DD` in `changelog-dev.md` (strictly in English).
+   - On `main` (Production Releases): Summarize all milestone features into `changelog.md` (in Spanish). Do not touch `changelog.md` during feature branch or development cycles.
 5. **Git Commit & Push:**
    - Commit message: `"v.<VERSION> <type>: <summary>"`.
    - Push to `origin/Dev` during ongoing development.

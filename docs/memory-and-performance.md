@@ -63,6 +63,22 @@ app.commandLine.appendSwitch('autoplay-policy', 'no-user-gesture-required');
 
 ---
 
-## 5. Debounced Preload Observers
+## 5. Debounced Preload Observers & Fallback Polling Cancellation
 
-In `src/preload.js`, DOM mutation observers that monitor for profile picture updates and unread chat indicators are debounced using timer thresholds. This ensures that rapid incoming messages or UI updates inside WhatsApp Web do not trigger repeated IPC transmissions or strain the host renderer's event loop.
+In `src/preload.js`, DOM mutation observers that monitor for profile picture updates and unread chat indicators are debounced using timer thresholds. Furthermore, as soon as the `MutationObserver` triggers its first callback, the fallback `setInterval` polling loop is immediately cleared (`clearInterval(intervalId); intervalId = null;`), completely cutting off redundant periodic timer wakeups and preserving CPU and battery life.
+
+---
+
+## 6. Asynchronous Locale I/O & In-Memory Map Caching
+
+The `load-locale` IPC handler in `src/main.js` employs non-blocking asynchronous file I/O (`fs.promises.readFile` and `fs.promises.access`) paired with an in-memory `Map` cache (`localeCache`). 
+
+When switching languages, parsed locale dictionaries are retained in memory. Subsequent lookups or language resets resolve synchronously from RAM with zero disk I/O, reducing locale load latency to sub-millisecond speeds and preventing disk thrashing across 55 supported languages.
+
+---
+
+## 7. RAM-Only Notification Avatar Pipeline
+
+The native desktop notification pipeline converts incoming base64 circular avatars directly into native image instances in memory using Electron's `nativeImage.createFromDataURL(data.iconDataUrl)`. 
+
+By completely eliminating temporary disk file writes (`fs.writeFileSync` inside `userData`), disk wear is prevented during high-frequency messaging bursts, avoiding I/O bottlenecks and ensuring instantaneous notification dispatch.

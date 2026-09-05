@@ -7,14 +7,14 @@ try {
 
 contextBridge.exposeInMainWorld('electronAPI', {
   appInfo: {
-    version: initInfo.version || '0.17.7',
-    appVersion: initInfo.version || '0.17.7',
-    platform: initInfo.platform || process.platform,
-    arch: initInfo.arch || process.arch,
-    electronVersion: initInfo.electronVersion || process.versions.electron || 'N/A',
-    chromeVersion: initInfo.chromeVersion || process.versions.chrome || 'N/A'
+    version: initInfo.version || '1.4.0',
+    appVersion: initInfo.version || '1.4.0',
+    platform: initInfo.platform || (typeof process !== 'undefined' ? process.platform : 'linux'),
+    arch: initInfo.arch || (typeof process !== 'undefined' ? process.arch : 'x64'),
+    electronVersion: initInfo.electronVersion || (typeof process !== 'undefined' && process.versions ? process.versions.electron : 'N/A'),
+    chromeVersion: initInfo.chromeVersion || (typeof process !== 'undefined' && process.versions ? process.versions.chrome : 'N/A')
   },
-  webviewPreloadPath: initInfo.webviewPreloadPath || ('file://' + __dirname + '/preload.js'),
+  webviewPreloadPath: initInfo.webviewPreloadPath || ('file://' + (typeof __dirname !== 'undefined' ? __dirname : '') + '/preload.js'),
   systemIsDark: typeof initInfo.systemIsDark === 'boolean' ? initInfo.systemIsDark : true,
   getSystemTheme: () => ipcRenderer.invoke('get-system-theme'),
   onSystemThemeUpdated: (callback) => {

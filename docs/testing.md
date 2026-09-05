@@ -14,7 +14,7 @@ node -c scripts/download-doom.js
 ```
 
 ### 1.1 Internationalization (i18n) Consistency Test
-To ensure zero missing or broken translation JSON files across all 26 supported languages, run:
+To ensure zero missing or broken translation JSON files across all 55 supported languages, run:
 
 ```bash
 node -e "
@@ -38,7 +38,7 @@ for (const file of files) {
     errors++;
   }
 }
-if (errors === 0) console.log('All 26 locale files parsed successfully!');
+if (errors === 0) console.log('All 55 locale files parsed successfully!');
 "
 ```
 
@@ -51,6 +51,8 @@ Before cutting any release candidate, run through the following test matrices:
 ### 2.1 Multi-Account & Session Isolation
 - [ ] **Add Account**: Clicking "+" creates a new account, switches to it, and shows the QR code screen.
 - [ ] **Session Isolation**: Logging into Account 1 does not affect Account 2.
+- [ ] **Process Sandboxing**: Confirm Chromium renderer processes execute with `sandbox: true` enabled.
+- [ ] **Deny-by-Default**: Verify unexpected hardware capability requests are rejected by default.
 - [ ] **Data Persistence**: Closing and restarting the application restores logged-in sessions without re-authenticating.
 - [ ] **Avatar Extraction**: Once logged in, the user avatar is extracted from WhatsApp Web and rendered in the sidebar.
 - [ ] **Account Deletion**: Deleting an account removes its container and selects the next available account.
@@ -59,26 +61,30 @@ Before cutting any release candidate, run through the following test matrices:
 - [ ] **Hibernation Trigger**: Set `HIBERNATION_TIMEOUT = 10000` (10 seconds) for testing; confirm inactive webview is destroyed and overlay is displayed.
 - [ ] **RAM Verification**: Monitor system task manager (`htop` or `ps aux`); verify memory decreases significantly after hibernation.
 - [ ] **Wakeup**: Clicking "Wake Up" or selecting the tab immediately reconstructs the webview and reconnects to WhatsApp.
+- [ ] **Zero Disk Avatars**: Verify notification avatar dispatch does not create temporary `avatar_notif_*.png` files in `userData`.
+- [ ] **Preload Observer**: Verify the fallback `setInterval` in `src/preload.js` terminates once the `MutationObserver` triggers.
 
-### 2.3 Full-Window Settings View
+### 2.3 Full-Window Settings View & Appearance
 - [ ] **Opening Settings**: Clicking the settings gear in the sidebar opens the settings dashboard across 100% of the content area.
 - [ ] **Sidebar Active Indicator**: Confirm the settings icon shows the active vertical indicator and accounts are deselected.
-- [ ] **Internal Tabs**: Switching between Accounts, Appearance, and Notifications displays the correct settings cards.
+- [ ] **Internal Tabs**: Switching between Accounts, Appearance, Notifications, Permissions, and About displays the correct settings cards.
+- [ ] **Palette Catalog**: Cycle through all 12 palettes (Dracula, Nord, Monokai, Synthwave, Cyberpunk, Tokyo Night, etc.) across both Dark and Light variants.
+- [ ] **Conlang Fonts**: Select Elvish Tengwar and Klingon; confirm custom fonts (Tengwar Telcontar and Klingon pIqaD) render native glyphs correctly.
 - [ ] **Return to Chat**: Clicking "Back to chats" or selecting an account in the sidebar hides settings and restores the chat session.
-- [ ] **Theme Switching**: Changing from Dark to Light or Auto updates CSS theme variables immediately.
 
 ### 2.4 Offline Protection & Network Reconnection
 - [ ] **Startup Offline**: Launch with network disconnected; verify account displays offline overlay with retry action.
 - [ ] **Mid-Session Disconnect**: Disconnect network while using chats; confirm high z-index `#reconnecting-modal` appears and blocks input.
 - [ ] **Auto-Reconnect**: Reconnect network; verify modal auto-dismisses and reloads accounts.
 
-### 2.5 Auto-Updater (OTA)
+### 2.5 Auto-Updater (OTA) & External Navigation
 - [ ] **Check for Updates**: Navigate to Settings ➔ About; click `#btn-update` and confirm state changes to "Checking...".
 - [ ] **Up-to-Date State**: Verify button transitions to "You have the latest version" and resets to idle.
+- [ ] **Safe URL Navigation**: Verify external links open in OS browser; confirm local addresses (`localhost`, `127.0.0.1`) and embedded credentials are blocked.
 
-### 2.6 Classic Doom Easter Egg
+### 2.6 Freedoom Easter Egg
 - [ ] **Activation**: Enable "Doomizate" in Settings ➔ About; verify skull icon appears in sidebar.
-- [ ] **Execution**: Click skull icon; confirm Chocolate Doom boots with audio and controls overlay.
+- [ ] **Execution**: Click skull icon; confirm Chocolate Doom boots with Freedoom: Phase 1 audio and controls overlay.
 - [ ] **Controls Overlay**: Toggle chevron button to collapse and expand the overlay.
 
 ### 2.7 Platform Compatibility

@@ -39,9 +39,9 @@
 
 ### 2.1 Main Process (`src/main.js`)
 The main process acts as the supervisor for the entire operating system interface:
-- **Chromium Engine Flags & Security Hardening:** Sets early command-line optimization switches prior to process creation while preserving modern site isolation and IPC flooding safeguards. Enforces strict `contextIsolation: true` and `nodeIntegration: false` across all windows.
+- **Chromium Engine Flags & Security Hardening:** Sets early command-line optimization switches prior to process creation while preserving modern site isolation and IPC flooding safeguards. Enforces strict `contextIsolation: true`, `nodeIntegration: false`, and full process sandboxing (`sandbox: true`) across all application windows.
 - **Single Instance Enforcement:** Utilizes `app.requestSingleInstanceLock()` to prevent duplicate instances; subsequent execution attempts automatically refocus the existing primary window.
-- **Hardware Permissions Management:** Controls hardware capability delegation across the default session and all partitioned guest sessions (`session.setPermissionRequestHandler` and `session.setPermissionCheckHandler`), enforcing persistent user rules (`userData/permissions.json`) for Microphone, Camera, Location, and Screen Sharing (with audio validation).
+- **Hardware Permissions Management (Deny-by-Default):** Controls hardware capability delegation across the default session and all partitioned guest sessions (`session.setPermissionRequestHandler` and `session.setPermissionCheckHandler`) under a strict **Deny-by-Default** security posture, permitting only explicitly user-granted permissions (`userData/permissions.json`) for Microphone, Camera, Location, and Screen Sharing, while rejecting unexpected or unhandled permission requests by default.
 - **Window Lifecycle & Stacer-Inspired Splash Pipeline:**
   1. Instantiates a transparent, frameless splash window loading `src/splash/splash.html` via `src/splash/splash-preload.js`.
   2. Concurrently instantiates the main application window with `{ show: false }` pre-warming the DOM via `src/preload-main.js`.
@@ -50,37 +50,39 @@ The main process acts as the supervisor for the entire operating system interfac
   - Instantiates a persistent system tray icon with an SVG vector emblem rendered dynamically via `nativeImage`.
   - Intercepts window `close` events, redirecting them to `mainWindow.hide()` so that WhatsNexus remains running in the background without losing session state or missing incoming messages.
   - Dynamically synthesizes unread notification count badges directly on the tray icon when messages arrive on non-muted, active accounts.
+  - Dispatches native OS notifications with in-memory circular avatar rendering via `nativeImage.createFromDataURL`, completely eliminating temporary file writes to disk.
   - Exposes context menu actions ("Mostrar WhatsNexus", "Salir") and toggles visibility upon tray icon clicks.
   - Responds to `update-tray-badge` and `update-tray-settings` IPC events from the renderer.
-- **Safe External Link Dispatch:** Handles `open-external` and `open-external-url` IPC invocations with strict protocol validation ensuring links only open via standard `http:` and `https:` schemes in the external default OS browser.
+- **Strict Safe External Link Dispatch:** Handles `open-external` and `open-external-url` IPC invocations with strict validation: restricts protocols strictly to `http:` and `https:`, blocking loopback/private network destinations (`localhost`, `127.0.0.1`, `0.0.0.0`, `::1`) and URLs with embedded credentials (`user:pass@host`).
 - **System Downloads Management:** Intercepts `will-download` events on the default session and partitioned sessions (`persist:acc_*`), applying `item.setSavePath()` to automatically route incoming file downloads to the user-specified directory (or default `app.getPath('downloads')`).
 - **Native Chromium Spellchecking:** Manages multi-session spellchecking across `session.defaultSession` and all partitioned guest sessions (`persist:acc_*`) via `session.setSpellCheckerLanguages()`, mapping interface language codes to standardized BCP-47 identifiers (`en-US`, `zh-CN`, `hi`, `es`, `fr`, etc.) and delegating dictionary downloads entirely to Chromium's native background subsystem.
-- **Dynamic Locale Provisioning (`load-locale`):** Serves modular translation JSON files from `src/locales/` on demand to the renderer via IPC, eliminating in-memory dictionary monoliths.
+- **Dynamic Async Locale Provisioning (`load-locale`):** Serves modular translation JSON files from `src/locales/` on demand to the renderer via asynchronous I/O (`fs.promises.readFile`) and caches parsed dictionaries in an in-memory `Map`, eliminating disk read overhead on repetitive language toggles.
 - **Multi-Session Proxy Engine & Strict Isolation:** Dynamically provisions HTTP/SOCKS5 proxy rules or system proxy discovery across `session.defaultSession` and all partitioned sessions (`persist:acc_*`) via `session.setProxy()`. When Strict Proxy Isolation is enabled, local bypass rules are removed (`proxyBypassRules: ''`) to ensure no direct network connections evade the tunnel. Reverts to direct connections on demand (`{ mode: 'direct' }`).
 - **WebRTC IP Leak Mitigation:** Enforces `session.setWebRTCIPHandlingPolicy('disable-non-proxied-udp')` at the Chromium networking layer across all sessions when WebRTC protection is enabled, preventing local and public IP disclosures over non-proxied UDP.
 - **Real-Time System Diagnostics & Engine Introspection:** Exposes dynamic runtime parameters via IPC (`get-system-info`), sourcing live metrics directly from `app.getVersion()`, `process.versions` (Electron, Chromium, Node.js, V8), and Node's native `os` module (`os.type()`, `os.release()`, `os.arch()`).
 - **Automated OTA Update Engine:** Integrates `electron-updater` with `electron-log` targeting GitHub Releases (`Sentinel-Mexico/WhatsNexus-Dekstop`). Provides safe manual update verification, download progress streaming, and restart-and-install lifecycle control.
 
 ### 2.2 Secure Preloads (`src/preload-main.js` & `src/splash/splash-preload.js`)
-- **Main Preload (`src/preload-main.js`):** Securely bridges IPC channels, platform diagnostics, webview preload paths, native notification dispatchers, download folder selectors, spellchecker configuration, network/proxy/WebRTC settings, system info introspection (`getSystemInfo`), locale loading (`loadLocale`), auto-updater commands (`window.electronAPI.updater`), and external browser link dispatchers to `window.electronAPI` via `contextBridge.exposeInMainWorld()`.
+- **Main Preload (`src/preload-main.js`):** Securely bridges IPC channels, platform diagnostics, webview preload paths, native notification dispatchers, download folder selectors, spellchecker configuration, network/proxy/WebRTC settings, system info introspection (`getSystemInfo`), locale loading (`loadLocale`), auto-updater commands (`window.electronAPI.updater`), and external browser link dispatchers to `window.electronAPI` via `contextBridge.exposeInMainWorld()`, fortified for Chromium sandbox execution.
 - **Splash Preload (`src/splash/splash-preload.js`):** Exposes `window.splashAPI` for querying SemVer application versions and signaling transition completion.
 
 ### 2.3 Main Renderer (`src/renderer/`)
 The primary UI layer consists of vanilla HTML5, CSS3, and modern JavaScript:
-- **Design System & Typography:** Official typography using Google Fonts Poppins with preconnect directives. Curated WhatsNexus default palette (harmonious dark and light modes) plus popular community themes (Dracula, Nord, Monokai).
-- **Sidebar Controller:** Manages the active visual state between accounts, Add Account modal/action, Bug Report dispatcher, Donations view (`#donate-btn`), Settings view, and optional Doom Easter Egg with a unified, floating tooltip system aligned 8px from the sidebar.
+- **Design System & Typography:** Official typography using Google Fonts Poppins with preconnect directives, plus dedicated local font stacks (`src/assets/fonts/`) for constructed languages (Tengwar Telcontar for Elvish and Klingon pIqaD).
+- **Curated Theme Engine:** 12 curated color palettes (WhatsNexus Default, Dracula, Nord, Monokai, Synthwave 84, Cyberpunk 2077, Tokyo Night, Solarized, Gruvbox, One Dark, Retro / Terminal, High Contrast) with synchronized Light/Dark variations.
+- **Sidebar Controller:** Manages the active visual state between accounts, Add Account modal/action, Bug Report dispatcher, Donations view (`#donate-btn`), Settings view, and optional Freedoom Easter Egg with a unified, floating tooltip system aligned 8px from the sidebar.
 - **Full-Window Workspace:** Houses WhatsApp Web guest containers, an `#empty-state` placeholder, `#settings-view`, `#donations-view`, and `#doom-view`.
-- **Donations Module:** Renders a responsive CSS grid of support platforms (GitHub Sponsors, PayPal, Ko-fi) with external navigation safeguards powered by safe IPC invokes (`openExternalUrl`).
+- **Donations Module:** Renders a responsive CSS grid of support platforms (GitHub Sponsors, PayPal) with external navigation safeguards powered by safe IPC invokes (`openExternalUrl`).
 - **Session Manager:** Manages account metadata persistence in `localStorage`, orchestrates dynamic creation/removal of `<webview>` elements, and executes the 20-minute idle hibernation cycle.
 - **Zero-Mute Multimedia Audio Pipeline:** Dispatches notification preferences without ever muting `webContents`, ensuring voice notes and chat videos play continuously. Configured with `--autoplay-policy=no-user-gesture-required`.
-- **Modular Internationalization (i18n):** Translates the interface dynamically across 26 global languages using a lazy-loading architecture from `src/locales/*.json`. Only the active locale and the `en.json` fallback are retained in memory, drastically optimizing RAM footprint.
+- **Modular Internationalization (i18n):** Translates the interface dynamically across 55 global languages using a lazy-loading architecture with in-memory `Map` caching from `src/locales/*.json`. Only the active locale and the `en.json` fallback are retained in memory, drastically optimizing RAM footprint.
 - **Offline Protections & Network Auto-Reconnection:**
   - Dedicated container offline overlay with status badge and manual retry trigger on failed webview loads (`did-fail-load`).
   - System-wide `#reconnecting-modal` with high z-index backdrop that blocks accidental interactions when the machine loses Internet access, seamlessly auto-dismissing and reloading upon `window.addEventListener('online')`.
 
 ### 2.4 Guest Preload Script (`src/preload.js`)
 Injected directly into each WhatsApp Web `<webview>` tag:
-- **Profile Avatar Extraction:** Monitors WhatsApp Web DOM to retrieve the user's active profile picture (filtering out Meta AI icons/buttons) and passes it back to the host via `ipcRenderer.sendToHost('profile-picture-updated', avatarUrl)`.
+- **Profile Avatar Extraction & Observer Optimization:** Monitors WhatsApp Web DOM using a `MutationObserver` to retrieve the user's active profile picture (filtering out Meta AI icons/buttons) and passes it back to the host via `ipcRenderer.sendToHost('profile-picture-updated', avatarUrl)`. The fallback `setInterval` polling is immediately terminated once the `MutationObserver` activates, eliminating redundant background CPU cycles.
 - **Notification Privacy & DND Interception:** Wraps the native `window.Notification` and `ServiceWorkerRegistration.prototype.showNotification` APIs inside the guest page to enforce privacy presets ("Nombre oculto", "Mensaje oculto", branding fallback), account-specific Do Not Disturb (DND) full suppression, and dynamic circular avatar clipping.
 - **Selective Audio Alert Suppression:** Intercepts `HTMLAudioElement.prototype.play` to silence automated alert chimes when DND is active or notification sound is disabled, while permitting user-initiated chat media and voice notes to play seamlessly.
 - **WebRTC JavaScript API Shielding:** When WebRTC protection is active, overrides `window.RTCPeerConnection`, `window.webkitRTCPeerConnection`, `window.RTCSessionDescription`, and `window.RTCIceCandidate` with throwing stubs within the guest execution context, preventing page scripts from initiating unauthorized peer-to-peer handshakes or STUN/TURN queries.
@@ -103,12 +105,12 @@ Instead of relying on pop-up dialogs or modal windows that obstruct the interfac
    - Includes real-time Update Check state machine under the "About" module.
 3. **Dedicated Donations View (`#donations-view`):**
    - Full-window view triggered by `#donate-btn` in the sidebar, positioned strictly between Bug Report and Settings.
-   - Houses a card grid of project sponsorship channels with direct OS browser dispatching.
+   - Houses a card grid of project sponsorship channels (GitHub Sponsors, PayPal) with direct OS browser dispatching.
    - Includes a back navigation button returning to active chats.
 4. **Empty State View (`#empty-state`):**
    - Displayed automatically when zero accounts exist or all accounts have been removed.
-5. **Classic Doom View (`#doom-view`):**
-   - Full-window Easter Egg running Cloudflare's Chocolate Doom WebAssembly port natively and 100% offline.
+5. **Freedoom View (`#doom-view`):**
+   - Full-window Easter Egg running Cloudflare's Chocolate Doom WebAssembly port natively and 100% offline with BSD-licensed Freedoom: Phase 1 (`freedoom1.wad`).
    - Features immediate sound effects without gesture blocking and a collapsible, dark-themed floating controls overlay.
 
 ---

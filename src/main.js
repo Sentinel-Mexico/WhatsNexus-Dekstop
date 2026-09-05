@@ -49,7 +49,7 @@ function createSplashWindow() {
       webPreferences: {
         nodeIntegration: false,
         contextIsolation: true,
-        sandbox: false,
+        sandbox: true,
         preload: path.join(__dirname, 'splash', 'splash-preload.js')
       }
     });
@@ -90,7 +90,7 @@ function createWindow() {
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
-      sandbox: false,
+      sandbox: true,
       webviewTag: true, // CRITICAL: This allows the use of <webview> tags for session isolation
       backgroundThrottling: true, // Ensure background throttling
       preload: path.join(__dirname, 'preload-main.js')
@@ -113,6 +113,13 @@ function createWindow() {
     if (level >= 2) {
       console.log(`[Renderer ${level === 3 ? 'Error' : 'Warn'}]: ${message} (line: ${line})`);
     }
+  });
+
+  mainWindow.webContents.setWindowOpenHandler(({ url }) => {
+    if (isSafeExternalUrl(url)) {
+      shell.openExternal(url);
+    }
+    return { action: 'deny' };
   });
 
   mainWindow.webContents.on('did-attach-webview', (event, wc) => {
@@ -270,28 +277,28 @@ nativeTheme.on('updated', () => {
   }
 });
 
-// IPC to dispatch native notification with disk-cached circular avatar
+// IPC to dispatch native notification with in-memory circular avatar (RAM-only, zero disk I/O)
 ipcMain.on('show-native-notification', (event, data) => {
   if (!Notification.isSupported()) return;
 
-  let iconPath = path.join(__dirname, 'assets', 'icon.png');
+  let icon = path.join(__dirname, 'assets', 'icon.png');
 
-  // If a base64 circular avatar was provided, cache it to disk
-  if (data.iconDataUrl && data.iconDataUrl.startsWith('data:image/png;base64,')) {
+  // If a base64 circular avatar was provided, construct NativeImage directly in RAM
+  if (data.iconDataUrl && typeof data.iconDataUrl === 'string' && data.iconDataUrl.startsWith('data:image/')) {
     try {
-      const base64Data = data.iconDataUrl.replace(/^data:image\/png;base64,/, '');
-      const tempAvatarPath = path.join(app.getPath('userData'), `avatar_notif_${Date.now() % 10}.png`);
-      fs.writeFileSync(tempAvatarPath, base64Data, 'base64');
-      iconPath = tempAvatarPath;
+      const img = nativeImage.createFromDataURL(data.iconDataUrl);
+      if (!img.isEmpty()) {
+        icon = img;
+      }
     } catch (e) {
-      console.error('Error saving notification circular avatar:', e);
+      console.error('Error creating notification circular avatar in RAM:', e);
     }
   }
 
   const notification = new Notification({
     title: data.title || 'WhatsNexus',
     body: data.body || '',
-    icon: iconPath,
+    icon: icon,
     silent: !!data.silent
   });
 
@@ -530,26 +537,53 @@ function configureSessionDownloads(ses) {
   });
 }
 
+function isSafeExternalUrl(rawUrl) {
+  if (typeof rawUrl !== 'string') return false;
+  try {
+    const parsed = new URL(rawUrl);
+    if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') {
+      return false;
+    }
+    // Block embedded credentials (e.g. user:pass@host)
+    if (parsed.username || parsed.password) {
+      return false;
+    }
+    const hostname = parsed.hostname.toLowerCase();
+    if (
+      hostname === 'localhost' ||
+      hostname.endsWith('.localhost') ||
+      hostname.endsWith('.local') ||
+      hostname === '127.0.0.1' ||
+      hostname === '0.0.0.0' ||
+      hostname === '::1' ||
+      hostname === '[::1]' ||
+      hostname.startsWith('127.') ||
+      hostname.startsWith('169.254.')
+    ) {
+      return false;
+    }
+    return true;
+  } catch (_) {
+    return false;
+  }
+}
+
 ipcMain.on('open-external', (event, url) => {
-  if (typeof url === 'string') {
-    try {
-      const parsed = new URL(url);
-      if (parsed.protocol === 'http:' || parsed.protocol === 'https:') {
-        shell.openExternal(url);
-      }
-    } catch (_) {}
+  if (isSafeExternalUrl(url)) {
+    shell.openExternal(url);
+  } else {
+    console.warn(`[Security Warning]: Blocked dangerous external URL: ${url}`);
   }
 });
 
 ipcMain.handle('open-external-url', async (event, url) => {
-  if (typeof url === 'string') {
+  if (isSafeExternalUrl(url)) {
     try {
-      const parsed = new URL(url);
-      if (parsed.protocol === 'http:' || parsed.protocol === 'https:') {
-        await shell.openExternal(url);
-        return true;
-      }
+      await shell.openExternal(url);
+      return true;
     } catch (_) {}
+  } else {
+    console.warn(`[Security Warning]: Blocked dangerous external URL: ${url}`);
   }
   return false;
 });
@@ -650,10 +684,17 @@ ipcMain.handle('get-system-info', () => {
   };
 });
 
-ipcMain.handle('load-locale', (event, langCode) => {
+const localeCache = new Map();
+
+ipcMain.handle('load-locale', async (event, langCode) => {
   if (!langCode || typeof langCode !== 'string') langCode = 'en';
   const cleanCode = langCode.trim();
   const safeLang = cleanCode.replace(/[^a-zA-Z0-9_-]/g, '').toLowerCase();
+
+  // In-memory cache hit to eliminate disk read latency
+  if (localeCache.has(safeLang)) {
+    return localeCache.get(safeLang);
+  }
 
   // Exact match or fallback to base language code (e.g. zh-CN -> zh)
   const baseCode = safeLang.split('-')[0].split('_')[0];
@@ -666,10 +707,11 @@ ipcMain.handle('load-locale', (event, langCode) => {
   let resolvedPath = null;
   for (const filename of candidates) {
     const p = path.join(__dirname, 'locales', filename);
-    if (fs.existsSync(p)) {
+    try {
+      await fs.promises.access(p, fs.constants.R_OK);
       resolvedPath = p;
       break;
-    }
+    } catch (_) {}
   }
 
   if (!resolvedPath) {
@@ -678,9 +720,11 @@ ipcMain.handle('load-locale', (event, langCode) => {
   }
 
   try {
-    const rawContent = fs.readFileSync(resolvedPath, 'utf8');
+    const rawContent = await fs.promises.readFile(resolvedPath, 'utf8');
     try {
-      return JSON.parse(rawContent);
+      const parsed = JSON.parse(rawContent);
+      localeCache.set(safeLang, parsed);
+      return parsed;
     } catch (parseErr) {
       console.error(`[Locale Load Error - JSON Parse]: JSON parse error in file ${resolvedPath}:`, parseErr);
       return null;
@@ -771,7 +815,7 @@ function configureSessionPermissions(ses) {
       } else if (wantsVideo) {
         return callback(!!currentPermissions.camera);
       }
-      return callback(true);
+      return callback(false);
     }
 
     if (permission === 'geolocation') {
@@ -787,7 +831,7 @@ function configureSessionPermissions(ses) {
       return callback(!!currentPermissions.screenShare);
     }
 
-    callback(true);
+    callback(false); // Deny by default
   });
 
   ses.setPermissionCheckHandler((webContents, permission, requestingOrigin, details) => {
@@ -807,7 +851,7 @@ function configureSessionPermissions(ses) {
       } else if (wantsVideo) {
         return !!currentPermissions.camera;
       }
-      return true;
+      return false;
     }
 
     if (permission === 'geolocation') {
@@ -823,7 +867,7 @@ function configureSessionPermissions(ses) {
       return !!currentPermissions.screenShare;
     }
 
-    return true;
+    return false; // Deny by default
   });
 }
 

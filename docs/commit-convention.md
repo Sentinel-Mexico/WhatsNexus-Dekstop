@@ -25,12 +25,14 @@ With the release of `1.0.0`, WhatsNexus has completed its beta/initial developme
 | **MINOR** | New functionality or user-facing features introduced in a backward-compatible manner. | New settings pane, support for a new language/locale, new splash screen, account export feature. |
 | **MAJOR** | Breaking changes, core architecture replacements, or major overhauls. | Switching UI frameworks, backwards-incompatible database/localStorage migrations. |
 
-### 1.3 Version Synchronization Rule
-Whenever the project version changes in `package.json`, it must be immediately synchronized across generated lockfiles by running:
-```bash
-npm install
-```
-This guarantees that `package.json` and `package-lock.json` remain identical in version numbers.
+### 1.3 Version Synchronization Rule (The Version Quartet)
+Whenever the project version changes, it must be simultaneously synchronized across the **Version Quartet**:
+1. `package.json` (`version` property)
+2. `package-lock.json` (`version` and packages root entry)
+3. Root `README.md` (version badge and textual version references)
+4. `changelog-dev.md` (new release entry with date and categorized changes)
+
+During ongoing development on the `Dev` branch, `changelog.md` MUST NOT be modified; it is exclusively updated during stable release promotions to `main`.
 
 ---
 
