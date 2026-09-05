@@ -21,3 +21,10 @@ In accordance with `.agents/rules/language.md`, all documentation articles, guid
 Whenever a rule is created, modified, or removed within `.agents/rules/`:
 1. **Index Synchronization:** The agent must immediately update `.agents/README.md` to document the new or modified rule in the Active Rules Index table, providing a clear summary of its purpose and requirements.
 2. **Canonical Governance:** `.agents/README.md` must always remain an up-to-date, canonical overview of all active behavioral rules and development standards governing the project.
+
+## 6. Mandatory Documentation Review on Push to Main
+Every time a release or push to the `main` branch is performed:
+1. **Full Audit of Root README and `/docs`:** The agent must thoroughly review the root `README.md` and all documentation files inside `/docs` (e.g., `docs/README.md`, `architecture.md`, `commit-convention.md`, `maintenance.md`, `memory-and-performance.md`, `reporting.md`, `session-isolation.md`, `testing.md`).
+2. **Harmonization and Accuracy:** Verify whether changes, new features, settings, UI reorganizations, or refactors applied in the release necessitate modifications to the root `README.md` or any `/docs` files, and update them so they 100% agree with the latest state of the codebase.
+3. **Synchronization Prior to Final Push:** Any required updates identified during this audit must be finalized and committed as part of the release process to `main`.
+

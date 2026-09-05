@@ -497,11 +497,11 @@ function updateTranslations() {
   const currentLang = settings.language || 'en';
   document.documentElement.setAttribute('data-language', currentLang);
   document.documentElement.setAttribute('lang', currentLang);
-  const lang = i18n[currentLang] || i18n['en'];
+  const lang = i18n[currentLang] || i18n['en'] || currentTranslations || fallbackTranslations || {};
   
   document.querySelectorAll('[data-i18n]').forEach(el => {
     const key = el.getAttribute('data-i18n');
-    if (lang[key]) {
+    if (lang && lang[key]) {
       if (el.tagName === 'INPUT' && (el.type === 'text' || el.type === 'search')) {
         el.placeholder = lang[key];
       } else {

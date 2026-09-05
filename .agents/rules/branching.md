@@ -11,5 +11,6 @@
 
 3. **Release Procedure (Push to `main`):**
    - Only upon explicit user request to push to `main` (or launch a new stable release) shall changes from `Dev` be merged into `main`.
+   - **Mandatory README and Docs Audit:** Every time a push or release to `main` is executed, the agent **MUST OBLIGATORILY** inspect the root `README.md` and all files in `/docs` (`docs/README.md`, `architecture.md`, `commit-convention.md`, `maintenance.md`, `memory-and-performance.md`, `reporting.md`, `session-isolation.md`, `testing.md`) to verify if updates are needed so that they 100% agree with and reflect all changes, features, and fixes developed since the previous release.
    - When requested to push to `main`, generate a high-level summary in `changelog.md` referencing all version entries in `changelog-dev.md` since the last release entry.
    - Perform the push to `main` and ensure `Dev` is synchronized with `main`. Future development immediately continues on `Dev`.

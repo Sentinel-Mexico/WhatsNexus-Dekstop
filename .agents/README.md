@@ -10,12 +10,12 @@ All rules are defined as standalone markdown documents in the [`rules/`](rules/)
 
 | Rule | File | Purpose & Mandate |
 | :--- | :--- | :--- |
-| **Branching & Releases** | [`rules/branching.md`](rules/branching.md) | Enforces development exclusively on `Dev` with mandatory push to `Dev` on every version change. The `main` branch is strictly reserved for user-authorized production releases. |
+| **Branching & Releases** | [`rules/branching.md`](rules/branching.md) | Enforces development exclusively on `Dev` with mandatory push to `Dev` on every version change. The `main` branch is strictly reserved for user-authorized production releases, requiring a mandatory audit and synchronization of the root `README.md` and all `/docs` files before pushing. |
 | **Changelog Maintenance** | [`rules/changelog.md`](rules/changelog.md) | Tracks granular development in `changelog-dev.md` and enforces mandatory version quartet synchronization (`changelog-dev.md`, `package.json`, `package-lock.json`, root `README.md` badge). Restricts modifying `changelog.md` strictly to user-requested pushes to `main`, generating a milestone summary from `changelog-dev.md`. |
-| **Documentation Sync** | [`rules/documentation.md`](rules/documentation.md) | Mandates continuous synchronization of `docs/` technical documentation and this `.agents/README.md` index whenever code or rules change. Enforces relative markdown links. |
+| **Documentation Sync** | [`rules/documentation.md`](rules/documentation.md) | Mandates continuous synchronization of `docs/` technical documentation, root `README.md` review upon push to `main`, and this `.agents/README.md` index whenever code or rules change. Enforces relative markdown links. |
 | **Documentation & Code Language** | [`rules/language.md`](rules/language.md) | Enforces neutral English strictly for all code comments/notes, text files (`.md`, `.txt`), commit messages, and in-app strings without exception. |
 | **Interface Internationalization (i18n)** | [`rules/i18n.md`](rules/i18n.md) | Enforces zero-hardcoding (`data-i18n*`), strict 100% key parity across all 55+ locales with canonical `en.json`, strict prohibition of English fallback/placeholders in foreign locales, authentic conlang CSUR encoding, dropdown deduplication, and pre-commit audit. |
-| **Theme & Palette Categorization** | [`rules/themes.md`](rules/themes.md) | Mandates strict 4-category hierarchy for all theme palettes (Own, Original, Messaging, Pop Culture) and enforces category placement rules for future additions. |
+| **Theme & Palette Categorization** | [`rules/themes.md`](rules/themes.md) | Mandates strict 4-category hierarchy for all theme palettes (Own, Original, Messaging, Pop Culture) with internal alphabetical sorting in each category, and enforces alphabetical placement for future additions. |
 | **Semantic Versioning** | [`rules/versioning.md`](rules/versioning.md) | Defines strict SemVer (MAJOR.MINOR.PATCH), mandatory push to `Dev` on every version change, quartet synchronization (`changelog-dev.md`, `package.json`, `package-lock.json`, root `README.md` badge), and commit message format (`"v.<VERSION> <type>: <summary>"`). |
 
 ---
@@ -26,6 +26,7 @@ All rules are defined as standalone markdown documents in the [`rules/`](rules/)
 - **Active Branch:** `Dev` is the default active branch for all feature additions, refactorings, bug fixes, and tests.
 - **Mandatory Push to Dev:** Every version change must be committed and pushed immediately to `Dev`.
 - **Production Branch:** `main` is protected and only updated when explicitly requested to push to `main` for a release.
+- **Mandatory README & Docs Audit on Push to Main:** Every push/release to `main` obligates inspecting the root `README.md` and all files in `/docs` to ensure they 100% reflect and agree with all changes before releasing.
 - **Branch Parity:** Both `main` and `Dev` must be synced during releases, leaving the agent working on `Dev`.
 
 ### 2. [Changelog Management (`rules/changelog.md`)](rules/changelog.md)
@@ -36,6 +37,7 @@ All rules are defined as standalone markdown documents in the [`rules/`](rules/)
 
 ### 3. [Documentation Synchronization (`rules/documentation.md`)](rules/documentation.md)
 - **Living Documentation:** Any change to architecture, lifecycle, memory, or testing must be immediately reflected in the corresponding files within `docs/`.
+- **Mandatory Audit on Push to Main:** Inspect root `README.md` and all files in `docs/` on every release to `main` to ensure zero drift with the codebase.
 - **Rule Index Synchronization:** Whenever a rule is created, updated, or removed in `rules/`, this file ([`.agents/README.md`](README.md)) must be updated.
 - **Relative Links:** Absolute local paths (`file:///...` or `/home/...`) are strictly forbidden; only relative Markdown links are permitted.
 
@@ -59,7 +61,9 @@ All rules are defined as standalone markdown documents in the [`rules/`](rules/)
 - **Pre-Commit Audit:** Agents must run automated parity and fallback checks before delivering localization updates.
 
 ### 7. [Theme & Color Palette Categorization (`rules/themes.md`)](rules/themes.md)
-- **Hierarchy Structure:** Themes must follow the 4-tier hierarchy: Application Own (WhatsNexus), Custom/Original (Bosque, Retro, Steampunk, Alto Contraste, Dracula, Nord), Messaging (WhatsApp, Messenger, Telegram, Signal), and Pop Culture (Star Wars).
-- **Mandatory Insertion Rule:** Any newly requested palette must be inserted strictly within its corresponding category block in `#palette-select` and UI logic.
+- **Hierarchy Structure:** Themes must follow the 4-tier hierarchy: Application Own (WhatsNexus), Custom/Original (Alto Contraste, Bosque, Dracula, Nord, Retro, Steampunk), Messaging (Messenger, Signal, Telegram, WhatsApp), and Pop Culture (Star Wars).
+- **Internal Alphabetical Sorting:** Each category block must strictly maintain alphabetical ordering of its palette entries.
+- **Alphabetical Insertion Rule:** When a new palette is added, it must be placed in its proper category and in its exact alphabetical order within that category block.
 - **Design Tokens & Parity:** Every palette requires complete light/dark CSS tokens, dynamic label mapping in `updateThemeLabels()`, and 100% translation coverage across all 55 locale files.
+
 
