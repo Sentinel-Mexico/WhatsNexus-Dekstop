@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>WhatsNexus DOOM</title>
+  <title>WhatsNexus Freedoom</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -36,7 +36,7 @@
       background-color: #000;
     }
 
-    /* Forzar al canvas a estirarse manteniendo la proporción */
+    /* Force canvas to stretch maintaining aspect ratio */
     canvas#canvas {
       width: 100% !important;
       height: 100% !important;
@@ -46,7 +46,7 @@
       image-rendering: pixelated;
     }
 
-    /* Superposición de Controles Flotante acorde a WhatsNexus Dark Theme */
+    /* Floating controls overlay styled for WhatsNexus dark theme */
     .doom-controls-overlay {
       position: absolute;
       top: 16px;
@@ -188,7 +188,7 @@
       font-style: italic;
     }
 
-    /* Estado de carga */
+    /* Loading state */
     #loading-indicator {
       position: absolute;
       top: 50%;
@@ -224,13 +224,13 @@
   <div id="game-container">
     <div id="loading-indicator">
       <div class="spinner"></div>
-      <span id="loading-text">Cargando recursos de DOOM...</span>
+      <span id="loading-text">Cargando recursos de Freedoom...</span>
     </div>
 
     <!-- Canvas Principal para WebAssembly -->
     <canvas id="canvas" oncontextmenu="event.preventDefault()" tabindex="0"></canvas>
 
-    <!-- Overlay de Controles Chocolate Doom -->
+    <!-- Overlay de Controles Freedoom -->
     <div id="controls-overlay" class="doom-controls-overlay">
       <div class="controls-header" id="controls-header">
         <div class="controls-title">
@@ -245,7 +245,7 @@
             <line x1="16" y1="12" x2="16.01" y2="12"></line>
             <line x1="7" y1="16" x2="17" y2="16"></line>
           </svg>
-          <span>Controles DOOM</span>
+          <span>Controles de Freedoom</span>
         </div>
         <button id="toggle-controls-btn" class="toggle-btn" title="Ocultar / Mostrar controles" aria-label="Toggle Controls">
           <svg class="chevron-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -255,8 +255,8 @@
       </div>
       <div id="controls-body" class="controls-body">
         <div class="control-row">
-          <span class="control-label">Moverse:</span>
-          <span class="control-keys"><kbd>▲</kbd><kbd>◄</kbd><kbd>▼</kbd><kbd>►</kbd> o <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd></span>
+          <span class="control-label">Movimiento:</span>
+          <span class="control-keys"><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> o <kbd>▲</kbd><kbd>◄</kbd><kbd>▼</kbd><kbd>►</kbd></span>
         </div>
         <div class="control-row">
           <span class="control-label">Girar cámara:</span>
@@ -264,22 +264,22 @@
         </div>
         <div class="control-row">
           <span class="control-label">Disparar:</span>
-          <span class="control-keys"><kbd>Espacio</kbd> o <kbd>Clic Izq</kbd></span>
+          <span class="control-keys"><kbd>Ctrl</kbd> o <kbd>Clic Izq</kbd></span>
         </div>
         <div class="control-row">
-          <span class="control-label">Abrir / Interactuar:</span>
-          <span class="control-keys"><kbd>E</kbd></span>
+          <span class="control-label">Interactuar / Abrir:</span>
+          <span class="control-keys"><kbd>Espacio</kbd></span>
         </div>
         <div class="control-row">
-          <span class="control-label">Correr / Acelerar:</span>
+          <span class="control-label">Correr:</span>
           <span class="control-keys"><kbd>Shift</kbd></span>
         </div>
         <div class="control-row">
-          <span class="control-label">Cambiar de arma:</span>
+          <span class="control-label">Selección de armas:</span>
           <span class="control-keys"><kbd>1</kbd> - <kbd>7</kbd></span>
         </div>
         <div class="controls-note">
-          Nota: En DOOM clásico (1993) no existe salto por diseño de niveles (corre con Shift para cruzar abismos).
+          Nota: En Freedoom / DOOM clásico no existe salto por diseño de niveles (corre con Shift para cruzar abismos).
         </div>
       </div>
     </div>
@@ -338,6 +338,38 @@
     window.addEventListener('mousedown', resumeAllAudioContexts);
     window.addEventListener('click', resumeAllAudioContexts);
 
+    // Map secondary action key 'E' to Spacebar so both standard Space and E trigger door interaction
+    window.addEventListener('keydown', (e) => {
+      if ((e.key === 'e' || e.key === 'E') && !e.repeat) {
+        const canvas = document.getElementById('canvas');
+        if (canvas) {
+          canvas.dispatchEvent(new KeyboardEvent('keydown', {
+            key: ' ',
+            code: 'Space',
+            keyCode: 32,
+            which: 32,
+            bubbles: true,
+            cancelable: true
+          }));
+        }
+      }
+    });
+    window.addEventListener('keyup', (e) => {
+      if (e.key === 'e' || e.key === 'E') {
+        const canvas = document.getElementById('canvas');
+        if (canvas) {
+          canvas.dispatchEvent(new KeyboardEvent('keyup', {
+            key: ' ',
+            code: 'Space',
+            keyCode: 32,
+            which: 32,
+            bubbles: true,
+            cancelable: true
+          }));
+        }
+      }
+    });
+
     // 3. Pre-carga segura y robusta de archivos sin bloqueos de XHR local
     async function fetchBinary(url, label) {
       if (loadingText) loadingText.textContent = `Cargando ${label}...`;
@@ -353,21 +385,22 @@
         if (loadingText) loadingText.textContent = "Cargando motor WebAssembly...";
         const [wasmBuffer, wadBuffer, cfgBuffer] = await Promise.all([
           fetchBinary("websockets-doom.wasm", "WebAssembly"),
-          fetchBinary("doom1.wad", "datos DOOM (IWAD)"),
+          fetchBinary("freedoom1.wad", "datos Freedoom (IWAD)"),
           fetchBinary("default.cfg", "configuración")
         ]);
 
-        if (loadingText) loadingText.textContent = "Iniciando motor DOOM...";
+        if (loadingText) loadingText.textContent = "Iniciando motor Freedoom...";
 
-        const commonArgs = ["-iwad", "doom1.wad", "-window", "-nogui", "-nomusic", "-config", "default.cfg"];
+        const commonArgs = ["-iwad", "freedoom1.wad", "-window", "-nogui", "-nomusic", "-config", "default.cfg"];
 
         window.Module = {
           wasmBinary: wasmBuffer,
+          INITIAL_MEMORY: 134217728,
           noInitialRun: true,
           arguments: commonArgs,
           preRun: [
             function() {
-              Module.FS.createDataFile("/", "doom1.wad", new Uint8Array(wadBuffer), true, true);
+              Module.FS.createDataFile("/", "freedoom1.wad", new Uint8Array(wadBuffer), true, true);
               Module.FS.createDataFile("/", "default.cfg", new Uint8Array(cfgBuffer), true, true);
             }
           ],

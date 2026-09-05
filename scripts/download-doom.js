@@ -20,12 +20,11 @@ const files = [
     url: 'https://silentspacemarine.com/default.cfg',
     minSize: 500
   },
-  {
-    name: 'doom1.wad',
-    url: 'https://media.githubusercontent.com/media/cnlohr/embeddedDOOM/master/src/support/doom1.wad',
-    minSize: 4000000
-  }
 ];
+
+const freedoomZipUrl = 'https://github.com/freedoom/freedoom/releases/download/v0.13.0/freedoom-0.13.0.zip';
+const freedoomWadName = 'freedoom1.wad';
+const freedoomMinSize = 25000000;
 
 function downloadFile(url, dest) {
   return new Promise((resolve, reject) => {
@@ -44,6 +43,35 @@ function downloadFile(url, dest) {
       fileStream.on('error', reject);
     }).on('error', reject);
   });
+}
+
+async function checkFreedoomWad() {
+  const destPath = path.join(doomDir, freedoomWadName);
+  if (fs.existsSync(destPath)) {
+    const stats = fs.statSync(destPath);
+    if (stats.size >= freedoomMinSize) {
+      console.log(`[Doom Setup] ${freedoomWadName} already exists (${(stats.size / 1024 / 1024).toFixed(2)} MB).`);
+      return;
+    }
+  }
+
+  console.log(`[Doom Setup] ${freedoomWadName} missing. Downloading Freedoom release...`);
+  const tmpZipPath = path.join(doomDir, 'freedoom_tmp.zip');
+  try {
+    await downloadFile(freedoomZipUrl, tmpZipPath);
+    console.log('[Doom Setup] Extracting freedoom1.wad...');
+    const { execSync } = require('child_process');
+    try {
+      execSync(`unzip -p "${tmpZipPath}" "freedoom-0.13.0/freedoom1.wad" > "${destPath}"`, { stdio: 'ignore' });
+    } catch {
+      execSync(`tar -xf "${tmpZipPath}" --strip-components=1 -C "${doomDir}" "freedoom-0.13.0/freedoom1.wad"`, { stdio: 'ignore' });
+    }
+    if (fs.existsSync(tmpZipPath)) fs.unlinkSync(tmpZipPath);
+    console.log(`[Doom Setup] Successfully installed ${freedoomWadName}!`);
+  } catch (err) {
+    if (fs.existsSync(tmpZipPath)) fs.unlinkSync(tmpZipPath);
+    console.error(`[Doom Setup] Failed to download or extract ${freedoomWadName}:`, err.message);
+  }
 }
 
 async function main() {
@@ -72,14 +100,17 @@ async function main() {
     }
   }
 
-  // Clean up legacy/redundant files from older Doom implementations if present
-  const legacyFiles = ['doom.wasm', 'doom.js'];
+  // Ensure Freedoom Phase 1 IWAD is present
+  await checkFreedoomWad();
+
+  // Clean up legacy, redundant, or proprietary files from older Doom implementations if present
+  const legacyFiles = ['doom.wasm', 'doom.js', 'doom1.wad'];
   for (const legacy of legacyFiles) {
     const legacyPath = path.join(doomDir, legacy);
     if (fs.existsSync(legacyPath)) {
       try {
         fs.unlinkSync(legacyPath);
-        console.log(`[Doom Setup] Cleaned up legacy file: ${legacy}`);
+        console.log(`[Doom Setup] Cleaned up legacy/proprietary file: ${legacy}`);
       } catch (err) {
         // ignore
       }

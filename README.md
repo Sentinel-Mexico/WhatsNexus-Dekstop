@@ -1,7 +1,7 @@
 # WhatsNexus ⚡
 
 ![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey)
-![Version](https://img.shields.io/badge/version-v1.0.5-brightgreen.svg)
+![Version](https://img.shields.io/badge/version-v1.0.6-brightgreen.svg)
 ![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)
 
 **WhatsNexus** is an open-source, production-ready desktop application built to manage multiple WhatsApp Web accounts concurrently. Built on top of Electron.js with strict session isolation (`StoragePartition`), dynamic tab hibernation, comprehensive offline protection, and 26 global languages, WhatsNexus keeps your personal, freelance, and business communications organized without data crossover.
@@ -19,7 +19,7 @@
 *   **Official Poppins Typography:** Elegant and readable typography using Google Fonts Poppins across all interface elements.
 *   **Curated Theme Engine:** Beautiful default WhatsNexus theme (dark and light modes), plus Dracula, Nord, Monokai, and custom color presets.
 *   **Global Internationalization (i18n):** Modular on-demand translations across 26 global languages.
-*   **Classic Doom Easter Egg:** 100% offline, native WebAssembly Chocolate Doom port (Cloudflare) with immediate audio playback and a floating controls overlay.
+*   **Freedoom Easter Egg:** 100% offline, native WebAssembly Chocolate Doom port loaded with BSD-licensed Freedoom: Phase 1, instant audio playback, and floating controls overlay.
 *   **Multiplatform CI/CD:** Automated GitHub Actions build pipeline generating `.deb`, `.AppImage`, `.snap` (x64 and arm64), `.dmg` (x64 and arm64), and `.exe` (NSIS x64).
 
 ## ⚖️ Comparison: WhatsApp Web vs. ZapZap vs. WhatsNexus

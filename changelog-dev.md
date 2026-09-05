@@ -2,6 +2,21 @@
 
 This changelog records all granular updates, bug fixes, refactorings, and feature iterations developed on the `Dev` branch. Each version bump in `package.json` is documented here as it happens.
 
+## [1.0.6] - 2026-09-05
+### Security & Compliance
+- **Easter Egg IWAD Audit & Proprietary Asset Removal:**
+  - Audited `src/assets/doom/` and identified proprietary `doom1.wad` (id Software / ZeniMax Media 1993 shareware data).
+  - Completely purged `doom1.wad` from disk and git tracking to mitigate any risk of copyright or intellectual property infringement.
+- **Migration to Freedoom: Phase 1 (Open Source IWAD):**
+  - Integrated official `freedoom1.wad` (Freedoom Phase 1 v0.13.0) licensed under the permissive BSD 3-Clause license compatible with GPL v3.
+  - Updated WebAssembly Emscripten glue in `src/assets/doom/index.html` to mount `/freedoom1.wad` into the virtual MEMFS with arguments `-iwad freedoom1.wad` and expanded initial memory to 128 MB (`INITIAL_MEMORY: 134217728`).
+  - Updated asset download script `scripts/download-doom.js` to automatically verify Freedoom Phase 1 and clean up legacy or proprietary assets.
+
+### Fixed & Changed
+- **Engine Controls Remapping & Modern Dark Theme Overlay:**
+  - Remapped engine keybindings in `src/assets/doom/default.cfg` and `src/assets/doom/index.html` to standard action mappings: Movement (`W, A, S, D` and arrow keys), Camera steering (mouse look and `O` / `P`), Fire (`Ctrl` and Left Mouse Click), Interact / Open doors (`Spacebar`, with synthetic `E` key fallback), Run (`Shift`), and Weapon selection (`1 - 7`).
+  - Modernized the floating controls panel header to display "Controles de Freedoom" with refined WhatsNexus dark theme styling and responsive layout.
+
 ## [1.0.5] - 2026-09-05
 ### Fixed
 - **Linux CI/CD Workflow & Target Streamlining:**
