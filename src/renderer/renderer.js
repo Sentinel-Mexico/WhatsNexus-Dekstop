@@ -123,6 +123,13 @@ if (settings.doomizate === undefined) {
 if (!settings.themePalette) {
   settings.themePalette = 'whatsnexus';
 }
+if (settings.themePalette === 'retro_computing' || settings.themePalette === 'synthwave_terminal') {
+  settings.themePalette = 'retro';
+} else if (settings.themePalette === 'victorian_parchment' || settings.themePalette === 'brass_boiler') {
+  settings.themePalette = 'steampunk';
+} else if (settings.themePalette === 'high_contrast_day' || settings.themePalette === 'high_contrast_night') {
+  settings.themePalette = 'highcontrast';
+}
 
 // URLs for donations and external support
 const DONATION_URLS = {
@@ -1594,28 +1601,7 @@ if (themeSelect) {
 
 if (paletteSelect) {
   paletteSelect.addEventListener('change', (e) => {
-    const val = e.target.value;
-    if (val === 'retro_computing') {
-      settings.themePalette = 'retro';
-      settings.theme = 'theme-light';
-    } else if (val === 'synthwave_terminal') {
-      settings.themePalette = 'retro';
-      settings.theme = 'theme-dark';
-    } else if (val === 'victorian_parchment') {
-      settings.themePalette = 'steampunk';
-      settings.theme = 'theme-light';
-    } else if (val === 'brass_boiler') {
-      settings.themePalette = 'steampunk';
-      settings.theme = 'theme-dark';
-    } else if (val === 'high_contrast_day') {
-      settings.themePalette = 'highcontrast';
-      settings.theme = 'theme-light';
-    } else if (val === 'high_contrast_night') {
-      settings.themePalette = 'highcontrast';
-      settings.theme = 'theme-dark';
-    } else {
-      settings.themePalette = val;
-    }
+    settings.themePalette = e.target.value;
     saveSettings();
   });
 }

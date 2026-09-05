@@ -214,8 +214,7 @@ body.palette-forest.theme-light {
    ======================================================== */
 
 /* Retro Computing (Modo Claro) */
-body.palette-retro.theme-light,
-body.palette-retro_computing {
+body.palette-retro.theme-light {
   --bg-primary: #E8E4D9;
   --bg-surface: #DCD7C9;
   --bg-sidebar: #DCD7C9;
@@ -237,8 +236,7 @@ body.palette-retro_computing {
 
 /* Synthwave Terminal (Modo Oscuro) */
 body.palette-retro,
-body.palette-retro.theme-dark,
-body.palette-synthwave_terminal {
+body.palette-retro.theme-dark {
   --bg-primary: #12131C;
   --bg-surface: #1A1C2B;
   --bg-sidebar: #1A1C2B;
@@ -265,8 +263,7 @@ body.palette-synthwave_terminal {
    ======================================================== */
 
 /* Victorian Parchment (Modo Claro) */
-body.palette-steampunk.theme-light,
-body.palette-victorian_parchment {
+body.palette-steampunk.theme-light {
   --bg-primary: #F4EBD9;
   --bg-surface: #E8DEC8;
   --bg-sidebar: #E8DEC8;
@@ -288,8 +285,7 @@ body.palette-victorian_parchment {
 
 /* Brass & Boiler (Modo Oscuro) */
 body.palette-steampunk,
-body.palette-steampunk.theme-dark,
-body.palette-brass_boiler {
+body.palette-steampunk.theme-dark {
   --bg-primary: #1A1614;
   --bg-surface: #26201C;
   --bg-sidebar: #26201C;
@@ -316,8 +312,7 @@ body.palette-brass_boiler {
    ======================================================== */
 
 /* High Contrast Day (Modo Claro) */
-body.palette-highcontrast.theme-light,
-body.palette-high_contrast_day {
+body.palette-highcontrast.theme-light {
   --bg-primary: #FFFFFF;
   --bg-surface: #F0F0F0;
   --bg-sidebar: #F0F0F0;
@@ -339,8 +334,7 @@ body.palette-high_contrast_day {
 
 /* High Contrast Night (Modo Oscuro) */
 body.palette-highcontrast,
-body.palette-highcontrast.theme-dark,
-body.palette-high_contrast_night {
+body.palette-highcontrast.theme-dark {
   --bg-primary: #000000;
   --bg-surface: #0D0D0D;
   --bg-sidebar: #0D0D0D;

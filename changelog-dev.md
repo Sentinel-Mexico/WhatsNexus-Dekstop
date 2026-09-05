@@ -2,6 +2,14 @@
 
 This changelog records all granular updates, bug fixes, refactorings, and feature iterations developed on the `Dev` branch. Each version bump in `package.json` is documented here as it happens.
 
+## [1.1.1] - 2026-09-05
+### Fixed
+- **Palette Selector Streamlining & Redundant Variant Clean Up:**
+  - Removed duplicate individual mode entries ("Retro Computing (Modo Claro)", "Synthwave Terminal (Modo Oscuro)", "Victorian Parchment (Modo Claro)", "Brass & Boiler (Modo Oscuro)", "High Contrast Day (Modo Claro)", "High Contrast Night (Modo Oscuro)") from the Appearance color palette dropdown in `src/renderer/index.html`.
+  - Consolidated palette options strictly to primary theme families (`whatsnexus`, `whatsapp`, `messenger`, `telegram`, `signal`, `forest`, `retro`, `steampunk`, `highcontrast`), allowing the global Light/Dark mode switch to dynamically resolve the respective formal sub-themes ("Retro Computing" / "Synthwave Terminal", "Victorian Parchment" / "Brass & Boiler", "High Contrast Day" / "High Contrast Night").
+  - Simplified change event listener and sanitized legacy stored sub-values in `src/renderer/renderer.js`.
+  - Cleaned up redundant alias selectors in `src/renderer/style.css` and locale dictionary keys in `src/locales/en.json` and `src/locales/es.json`.
+
 ## [1.1.0] - 2026-09-05
 ### Added
 - **Theme System Expansion (Retro, Steampunk & High Contrast Palettes):**
