@@ -18,6 +18,10 @@ body.palette-whatsnexus {
   --whatsapp-bg: #111813;
   --whatsapp-green: #4c9e5f;
   --whatsapp-green-hover: #3d834e;
+  --bg-surface: var(--bg-sidebar);
+  --accent-color: var(--bg-active);
+  --accent-hover: var(--whatsapp-green-hover);
+  --text-on-accent: #ffffff;
   --accent-secondary: #6e9e4c;
   --accent-terracotta: #9e624c;
   --accent-crimson: #9e4c53;
@@ -201,6 +205,159 @@ body.palette-forest.theme-light {
   --text-secondary: #4a542a;
   --border-color: #d8d3b3;
   --whatsapp-bg: #ede7c4;
+}
+
+/* ========================================================
+   Temática: Retro
+   - Modo Claro: "Retro Computing"
+   - Modo Oscuro: "Synthwave Terminal"
+   ======================================================== */
+
+/* Retro Computing (Modo Claro) */
+body.palette-retro.theme-light,
+body.palette-retro_computing {
+  --bg-primary: #E8E4D9;
+  --bg-surface: #DCD7C9;
+  --bg-sidebar: #DCD7C9;
+  --bg-hover: #CEC8B7;
+  --bg-active: #2B5C8F;
+  --bg-modal: #DCD7C9;
+  --bg-modal-overlay: rgba(232, 228, 217, 0.85);
+  --text-primary: #2A2A2A;
+  --text-secondary: #5C5850;
+  --text-color: var(--text-primary);
+  --border-color: #B8B2A6;
+  --accent-color: #2B5C8F;
+  --accent-hover: #1D3F63;
+  --whatsapp-bg: #E8E4D9;
+  --whatsapp-green: #2B5C8F;
+  --whatsapp-green-hover: #1D3F63;
+  --text-on-accent: #ffffff;
+}
+
+/* Synthwave Terminal (Modo Oscuro) */
+body.palette-retro,
+body.palette-retro.theme-dark,
+body.palette-synthwave_terminal {
+  --bg-primary: #12131C;
+  --bg-surface: #1A1C2B;
+  --bg-sidebar: #1A1C2B;
+  --bg-hover: #26293D;
+  --bg-active: #FF71CE;
+  --bg-modal: #1A1C2B;
+  --bg-modal-overlay: rgba(18, 19, 28, 0.85);
+  --text-primary: #E0E6ED;
+  --text-secondary: #8B95A5;
+  --text-color: var(--text-primary);
+  --border-color: #2E344D;
+  --accent-color: #FF71CE;
+  --accent-hover: #01CDFE;
+  --whatsapp-bg: #12131C;
+  --whatsapp-green: #FF71CE;
+  --whatsapp-green-hover: #01CDFE;
+  --text-on-accent: #12131C;
+}
+
+/* ========================================================
+   Temática: Steampunk
+   - Modo Claro: "Victorian Parchment"
+   - Modo Oscuro: "Brass & Boiler"
+   ======================================================== */
+
+/* Victorian Parchment (Modo Claro) */
+body.palette-steampunk.theme-light,
+body.palette-victorian_parchment {
+  --bg-primary: #F4EBD9;
+  --bg-surface: #E8DEC8;
+  --bg-sidebar: #E8DEC8;
+  --bg-hover: #D9CCB4;
+  --bg-active: #A45A2A;
+  --bg-modal: #E8DEC8;
+  --bg-modal-overlay: rgba(244, 235, 217, 0.85);
+  --text-primary: #2E2117;
+  --text-secondary: #5D4A3A;
+  --text-color: var(--text-primary);
+  --border-color: #C7B599;
+  --accent-color: #A45A2A;
+  --accent-hover: #7E421B;
+  --whatsapp-bg: #F4EBD9;
+  --whatsapp-green: #A45A2A;
+  --whatsapp-green-hover: #7E421B;
+  --text-on-accent: #ffffff;
+}
+
+/* Brass & Boiler (Modo Oscuro) */
+body.palette-steampunk,
+body.palette-steampunk.theme-dark,
+body.palette-brass_boiler {
+  --bg-primary: #1A1614;
+  --bg-surface: #26201C;
+  --bg-sidebar: #26201C;
+  --bg-hover: #362E28;
+  --bg-active: #C98E34;
+  --bg-modal: #26201C;
+  --bg-modal-overlay: rgba(26, 22, 20, 0.85);
+  --text-primary: #E8DCC4;
+  --text-secondary: #A69580;
+  --text-color: var(--text-primary);
+  --border-color: #3D332D;
+  --accent-color: #C98E34;
+  --accent-hover: #E5A84B;
+  --whatsapp-bg: #1A1614;
+  --whatsapp-green: #C98E34;
+  --whatsapp-green-hover: #E5A84B;
+  --text-on-accent: #1A1614;
+}
+
+/* ========================================================
+   Temática: Alto Contraste
+   - Modo Claro: "High Contrast Day"
+   - Modo Oscuro: "High Contrast Night"
+   ======================================================== */
+
+/* High Contrast Day (Modo Claro) */
+body.palette-highcontrast.theme-light,
+body.palette-high_contrast_day {
+  --bg-primary: #FFFFFF;
+  --bg-surface: #F0F0F0;
+  --bg-sidebar: #F0F0F0;
+  --bg-hover: #E0E0E0;
+  --bg-active: #00318C;
+  --bg-modal: #F0F0F0;
+  --bg-modal-overlay: rgba(255, 255, 255, 0.85);
+  --text-primary: #000000;
+  --text-secondary: #1F1F1F;
+  --text-color: var(--text-primary);
+  --border-color: #000000;
+  --accent-color: #00318C;
+  --accent-hover: #001F5C;
+  --whatsapp-bg: #FFFFFF;
+  --whatsapp-green: #00318C;
+  --whatsapp-green-hover: #001F5C;
+  --text-on-accent: #ffffff;
+}
+
+/* High Contrast Night (Modo Oscuro) */
+body.palette-highcontrast,
+body.palette-highcontrast.theme-dark,
+body.palette-high_contrast_night {
+  --bg-primary: #000000;
+  --bg-surface: #0D0D0D;
+  --bg-sidebar: #0D0D0D;
+  --bg-hover: #1F1F1F;
+  --bg-active: #FFE600;
+  --bg-modal: #0D0D0D;
+  --bg-modal-overlay: rgba(0, 0, 0, 0.85);
+  --text-primary: #FFFFFF;
+  --text-secondary: #E6E6E6;
+  --text-color: var(--text-primary);
+  --border-color: #FFFFFF;
+  --accent-color: #FFE600;
+  --accent-hover: #FFFF33;
+  --whatsapp-bg: #000000;
+  --whatsapp-green: #FFE600;
+  --whatsapp-green-hover: #FFFF33;
+  --text-on-accent: #000000;
 }
 
 * {
@@ -605,7 +762,7 @@ webview {
 
 .settings-nav .tab-btn.active {
   background-color: var(--bg-active);
-  color: #ffffff;
+  color: var(--text-on-accent, #ffffff);
   font-weight: 600;
   border-left: none;
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
@@ -1635,7 +1792,7 @@ body.theme-light .permissions-notice-box {
 
 .btn-primary-action {
   background-color: var(--bg-active);
-  color: #ffffff;
+  color: var(--text-on-accent, #ffffff);
   border: none;
   border-radius: var(--shape-sm);
   padding: 8px 16px;
@@ -1803,11 +1960,6 @@ body.theme-light .permissions-notice-box {
   background-color: rgba(0, 121, 193, 0.12);
 }
 
-.donation-icon.kofi-icon {
-  color: #ff5e5b;
-  background-color: rgba(255, 94, 91, 0.12);
-}
-
 .donation-platform-title {
   font-size: 1.15rem;
   font-weight: 700;
@@ -1852,7 +2004,7 @@ body.theme-light .permissions-notice-box {
 
 .btn-donate:hover {
   background-color: var(--bg-active);
-  color: #ffffff;
+  color: var(--text-on-accent, #ffffff);
   border-color: var(--bg-active);
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.16);

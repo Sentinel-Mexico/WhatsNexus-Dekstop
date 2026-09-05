@@ -2,6 +2,23 @@
 
 This changelog records all granular updates, bug fixes, refactorings, and feature iterations developed on the `Dev` branch. Each version bump in `package.json` is documented here as it happens.
 
+## [1.1.0] - 2026-09-05
+### Added
+- **Theme System Expansion (Retro, Steampunk & High Contrast Palettes):**
+  - Integrated 3 complete theme families across global CSS design tokens with formal light and dark variants:
+    - **Retro Theme:** "Retro Computing" (Light: beige hardware `#E8E4D9`, surface `#DCD7C9`, Commodore blue `#2B5C8F`) and "Synthwave Terminal" (Dark: night CRT `#12131C`, surface `#1A1C2B`, Synthwave neon pink `#FF71CE`, neon cyan `#01CDFE`).
+    - **Steampunk Theme:** "Victorian Parchment" (Light: parchment `#F4EBD9`, surface `#E8DEC8`, aged copper `#A45A2A`) and "Brass & Boiler" (Dark: cast iron `#1A1614`, surface `#26201C`, burnished brass `#C98E34`).
+    - **High Contrast Theme (WCAG AAA):** "High Contrast Day" (Light: pure white `#FFFFFF`, surface `#F0F0F0`, pure black `#000000`, cobalt blue `#00318C`) and "High Contrast Night" (Dark: OLED black `#000000`, surface `#0D0D0D`, pure white `#FFFFFF`, safety yellow `#FFE600`).
+  - Added semantic CSS tokens (`--bg-surface`, `--accent-color`, `--accent-hover`, `--text-on-accent`) ensuring WCAG AAA legibility and contrast across all theme switches.
+  - Integrated full options into the Appearance settings selector (`palette-select`), enabling seamless switching between theme families and direct variants with persistent storage in `localStorage`.
+  - Added internationalization keys for English and Spanish palettes across UI dropdowns.
+
+### Changed
+- **Donation Channels & Support View Overhaul:**
+  - Updated PayPal donation link to direct to `https://paypal.me/stlmexico`.
+  - Configured GitHub Sponsors destination to redirect to the official repository `https://github.com/Sentinel-Mexico/WhatsNexus-Dekstop`.
+  - Completely removed Ko-fi button, card, and interface styling from the donations view.
+
 ## [1.0.6] - 2026-09-05
 ### Security & Compliance
 - **Easter Egg IWAD Audit & Proprietary Asset Removal:**

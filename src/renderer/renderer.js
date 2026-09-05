@@ -126,9 +126,8 @@ if (!settings.themePalette) {
 
 // URLs for donations and external support
 const DONATION_URLS = {
-  github: 'https://github.com/sponsors/Sentinel-Mexico',
-  paypal: 'https://www.paypal.me/SentinelMexico',
-  kofi:   'https://ko-fi.com/sentinelmexico'
+  github: 'https://github.com/Sentinel-Mexico/WhatsNexus-Dekstop',
+  paypal: 'https://paypal.me/stlmexico'
 };
 
 // ==========================================================================
@@ -642,7 +641,13 @@ function applySettings() {
   document.body.className = `palette-${palette} ${isDark ? 'theme-dark' : 'theme-light'}`;
   
   if (themeSelect) themeSelect.value = settings.theme || 'theme-auto';
-  if (paletteSelect) paletteSelect.value = palette;
+  if (paletteSelect) {
+    paletteSelect.value = palette;
+    const triggerLabel = document.getElementById('palette-select-label');
+    if (triggerLabel && paletteSelect.selectedIndex >= 0) {
+      triggerLabel.innerText = paletteSelect.options[paletteSelect.selectedIndex].innerText;
+    }
+  }
   if (trayStyleSelect) trayStyleSelect.value = settings.trayStyle || 'auto';
   if (trayBadgeToggle) trayBadgeToggle.checked = settings.trayShowBadge !== false;
   if (downloadPathInput && settings.downloadPath) downloadPathInput.value = settings.downloadPath;
@@ -1589,7 +1594,28 @@ if (themeSelect) {
 
 if (paletteSelect) {
   paletteSelect.addEventListener('change', (e) => {
-    settings.themePalette = e.target.value;
+    const val = e.target.value;
+    if (val === 'retro_computing') {
+      settings.themePalette = 'retro';
+      settings.theme = 'theme-light';
+    } else if (val === 'synthwave_terminal') {
+      settings.themePalette = 'retro';
+      settings.theme = 'theme-dark';
+    } else if (val === 'victorian_parchment') {
+      settings.themePalette = 'steampunk';
+      settings.theme = 'theme-light';
+    } else if (val === 'brass_boiler') {
+      settings.themePalette = 'steampunk';
+      settings.theme = 'theme-dark';
+    } else if (val === 'high_contrast_day') {
+      settings.themePalette = 'highcontrast';
+      settings.theme = 'theme-light';
+    } else if (val === 'high_contrast_night') {
+      settings.themePalette = 'highcontrast';
+      settings.theme = 'theme-dark';
+    } else {
+      settings.themePalette = val;
+    }
     saveSettings();
   });
 }
