@@ -310,5 +310,11 @@
   "doom_weapons": "ఆయుధాల ఎంపిక:",
   "doom_note": "గమనిక: క్లాసిక్ DOOM / Freedoom లో జంప్ లేదు (గ్యాప్‌లను దాటడానికి Shift తో పరుగెత్తండి).",
   "doom_mouse": "మౌస్",
-  "doom_or": "లేదా"
+  "doom_or": "లేదా",
+  "palette_cybernexus": "சைபர்-நெக்ஸஸ் (AI / எதிர்காலம்)",
+  "palette_doom": "டூம் (போபோஸ் & நரகம்)",
+  "palette_startrek": "ஸ்டார் ட்ரெக் (கூட்டமைப்பு & LCARS)",
+  "palette_voxel": "வாக்சல் (மின்கிராஃப்ட்)",
+  "theme_voxel_light": "ஓவர்வேர்ல்ட்",
+  "theme_voxel_dark": "நெதர்/எண்ட்"
 }

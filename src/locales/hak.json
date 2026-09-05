@@ -310,5 +310,11 @@
   "doom_weapons": "武器选择：",
   "doom_note": "注意：在经典 DOOM / Freedoom 中，由于关卡设计没有跳跃机制（按住 Shift 奔跑以跳过裂缝）。",
   "doom_mouse": "鼠标",
-  "doom_or": "或"
+  "doom_or": "或",
+  "palette_cybernexus": "賽博紐帶（AI / 未來主義）",
+  "palette_doom": "毀滅戰士（火衛一與地獄）",
+  "palette_startrek": "星際迷航（聯邦與LCARS）",
+  "palette_voxel": "體素（我的世界）",
+  "theme_voxel_light": "主世界",
+  "theme_voxel_dark": "下界/末地"
 }

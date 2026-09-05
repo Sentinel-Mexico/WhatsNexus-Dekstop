@@ -310,5 +310,11 @@
   "doom_weapons": "Выбор оружия:",
   "doom_note": "Примечание: В классическом DOOM / Freedoom прыжок не предусмотрен дизайном уровней (зажмите Shift для преодоления пропастей).",
   "doom_mouse": "Мышь",
-  "doom_or": "или"
+  "doom_or": "или",
+  "palette_cybernexus": "Кибер-Нексус (ИИ / Футуристический)",
+  "palette_doom": "Doom (Фобос и Адский пейзаж)",
+  "palette_startrek": "Звездный путь (Федерация и LCARS)",
+  "palette_voxel": "Воксель (Minecraft)",
+  "theme_voxel_light": "Верхний мир",
+  "theme_voxel_dark": "Незер/Край"
 }

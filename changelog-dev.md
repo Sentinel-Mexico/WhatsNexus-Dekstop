@@ -2,6 +2,23 @@
 
 This changelog records all granular updates, bug fixes, refactorings, and feature iterations developed on the `Dev` branch. Each version bump in `package.json` is documented here as it happens.
 
+## [1.5.0] - 2026-09-05
+### Added
+- **New Theme Color Palettes (Tier 2 & Tier 4):**
+  - Integrated 4 new heavily themed visual palettes into the design token system:
+    1. **Cyber-Nexus (IA / Futurista) (`cybernexus`):** Tier 2 custom theme with light *Chrome Core* (`#F0F4F8`, `#E2E8F0`, `#06B6D4`) and dark *Neural Net* (`#0B1120`, `#0F172A`, `#22D3EE`).
+    2. **Doom (Phobos y Hellscape) (`doom`):** Tier 4 pop culture theme featuring light *Phobos Base* (`#D5C2A5`, `#C2AD8F`, `#C83214`) and dark *Hellscape* (`#1C1919`, `#2B2322`, `#E52E15`).
+    3. **Star Trek (Federación y LCARS) (`startrek`):** Tier 4 pop culture theme featuring light *Federation Day* (`#F4F4F9`, `#EAEBF2`, `#D69F34`) and dark *LCARS Terminal* (`#000000`, `#11111B`, `#FF9900`, `#99CCFF`).
+    4. **Vóxel (Minecraft) (`voxel`):** Tier 4 pop culture theme featuring light *Overworld* (`#E6F0FA`, `#D5E8C3`, `#3A892F`) and dark *Obsidian / The End* (`#130E1A`, `#20172C`, `#9A5CC6`).
+- **Dynamic Light/Dark Switch Labels for Vóxel Theme:**
+  - Extended `updateThemeLabels()` in `src/renderer/renderer.js` to dynamically bind "Overworld" (`theme_voxel_light`) and "Nether/End" (`theme_voxel_dark`) when the Vóxel palette is selected.
+- **100% Comprehensive i18n Coverage for New Palettes:**
+  - Added 6 new translation keys (`palette_cybernexus`, `palette_doom`, `palette_startrek`, `palette_voxel`, `theme_voxel_light`, `theme_voxel_dark`) across all 55 supported locale JSON files in `src/locales/` with zero English fallback.
+
+### Changed
+- **Palette Selector Hierarchical & Alphabetical Ordering:**
+  - Inserted newly added palettes into `#palette-select` within `src/renderer/index.html` strictly adhering to the 4-tier categorization rules and internal alphabetical sorting.
+
 ## [1.4.1] - 2026-09-05
 ### Fixed
 - **Settings Navigation Default Tab Enforcement:**

@@ -310,5 +310,11 @@
   "doom_weapons": "हथियार चयन:",
   "doom_note": "नोट: क्लासिक DOOM / Freedoom में लेवल डिज़ाइन के कारण कोई जंप नहीं है (गैप पार करने के लिए Shift के साथ दौड़ें)।",
   "doom_mouse": "माउस",
-  "doom_or": "या"
+  "doom_or": "या",
+  "palette_cybernexus": "ସାଇବର-ନେକ୍ସସ (AI / ଭବିଷ୍ୟତବାଦୀ)",
+  "palette_doom": "ଡୁମ (ଫୋବୋସ ଏବଂ ନରକ)",
+  "palette_startrek": "ଷ୍ଟାର ଟ୍ରେକ (ଫେଡେରେସନ ଏବଂ LCARS)",
+  "palette_voxel": "ଭୋକ୍ସେଲ (ମାଇନକ୍ରାଫ୍ଟ)",
+  "theme_voxel_light": "ଓଭରୱାର୍ଲ୍ଡ",
+  "theme_voxel_dark": "ନେଦର/ଏଣ୍ଡ"
 }

@@ -502,6 +502,202 @@ body.palette-starwars.theme-dark {
 }
 
 /* ========================================================
+   Temática: Cyber-Nexus (IA / Futurista)
+   - Modo Claro: "Chrome Core"
+   - Modo Oscuro: "Neural Net"
+   ======================================================== */
+
+/* Chrome Core (Modo Claro) */
+body.palette-cybernexus.theme-light {
+  --bg-primary: #F0F4F8;
+  --bg-surface: #E2E8F0;
+  --bg-sidebar: #E2E8F0;
+  --bg-hover: #CBD5E1;
+  --bg-active: #06B6D4;
+  --bg-modal: #E2E8F0;
+  --bg-modal-overlay: rgba(240, 244, 248, 0.85);
+  --text-primary: #1E293B;
+  --text-secondary: #64748B;
+  --text-color: var(--text-primary);
+  --border-color: #CBD5E1;
+  --accent-color: #06B6D4;
+  --accent-hover: #0891B2;
+  --whatsapp-bg: #F0F4F8;
+  --whatsapp-green: #06B6D4;
+  --whatsapp-green-hover: #0891B2;
+  --text-on-accent: #ffffff;
+}
+
+/* Neural Net (Modo Oscuro) */
+body.palette-cybernexus,
+body.palette-cybernexus.theme-dark {
+  --bg-primary: #0B1120;
+  --bg-surface: #0F172A;
+  --bg-sidebar: #0F172A;
+  --bg-hover: #1E293B;
+  --bg-active: #22D3EE;
+  --bg-modal: #0F172A;
+  --bg-modal-overlay: rgba(11, 17, 32, 0.85);
+  --text-primary: #F8FAFC;
+  --text-secondary: #94A3B8;
+  --text-color: var(--text-primary);
+  --border-color: #1E293B;
+  --accent-color: #22D3EE;
+  --accent-hover: #67E8F9;
+  --whatsapp-bg: #0B1120;
+  --whatsapp-green: #22D3EE;
+  --whatsapp-green-hover: #67E8F9;
+  --text-on-accent: #0B1120;
+}
+
+/* ========================================================
+   Temática: Doom
+   - Modo Claro: "Phobos Base"
+   - Modo Oscuro: "Hellscape"
+   ======================================================== */
+
+/* Phobos Base (Modo Claro) */
+body.palette-doom.theme-light {
+  --bg-primary: #D5C2A5;
+  --bg-surface: #C2AD8F;
+  --bg-sidebar: #C2AD8F;
+  --bg-hover: #B59F80;
+  --bg-active: #C83214;
+  --bg-modal: #C2AD8F;
+  --bg-modal-overlay: rgba(213, 194, 165, 0.85);
+  --text-primary: #2D241E;
+  --text-secondary: #6B584B;
+  --text-color: var(--text-primary);
+  --border-color: #A38E70;
+  --accent-color: #C83214;
+  --accent-hover: #A52309;
+  --whatsapp-bg: #D5C2A5;
+  --whatsapp-green: #C83214;
+  --whatsapp-green-hover: #A52309;
+  --text-on-accent: #ffffff;
+}
+
+/* Hellscape (Modo Oscuro) */
+body.palette-doom,
+body.palette-doom.theme-dark {
+  --bg-primary: #1C1919;
+  --bg-surface: #2B2322;
+  --bg-sidebar: #2B2322;
+  --bg-hover: #3D3130;
+  --bg-active: #E52E15;
+  --bg-modal: #2B2322;
+  --bg-modal-overlay: rgba(28, 25, 25, 0.85);
+  --text-primary: #E6D5D5;
+  --text-secondary: #A68B8A;
+  --text-color: var(--text-primary);
+  --border-color: #403332;
+  --accent-color: #E52E15;
+  --accent-hover: #FF4D36;
+  --whatsapp-bg: #1C1919;
+  --whatsapp-green: #E52E15;
+  --whatsapp-green-hover: #FF4D36;
+  --text-on-accent: #ffffff;
+}
+
+/* ========================================================
+   Temática: Star Trek
+   - Modo Claro: "Federation Day"
+   - Modo Oscuro: "LCARS Terminal"
+   ======================================================== */
+
+/* Federation Day (Modo Claro) */
+body.palette-startrek.theme-light {
+  --bg-primary: #F4F4F9;
+  --bg-surface: #EAEBF2;
+  --bg-sidebar: #EAEBF2;
+  --bg-hover: #DDDDE8;
+  --bg-active: #D69F34;
+  --bg-modal: #EAEBF2;
+  --bg-modal-overlay: rgba(244, 244, 249, 0.85);
+  --text-primary: #1C1D21;
+  --text-secondary: #5F606A;
+  --text-color: var(--text-primary);
+  --border-color: #D0D1DB;
+  --accent-color: #D69F34;
+  --accent-hover: #BA8524;
+  --whatsapp-bg: #F4F4F9;
+  --whatsapp-green: #D69F34;
+  --whatsapp-green-hover: #BA8524;
+  --text-on-accent: #1C1D21;
+}
+
+/* LCARS Terminal (Modo Oscuro) */
+body.palette-startrek,
+body.palette-startrek.theme-dark {
+  --bg-primary: #000000;
+  --bg-surface: #11111B;
+  --bg-sidebar: #11111B;
+  --bg-hover: #222233;
+  --bg-active: #FF9900;
+  --bg-modal: #11111B;
+  --bg-modal-overlay: rgba(0, 0, 0, 0.85);
+  --text-primary: #FF9900;
+  --text-secondary: #FFB347;
+  --text-color: var(--text-primary);
+  --border-color: #333344;
+  --accent-color: #99CCFF;
+  --accent-hover: #BBDDFF;
+  --whatsapp-bg: #000000;
+  --whatsapp-green: #FF9900;
+  --whatsapp-green-hover: #FFAA33;
+  --text-on-accent: #000000;
+}
+
+/* ========================================================
+   Temática: Vóxel (Minecraft)
+   - Modo Claro: "Overworld"
+   - Modo Oscuro: "Obsidian / The End"
+   ======================================================== */
+
+/* Overworld (Modo Claro) */
+body.palette-voxel.theme-light {
+  --bg-primary: #E6F0FA;
+  --bg-surface: #D5E8C3;
+  --bg-sidebar: #D5E8C3;
+  --bg-hover: #C3DBAE;
+  --bg-active: #3A892F;
+  --bg-modal: #D5E8C3;
+  --bg-modal-overlay: rgba(230, 240, 250, 0.85);
+  --text-primary: #3A2E26;
+  --text-secondary: #665749;
+  --text-color: var(--text-primary);
+  --border-color: #B8D099;
+  --accent-color: #3A892F;
+  --accent-hover: #2E7024;
+  --whatsapp-bg: #E6F0FA;
+  --whatsapp-green: #3A892F;
+  --whatsapp-green-hover: #2E7024;
+  --text-on-accent: #ffffff;
+}
+
+/* Obsidian / The End (Modo Oscuro) */
+body.palette-voxel,
+body.palette-voxel.theme-dark {
+  --bg-primary: #130E1A;
+  --bg-surface: #20172C;
+  --bg-sidebar: #20172C;
+  --bg-hover: #2E223F;
+  --bg-active: #9A5CC6;
+  --bg-modal: #20172C;
+  --bg-modal-overlay: rgba(19, 14, 26, 0.85);
+  --text-primary: #D1C9DB;
+  --text-secondary: #A797B8;
+  --text-color: var(--text-primary);
+  --border-color: #3A2A4E;
+  --accent-color: #9A5CC6;
+  --accent-hover: #B275DF;
+  --whatsapp-bg: #130E1A;
+  --whatsapp-green: #9A5CC6;
+  --whatsapp-green-hover: #B275DF;
+  --text-on-accent: #ffffff;
+}
+
+/* ========================================================
    Conlang Custom Typography: Tengwar & Klingon pIqaD
    ======================================================== */
 

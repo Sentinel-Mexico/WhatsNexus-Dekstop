@@ -14,10 +14,11 @@ The palette selection dropdown (`#palette-select` in `src/renderer/index.html`) 
 ### Tier 2: Custom / Original Themes (Temas personalizados / originales) — *Sorted Alphabetically*
 1. **Alto Contraste (Blanco y Negro)** (`highcontrast`)
 2. **Bosque (Oliva y Tierra)** (`forest`)
-3. **Dracula (Morado y Gris Oscuro)** (`dracula`)
-4. **Nord (Hielo y Escarcha)** (`nord`)
-5. **Retro (Beige y Neón)** (`retro`)
-6. **Steampunk (Pergamino y Latón)** (`steampunk`)
+3. **Cyber-Nexus (IA / Futurista)** (`cybernexus`)
+4. **Dracula (Morado y Gris Oscuro)** (`dracula`)
+5. **Nord (Hielo y Escarcha)** (`nord`)
+6. **Retro (Beige y Neón)** (`retro`)
+7. **Steampunk (Pergamino y Latón)** (`steampunk`)
 
 ### Tier 3: Messaging App Inspired Themes (Temas inspirados en mensajería) — *Sorted Alphabetically*
 1. **Messenger (Azul Meta)** (`messenger`)
@@ -26,7 +27,10 @@ The palette selection dropdown (`#palette-select` in `src/renderer/index.html`) 
 4. **WhatsApp (Esmeralda)** (`whatsapp`)
 
 ### Tier 4: Pop Culture Themes (Temas de cultura pop) — *Sorted Alphabetically*
-1. **Star Wars (Sable de Luz)** (`starwars`)
+1. **Doom (Phobos y Hellscape)** (`doom`)
+2. **Star Trek (Federación y LCARS)** (`startrek`)
+3. **Star Wars (Sable de Luz)** (`starwars`)
+4. **Vóxel (Minecraft)** (`voxel`)
 
 ---
 

@@ -310,5 +310,11 @@
   "doom_weapons": " :",
   "doom_note": "F / :    f ",
   "doom_mouse": "",
-  "doom_or": ""
+  "doom_or": "",
+  "palette_cybernexus": "- ()",
+  "palette_doom": " ( )",
+  "palette_startrek": "  ( )",
+  "palette_voxel": " (kf)",
+  "theme_voxel_light": "",
+  "theme_voxel_dark": "/"
 }

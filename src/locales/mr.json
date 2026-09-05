@@ -310,5 +310,11 @@
   "doom_weapons": "हथियार चयन:",
   "doom_note": "नोट: क्लासिक DOOM / Freedoom में लेवल डिज़ाइन के कारण कोई जंप नहीं है (गैप पार करने के लिए Shift के साथ दौड़ें)।",
   "doom_mouse": "माउस",
-  "doom_or": "या"
+  "doom_or": "या",
+  "palette_cybernexus": "सायबर-नेक्सस (एआय / भविष्यवादी)",
+  "palette_doom": "डूम (फोबोस आणि नर्क)",
+  "palette_startrek": "स्टार ट्रेक (फेडरेशन आणि एलसीएआरएस)",
+  "palette_voxel": "व्हॉक्सेल (माइनक्राफ्ट)",
+  "theme_voxel_light": "ओव्हरवर्ल्ड",
+  "theme_voxel_dark": "नेदर/एंड"
 }

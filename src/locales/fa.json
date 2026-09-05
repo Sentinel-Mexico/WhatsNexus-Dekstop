@@ -310,5 +310,11 @@
   "doom_weapons": "اختيار السلاح:",
   "doom_note": "ملاحظة: في لعبة DOOM / Freedoom الكلاسيكية، لا يوجد قفز حسب تصميم المراحل (اركض مع Shift لعبور الفجوات).",
   "doom_mouse": "الفأرة",
-  "doom_or": "أو"
+  "doom_or": "أو",
+  "palette_cybernexus": "سایبر-نکسوس (هوش مصنوعی / آینده‌نگر)",
+  "palette_doom": "دوم (فوبوس و جهنم)",
+  "palette_startrek": "پیشتازان فضا (فدراسیون و LCARS)",
+  "palette_voxel": "واکسل (ماینکرفت)",
+  "theme_voxel_light": "دنیای اصلی",
+  "theme_voxel_dark": "ندور/اند"
 }

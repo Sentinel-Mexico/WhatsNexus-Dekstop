@@ -310,5 +310,11 @@
   "doom_weapons": "Wybór broni:",
   "doom_note": "Uwaga: W klasycznym DOOM / Freedoom nie ma skoku z powodu projektu poziomów (biegnij z Shiftem, aby przeskakiwać przepaście).",
   "doom_mouse": "Mysz",
-  "doom_or": "lub"
+  "doom_or": "lub",
+  "palette_cybernexus": "Cyber-Nexus (AI / Futurystyczny)",
+  "palette_doom": "Doom (Fobos i Piekielny krajobraz)",
+  "palette_startrek": "Star Trek (Federacja i LCARS)",
+  "palette_voxel": "Woksel (Minecraft)",
+  "theme_voxel_light": "Overworld",
+  "theme_voxel_dark": "Nether/End"
 }

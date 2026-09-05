@@ -310,5 +310,11 @@
   "doom_weapons": "অস্ত্র নির্বাচন:",
   "doom_note": "দ্রষ্টব্য: ক্লাসিক DOOM / Freedoom-এ লেভেল ডিজাইনের কারণে কোনো লাফ নেই (ফাঁক পার হতে Shift চেপে দৌড়ান)।",
   "doom_mouse": "মাউস",
-  "doom_or": "বা"
+  "doom_or": "বা",
+  "palette_cybernexus": "সাইবার-নেক্সাস (এআই / ভবিষ্যত)",
+  "palette_doom": "ডুম (ফোবোস ও নরক)",
+  "palette_startrek": "স্টার ট্রেক (ফেডারেশন ও এলসিএআরএস)",
+  "palette_voxel": "ভক্সেল (মাইনক্রাফ্ট)",
+  "theme_voxel_light": "ওভারওয়ার্ল্ড",
+  "theme_voxel_dark": "নেদার/এন্ড"
 }

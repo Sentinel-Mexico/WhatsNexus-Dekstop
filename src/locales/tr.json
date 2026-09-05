@@ -310,5 +310,11 @@
   "doom_weapons": "Silah seçimi:",
   "doom_note": "Not: Klasik DOOM / Freedoom'da seviye tasarımı gereği zıplama yoktur (boşlukları geçmek için Shift ile koşun).",
   "doom_mouse": "Fare",
-  "doom_or": "veya"
+  "doom_or": "veya",
+  "palette_cybernexus": "Cyber-Nexus (YZ / Fütüristik)",
+  "palette_doom": "Doom (Phobos ve Cehennem)",
+  "palette_startrek": "Uzay Yolu (Federasyon ve LCARS)",
+  "palette_voxel": "Voksel (Minecraft)",
+  "theme_voxel_light": "Yeryüzü",
+  "theme_voxel_dark": "Nether/Son"
 }

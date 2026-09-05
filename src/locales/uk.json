@@ -310,5 +310,11 @@
   "doom_weapons": "Вибір зброї:",
   "doom_note": "Примітка: У класичному DOOM / Freedoom немає стрибка за задумом рівнів (біжіть із Shift, щоб долати прірви).",
   "doom_mouse": "Миша",
-  "doom_or": "або"
+  "doom_or": "або",
+  "palette_cybernexus": "Кібер-Нексус (ШІ / Футуристичний)",
+  "palette_doom": "Doom (Фобос і Пекельний пейзаж)",
+  "palette_startrek": "Зоряний шлях (Федерація та LCARS)",
+  "palette_voxel": "Воксель (Minecraft)",
+  "theme_voxel_light": "Верхній світ",
+  "theme_voxel_dark": "Незер/Край"
 }

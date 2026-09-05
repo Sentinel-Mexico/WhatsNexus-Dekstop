@@ -310,5 +310,11 @@
   "doom_weapons": "Pilih senjata:",
   "doom_note": "Catatan: Dalam DOOM / Freedoom klasik tidak ada lompatan karena desain level (lari dengan Shift untuk melewati celah).",
   "doom_mouse": "Mouse",
-  "doom_or": "atau"
+  "doom_or": "atau",
+  "palette_cybernexus": "Cyber-Nexus (AI / Fuulduraa)",
+  "palette_doom": "Doom (Phobos fi Azaaba)",
+  "palette_startrek": "Star Trek (Federeeshinii fi LCARS)",
+  "palette_voxel": "Voxel (Minecraft)",
+  "theme_voxel_light": "Overworld",
+  "theme_voxel_dark": "Nether/End"
 }

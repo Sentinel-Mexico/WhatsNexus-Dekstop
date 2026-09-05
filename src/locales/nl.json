@@ -310,5 +310,11 @@
   "doom_weapons": "Wapenselectie:",
   "doom_note": "Opmerking: In klassieke DOOM / Freedoom is er geen sprong door levelontwerp (ren met Shift om gaten te overbruggen).",
   "doom_mouse": "Muis",
-  "doom_or": "of"
+  "doom_or": "of",
+  "palette_cybernexus": "Cyber-Nexus (AI / Futuristisch)",
+  "palette_doom": "Doom (Phobos & Hellscape)",
+  "palette_startrek": "Star Trek (Federatie & LCARS)",
+  "palette_voxel": "Voxel (Minecraft)",
+  "theme_voxel_light": "Bovenwereld",
+  "theme_voxel_dark": "Nether/End"
 }

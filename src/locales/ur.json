@@ -310,5 +310,11 @@
   "doom_weapons": "ہتھیار منتخب کریں:",
   "doom_note": "نوٹ: کلاسک DOOM / Freedoom میں جمپ نہیں ہے (خلا عبور کرنے کے لیے Shift کے ساتھ دوڑیں)۔",
   "doom_mouse": "ماؤس",
-  "doom_or": "یا"
+  "doom_or": "یا",
+  "palette_cybernexus": "سائبر-نیکسس (مصنوعی ذہانت / مستقبل)",
+  "palette_doom": "ڈوم (فوبوس اور جہنم)",
+  "palette_startrek": "سٹار ٹریک (فیڈریشن اور LCARS)",
+  "palette_voxel": "ووکسل (مائن کرافٹ)",
+  "theme_voxel_light": "اوور ورلڈ",
+  "theme_voxel_dark": "نیدر/اینڈ"
 }

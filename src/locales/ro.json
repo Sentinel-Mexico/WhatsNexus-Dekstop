@@ -310,5 +310,11 @@
   "doom_weapons": "Selectare armă:",
   "doom_note": "Notă: În DOOM / Freedoom clasic nu există săritură prin designul nivelurilor (alergați cu Shift pentru a trece peste prăpăstii).",
   "doom_mouse": "Mouse",
-  "doom_or": "sau"
+  "doom_or": "sau",
+  "palette_cybernexus": "Cyber-Nexus (IA / Futuristic)",
+  "palette_doom": "Doom (Phobos și Hellscape)",
+  "palette_startrek": "Star Trek (Federația și LCARS)",
+  "palette_voxel": "Voxel (Minecraft)",
+  "theme_voxel_light": "Overworld",
+  "theme_voxel_dark": "Nether/End"
 }

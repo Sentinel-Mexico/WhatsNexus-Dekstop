@@ -61,7 +61,7 @@ All rules are defined as standalone markdown documents in the [`rules/`](rules/)
 - **Pre-Commit Audit:** Agents must run automated parity and fallback checks before delivering localization updates.
 
 ### 7. [Theme & Color Palette Categorization (`rules/themes.md`)](rules/themes.md)
-- **Hierarchy Structure:** Themes must follow the 4-tier hierarchy: Application Own (WhatsNexus), Custom/Original (Alto Contraste, Bosque, Dracula, Nord, Retro, Steampunk), Messaging (Messenger, Signal, Telegram, WhatsApp), and Pop Culture (Star Wars).
+- **Hierarchy Structure:** Themes must follow the 4-tier hierarchy: Application Own (WhatsNexus), Custom/Original (Alto Contraste, Bosque, Cyber-Nexus, Dracula, Nord, Retro, Steampunk), Messaging (Messenger, Signal, Telegram, WhatsApp), and Pop Culture (Doom, Star Trek, Star Wars, Vóxel).
 - **Internal Alphabetical Sorting:** Each category block must strictly maintain alphabetical ordering of its palette entries.
 - **Alphabetical Insertion Rule:** When a new palette is added, it must be placed in its proper category and in its exact alphabetical order within that category block.
 - **Design Tokens & Parity:** Every palette requires complete light/dark CSS tokens, dynamic label mapping in `updateThemeLabels()`, and 100% translation coverage across all 55 locale files.

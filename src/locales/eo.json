@@ -310,5 +310,11 @@
   "doom_weapons": "Elekto de armiloj:",
   "doom_note": "Noto: En klasika DOOM / Freedoom ne ekzistas salto pro nivela dezajno (kuru kun Maj por transsalti truojn).",
   "doom_mouse": "Muso",
-  "doom_or": "aŭ"
+  "doom_or": "aŭ",
+  "palette_cybernexus": "Kiber-Nekso (AI / Estonteca)",
+  "palette_doom": "Doom (Fobo kaj Inferpejzaĝo)",
+  "palette_startrek": "Stela Vojaĝo (Federacio kaj LCARS)",
+  "palette_voxel": "Vokselo (Minecraft)",
+  "theme_voxel_light": "Supra Mondo",
+  "theme_voxel_dark": "Nether/Fino"
 }

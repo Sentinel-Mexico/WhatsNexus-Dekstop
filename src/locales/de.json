@@ -310,5 +310,11 @@
   "doom_weapons": "Waffenauswahl:",
   "doom_note": "Hinweis: Im klassischen DOOM / Freedoom gibt es durch das Leveldesign kein Springen (mit Shift rennen, um Abgründe zu überwinden).",
   "doom_mouse": "Maus",
-  "doom_or": "oder"
+  "doom_or": "oder",
+  "palette_cybernexus": "Cyber-Nexus (KI / Futuristisch)",
+  "palette_doom": "Doom (Phobos & Hellscape)",
+  "palette_startrek": "Star Trek (Föderation & LCARS)",
+  "palette_voxel": "Voxel (Minecraft)",
+  "theme_voxel_light": "Oberwelt",
+  "theme_voxel_dark": "Nether/Ende"
 }

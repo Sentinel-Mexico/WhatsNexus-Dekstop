@@ -310,5 +310,11 @@
   "doom_weapons": "무기 선택:",
   "doom_note": "참고: 클래식 DOOM / Freedoom에는 레벨 디자인상 점프가 없습니다(Shift 키를 누르고 달려 틈을 뛰어넘으세요).",
   "doom_mouse": "마우스",
-  "doom_or": "또는"
+  "doom_or": "또는",
+  "palette_cybernexus": "사이버 넥서스 (AI / 미래형)",
+  "palette_doom": "둠 (포보스 & 헬스케이프)",
+  "palette_startrek": "스타 트렉 (행성연방 & LCARS)",
+  "palette_voxel": "복셀 (마인크래프트)",
+  "theme_voxel_light": "오버월드",
+  "theme_voxel_dark": "네더/엔드"
 }

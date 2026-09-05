@@ -310,5 +310,11 @@
   "doom_weapons": "Seleção de armas:",
   "doom_note": "Nota: No DOOM / Freedoom clássico não há pulo por design de nível (corra com Shift para atravessar vãos).",
   "doom_mouse": "Mouse",
-  "doom_or": "ou"
+  "doom_or": "ou",
+  "palette_cybernexus": "Cyber-Nexus (IA / Futurista)",
+  "palette_doom": "Doom (Phobos e Hellscape)",
+  "palette_startrek": "Star Trek (Federação e LCARS)",
+  "palette_voxel": "Vóxel (Minecraft)",
+  "theme_voxel_light": "Overworld",
+  "theme_voxel_dark": "Nether/End"
 }

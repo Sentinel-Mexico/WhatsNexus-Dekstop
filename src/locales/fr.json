@@ -310,5 +310,11 @@
   "doom_weapons": "Sélection des armes :",
   "doom_note": "Remarque : Dans DOOM / Freedoom classique, il n'y a pas de saut par conception de niveau (courir avec Maj pour franchir les trous).",
   "doom_mouse": "Souris",
-  "doom_or": "ou"
+  "doom_or": "ou",
+  "palette_cybernexus": "Cyber-Nexus (IA / Futuriste)",
+  "palette_doom": "Doom (Phobos et Hellscape)",
+  "palette_startrek": "Star Trek (Fédération et LCARS)",
+  "palette_voxel": "Voxel (Minecraft)",
+  "theme_voxel_light": "Overworld",
+  "theme_voxel_dark": "Nether/End"
 }

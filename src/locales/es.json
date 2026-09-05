@@ -310,5 +310,11 @@
   "doom_weapons": "Selección de armas:",
   "doom_note": "Nota: En Freedoom / DOOM clásico no existe salto por diseño de niveles (corre con Shift para cruzar abismos).",
   "doom_mouse": "Ratón",
-  "doom_or": "o"
+  "doom_or": "o",
+  "palette_cybernexus": "Cyber-Nexus (IA / Futurista)",
+  "palette_doom": "Doom (Phobos y Hellscape)",
+  "palette_startrek": "Star Trek (Federación y LCARS)",
+  "palette_voxel": "Vóxel (Minecraft)",
+  "theme_voxel_light": "Overworld",
+  "theme_voxel_dark": "Nether/End"
 }

@@ -740,6 +740,9 @@ function updateThemeLabels() {
   } else if (palette === 'starwars') {
     lightKey = 'theme_jedi';
     darkKey = 'theme_sith';
+  } else if (palette === 'voxel') {
+    lightKey = 'theme_voxel_light';
+    darkKey = 'theme_voxel_dark';
   }
   
   if (themeSelect) {
@@ -747,11 +750,11 @@ function updateThemeLabels() {
     const darkOpt = themeSelect.querySelector('option[value="theme-dark"]');
     if (lightOpt) {
       lightOpt.setAttribute('data-i18n', lightKey);
-      lightOpt.innerText = dict[lightKey] || (lightKey === 'theme_day' ? 'Día' : lightKey === 'theme_jedi' ? 'Jedi' : 'Claro');
+      lightOpt.innerText = dict[lightKey] || (lightKey === 'theme_day' ? 'Día' : lightKey === 'theme_jedi' ? 'Jedi' : lightKey === 'theme_voxel_light' ? 'Overworld' : 'Claro');
     }
     if (darkOpt) {
       darkOpt.setAttribute('data-i18n', darkKey);
-      darkOpt.innerText = dict[darkKey] || (darkKey === 'theme_night' ? 'Noche' : darkKey === 'theme_sith' ? 'Sith' : 'Oscuro');
+      darkOpt.innerText = dict[darkKey] || (darkKey === 'theme_night' ? 'Noche' : darkKey === 'theme_sith' ? 'Sith' : darkKey === 'theme_voxel_dark' ? 'Nether/End' : 'Oscuro');
     }
   }
   

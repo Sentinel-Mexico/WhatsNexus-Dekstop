@@ -310,5 +310,11 @@
   "doom_weapons": "اختيار السلاح:",
   "doom_note": "ملاحظة: في لعبة DOOM / Freedoom الكلاسيكية، لا يوجد قفز حسب تصميم المراحل (اركض مع Shift لعبور الفجوات).",
   "doom_mouse": "الفأرة",
-  "doom_or": "أو"
+  "doom_or": "أو",
+  "palette_cybernexus": "ሳይበር-ኔክሰስ (ኤአይ / የወደፊት)",
+  "palette_doom": "ዱም (ፎቦስ እና ሲኦል)",
+  "palette_startrek": "ስታር ትሬክ (ፌዴሬሽን እና LCARS)",
+  "palette_voxel": "ቮክሰል (ማይንክራፍት)",
+  "theme_voxel_light": "ኦቨርወርልድ",
+  "theme_voxel_dark": "ኔዘር/ኤንድ"
 }

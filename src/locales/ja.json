@@ -310,5 +310,11 @@
   "doom_weapons": "武器切り替え：",
   "doom_note": "注：クラシックDOOM / Freedoomでは仕様上ジャンプはありません（Shiftを押しながら走って隙間を飛び越えます）。",
   "doom_mouse": "マウス",
-  "doom_or": "または"
+  "doom_or": "または",
+  "palette_cybernexus": "サイバーネクサス（AI / 近未来）",
+  "palette_doom": "DOOM（フォボス＆地獄）",
+  "palette_startrek": "スタートレック（惑星連邦＆LCARS）",
+  "palette_voxel": "ボクセル（マインクラフト）",
+  "theme_voxel_light": "オーバーワールド",
+  "theme_voxel_dark": "ネザー/ジ・エンド"
 }
