@@ -17,7 +17,7 @@
 *   **Native System Tray & Notification Badges:** Runs discreetly in the background, minimizing to the system tray with dynamic unread message count badges and in-memory circular avatar rendering.
 *   **Privacy Presets & DND:** Configurable notification privacy presets (Broad, Medium, Strict, Custom) and account-specific Do Not Disturb controls.
 *   **Official Poppins Typography & Conlang Fonts:** Elegant and readable typography using Google Fonts Poppins, plus dedicated custom font stacks for constructed languages (Tengwar Telcontar and Klingon pIqaD).
-*   **Curated Theme Engine:** 12 curated color palettes (WhatsNexus Default, Dracula, Nord, Monokai, Synthwave 84, Cyberpunk 2077, Tokyo Night, Solarized, Gruvbox, One Dark, Retro / Terminal, High Contrast) with synchronized Light/Dark variations.
+*   **Curated Theme Engine:** 16 curated color palettes across 4 structured visual tiers (Own, Original, Messaging, and Pop Culture: WhatsNexus, Alto Contraste, Bosque, Cyber-Nexus, Dracula, Nord, Retro, Steampunk, Messenger, Signal, Telegram, WhatsApp, Doom, Star Trek, Star Wars, Vóxel) with synchronized Light/Dark variations and dynamic switch labels.
 *   **Global Internationalization (i18n):** Modular on-demand translations across 55 global languages, including constructed languages (Elvish Tengwar and Klingon) with in-memory caching.
 *   **Freedoom Easter Egg:** 100% offline, native WebAssembly Chocolate Doom port loaded with BSD-licensed Freedoom: Phase 1, instant audio playback, and floating controls overlay.
 *   **Multiplatform CI/CD:** Automated GitHub Actions build pipeline generating `.deb`, `.AppImage` (Linux x64 and arm64), `.dmg` (macOS x64 and arm64), and `.exe` (Windows NSIS x64).
@@ -36,7 +36,7 @@
 | **Granular notification privacy presets** | ❌ | ❌ | ✅ |
 | **Memory management & tab hibernation** | ❌ | ❌ | ✅ |
 | **Spell checking with regional dictionaries** | Browser dependent | ✅ | ✅ |
-| **Curated theme engine & brand palettes** | ❌ *(Light/Dark only)* | Limited | ✅ *(12 Palettes: Dracula, Nord, Monokai, etc.)* |
+| **Curated theme engine & brand palettes** | ❌ *(Light/Dark only)* | Limited | ✅ *(16 Palettes across 4 categories)* |
 | **Cross-platform support** | Browser / Store app | Linux focused (PyQt) | ✅ (Linux, Windows, macOS) |
 | **Linux package support (AppImage, DEB)** | ❌ | ✅ | ✅ |
 | **Automatic OTA updates** | ❌ | AppImage (`.zsync`) | ✅ (`electron-updater` / GitHub) |

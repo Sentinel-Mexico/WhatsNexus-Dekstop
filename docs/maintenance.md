@@ -73,8 +73,10 @@ Before tagging or releasing any update:
    - Synchronize the Version Quartet (`package.json`, `package-lock.json`, root `README.md`, and `changelog-dev.md`).
 4. **Changelog Updates:**
    - On `Dev`: Document granular changes under `[VERSION] - YYYY-MM-DD` in `changelog-dev.md` (strictly in English).
-   - On `main` (Production Releases): Summarize all milestone features into `changelog.md` (in Spanish). Do not touch `changelog.md` during feature branch or development cycles.
-5. **Git Commit & Push:**
+   - On `main` (Production Releases): Summarize all milestone features into `changelog.md` (in neutral English). Do not touch `changelog.md` during feature branch or development cycles.
+5. **Mandatory Documentation Audit:**
+   - Review root `README.md` and all documentation in `/docs` to ensure 100% agreement with the latest codebase state before merging into `main`.
+6. **Git Commit & Push:**
    - Commit message: `"v.<VERSION> <type>: <summary>"`.
    - Push to `origin/Dev` during ongoing development.
    - Merge/push to `origin/main` for production releases.

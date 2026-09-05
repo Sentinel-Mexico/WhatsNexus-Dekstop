@@ -69,7 +69,7 @@ The main process acts as the supervisor for the entire operating system interfac
 ### 2.3 Main Renderer (`src/renderer/`)
 The primary UI layer consists of vanilla HTML5, CSS3, and modern JavaScript:
 - **Design System & Typography:** Official typography using Google Fonts Poppins with preconnect directives, plus dedicated local font stacks (`src/assets/fonts/`) for constructed languages (Tengwar Telcontar for Elvish and Klingon pIqaD).
-- **Curated Theme Engine:** 12 curated color palettes (WhatsNexus Default, Dracula, Nord, Monokai, Synthwave 84, Cyberpunk 2077, Tokyo Night, Solarized, Gruvbox, One Dark, Retro / Terminal, High Contrast) with synchronized Light/Dark variations.
+- **Curated Theme Engine:** 16 curated color palettes across 4 structured categories (Own, Original, Messaging, and Pop Culture: WhatsNexus, Alto Contraste, Bosque, Cyber-Nexus, Dracula, Nord, Retro, Steampunk, Messenger, Signal, Telegram, WhatsApp, Doom, Star Trek, Star Wars, Vóxel) with synchronized Light/Dark variations and dynamic switch labels.
 - **Sidebar Controller:** Manages the active visual state between accounts, Add Account modal/action, Bug Report dispatcher, Donations view (`#donate-btn`), Settings view, and optional Freedoom Easter Egg with a unified, floating tooltip system aligned 8px from the sidebar.
 - **Full-Window Workspace:** Houses WhatsApp Web guest containers, an `#empty-state` placeholder, `#settings-view`, `#donations-view`, and `#doom-view`.
 - **Donations Module:** Renders a responsive CSS grid of support platforms (GitHub Sponsors, PayPal) with external navigation safeguards powered by safe IPC invokes (`openExternalUrl`).

@@ -68,7 +68,7 @@ Before cutting any release candidate, run through the following test matrices:
 - [ ] **Opening Settings**: Clicking the settings gear in the sidebar opens the settings dashboard across 100% of the content area.
 - [ ] **Sidebar Active Indicator**: Confirm the settings icon shows the active vertical indicator and accounts are deselected.
 - [ ] **Internal Tabs**: Switching between Accounts, Appearance, Notifications, Permissions, and About displays the correct settings cards.
-- [ ] **Palette Catalog**: Cycle through all 12 palettes (Dracula, Nord, Monokai, Synthwave, Cyberpunk, Tokyo Night, etc.) across both Dark and Light variants.
+- [ ] **Palette Catalog**: Cycle through all 16 palettes across 4 tiers (Alto Contraste, Bosque, Cyber-Nexus, Doom, Dracula, Messenger, Nord, Retro, Signal, Star Trek, Star Wars, Steampunk, Telegram, Vóxel, WhatsApp, WhatsNexus) across both Dark and Light variants.
 - [ ] **Conlang Fonts**: Select Elvish Tengwar and Klingon; confirm custom fonts (Tengwar Telcontar and Klingon pIqaD) render native glyphs correctly.
 - [ ] **Return to Chat**: Clicking "Back to chats" or selecting an account in the sidebar hides settings and restores the chat session.
 

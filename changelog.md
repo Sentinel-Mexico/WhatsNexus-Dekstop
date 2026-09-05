@@ -6,6 +6,28 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ---
 
+## [1.5.0] - 2026-09-05
+### Added
+- **Curated Theme Engine Expansion (16 Palettes across 4 Structured Tiers):**
+  - Integrated 6 new color palettes with complete light and dark design tokens:
+    - *Tier 2 (Custom / Original):* **Cyber-Nexus** (Chrome Core / Neural Net), **Dracula** (Alucard / Dracula Official), **Nord** (Snow Storm / Nord Official).
+    - *Tier 4 (Pop Culture):* **Doom** (Phobos Base / Hellscape), **Star Trek** (Federation Day / LCARS Terminal), **Vóxel** (Overworld / Obsidian & The End).
+  - Implemented dynamic theme switch labels for specialized palettes (e.g., "Overworld" / "Nether/End" for Vóxel, "Jedi" / "Sith" for Star Wars, "Día" / "Noche" for High Contrast).
+  - Enforced strict 4-tier visual hierarchy with internal alphabetical ordering across all palette selections.
+- **Global Internationalization (i18n) Expansion & Parity:**
+  - Expanded locale support to 55 global languages with 100% symmetric key parity (318 keys per language) and zero English fallback.
+  - Full authentic transliteration and native font rendering for constructed languages (Elvish Tengwar using Tengwar Telcontar and Klingon using authentic CSUR pIqaD).
+- **Asynchronous Locale Provisioning & In-Memory Caching:**
+  - Migrated the `load-locale` IPC channel to asynchronous non-blocking file I/O (`fs.promises.readFile`) paired with an in-memory `Map` cache, eliminating disk thrashing when switching languages.
+
+### Fixed
+- **Settings Navigation Default Tab Enforcement:**
+  - Deactivated sticky tab memory behavior in Settings; opening the settings view now reliably resets to the default "Gestión de cuentas" tab (`#tab-accounts`).
+- **Language Selector Conlang Rendering & Deduplication:**
+  - Eliminated duplicate entries for Klingon in the language dropdown and normalized flexbox inline alignment to remove unwanted spacing around parenthesized native script names.
+- **Security & External URL Sanitization:**
+  - Hardened external URL dispatchers (`open-external-url`) with protocol whitelist (`http:`, `https:`) and validation blocking loopback IP addresses, private subnets, and embedded credentials.
+
 ## [1.0.4] - 2026-09-05
 ### Fixed
 - **Linux Packaging Metadata (.deb Compliance):**

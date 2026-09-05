@@ -82,6 +82,7 @@ The repository follows a two-tier branching model:
    - Strictly reserved for stable, tagged releases.
    - Pushing or merging directly to `main` without explicit release authorization is prohibited.
    - Merging from `Dev` into `main` occurs only upon official stable milestone deployment.
+   - **Mandatory Documentation Audit on Push to `main`:** Every time a push or release to `main` is performed, the maintainer/agent must obligatorily audit the root `README.md` and all files in `/docs` to ensure they 100% reflect and agree with all changes before completing the push.
 
 ---
 

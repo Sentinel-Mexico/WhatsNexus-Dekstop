@@ -22,10 +22,10 @@ User reviews and submits report on GitHub
 
 ### 1.1 Collected Diagnostic Attributes
 To expedite troubleshooting without exposing sensitive user information, the diagnostic payload includes only environment-level indicators:
-- **Application Version**: Dynamically resolved from `package.json` (e.g., `v1.4.0`).
+- **Application Version**: Dynamically resolved from `package.json` (e.g., `v1.5.0`).
 - **Platform & Architecture**: Detected from Node.js runtime (`process.platform` and `process.arch`).
 - **Engine Runtimes**: Node, Electron (`process.versions.electron`), and Chromium (`process.versions.chrome`).
-- **Application Preferences**: Active interface language (from 55 supported locales) and color palette (from 12 available themes).
+- **Application Preferences**: Active interface language (from 55 supported locales) and color palette (from 16 available themes).
 - **Account Cardinality**: Total number of configured accounts (without IDs, names, or phone numbers).
 
 ### 1.2 Sanitization & Zero Credential Leaks
