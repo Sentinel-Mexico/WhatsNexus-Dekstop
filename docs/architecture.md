@@ -42,10 +42,13 @@ The main process acts as the supervisor for the entire operating system interfac
 - **Chromium Engine Flags & Security Hardening:** Sets early command-line optimization switches prior to process creation while preserving modern site isolation and IPC flooding safeguards. Enforces strict `contextIsolation: true`, `nodeIntegration: false`, and full process sandboxing (`sandbox: true`) across all application windows.
 - **Single Instance Enforcement:** Utilizes `app.requestSingleInstanceLock()` to prevent duplicate instances; subsequent execution attempts automatically refocus the existing primary window.
 - **Hardware Permissions Management (Deny-by-Default):** Controls hardware capability delegation across the default session and all partitioned guest sessions (`session.setPermissionRequestHandler` and `session.setPermissionCheckHandler`) under a strict **Deny-by-Default** security posture, permitting only explicitly user-granted permissions (`userData/permissions.json`) for Microphone, Camera, Location, and Screen Sharing, while rejecting unexpected or unhandled permission requests by default.
-- **Window Lifecycle & Stacer-Inspired Splash Pipeline:**
-  1. Instantiates a transparent, frameless splash window loading `src/splash/splash.html` via `src/splash/splash-preload.js`.
-  2. Concurrently instantiates the main application window with `{ show: false }` pre-warming the DOM via `src/preload-main.js`.
-  3. Listens for the `splash-finished` IPC event from the splash renderer, subsequently displaying and focusing the main window while destroying the splash window.
+- **Window Lifecycle & Strictly Timed 5-Second Splash Pipeline:**
+  1. Instantiates and immediately displays a transparent, frameless splash window loading `src/splash/splash.html` via `src/splash/splash-preload.js` upon `app.whenReady()`.
+  2. Concurrently instantiates the main application window in the background with `{ show: false }`, pre-warming the DOM via `src/preload-main.js`.
+  3. Enforces a strict 5000ms (`setTimeout`) timer that simultaneously destroys the splash window and reveals/focuses `mainWindow`, matching the 4.8s progress animation in `src/splash/splash.js`.
+- **Account Data & Session Cache Management:**
+  - Persists accounts configuration securely in `app.getPath('userData')/accounts.json` via dedicated IPC handlers (`get-accounts`, `save-accounts`, `delete-account-data`), ensuring reliable execution inside packaged `app.asar` environments.
+  - Implements the `clear-account-cache` IPC channel executing `ses.clearCache()` and selective `ses.clearStorageData()`, purging corrupted network caches and service workers while preserving session credentials (cookies and IndexedDB).
 - **Tray Management & Minimize-to-Tray Lifecycle:**
   - Instantiates a persistent system tray icon with an SVG vector emblem rendered dynamically via `nativeImage`.
   - Intercepts window `close` events, redirecting them to `mainWindow.hide()` so that WhatsNexus remains running in the background without losing session state or missing incoming messages.
@@ -70,10 +73,10 @@ The main process acts as the supervisor for the entire operating system interfac
 The primary UI layer consists of vanilla HTML5, CSS3, and modern JavaScript:
 - **Design System & Typography:** Official typography using Google Fonts Poppins with preconnect directives, plus dedicated local font stacks (`src/assets/fonts/`) for constructed languages (Tengwar Telcontar for Elvish and Klingon pIqaD).
 - **Curated Theme Engine:** 16 curated color palettes across 4 structured categories (Own, Original, Messaging, and Pop Culture: WhatsNexus, Alto Contraste, Bosque, Cyber-Nexus, Dracula, Nord, Retro, Steampunk, Messenger, Signal, Telegram, WhatsApp, Doom, Star Trek, Star Wars, Vóxel) with synchronized Light/Dark variations and dynamic switch labels.
-- **Sidebar Controller:** Manages the active visual state between accounts, Add Account modal/action, Bug Report dispatcher, Donations view (`#donate-btn`), Settings view, and optional Freedoom Easter Egg with a unified, floating tooltip system aligned 8px from the sidebar.
-- **Full-Window Workspace:** Houses WhatsApp Web guest containers, an `#empty-state` placeholder, `#settings-view`, `#donations-view`, and `#doom-view`.
+- **Sidebar Controller:** Manages the active visual state between accounts, Add Account modal/action, Bug Report dispatcher, Donations view (`#donate-btn`), and Settings view with a unified, floating tooltip system aligned 8px from the sidebar.
+- **Full-Window Workspace:** Houses WhatsApp Web guest containers, an `#empty-state` placeholder, `#settings-view`, and `#donations-view`.
 - **Donations Module:** Renders a responsive CSS grid of support platforms (GitHub Sponsors, PayPal) with external navigation safeguards powered by safe IPC invokes (`openExternalUrl`).
-- **Session Manager:** Manages account metadata persistence in `localStorage`, orchestrates dynamic creation/removal of `<webview>` elements, and executes the 20-minute idle hibernation cycle.
+- **Session Manager:** Manages account metadata persistence in `localStorage` and `app.getPath('userData')/accounts.json`, orchestrates dynamic creation/removal of `<webview>` elements, and executes the 20-minute idle hibernation cycle.
 - **Zero-Mute Multimedia Audio Pipeline:** Dispatches notification preferences without ever muting `webContents`, ensuring voice notes and chat videos play continuously. Configured with `--autoplay-policy=no-user-gesture-required`.
 - **Modular Internationalization (i18n):** Translates the interface dynamically across 55 global languages using a lazy-loading architecture with in-memory `Map` caching from `src/locales/*.json`. Only the active locale and the `en.json` fallback are retained in memory, drastically optimizing RAM footprint.
 - **Offline Protections & Network Auto-Reconnection:**
