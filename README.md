@@ -1,7 +1,7 @@
 # WhatsNexus ⚡
 
 ![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey)
-![Version](https://img.shields.io/badge/version-v1.6.2-brightgreen.svg)
+![Version](https://img.shields.io/badge/version-v1.7.0-brightgreen.svg)
 ![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)
 
 **WhatsNexus** is an open-source, production-ready desktop application built to manage multiple WhatsApp Web accounts concurrently. Built on top of Electron.js with strict session isolation (`StoragePartition`), dynamic tab hibernation, comprehensive offline protection, and 55 global languages, WhatsNexus keeps your personal, freelance, and business communications organized without data crossover.
@@ -17,7 +17,7 @@
 *   **Native System Tray & Notification Badges:** Runs discreetly in the background, minimizing to the system tray with dynamic unread message count badges and in-memory circular avatar rendering.
 *   **Privacy Presets & DND:** Configurable notification privacy presets (Broad, Medium, Strict, Custom) and account-specific Do Not Disturb controls.
 *   **Official Poppins Typography & Conlang Fonts:** Elegant and readable typography using Google Fonts Poppins, plus dedicated custom font stacks for constructed languages (Tengwar Telcontar and Klingon pIqaD).
-*   **Curated Theme Engine:** 16 curated color palettes across 4 structured visual tiers (Own, Original, Messaging, and Pop Culture: WhatsNexus, Alto Contraste, Bosque, Cyber-Nexus, Dracula, Nord, Retro, Steampunk, Messenger, Signal, Telegram, WhatsApp, Doom, Star Trek, Star Wars, Vóxel) with synchronized Light/Dark variations and dynamic switch labels.
+*   **Modular Theme Engine & Customizer:** 16 modular color palettes stored in validated JSON definitions across 4 structured visual tiers (Own, Original, Messaging, and Pop Culture: WhatsNexus, Alto Contraste, Bosque, Cyber-Nexus, Dracula, Nord, Retro, Steampunk, Messenger, Signal, Telegram, WhatsApp, Doom, Star Trek, Star Wars, Vóxel) with dynamic startup scanning, dynamic switch labels, and an interactive real-time Customization studio.
 *   **Global Internationalization (i18n):** Modular on-demand translations across 55 global languages, including constructed languages (Elvish Tengwar and Klingon) with in-memory caching.
 *   **Multiplatform CI/CD:** Automated GitHub Actions build pipeline generating `.deb`, `.AppImage` (Linux x64 and arm64), `.dmg` (macOS x64 and arm64), and `.exe` (Windows NSIS x64).
 

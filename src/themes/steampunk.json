@@ -1,0 +1,56 @@
+{
+  "id": "steampunk",
+  "nameKey": "palette_steampunk",
+  "category": "custom",
+  "builtin": true,
+  "labels": {
+    "light": "theme_light",
+    "dark": "theme_dark"
+  },
+  "modes": {
+    "dark": {
+      "--bg-primary": "#1A1614",
+      "--bg-sidebar": "#26201C",
+      "--bg-hover": "#362E28",
+      "--bg-active": "#C98E34",
+      "--bg-modal": "#26201C",
+      "--bg-modal-overlay": "rgba(26, 22, 20, 0.85)",
+      "--text-primary": "#E8DCC4",
+      "--text-secondary": "#A69580",
+      "--text-color": "var(--text-primary)",
+      "--border-color": "#3D332D",
+      "--whatsapp-bg": "#1A1614",
+      "--whatsapp-green": "#C98E34",
+      "--whatsapp-green-hover": "#E5A84B",
+      "--bg-surface": "var(--bg-sidebar)",
+      "--accent-color": "var(--bg-active)",
+      "--accent-hover": "var(--whatsapp-green-hover)",
+      "--text-on-accent": "#1A1614",
+      "--accent-secondary": "#e5a84b",
+      "--accent-terracotta": "#a45a2a",
+      "--accent-crimson": "#9e3d34"
+    },
+    "light": {
+      "--bg-primary": "#F4EBD9",
+      "--bg-sidebar": "#E8DEC8",
+      "--bg-hover": "#D9CCB4",
+      "--bg-active": "#A45A2A",
+      "--bg-modal": "#E8DEC8",
+      "--bg-modal-overlay": "rgba(244, 235, 217, 0.85)",
+      "--text-primary": "#2E2117",
+      "--text-secondary": "#5D4A3A",
+      "--text-color": "var(--text-primary)",
+      "--border-color": "#C7B599",
+      "--whatsapp-bg": "#F4EBD9",
+      "--whatsapp-green": "#A45A2A",
+      "--whatsapp-green-hover": "#7E421B",
+      "--bg-surface": "var(--bg-sidebar)",
+      "--accent-color": "var(--bg-active)",
+      "--accent-hover": "var(--whatsapp-green-hover)",
+      "--text-on-accent": "#ffffff",
+      "--accent-secondary": "#c98e34",
+      "--accent-terracotta": "#a45a2a",
+      "--accent-crimson": "#842a2a"
+    }
+  }
+}

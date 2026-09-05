@@ -1,0 +1,56 @@
+{
+  "id": "doom",
+  "nameKey": "palette_doom",
+  "category": "pop_culture",
+  "builtin": true,
+  "labels": {
+    "light": "theme_light",
+    "dark": "theme_dark"
+  },
+  "modes": {
+    "dark": {
+      "--bg-primary": "#1C1919",
+      "--bg-sidebar": "#2B2322",
+      "--bg-hover": "#3D3130",
+      "--bg-active": "#E52E15",
+      "--bg-modal": "#2B2322",
+      "--bg-modal-overlay": "rgba(28, 25, 25, 0.85)",
+      "--text-primary": "#E6D5D5",
+      "--text-secondary": "#A68B8A",
+      "--text-color": "var(--text-primary)",
+      "--border-color": "#403332",
+      "--whatsapp-bg": "#1C1919",
+      "--whatsapp-green": "#E52E15",
+      "--whatsapp-green-hover": "#FF4D36",
+      "--bg-surface": "var(--bg-sidebar)",
+      "--accent-color": "var(--bg-active)",
+      "--accent-hover": "var(--whatsapp-green-hover)",
+      "--text-on-accent": "#ffffff",
+      "--accent-secondary": "#ff5722",
+      "--accent-terracotta": "#d84315",
+      "--accent-crimson": "#b71c1c"
+    },
+    "light": {
+      "--bg-primary": "#D5C2A5",
+      "--bg-sidebar": "#C2AD8F",
+      "--bg-hover": "#B59F80",
+      "--bg-active": "#C83214",
+      "--bg-modal": "#C2AD8F",
+      "--bg-modal-overlay": "rgba(213, 194, 165, 0.85)",
+      "--text-primary": "#2D241E",
+      "--text-secondary": "#6B584B",
+      "--text-color": "var(--text-primary)",
+      "--border-color": "#A38E70",
+      "--whatsapp-bg": "#D5C2A5",
+      "--whatsapp-green": "#C83214",
+      "--whatsapp-green-hover": "#A52309",
+      "--bg-surface": "var(--bg-sidebar)",
+      "--accent-color": "var(--bg-active)",
+      "--accent-hover": "var(--whatsapp-green-hover)",
+      "--text-on-accent": "#ffffff",
+      "--accent-secondary": "#e05322",
+      "--accent-terracotta": "#a8421c",
+      "--accent-crimson": "#84180e"
+    }
+  }
+}

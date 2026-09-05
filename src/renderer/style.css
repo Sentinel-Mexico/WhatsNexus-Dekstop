@@ -58,644 +58,7 @@ body.palette-whatsnexus.theme-light {
   --accent-crimson: #9e4c53;
 }
 
-/* ========================================================
-   Palette: WhatsApp (Emerald)
-   ======================================================== */
-body.palette-whatsapp {
-  --bg-primary: #111b21;
-  --bg-sidebar: #202c33;
-  --bg-hover: #2a3942;
-  --bg-active: #00a884;
-  --bg-modal: #111b21;
-  --bg-modal-overlay: rgba(11, 20, 26, 0.85);
-  --text-primary: #e9edef;
-  --text-secondary: #94a3b8;
-  --border-color: #2a3942;
-  --whatsapp-bg: #0b141a;
-  --whatsapp-green: #00a884;
-  --whatsapp-green-hover: #008f6f;
-}
-
-body.palette-whatsapp.theme-light {
-  --bg-primary: #f0f2f5;
-  --bg-sidebar: #ffffff;
-  --bg-hover: #f5f6f6;
-  --bg-active: #00a884;
-  --bg-modal: #ffffff;
-  --bg-modal-overlay: rgba(255, 255, 255, 0.85);
-  --text-primary: #111b21;
-  --text-secondary: #54656f;
-  --border-color: #e2e8f0;
-  --whatsapp-bg: #efeae2;
-  --whatsapp-green: #00a884;
-  --whatsapp-green-hover: #008f6f;
-}
-
-/* ========================================================
-   Paleta: Messenger (Azul Eléctrico)
-   ======================================================== */
-body.palette-messenger {
-  --bg-primary: #18191a;
-  --bg-sidebar: #242526;
-  --bg-hover: #3a3b3c;
-  --bg-active: #0084ff;
-  --bg-modal: #242526;
-  --bg-modal-overlay: rgba(24, 25, 26, 0.85);
-  --text-primary: #f0f2f5;
-  --text-secondary: #b0b3b8;
-  --border-color: #393a3b;
-  --whatsapp-bg: #18191a;
-}
-
-body.palette-messenger.theme-light {
-  --bg-primary: #f0f2f5;
-  --bg-sidebar: #ffffff;
-  --bg-hover: #e4e6eb;
-  --bg-active: #0084ff;
-  --bg-modal: #ffffff;
-  --bg-modal-overlay: rgba(255, 255, 255, 0.85);
-  --text-primary: #050505;
-  --text-secondary: #54575c;
-  --border-color: #ced0d4;
-  --whatsapp-bg: #f0f2f5;
-}
-
-/* ========================================================
-   Paleta: Telegram (Celeste Ciano)
-   ======================================================== */
-body.palette-telegram {
-  --bg-primary: #0e1621;
-  --bg-sidebar: #17212b;
-  --bg-hover: #202b36;
-  --bg-active: #2ba6e1;
-  --bg-modal: #17212b;
-  --bg-modal-overlay: rgba(14, 22, 33, 0.85);
-  --text-primary: #f8fafc;
-  --text-secondary: #8da2b5;
-  --border-color: #242f3d;
-  --whatsapp-bg: #0e1621;
-}
-
-body.palette-telegram.theme-light {
-  --bg-primary: #f4f4f5;
-  --bg-sidebar: #ffffff;
-  --bg-hover: #eef2f5;
-  --bg-active: #0088cc;
-  --bg-modal: #ffffff;
-  --bg-modal-overlay: rgba(255, 255, 255, 0.85);
-  --text-primary: #1c1c1e;
-  --text-secondary: #5c6267;
-  --border-color: #dfe2e5;
-  --whatsapp-bg: #f4f4f5;
-}
-
-/* ========================================================
-   Paleta: Signal (Azul Real)
-   ======================================================== */
-body.palette-signal {
-  --bg-primary: #121315;
-  --bg-sidebar: #1b1c1e;
-  --bg-hover: #282a2d;
-  --bg-active: #3a76f0;
-  --bg-modal: #1b1c1e;
-  --bg-modal-overlay: rgba(18, 19, 21, 0.85);
-  --text-primary: #f0f2f4;
-  --text-secondary: #9ea4af;
-  --border-color: #2b2e33;
-  --whatsapp-bg: #121315;
-}
-
-body.palette-signal.theme-light {
-  --bg-primary: #f6f7f9;
-  --bg-sidebar: #ffffff;
-  --bg-hover: #edf0f5;
-  --bg-active: #2c6bed;
-  --bg-modal: #ffffff;
-  --bg-modal-overlay: rgba(255, 255, 255, 0.85);
-  --text-primary: #1b1c1e;
-  --text-secondary: #585c64;
-  --border-color: #e2e5ea;
-  --whatsapp-bg: #f6f7f9;
-}
-
-/* ========================================================
-   Paleta: Bosque (Forest: Oliva, Kombu, Ámbar)
-   ======================================================== */
-body.palette-forest {
-  --bg-primary: #161e10;
-  --bg-sidebar: #222e15;
-  --bg-hover: #2f3e1d;
-  --bg-active: #bc6c25;
-  --bg-modal: #222e15;
-  --bg-modal-overlay: rgba(22, 30, 16, 0.85);
-  --text-primary: #fefae0;
-  --text-secondary: #c5cdb8;
-  --border-color: #384924;
-  --whatsapp-bg: #161e10;
-}
-
-body.palette-forest.theme-light {
-  --bg-primary: #f7f5dc;
-  --bg-sidebar: #fefae0;
-  --bg-hover: #ede7c4;
-  --bg-active: #535e30;
-  --bg-modal: #fefae0;
-  --bg-modal-overlay: rgba(254, 250, 224, 0.85);
-  --text-primary: #1f2a13;
-  --text-secondary: #4a542a;
-  --border-color: #d8d3b3;
-  --whatsapp-bg: #ede7c4;
-}
-
-/* ========================================================
-   Temática: Retro
-   - Modo Claro: "Retro Computing"
-   - Modo Oscuro: "Synthwave Terminal"
-   ======================================================== */
-
-/* Retro Computing (Modo Claro) */
-body.palette-retro.theme-light {
-  --bg-primary: #E8E4D9;
-  --bg-surface: #DCD7C9;
-  --bg-sidebar: #DCD7C9;
-  --bg-hover: #CEC8B7;
-  --bg-active: #2B5C8F;
-  --bg-modal: #DCD7C9;
-  --bg-modal-overlay: rgba(232, 228, 217, 0.85);
-  --text-primary: #2A2A2A;
-  --text-secondary: #5C5850;
-  --text-color: var(--text-primary);
-  --border-color: #B8B2A6;
-  --accent-color: #2B5C8F;
-  --accent-hover: #1D3F63;
-  --whatsapp-bg: #E8E4D9;
-  --whatsapp-green: #2B5C8F;
-  --whatsapp-green-hover: #1D3F63;
-  --text-on-accent: #ffffff;
-}
-
-/* Synthwave Terminal (Modo Oscuro) */
-body.palette-retro,
-body.palette-retro.theme-dark {
-  --bg-primary: #12131C;
-  --bg-surface: #1A1C2B;
-  --bg-sidebar: #1A1C2B;
-  --bg-hover: #26293D;
-  --bg-active: #FF71CE;
-  --bg-modal: #1A1C2B;
-  --bg-modal-overlay: rgba(18, 19, 28, 0.85);
-  --text-primary: #E0E6ED;
-  --text-secondary: #8B95A5;
-  --text-color: var(--text-primary);
-  --border-color: #2E344D;
-  --accent-color: #FF71CE;
-  --accent-hover: #01CDFE;
-  --whatsapp-bg: #12131C;
-  --whatsapp-green: #FF71CE;
-  --whatsapp-green-hover: #01CDFE;
-  --text-on-accent: #12131C;
-}
-
-/* ========================================================
-   Temática: Steampunk
-   - Modo Claro: "Victorian Parchment"
-   - Modo Oscuro: "Brass & Boiler"
-   ======================================================== */
-
-/* Victorian Parchment (Modo Claro) */
-body.palette-steampunk.theme-light {
-  --bg-primary: #F4EBD9;
-  --bg-surface: #E8DEC8;
-  --bg-sidebar: #E8DEC8;
-  --bg-hover: #D9CCB4;
-  --bg-active: #A45A2A;
-  --bg-modal: #E8DEC8;
-  --bg-modal-overlay: rgba(244, 235, 217, 0.85);
-  --text-primary: #2E2117;
-  --text-secondary: #5D4A3A;
-  --text-color: var(--text-primary);
-  --border-color: #C7B599;
-  --accent-color: #A45A2A;
-  --accent-hover: #7E421B;
-  --whatsapp-bg: #F4EBD9;
-  --whatsapp-green: #A45A2A;
-  --whatsapp-green-hover: #7E421B;
-  --text-on-accent: #ffffff;
-}
-
-/* Brass & Boiler (Modo Oscuro) */
-body.palette-steampunk,
-body.palette-steampunk.theme-dark {
-  --bg-primary: #1A1614;
-  --bg-surface: #26201C;
-  --bg-sidebar: #26201C;
-  --bg-hover: #362E28;
-  --bg-active: #C98E34;
-  --bg-modal: #26201C;
-  --bg-modal-overlay: rgba(26, 22, 20, 0.85);
-  --text-primary: #E8DCC4;
-  --text-secondary: #A69580;
-  --text-color: var(--text-primary);
-  --border-color: #3D332D;
-  --accent-color: #C98E34;
-  --accent-hover: #E5A84B;
-  --whatsapp-bg: #1A1614;
-  --whatsapp-green: #C98E34;
-  --whatsapp-green-hover: #E5A84B;
-  --text-on-accent: #1A1614;
-}
-
-/* ========================================================
-   Temática: Alto Contraste
-   - Modo Claro: "High Contrast Day"
-   - Modo Oscuro: "High Contrast Night"
-   ======================================================== */
-
-/* High Contrast Day (Modo Claro) */
-body.palette-highcontrast.theme-light {
-  --bg-primary: #FFFFFF;
-  --bg-surface: #F0F0F0;
-  --bg-sidebar: #F0F0F0;
-  --bg-hover: #E0E0E0;
-  --bg-active: #00318C;
-  --bg-modal: #F0F0F0;
-  --bg-modal-overlay: rgba(255, 255, 255, 0.85);
-  --text-primary: #000000;
-  --text-secondary: #1F1F1F;
-  --text-color: var(--text-primary);
-  --border-color: #000000;
-  --accent-color: #00318C;
-  --accent-hover: #001F5C;
-  --whatsapp-bg: #FFFFFF;
-  --whatsapp-green: #00318C;
-  --whatsapp-green-hover: #001F5C;
-  --text-on-accent: #ffffff;
-}
-
-/* High Contrast Night (Modo Oscuro) */
-body.palette-highcontrast,
-body.palette-highcontrast.theme-dark {
-  --bg-primary: #000000;
-  --bg-surface: #0D0D0D;
-  --bg-sidebar: #0D0D0D;
-  --bg-hover: #1F1F1F;
-  --bg-active: #FFE600;
-  --bg-modal: #0D0D0D;
-  --bg-modal-overlay: rgba(0, 0, 0, 0.85);
-  --text-primary: #FFFFFF;
-  --text-secondary: #E6E6E6;
-  --text-color: var(--text-primary);
-  --border-color: #FFFFFF;
-  --accent-color: #FFE600;
-  --accent-hover: #FFFF33;
-  --whatsapp-bg: #000000;
-  --whatsapp-green: #FFE600;
-  --whatsapp-green-hover: #FFFF33;
-  --text-on-accent: #000000;
-}
-
-/* ========================================================
-   Temática: Dracula
-   - Modo Claro: "Alucard"
-   - Modo Oscuro: "Dracula Official"
-   ======================================================== */
-
-/* Alucard (Modo Claro) */
-body.palette-dracula.theme-light {
-  --bg-primary: #F8F8F2;
-  --bg-surface: #E6E6E6;
-  --bg-sidebar: #E6E6E6;
-  --bg-hover: #D8D8D8;
-  --bg-active: #BD93F9;
-  --bg-modal: #E6E6E6;
-  --bg-modal-overlay: rgba(248, 248, 242, 0.85);
-  --text-primary: #282A36;
-  --text-secondary: #6272A4;
-  --text-color: var(--text-primary);
-  --border-color: #D0D0D0;
-  --accent-color: #BD93F9;
-  --accent-hover: #A370F7;
-  --whatsapp-bg: #F8F8F2;
-  --whatsapp-green: #BD93F9;
-  --whatsapp-green-hover: #A370F7;
-  --text-on-accent: #282A36;
-}
-
-/* Dracula Official (Modo Oscuro) */
-body.palette-dracula,
-body.palette-dracula.theme-dark {
-  --bg-primary: #282A36;
-  --bg-surface: #44475A;
-  --bg-sidebar: #44475A;
-  --bg-hover: #6272A4;
-  --bg-active: #BD93F9;
-  --bg-modal: #44475A;
-  --bg-modal-overlay: rgba(40, 42, 54, 0.85);
-  --text-primary: #F8F8F2;
-  --text-secondary: #BD93F9;
-  --text-color: var(--text-primary);
-  --border-color: #6272A4;
-  --accent-color: #BD93F9;
-  --accent-hover: #FF79C6;
-  --whatsapp-bg: #282A36;
-  --whatsapp-green: #BD93F9;
-  --whatsapp-green-hover: #FF79C6;
-  --text-on-accent: #282A36;
-}
-
-/* ========================================================
-   Temática: Nord
-   - Modo Claro: "Snow Storm"
-   - Modo Oscuro: "Nord Official"
-   ======================================================== */
-
-/* Snow Storm (Modo Claro) */
-body.palette-nord.theme-light {
-  --bg-primary: #ECEFF4;
-  --bg-surface: #E5E9F0;
-  --bg-sidebar: #E5E9F0;
-  --bg-hover: #D8DEE9;
-  --bg-active: #5E81AC;
-  --bg-modal: #E5E9F0;
-  --bg-modal-overlay: rgba(236, 239, 244, 0.85);
-  --text-primary: #2E3440;
-  --text-secondary: #4C566A;
-  --text-color: var(--text-primary);
-  --border-color: #D8DEE9;
-  --accent-color: #5E81AC;
-  --accent-hover: #81A1C1;
-  --whatsapp-bg: #ECEFF4;
-  --whatsapp-green: #5E81AC;
-  --whatsapp-green-hover: #81A1C1;
-  --text-on-accent: #ffffff;
-}
-
-/* Nord Official (Modo Oscuro) */
-body.palette-nord,
-body.palette-nord.theme-dark {
-  --bg-primary: #2E3440;
-  --bg-surface: #3B4252;
-  --bg-sidebar: #3B4252;
-  --bg-hover: #434C5E;
-  --bg-active: #88C0D0;
-  --bg-modal: #3B4252;
-  --bg-modal-overlay: rgba(46, 52, 64, 0.85);
-  --text-primary: #ECEFF4;
-  --text-secondary: #D8DEE9;
-  --text-color: var(--text-primary);
-  --border-color: #4C566A;
-  --accent-color: #88C0D0;
-  --accent-hover: #8FBCBB;
-  --whatsapp-bg: #2E3440;
-  --whatsapp-green: #88C0D0;
-  --whatsapp-green-hover: #8FBCBB;
-  --text-on-accent: #2E3440;
-}
-
-/* ========================================================
-   Temática: Star Wars
-   - Modo Claro: "Jedi"
-   - Modo Oscuro: "Sith"
-   ======================================================== */
-
-/* Jedi (Modo Claro) */
-body.palette-starwars.theme-light {
-  --bg-primary: #F3F1E6;
-  --bg-surface: #E8E5D5;
-  --bg-sidebar: #E8E5D5;
-  --bg-hover: #DCD8C5;
-  --bg-active: #2E67F8;
-  --bg-modal: #E8E5D5;
-  --bg-modal-overlay: rgba(243, 241, 230, 0.85);
-  --text-primary: #2C2A28;
-  --text-secondary: #65615B;
-  --text-color: var(--text-primary);
-  --border-color: #D1CEB8;
-  --accent-color: #2E67F8;
-  --accent-hover: #1B4ED8;
-  --whatsapp-bg: #F3F1E6;
-  --whatsapp-green: #2E67F8;
-  --whatsapp-green-hover: #1B4ED8;
-  --text-on-accent: #ffffff;
-}
-
-/* Sith (Modo Oscuro) */
-body.palette-starwars,
-body.palette-starwars.theme-dark {
-  --bg-primary: #0A0A0A;
-  --bg-surface: #1A1A1A;
-  --bg-sidebar: #1A1A1A;
-  --bg-hover: #262626;
-  --bg-active: #E52020;
-  --bg-modal: #1A1A1A;
-  --bg-modal-overlay: rgba(10, 10, 10, 0.85);
-  --text-primary: #E0E0E0;
-  --text-secondary: #999999;
-  --text-color: var(--text-primary);
-  --border-color: #2A2A2A;
-  --accent-color: #E52020;
-  --accent-hover: #FF3B3B;
-  --whatsapp-bg: #0A0A0A;
-  --whatsapp-green: #E52020;
-  --whatsapp-green-hover: #FF3B3B;
-  --text-on-accent: #ffffff;
-}
-
-/* ========================================================
-   Temática: Cyber-Nexus (IA / Futurista)
-   - Modo Claro: "Chrome Core"
-   - Modo Oscuro: "Neural Net"
-   ======================================================== */
-
-/* Chrome Core (Modo Claro) */
-body.palette-cybernexus.theme-light {
-  --bg-primary: #F0F4F8;
-  --bg-surface: #E2E8F0;
-  --bg-sidebar: #E2E8F0;
-  --bg-hover: #CBD5E1;
-  --bg-active: #06B6D4;
-  --bg-modal: #E2E8F0;
-  --bg-modal-overlay: rgba(240, 244, 248, 0.85);
-  --text-primary: #1E293B;
-  --text-secondary: #64748B;
-  --text-color: var(--text-primary);
-  --border-color: #CBD5E1;
-  --accent-color: #06B6D4;
-  --accent-hover: #0891B2;
-  --whatsapp-bg: #F0F4F8;
-  --whatsapp-green: #06B6D4;
-  --whatsapp-green-hover: #0891B2;
-  --text-on-accent: #ffffff;
-}
-
-/* Neural Net (Modo Oscuro) */
-body.palette-cybernexus,
-body.palette-cybernexus.theme-dark {
-  --bg-primary: #0B1120;
-  --bg-surface: #0F172A;
-  --bg-sidebar: #0F172A;
-  --bg-hover: #1E293B;
-  --bg-active: #22D3EE;
-  --bg-modal: #0F172A;
-  --bg-modal-overlay: rgba(11, 17, 32, 0.85);
-  --text-primary: #F8FAFC;
-  --text-secondary: #94A3B8;
-  --text-color: var(--text-primary);
-  --border-color: #1E293B;
-  --accent-color: #22D3EE;
-  --accent-hover: #67E8F9;
-  --whatsapp-bg: #0B1120;
-  --whatsapp-green: #22D3EE;
-  --whatsapp-green-hover: #67E8F9;
-  --text-on-accent: #0B1120;
-}
-
-/* ========================================================
-   Temática: Doom
-   - Modo Claro: "Phobos Base"
-   - Modo Oscuro: "Hellscape"
-   ======================================================== */
-
-/* Phobos Base (Modo Claro) */
-body.palette-doom.theme-light {
-  --bg-primary: #D5C2A5;
-  --bg-surface: #C2AD8F;
-  --bg-sidebar: #C2AD8F;
-  --bg-hover: #B59F80;
-  --bg-active: #C83214;
-  --bg-modal: #C2AD8F;
-  --bg-modal-overlay: rgba(213, 194, 165, 0.85);
-  --text-primary: #2D241E;
-  --text-secondary: #6B584B;
-  --text-color: var(--text-primary);
-  --border-color: #A38E70;
-  --accent-color: #C83214;
-  --accent-hover: #A52309;
-  --whatsapp-bg: #D5C2A5;
-  --whatsapp-green: #C83214;
-  --whatsapp-green-hover: #A52309;
-  --text-on-accent: #ffffff;
-}
-
-/* Hellscape (Modo Oscuro) */
-body.palette-doom,
-body.palette-doom.theme-dark {
-  --bg-primary: #1C1919;
-  --bg-surface: #2B2322;
-  --bg-sidebar: #2B2322;
-  --bg-hover: #3D3130;
-  --bg-active: #E52E15;
-  --bg-modal: #2B2322;
-  --bg-modal-overlay: rgba(28, 25, 25, 0.85);
-  --text-primary: #E6D5D5;
-  --text-secondary: #A68B8A;
-  --text-color: var(--text-primary);
-  --border-color: #403332;
-  --accent-color: #E52E15;
-  --accent-hover: #FF4D36;
-  --whatsapp-bg: #1C1919;
-  --whatsapp-green: #E52E15;
-  --whatsapp-green-hover: #FF4D36;
-  --text-on-accent: #ffffff;
-}
-
-/* ========================================================
-   Temática: Star Trek
-   - Modo Claro: "Federation Day"
-   - Modo Oscuro: "LCARS Terminal"
-   ======================================================== */
-
-/* Federation Day (Modo Claro) */
-body.palette-startrek.theme-light {
-  --bg-primary: #F4F4F9;
-  --bg-surface: #EAEBF2;
-  --bg-sidebar: #EAEBF2;
-  --bg-hover: #DDDDE8;
-  --bg-active: #D69F34;
-  --bg-modal: #EAEBF2;
-  --bg-modal-overlay: rgba(244, 244, 249, 0.85);
-  --text-primary: #1C1D21;
-  --text-secondary: #5F606A;
-  --text-color: var(--text-primary);
-  --border-color: #D0D1DB;
-  --accent-color: #D69F34;
-  --accent-hover: #BA8524;
-  --whatsapp-bg: #F4F4F9;
-  --whatsapp-green: #D69F34;
-  --whatsapp-green-hover: #BA8524;
-  --text-on-accent: #1C1D21;
-}
-
-/* LCARS Terminal (Modo Oscuro) */
-body.palette-startrek,
-body.palette-startrek.theme-dark {
-  --bg-primary: #000000;
-  --bg-surface: #11111B;
-  --bg-sidebar: #11111B;
-  --bg-hover: #222233;
-  --bg-active: #FF9900;
-  --bg-modal: #11111B;
-  --bg-modal-overlay: rgba(0, 0, 0, 0.85);
-  --text-primary: #FF9900;
-  --text-secondary: #FFB347;
-  --text-color: var(--text-primary);
-  --border-color: #333344;
-  --accent-color: #99CCFF;
-  --accent-hover: #BBDDFF;
-  --whatsapp-bg: #000000;
-  --whatsapp-green: #FF9900;
-  --whatsapp-green-hover: #FFAA33;
-  --text-on-accent: #000000;
-}
-
-/* ========================================================
-   Temática: Vóxel (Minecraft)
-   - Modo Claro: "Overworld"
-   - Modo Oscuro: "Obsidian / The End"
-   ======================================================== */
-
-/* Overworld (Modo Claro) */
-body.palette-voxel.theme-light {
-  --bg-primary: #E6F0FA;
-  --bg-surface: #D5E8C3;
-  --bg-sidebar: #D5E8C3;
-  --bg-hover: #C3DBAE;
-  --bg-active: #3A892F;
-  --bg-modal: #D5E8C3;
-  --bg-modal-overlay: rgba(230, 240, 250, 0.85);
-  --text-primary: #3A2E26;
-  --text-secondary: #665749;
-  --text-color: var(--text-primary);
-  --border-color: #B8D099;
-  --accent-color: #3A892F;
-  --accent-hover: #2E7024;
-  --whatsapp-bg: #E6F0FA;
-  --whatsapp-green: #3A892F;
-  --whatsapp-green-hover: #2E7024;
-  --text-on-accent: #ffffff;
-}
-
-/* Obsidian / The End (Modo Oscuro) */
-body.palette-voxel,
-body.palette-voxel.theme-dark {
-  --bg-primary: #130E1A;
-  --bg-surface: #20172C;
-  --bg-sidebar: #20172C;
-  --bg-hover: #2E223F;
-  --bg-active: #9A5CC6;
-  --bg-modal: #20172C;
-  --bg-modal-overlay: rgba(19, 14, 26, 0.85);
-  --text-primary: #D1C9DB;
-  --text-secondary: #A797B8;
-  --text-color: var(--text-primary);
-  --border-color: #3A2A4E;
-  --accent-color: #9A5CC6;
-  --accent-hover: #B275DF;
-  --whatsapp-bg: #130E1A;
-  --whatsapp-green: #9A5CC6;
-  --whatsapp-green-hover: #B275DF;
-  --text-on-accent: #ffffff;
-}
+/* Note: Palettes are modularized in src/themes/*.json and dynamically injected into :root via JavaScript */
 
 /* ========================================================
    Conlang Custom Typography: Tengwar & Klingon pIqaD
@@ -1563,6 +926,25 @@ body.theme-light .dropdown-menu ul::-webkit-scrollbar-thumb {
   background-color: var(--bg-active);
   color: #ffffff;
   font-weight: 600;
+}
+
+.custom-option-separator {
+  pointer-events: none !important;
+  user-select: none !important;
+  width: 100% !important;
+  display: block !important;
+  padding: 8px 12px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--text-secondary);
+  background: transparent !important;
+  text-align: center;
+  box-sizing: border-box;
+  cursor: default;
+  outline: none;
+  border-bottom: 1px solid var(--border-color);
+  margin: 4px 0 2px 0;
 }
 
 /* ========================================================
@@ -3132,4 +2514,155 @@ body.theme-light .permissions-notice-box {
   height: 100%;
   border: none;
   background-color: #000000;
+}
+
+/* ==========================================================================
+   Customization Section (Personalización) Styling
+   ========================================================================== */
+
+.customization-mode-toggle-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  padding: 12px 18px;
+  background-color: var(--bg-sidebar);
+  border: 1px solid var(--border-color);
+  border-radius: var(--shape-md);
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.customization-mode-toggle-container .segmented-control {
+  max-width: 320px;
+  min-width: 240px;
+}
+
+.customization-actions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.btn-reset-custom {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  border-radius: var(--shape-sm);
+  background-color: transparent;
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  cursor: pointer;
+  transition: all var(--transition-speed) var(--motion-expressive);
+}
+
+.btn-reset-custom:hover {
+  background-color: var(--bg-hover);
+  border-color: var(--text-secondary);
+}
+
+.custom-groups-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.custom-token-group {
+  background-color: var(--bg-sidebar);
+  border: 1px solid var(--border-color);
+  border-radius: var(--shape-md);
+  padding: 18px 20px;
+}
+
+.custom-group-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.custom-group-header h4 {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.custom-group-header i {
+  color: var(--bg-active);
+  font-size: 1.15rem;
+}
+
+.custom-token-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px;
+}
+
+.custom-token-control {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.custom-token-label {
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  user-select: none;
+}
+
+.custom-color-input-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--shape-sm);
+  padding: 5px 10px;
+  transition: border-color var(--transition-speed) var(--motion-expressive);
+}
+
+.custom-color-input-wrapper:focus-within {
+  border-color: var(--bg-active);
+}
+
+.custom-color-picker {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: var(--shape-xs);
+  cursor: pointer;
+  background: none;
+  padding: 0;
+  flex-shrink: 0;
+}
+
+.custom-color-picker::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+
+.custom-color-picker::-webkit-color-swatch {
+  border: 1px solid var(--border-color);
+  border-radius: var(--shape-xs);
+}
+
+.custom-hex-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: var(--text-primary);
+  font-family: monospace;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  outline: none;
+  padding: 4px 0;
 }

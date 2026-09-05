@@ -1,0 +1,56 @@
+{
+  "id": "whatsnexus",
+  "nameKey": "palette_whatsnexus",
+  "category": "own",
+  "builtin": true,
+  "labels": {
+    "light": "theme_light",
+    "dark": "theme_dark"
+  },
+  "modes": {
+    "dark": {
+      "--bg-primary": "#151c17",
+      "--bg-sidebar": "#1e2922",
+      "--bg-hover": "#2b3b31",
+      "--bg-active": "#4c9e5f",
+      "--bg-modal": "#1e2922",
+      "--bg-modal-overlay": "rgba(18, 26, 20, 0.85)",
+      "--text-primary": "#edf4ef",
+      "--text-secondary": "#9cb0a2",
+      "--text-color": "var(--text-primary)",
+      "--border-color": "#2d3d33",
+      "--whatsapp-bg": "#111813",
+      "--whatsapp-green": "#4c9e5f",
+      "--whatsapp-green-hover": "#3d834e",
+      "--bg-surface": "var(--bg-sidebar)",
+      "--accent-color": "var(--bg-active)",
+      "--accent-hover": "var(--whatsapp-green-hover)",
+      "--text-on-accent": "#ffffff",
+      "--accent-secondary": "#6e9e4c",
+      "--accent-terracotta": "#9e624c",
+      "--accent-crimson": "#9e4c53"
+    },
+    "light": {
+      "--bg-primary": "#f3f6f4",
+      "--bg-sidebar": "#ffffff",
+      "--bg-hover": "#e8eee9",
+      "--bg-active": "#3f8851",
+      "--bg-modal": "#ffffff",
+      "--bg-modal-overlay": "rgba(243, 246, 244, 0.85)",
+      "--text-primary": "#152219",
+      "--text-secondary": "#506456",
+      "--text-color": "var(--text-primary)",
+      "--border-color": "#d6e0d8",
+      "--whatsapp-bg": "#ebf0ec",
+      "--whatsapp-green": "#3f8851",
+      "--whatsapp-green-hover": "#347243",
+      "--bg-surface": "var(--bg-sidebar)",
+      "--accent-color": "var(--bg-active)",
+      "--accent-hover": "var(--whatsapp-green-hover)",
+      "--text-on-accent": "#ffffff",
+      "--accent-secondary": "#5c8c3e",
+      "--accent-terracotta": "#9e624c",
+      "--accent-crimson": "#9e4c53"
+    }
+  }
+}

@@ -1,0 +1,56 @@
+{
+  "id": "starwars",
+  "nameKey": "palette_starwars",
+  "category": "pop_culture",
+  "builtin": true,
+  "labels": {
+    "light": "theme_jedi",
+    "dark": "theme_sith"
+  },
+  "modes": {
+    "dark": {
+      "--bg-primary": "#0A0A0A",
+      "--bg-sidebar": "#1A1A1A",
+      "--bg-hover": "#262626",
+      "--bg-active": "#E52020",
+      "--bg-modal": "#1A1A1A",
+      "--bg-modal-overlay": "rgba(10, 10, 10, 0.85)",
+      "--text-primary": "#E0E0E0",
+      "--text-secondary": "#999999",
+      "--text-color": "var(--text-primary)",
+      "--border-color": "#2A2A2A",
+      "--whatsapp-bg": "#0A0A0A",
+      "--whatsapp-green": "#E52020",
+      "--whatsapp-green-hover": "#FF3B3B",
+      "--bg-surface": "var(--bg-sidebar)",
+      "--accent-color": "var(--bg-active)",
+      "--accent-hover": "var(--whatsapp-green-hover)",
+      "--text-on-accent": "#ffffff",
+      "--accent-secondary": "#ff6b6b",
+      "--accent-terracotta": "#ff922b",
+      "--accent-crimson": "#c92a2a"
+    },
+    "light": {
+      "--bg-primary": "#F3F1E6",
+      "--bg-sidebar": "#E8E5D5",
+      "--bg-hover": "#DCD8C5",
+      "--bg-active": "#2E67F8",
+      "--bg-modal": "#E8E5D5",
+      "--bg-modal-overlay": "rgba(243, 241, 230, 0.85)",
+      "--text-primary": "#2C2A28",
+      "--text-secondary": "#65615B",
+      "--text-color": "var(--text-primary)",
+      "--border-color": "#D1CEB8",
+      "--whatsapp-bg": "#F3F1E6",
+      "--whatsapp-green": "#2E67F8",
+      "--whatsapp-green-hover": "#1B4ED8",
+      "--bg-surface": "var(--bg-sidebar)",
+      "--accent-color": "var(--bg-active)",
+      "--accent-hover": "var(--whatsapp-green-hover)",
+      "--text-on-accent": "#ffffff",
+      "--accent-secondary": "#60a5fa",
+      "--accent-terracotta": "#d97706",
+      "--accent-crimson": "#dc2626"
+    }
+  }
+}

@@ -47,6 +47,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   setSpellcheckerLanguages: (langs) => ipcRenderer.invoke('set-spellchecker-languages', Array.isArray(langs) ? langs : [langs]),
   getSystemInfo: () => ipcRenderer.invoke('get-system-info'),
   loadLocale: (lang) => ipcRenderer.invoke('load-locale', lang),
+  loadThemes: () => ipcRenderer.invoke('load-themes'),
   getAccounts: () => ipcRenderer.invoke('get-accounts'),
   saveAccounts: (accounts) => ipcRenderer.invoke('save-accounts', accounts),
   deleteAccountData: (accountId) => ipcRenderer.invoke('delete-account-data', accountId),

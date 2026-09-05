@@ -2,6 +2,35 @@
 
 This changelog records all granular updates, bug fixes, refactorings, and feature iterations developed on the `Dev` branch. Each version bump in `package.json` is documented here as it happens.
 
+## [1.7.0] - 2026-09-05
+### Added
+- **Modular Theme Architecture (`src/themes/`):**
+  - Modularized all 16 application color palettes into independent, strictly validated JSON schemas (`src/themes/<id>.json`).
+  - Added startup dynamic filesystem scanning via IPC handler `load-themes` in `src/main.js` and exposed via `electronAPI.loadThemes()` in `src/preload-main.js`.
+  - Implemented Tier 1 (`own`) and Tier 2 (`custom`) category access control: unwhitelisted external themes attempting to claim internal tiers are defensively demoted to Tier 5 (`community`).
+  - Added robust schema validation and malformed JSON recovery (`console.warn`) preventing app crashes on corrupt theme files.
+- **Interactive User Customization Studio ("Personalización"):**
+  - Added dedicated "Personalización" section in Settings navigation positioned immediately above "Acerca de".
+  - Implemented real-time Light/Dark mode editing selector with segmented control and reset button ("Restablecer a valores de WhatsNexus").
+  - Structured token customization across 3 visual groups: *Fondos y Superficies* (`--bg-primary`, `--bg-sidebar`, `--bg-hover`, `--bg-modal`, `--whatsapp-bg`), *Tipografía y Bordes* (`--text-primary`, `--text-secondary`, `--border-color`, `--text-on-accent`), and *Acentos y Colores de Acción* (`--bg-active`, `--accent-hover`, `--accent-secondary`, `--accent-terracotta`, `--accent-crimson`).
+  - Programmed bidirectional synchronization between native HTML5 `<input type="color">` pickers and uppercase `#RRGGBB` text inputs with live CSS variable injection.
+  - Automatically switches the active theme to "Personalizado" upon modifying any color token, persisting values in `settings.customTheme`.
+- **Symmetric Category Dropdown Separators:**
+  - Redesigned `palette-select` with 100% width, non-interactive (`pointer-events: none; user-select: none;`) category headers featuring symmetric enclosing hyphens: `-- Tema Principal --`, `-- Temas Personalizados --`, `-- Aplicaciones de Mensajería --`, `-- Cultura Pop --`, and `-- Personalización Usuario --`.
+  - Implemented internal alphabetical ordering within every category.
+- **Dynamic Appearance Mode Selector ("Sistema"):**
+  - Simplified appearance mode label from "Automático (Sistema)" to "Sistema" (`theme_system`).
+  - Dynamically updates the mode toggle options (Sistema, Claro, Oscuro) to reflect the active theme's declared `labels` (e.g., "LCARS Terminal" / "Federation Day" for Star Trek, "Sith" / "Jedi" for Star Wars, "Overworld" / "Nether/End" for Vóxel).
+- **Internationalization (i18n):**
+  - Synchronized new translation keys for category headers, custom theme option, customization studio groups, token labels, and system mode across all 55 supported locale JSON files in `src/locales/`.
+
+### Changed
+- **Direct `:root` CSS Variable Theme Engine:**
+  - Eliminated bulky static CSS palette blocks from `style.css` in favor of runtime dynamic injection via `document.documentElement.style.setProperty()`.
+  - Automated propagation to derived UI tokens (`--bg-surface`, `--text-color`, `--accent-color`, `--whatsapp-green`, `--whatsapp-green-hover`, `--bg-modal-overlay`).
+- **Version Quartet Synchronization:**
+  - Bumped version to `1.7.0` across `package.json`, `package-lock.json`, `README.md`, `docs/README.md`, `changelog-dev.md`, and `changelog.md`.
+
 ## [1.6.2] - 2026-09-05
 ### Changed
 - **Comprehensive Four-Way Comparison Table in `README.md`:**

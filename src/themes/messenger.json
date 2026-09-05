@@ -1,0 +1,56 @@
+{
+  "id": "messenger",
+  "nameKey": "palette_messenger",
+  "category": "messaging",
+  "builtin": true,
+  "labels": {
+    "light": "theme_light",
+    "dark": "theme_dark"
+  },
+  "modes": {
+    "dark": {
+      "--bg-primary": "#18191a",
+      "--bg-sidebar": "#242526",
+      "--bg-hover": "#3a3b3c",
+      "--bg-active": "#0084ff",
+      "--bg-modal": "#242526",
+      "--bg-modal-overlay": "rgba(24, 25, 26, 0.85)",
+      "--text-primary": "#f0f2f5",
+      "--text-secondary": "#b0b3b8",
+      "--text-color": "var(--text-primary)",
+      "--border-color": "#393a3b",
+      "--whatsapp-bg": "#18191a",
+      "--whatsapp-green": "#0084ff",
+      "--whatsapp-green-hover": "#0073e6",
+      "--bg-surface": "var(--bg-sidebar)",
+      "--accent-color": "var(--bg-active)",
+      "--accent-hover": "var(--whatsapp-green-hover)",
+      "--text-on-accent": "#ffffff",
+      "--accent-secondary": "#00c6ff",
+      "--accent-terracotta": "#e65100",
+      "--accent-crimson": "#d32f2f"
+    },
+    "light": {
+      "--bg-primary": "#f0f2f5",
+      "--bg-sidebar": "#ffffff",
+      "--bg-hover": "#e4e6eb",
+      "--bg-active": "#0084ff",
+      "--bg-modal": "#ffffff",
+      "--bg-modal-overlay": "rgba(255, 255, 255, 0.85)",
+      "--text-primary": "#050505",
+      "--text-secondary": "#54575c",
+      "--text-color": "var(--text-primary)",
+      "--border-color": "#ced0d4",
+      "--whatsapp-bg": "#f0f2f5",
+      "--whatsapp-green": "#0084ff",
+      "--whatsapp-green-hover": "#0073e6",
+      "--bg-surface": "var(--bg-sidebar)",
+      "--accent-color": "var(--bg-active)",
+      "--accent-hover": "var(--whatsapp-green-hover)",
+      "--text-on-accent": "#ffffff",
+      "--accent-secondary": "#00a3ff",
+      "--accent-terracotta": "#e65100",
+      "--accent-crimson": "#d32f2f"
+    }
+  }
+}

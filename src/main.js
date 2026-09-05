@@ -809,6 +809,91 @@ ipcMain.handle('load-locale', async (event, langCode) => {
   }
 });
 
+// Themes Loader with Dynamic Validation and Tier Protection
+const OFFICIAL_THEME_IDS = new Set([
+  'whatsnexus', 'highcontrast', 'forest', 'cybernexus',
+  'dracula', 'nord', 'retro', 'steampunk',
+  'messenger', 'signal', 'telegram', 'whatsapp',
+  'doom', 'startrek', 'starwars', 'voxel'
+]);
+
+let cachedThemes = null;
+
+ipcMain.handle('load-themes', async () => {
+  if (cachedThemes && Array.isArray(cachedThemes)) {
+    return cachedThemes;
+  }
+
+  const themesDir = path.join(__dirname, 'themes');
+  const validatedThemes = [];
+
+  try {
+    await fs.promises.access(themesDir, fs.constants.R_OK);
+    const files = await fs.promises.readdir(themesDir);
+
+    for (const file of files) {
+      if (!file.endsWith('.json')) continue;
+      const filePath = path.join(themesDir, file);
+
+      try {
+        const raw = await fs.promises.readFile(filePath, 'utf8');
+        let theme;
+        try {
+          theme = JSON.parse(raw);
+        } catch (jsonErr) {
+          console.warn(`[Theme Engine Warning]: Skipping malformed JSON theme file: ${file}`, jsonErr.message);
+          continue;
+        }
+
+        // Validate mandatory schema fields
+        if (
+          !theme ||
+          typeof theme.id !== 'string' ||
+          !theme.id.trim() ||
+          typeof theme.nameKey !== 'string' ||
+          typeof theme.category !== 'string' ||
+          !theme.labels ||
+          typeof theme.labels.light !== 'string' ||
+          typeof theme.labels.dark !== 'string' ||
+          !theme.modes ||
+          typeof theme.modes.light !== 'object' ||
+          typeof theme.modes.dark !== 'object'
+        ) {
+          console.warn(`[Theme Engine Warning]: Theme file ${file} does not meet schema requirements.`);
+          continue;
+        }
+
+        // Validate that core tokens are present
+        const requiredTokens = ['--bg-primary', '--bg-sidebar', '--text-primary', '--border-color'];
+        const hasLightTokens = requiredTokens.every(k => typeof theme.modes.light[k] === 'string');
+        const hasDarkTokens = requiredTokens.every(k => typeof theme.modes.dark[k] === 'string');
+        if (!hasLightTokens || !hasDarkTokens) {
+          console.warn(`[Theme Engine Warning]: Theme ${theme.id} missing mandatory color tokens.`);
+          continue;
+        }
+
+        // Tier 1 & Tier 2 Protection:
+        // Only official built-in themes can be assigned to "own" or "custom"
+        if (theme.category === 'own' || theme.category === 'custom') {
+          if (!OFFICIAL_THEME_IDS.has(theme.id) || theme.builtin !== true) {
+            console.warn(`[Theme Engine Security]: Unauthorized tier declaration for theme "${theme.id}". Demoting category to "community".`);
+            theme.category = 'community';
+          }
+        }
+
+        validatedThemes.push(theme);
+      } catch (fileErr) {
+        console.warn(`[Theme Engine Warning]: Error reading theme file ${file}:`, fileErr.message);
+      }
+    }
+  } catch (dirErr) {
+    console.warn(`[Theme Engine Warning]: Unable to access themes directory at ${themesDir}:`, dirErr.message);
+  }
+
+  cachedThemes = validatedThemes;
+  return validatedThemes;
+});
+
 // Helper for sending IPC messages to mainWindow
 function sendToRenderer(channel, ...args) {
   if (mainWindow && !mainWindow.isDestroyed() && mainWindow.webContents) {

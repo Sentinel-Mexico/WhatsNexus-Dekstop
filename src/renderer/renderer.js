@@ -170,6 +170,45 @@ if (settings.themePalette === 'retro_computing' || settings.themePalette === 'sy
   settings.themePalette = 'highcontrast';
 }
 
+const DEFAULT_CUSTOM_THEME = {
+  dark: {
+    "--bg-primary": "#151c17",
+    "--bg-sidebar": "#1e2922",
+    "--bg-hover": "#2b3b31",
+    "--bg-active": "#4c9e5f",
+    "--bg-modal": "#1e2922",
+    "--whatsapp-bg": "#111813",
+    "--text-primary": "#edf4ef",
+    "--text-secondary": "#9cb0a2",
+    "--border-color": "#2d3d33",
+    "--text-on-accent": "#ffffff",
+    "--accent-hover": "#3d834e",
+    "--accent-secondary": "#6e9e4c",
+    "--accent-terracotta": "#9e624c",
+    "--accent-crimson": "#9e4c53"
+  },
+  light: {
+    "--bg-primary": "#f3f6f4",
+    "--bg-sidebar": "#ffffff",
+    "--bg-hover": "#e8eee9",
+    "--bg-active": "#3f8851",
+    "--bg-modal": "#ffffff",
+    "--whatsapp-bg": "#ebf0ec",
+    "--text-primary": "#152219",
+    "--text-secondary": "#506456",
+    "--border-color": "#d6e0d8",
+    "--text-on-accent": "#ffffff",
+    "--accent-hover": "#347243",
+    "--accent-secondary": "#5c8c3e",
+    "--accent-terracotta": "#9e624c",
+    "--accent-crimson": "#9e4c53"
+  }
+};
+
+if (!settings.customTheme || typeof settings.customTheme !== 'object') {
+  settings.customTheme = JSON.parse(JSON.stringify(DEFAULT_CUSTOM_THEME));
+}
+
 // URLs for donations and external support
 const DONATION_URLS = {
   github: 'https://github.com/Sentinel-Mexico/WhatsNexus-Dekstop',
@@ -538,6 +577,12 @@ function updateTranslations() {
     loadAboutInfo();
   }
   updateThemeLabels();
+  if (typeof buildPaletteDropdown === 'function') {
+    buildPaletteDropdown();
+  }
+  if (typeof populateCustomizationInputs === 'function') {
+    populateCustomizationInputs();
+  }
   if (typeof refreshAllCustomDropdowns === 'function') {
     refreshAllCustomDropdowns();
   }
@@ -660,7 +705,9 @@ async function init() {
   }
 
   await loadActiveLocale(settings.language || 'es');
+  await initThemeEngine();
   applySettings();
+  initCustomizationUI();
   initDownloadPathUI();
   renderSpellcheckList();
   loadAboutInfo();
@@ -746,6 +793,141 @@ function saveSettings() {
   applySettings();
 }
 
+let loadedThemes = [];
+
+async function initThemeEngine() {
+  try {
+    if (window.electronAPI && typeof window.electronAPI.loadThemes === 'function') {
+      const themes = await window.electronAPI.loadThemes();
+      if (Array.isArray(themes) && themes.length > 0) {
+        loadedThemes = themes;
+      }
+    }
+  } catch (err) {
+    console.warn('[Theme Engine]: Error loading themes via IPC:', err);
+  }
+
+  buildPaletteDropdown();
+}
+
+function hexToRgba(hex, alpha = 0.85) {
+  if (!hex || typeof hex !== 'string') return `rgba(18, 26, 20, ${alpha})`;
+  let c = hex.replace('#', '').trim();
+  if (c.length === 3) c = c.split('').map(x => x + x).join('');
+  if (c.length !== 6) return `rgba(18, 26, 20, ${alpha})`;
+  const r = parseInt(c.substring(0, 2), 16);
+  const g = parseInt(c.substring(2, 4), 16);
+  const b = parseInt(c.substring(4, 6), 16);
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+}
+
+function applyThemeTokens(palette, isDark) {
+  const mode = isDark ? 'dark' : 'light';
+  const rootStyle = document.documentElement.style;
+
+  if (palette === 'custom') {
+    const userTokens = (settings.customTheme && settings.customTheme[mode]) || DEFAULT_CUSTOM_THEME[mode];
+    Object.entries(userTokens).forEach(([prop, val]) => {
+      if (val) rootStyle.setProperty(prop, val);
+    });
+    if (userTokens['--bg-sidebar']) rootStyle.setProperty('--bg-surface', userTokens['--bg-sidebar']);
+    if (userTokens['--text-primary']) rootStyle.setProperty('--text-color', userTokens['--text-primary']);
+    if (userTokens['--bg-active']) {
+      rootStyle.setProperty('--accent-color', userTokens['--bg-active']);
+      rootStyle.setProperty('--whatsapp-green', userTokens['--bg-active']);
+    }
+    if (userTokens['--accent-hover']) {
+      rootStyle.setProperty('--whatsapp-green-hover', userTokens['--accent-hover']);
+    }
+    if (userTokens['--bg-modal']) {
+      rootStyle.setProperty('--bg-modal-overlay', hexToRgba(userTokens['--bg-modal'], 0.85));
+    }
+    return;
+  }
+
+  const themeObj = loadedThemes.find(t => t.id === palette);
+  if (themeObj && themeObj.modes && themeObj.modes[mode]) {
+    const tokens = themeObj.modes[mode];
+    Object.entries(tokens).forEach(([prop, val]) => {
+      if (val) rootStyle.setProperty(prop, val);
+    });
+    if (tokens['--bg-sidebar']) rootStyle.setProperty('--bg-surface', tokens['--bg-sidebar']);
+    if (tokens['--text-primary']) rootStyle.setProperty('--text-color', tokens['--text-primary']);
+    if (tokens['--bg-active']) {
+      rootStyle.setProperty('--accent-color', tokens['--bg-active']);
+      rootStyle.setProperty('--whatsapp-green', tokens['--bg-active']);
+    }
+    if (tokens['--accent-hover']) {
+      rootStyle.setProperty('--whatsapp-green-hover', tokens['--accent-hover']);
+    }
+    if (tokens['--bg-modal']) {
+      rootStyle.setProperty('--bg-modal-overlay', hexToRgba(tokens['--bg-modal'], 0.85));
+    }
+  }
+}
+
+function buildPaletteDropdown() {
+  if (!paletteSelect) return;
+  const currentLang = settings.language || 'en';
+  const dict = i18n[currentLang] || i18n['en'] || {};
+
+  paletteSelect.innerHTML = '';
+
+  const categories = [
+    { key: 'category_main', cat: 'own', defaultHeader: '-- Tema Principal --' },
+    { key: 'category_custom', cat: 'custom', defaultHeader: '-- Temas Personalizados --' },
+    { key: 'category_messaging', cat: 'messaging', defaultHeader: '-- Aplicaciones de Mensajería --' },
+    { key: 'category_pop_culture', cat: 'pop_culture', defaultHeader: '-- Cultura Pop --' },
+    { key: 'category_community', cat: 'community', defaultHeader: '-- Comunidad --' }
+  ];
+
+  categories.forEach(c => {
+    const matchingThemes = loadedThemes.filter(t => t.category === c.cat);
+    if (matchingThemes.length > 0) {
+      const sep = document.createElement('option');
+      sep.disabled = true;
+      sep.className = 'select-separator';
+      sep.setAttribute('data-i18n', c.key);
+      sep.innerText = dict[c.key] || c.defaultHeader;
+      paletteSelect.appendChild(sep);
+
+      // Sort alphabetically by localized display name
+      matchingThemes.sort((a, b) => {
+        const nameA = dict[a.nameKey] || dict['palette_' + a.id] || a.id;
+        const nameB = dict[b.nameKey] || dict['palette_' + b.id] || b.id;
+        return nameA.localeCompare(nameB, currentLang);
+      });
+
+      matchingThemes.forEach(theme => {
+        const opt = document.createElement('option');
+        opt.value = theme.id;
+        opt.setAttribute('data-i18n', theme.nameKey || ('palette_' + theme.id));
+        opt.innerText = dict[theme.nameKey] || dict['palette_' + theme.id] || theme.id;
+        paletteSelect.appendChild(opt);
+      });
+    }
+  });
+
+  // User Customization Category
+  const userSep = document.createElement('option');
+  userSep.disabled = true;
+  userSep.className = 'select-separator';
+  userSep.setAttribute('data-i18n', 'category_user');
+  userSep.innerText = dict['category_user'] || '-- Personalización Usuario --';
+  paletteSelect.appendChild(userSep);
+
+  const customOpt = document.createElement('option');
+  customOpt.value = 'custom';
+  customOpt.setAttribute('data-i18n', 'palette_custom');
+  customOpt.innerText = dict['palette_custom'] || 'Personalizado';
+  paletteSelect.appendChild(customOpt);
+
+  paletteSelect.value = settings.themePalette || 'whatsnexus';
+  if (typeof customDropdowns['palette-select'] === 'function') {
+    customDropdowns['palette-select']();
+  }
+}
+
 function updateThemeLabels() {
   const currentLang = settings.language || 'en';
   const dict = i18n[currentLang] || i18n['en'] || {};
@@ -753,21 +935,26 @@ function updateThemeLabels() {
   
   let lightKey = 'theme_light';
   let darkKey = 'theme_dark';
-  
-  if (palette === 'highcontrast') {
-    lightKey = 'theme_day';
-    darkKey = 'theme_night';
-  } else if (palette === 'starwars') {
-    lightKey = 'theme_jedi';
-    darkKey = 'theme_sith';
-  } else if (palette === 'voxel') {
-    lightKey = 'theme_voxel_light';
-    darkKey = 'theme_voxel_dark';
+
+  if (palette === 'custom') {
+    lightKey = 'theme_light';
+    darkKey = 'theme_dark';
+  } else {
+    const activeTheme = loadedThemes.find(t => t.id === palette);
+    if (activeTheme && activeTheme.labels) {
+      lightKey = activeTheme.labels.light || 'theme_light';
+      darkKey = activeTheme.labels.dark || 'theme_dark';
+    }
   }
   
   if (themeSelect) {
+    const autoOpt = themeSelect.querySelector('option[value="theme-auto"]');
     const lightOpt = themeSelect.querySelector('option[value="theme-light"]');
     const darkOpt = themeSelect.querySelector('option[value="theme-dark"]');
+    if (autoOpt) {
+      autoOpt.setAttribute('data-i18n', 'theme_system');
+      autoOpt.innerText = dict['theme_system'] || 'Sistema';
+    }
     if (lightOpt) {
       lightOpt.setAttribute('data-i18n', lightKey);
       lightOpt.innerText = dict[lightKey] || (lightKey === 'theme_day' ? 'Día' : lightKey === 'theme_jedi' ? 'Jedi' : lightKey === 'theme_voxel_light' ? 'Overworld' : 'Claro');
@@ -795,6 +982,9 @@ function applySettings() {
   // Set palette and light/dark mode on body
   document.body.className = `palette-${palette} ${isDark ? 'theme-dark' : 'theme-light'}`;
   
+  // Apply dynamic CSS variable injection to :root
+  applyThemeTokens(palette, isDark);
+
   if (themeSelect) themeSelect.value = settings.theme || 'theme-auto';
   if (paletteSelect) {
     paletteSelect.value = palette;
@@ -1635,6 +1825,9 @@ tabBtns.forEach(btn => {
     if (btn.dataset.tab === 'tab-permissions') {
       initDownloadPathUI();
     }
+    if (btn.dataset.tab === 'tab-customization') {
+      populateCustomizationInputs();
+    }
     if (btn.dataset.tab === 'tab-about') {
       loadAboutInfo();
     }
@@ -1896,6 +2089,14 @@ function initCustomDropdown(selectId) {
 
     const currentVal = select.value;
     Array.from(select.options).forEach(opt => {
+      if (opt.disabled || opt.classList.contains('select-separator')) {
+        const sep = document.createElement('div');
+        sep.className = 'custom-option-separator';
+        sep.innerText = opt.innerText;
+        list.appendChild(sep);
+        return;
+      }
+
       const item = document.createElement('div');
       item.className = 'custom-option' + (opt.value === currentVal ? ' selected' : '');
       item.innerText = opt.innerText;
@@ -1915,7 +2116,11 @@ function initCustomDropdown(selectId) {
       list.appendChild(item);
     });
 
-    const selectedOpt = select.options[select.selectedIndex] || select.options[0];
+    const nonSeparators = Array.from(select.options).filter(o => !o.disabled && !o.classList.contains('select-separator'));
+    let selectedOpt = select.options[select.selectedIndex];
+    if (!selectedOpt || selectedOpt.disabled || selectedOpt.classList.contains('select-separator')) {
+      selectedOpt = nonSeparators.find(o => o.value === currentVal) || nonSeparators[0];
+    }
     if (selectedOpt) {
       label.innerText = selectedOpt.innerText;
     }
@@ -1955,6 +2160,133 @@ function refreshAllCustomDropdowns() {
     if (typeof renderFn === 'function') renderFn();
   });
 }
+
+function refreshCustomDropdown(selectId) {
+  if (customDropdowns[selectId] && typeof customDropdowns[selectId] === 'function') {
+    customDropdowns[selectId]();
+  }
+}
+
+let customEditMode = 'dark';
+
+function initCustomizationUI() {
+  const btnEditDark = document.getElementById('btn-edit-mode-dark');
+  const btnEditLight = document.getElementById('btn-edit-mode-light');
+  const btnReset = document.getElementById('btn-reset-custom-theme');
+
+  if (btnEditDark) {
+    btnEditDark.addEventListener('click', () => {
+      customEditMode = 'dark';
+      btnEditDark.classList.add('active');
+      if (btnEditLight) btnEditLight.classList.remove('active');
+      populateCustomizationInputs();
+    });
+  }
+
+  if (btnEditLight) {
+    btnEditLight.addEventListener('click', () => {
+      customEditMode = 'light';
+      btnEditLight.classList.add('active');
+      if (btnEditDark) btnEditDark.classList.remove('active');
+      populateCustomizationInputs();
+    });
+  }
+
+  if (btnReset) {
+    btnReset.addEventListener('click', () => {
+      settings.customTheme = JSON.parse(JSON.stringify(DEFAULT_CUSTOM_THEME));
+      saveSettings();
+      if (settings.palette === 'custom') {
+        applySettings();
+      }
+      populateCustomizationInputs();
+    });
+  }
+
+  const pickers = document.querySelectorAll('.custom-color-picker');
+  pickers.forEach(picker => {
+    const token = picker.dataset.token;
+    picker.addEventListener('input', (e) => {
+      const val = e.target.value.toUpperCase();
+      const hexInput = document.querySelector(`.custom-hex-input[data-token="${token}"]`);
+      if (hexInput) hexInput.value = val;
+      updateCustomToken(token, val);
+    });
+  });
+
+  const hexInputs = document.querySelectorAll('.custom-hex-input');
+  hexInputs.forEach(hexInput => {
+    const token = hexInput.dataset.token;
+    const handleHexChange = (e) => {
+      let val = e.target.value.trim().toUpperCase();
+      if (!val.startsWith('#') && /^[0-9A-F]{6}$/i.test(val)) {
+        val = '#' + val;
+      }
+      if (/^#[0-9A-F]{6}$/i.test(val)) {
+        hexInput.value = val;
+        const picker = document.querySelector(`.custom-color-picker[data-token="${token}"]`);
+        if (picker) picker.value = val;
+        updateCustomToken(token, val);
+      }
+    };
+    hexInput.addEventListener('input', handleHexChange);
+    hexInput.addEventListener('blur', (e) => {
+      let val = e.target.value.trim().toUpperCase();
+      if (!val.startsWith('#') && /^[0-9A-F]{6}$/i.test(val)) {
+        val = '#' + val;
+      }
+      if (!/^#[0-9A-F]{6}$/i.test(val)) {
+        const currentTokens = (settings.customTheme && settings.customTheme[customEditMode]) || DEFAULT_CUSTOM_THEME[customEditMode] || {};
+        const fallbackTokens = DEFAULT_CUSTOM_THEME[customEditMode] || {};
+        hexInput.value = (currentTokens[token] || fallbackTokens[token] || '#000000').toUpperCase();
+      } else {
+        hexInput.value = val;
+      }
+    });
+  });
+
+  populateCustomizationInputs();
+}
+
+function updateCustomToken(token, val) {
+  if (!settings.customTheme) {
+    settings.customTheme = JSON.parse(JSON.stringify(DEFAULT_CUSTOM_THEME));
+  }
+  if (!settings.customTheme[customEditMode]) {
+    settings.customTheme[customEditMode] = { ...(DEFAULT_CUSTOM_THEME[customEditMode] || {}) };
+  }
+  settings.customTheme[customEditMode][token] = val;
+
+  // Auto-activar "Personalizado" si no está activo
+  if (settings.palette !== 'custom') {
+    settings.palette = 'custom';
+    if (paletteSelect) {
+      paletteSelect.value = 'custom';
+      refreshCustomDropdown('palette-select');
+    }
+  }
+
+  saveSettings();
+  applySettings();
+}
+
+function populateCustomizationInputs() {
+  const currentTokens = (settings.customTheme && settings.customTheme[customEditMode]) || DEFAULT_CUSTOM_THEME[customEditMode] || {};
+  const fallbackTokens = DEFAULT_CUSTOM_THEME[customEditMode] || {};
+
+  document.querySelectorAll('.custom-color-picker').forEach(picker => {
+    const token = picker.dataset.token;
+    const val = currentTokens[token] || fallbackTokens[token] || '#000000';
+    picker.value = val;
+  });
+
+  document.querySelectorAll('.custom-hex-input').forEach(hexInput => {
+    const token = hexInput.dataset.token;
+    const val = currentTokens[token] || fallbackTokens[token] || '#000000';
+    hexInput.value = val.toUpperCase();
+  });
+}
+
 
 // Inicializar todos los selectores personalizados
 initCustomDropdown('palette-select');

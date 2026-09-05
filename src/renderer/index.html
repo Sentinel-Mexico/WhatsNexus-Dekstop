@@ -82,6 +82,10 @@
               <i class="fa-solid fa-shield-halved"></i>
               <span data-i18n="tab_permissions">Permisos</span>
             </button>
+            <button class="tab-btn" data-tab="tab-customization">
+              <i class="fa-solid fa-sliders"></i>
+              <span data-i18n="tab_customization">Personalización</span>
+            </button>
             <button class="tab-btn" data-tab="tab-about">
               <i class="fa-solid fa-circle-info"></i>
               <span data-i18n="tab_about">Acerca de</span>
@@ -125,26 +129,37 @@
                       </div>
                       <div class="custom-select-options dropdown-menu" id="palette-select-options"></div>
                       <select id="palette-select" class="styled-select" style="display: none;">
-                        <!-- Tema propio del programa -->
+                        <!-- Tema Principal -->
+                        <option disabled class="select-separator" data-i18n="category_main">-- Tema Principal --</option>
                         <option value="whatsnexus" data-i18n="palette_whatsnexus">WhatsNexus</option>
-                        <!-- Temas personalizados / originales (orden alfabético) -->
+                        
+                        <!-- Temas Personalizados -->
+                        <option disabled class="select-separator" data-i18n="category_custom">-- Temas Personalizados --</option>
                         <option value="highcontrast" data-i18n="palette_highcontrast">Alto Contraste (Blanco y Negro)</option>
                         <option value="forest" data-i18n="palette_forest">Bosque (Oliva y Tierra)</option>
-                        <option value="cybernexus" data-i18n="palette_cybernexus">Cyber-Nexus (IA / Futurista)</option>
+                        <option value="cybernexus" data-i18n="palette_cybernexus">Cyber-Nexus (Cian y Cromo)</option>
                         <option value="dracula" data-i18n="palette_dracula">Dracula (Morado y Gris Oscuro)</option>
                         <option value="nord" data-i18n="palette_nord">Nord (Hielo y Escarcha)</option>
                         <option value="retro" data-i18n="palette_retro">Retro (Beige y Neón)</option>
                         <option value="steampunk" data-i18n="palette_steampunk">Steampunk (Pergamino y Latón)</option>
-                        <!-- Temas inspirados en mensajería (orden alfabético) -->
+                        
+                        <!-- Aplicaciones de Mensajería -->
+                        <option disabled class="select-separator" data-i18n="category_messaging">-- Aplicaciones de Mensajería --</option>
                         <option value="messenger" data-i18n="palette_messenger">Messenger (Azul Meta)</option>
                         <option value="signal" data-i18n="palette_signal">Signal (Azul Real)</option>
                         <option value="telegram" data-i18n="palette_telegram">Telegram (Azul Cian)</option>
                         <option value="whatsapp" data-i18n="palette_whatsapp">WhatsApp (Esmeralda)</option>
-                        <!-- Temas de cultura pop (orden alfabético) -->
+                        
+                        <!-- Cultura Pop -->
+                        <option disabled class="select-separator" data-i18n="category_pop_culture">-- Cultura Pop --</option>
                         <option value="doom" data-i18n="palette_doom">Doom (Phobos y Hellscape)</option>
                         <option value="startrek" data-i18n="palette_startrek">Star Trek (Federación y LCARS)</option>
                         <option value="starwars" data-i18n="palette_starwars">Star Wars (Sable de Luz)</option>
-                        <option value="voxel" data-i18n="palette_voxel">Vóxel (Minecraft)</option>
+                        <option value="voxel" data-i18n="palette_voxel">Vóxel (Tierra y Obsidiana)</option>
+
+                        <!-- Personalización Usuario -->
+                        <option disabled class="select-separator" data-i18n="category_user">-- Personalización Usuario --</option>
+                        <option value="custom" data-i18n="palette_custom">Personalizado</option>
                       </select>
                     </div>
                   </div>
@@ -158,7 +173,7 @@
                       </div>
                       <div class="custom-select-options dropdown-menu" id="theme-select-options"></div>
                       <select id="theme-select" class="styled-select" style="display: none;">
-                        <option value="theme-auto" data-i18n="theme_auto">Automático (Sistema)</option>
+                        <option value="theme-auto" data-i18n="theme_system">Sistema</option>
                         <option value="theme-light" data-i18n="theme_light">Claro</option>
                         <option value="theme-dark" data-i18n="theme_dark">Oscuro</option>
                       </select>
@@ -443,6 +458,164 @@
                     <p data-i18n="perm_spellcheck_desc">Corrección ortográfica nativa de Chromium en tiempo real para todos los chats.</p>
                     <div class="spellcheck-multiselect-container" id="spellcheck-multiselect-container">
                       <!-- Renderizado dinámicamente con checkboxes y banderas -->
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Pestaña Personalización -->
+            <div id="tab-customization" class="settings-panel">
+              <div class="panel-header">
+                <h3 data-i18n="heading_customization">Personalización</h3>
+                <p class="panel-desc" data-i18n="desc_customization">Personaliza los tokens de color reales con previsualización en tiempo real.</p>
+              </div>
+
+              <!-- Conmutador de modo para edición y botón de reseteo -->
+              <div class="customization-mode-toggle-container">
+                <div class="segmented-control" id="custom-theme-mode-segmented">
+                  <button type="button" class="segmented-btn active" data-mode="dark" id="btn-edit-mode-dark">
+                    <i class="fa-solid fa-moon"></i>
+                    <span data-i18n="custom_mode_edit_dark">Modo Oscuro</span>
+                  </button>
+                  <button type="button" class="segmented-btn" data-mode="light" id="btn-edit-mode-light">
+                    <i class="fa-solid fa-sun"></i>
+                    <span data-i18n="custom_mode_edit_light">Modo Claro</span>
+                  </button>
+                </div>
+                <div class="customization-actions">
+                  <button type="button" class="btn-reset-custom" id="btn-reset-custom-theme">
+                    <i class="fa-solid fa-arrow-rotate-left"></i>
+                    <span data-i18n="btn_reset_custom_theme">Restablecer a valores de WhatsNexus</span>
+                  </button>
+                </div>
+              </div>
+
+              <div class="custom-groups-container">
+                <!-- Grupo A: Fondos y Superficies -->
+                <div class="custom-token-group">
+                  <div class="custom-group-header">
+                    <i class="fa-solid fa-layer-group"></i>
+                    <h4 data-i18n="custom_group_backgrounds">Fondos y Superficies</h4>
+                  </div>
+                  <div class="custom-token-grid">
+                    <div class="custom-token-control">
+                      <label class="custom-token-label" for="token-bg-primary" data-i18n="token_bg_primary">Fondo Principal (--bg-primary)</label>
+                      <div class="custom-color-input-wrapper">
+                        <input type="color" id="picker-bg-primary" class="custom-color-picker" data-token="--bg-primary">
+                        <input type="text" id="token-bg-primary" class="custom-hex-input" data-token="--bg-primary" maxlength="7" placeholder="#151C17">
+                      </div>
+                    </div>
+                    <div class="custom-token-control">
+                      <label class="custom-token-label" for="token-bg-sidebar" data-i18n="token_bg_sidebar">Barra Lateral / Superficie (--bg-sidebar)</label>
+                      <div class="custom-color-input-wrapper">
+                        <input type="color" id="picker-bg-sidebar" class="custom-color-picker" data-token="--bg-sidebar">
+                        <input type="text" id="token-bg-sidebar" class="custom-hex-input" data-token="--bg-sidebar" maxlength="7" placeholder="#1E2922">
+                      </div>
+                    </div>
+                    <div class="custom-token-control">
+                      <label class="custom-token-label" for="token-bg-hover" data-i18n="token_bg_hover">Estados Hover (--bg-hover)</label>
+                      <div class="custom-color-input-wrapper">
+                        <input type="color" id="picker-bg-hover" class="custom-color-picker" data-token="--bg-hover">
+                        <input type="text" id="token-bg-hover" class="custom-hex-input" data-token="--bg-hover" maxlength="7" placeholder="#2B3B31">
+                      </div>
+                    </div>
+                    <div class="custom-token-control">
+                      <label class="custom-token-label" for="token-bg-modal" data-i18n="token_bg_modal">Modales y Paneles (--bg-modal)</label>
+                      <div class="custom-color-input-wrapper">
+                        <input type="color" id="picker-bg-modal" class="custom-color-picker" data-token="--bg-modal">
+                        <input type="text" id="token-bg-modal" class="custom-hex-input" data-token="--bg-modal" maxlength="7" placeholder="#1E2922">
+                      </div>
+                    </div>
+                    <div class="custom-token-control">
+                      <label class="custom-token-label" for="token-whatsapp-bg" data-i18n="token_whatsapp_bg">Contenedor WhatsApp (--whatsapp-bg)</label>
+                      <div class="custom-color-input-wrapper">
+                        <input type="color" id="picker-whatsapp-bg" class="custom-color-picker" data-token="--whatsapp-bg">
+                        <input type="text" id="token-whatsapp-bg" class="custom-hex-input" data-token="--whatsapp-bg" maxlength="7" placeholder="#111813">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Grupo B: Tipografía y Bordes -->
+                <div class="custom-token-group">
+                  <div class="custom-group-header">
+                    <i class="fa-solid fa-font"></i>
+                    <h4 data-i18n="custom_group_typography">Tipografía y Bordes</h4>
+                  </div>
+                  <div class="custom-token-grid">
+                    <div class="custom-token-control">
+                      <label class="custom-token-label" for="token-text-primary" data-i18n="token_text_primary">Texto Principal (--text-primary)</label>
+                      <div class="custom-color-input-wrapper">
+                        <input type="color" id="picker-text-primary" class="custom-color-picker" data-token="--text-primary">
+                        <input type="text" id="token-text-primary" class="custom-hex-input" data-token="--text-primary" maxlength="7" placeholder="#EDF4EF">
+                      </div>
+                    </div>
+                    <div class="custom-token-control">
+                      <label class="custom-token-label" for="token-text-secondary" data-i18n="token_text_secondary">Texto Secundario (--text-secondary)</label>
+                      <div class="custom-color-input-wrapper">
+                        <input type="color" id="picker-text-secondary" class="custom-color-picker" data-token="--text-secondary">
+                        <input type="text" id="token-text-secondary" class="custom-hex-input" data-token="--text-secondary" maxlength="7" placeholder="#9CB0A2">
+                      </div>
+                    </div>
+                    <div class="custom-token-control">
+                      <label class="custom-token-label" for="token-border-color" data-i18n="token_border_color">Bordes y Separadores (--border-color)</label>
+                      <div class="custom-color-input-wrapper">
+                        <input type="color" id="picker-border-color" class="custom-color-picker" data-token="--border-color">
+                        <input type="text" id="token-border-color" class="custom-hex-input" data-token="--border-color" maxlength="7" placeholder="#2D3D33">
+                      </div>
+                    </div>
+                    <div class="custom-token-control">
+                      <label class="custom-token-label" for="token-text-on-accent" data-i18n="token_text_on_accent">Texto sobre Acento (--text-on-accent)</label>
+                      <div class="custom-color-input-wrapper">
+                        <input type="color" id="picker-text-on-accent" class="custom-color-picker" data-token="--text-on-accent">
+                        <input type="text" id="token-text-on-accent" class="custom-hex-input" data-token="--text-on-accent" maxlength="7" placeholder="#FFFFFF">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Grupo C: Acentos y Colores de Acción -->
+                <div class="custom-token-group">
+                  <div class="custom-group-header">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i>
+                    <h4 data-i18n="custom_group_accents">Acentos y Colores de Acción</h4>
+                  </div>
+                  <div class="custom-token-grid">
+                    <div class="custom-token-control">
+                      <label class="custom-token-label" for="token-bg-active" data-i18n="token_bg_active">Acento Principal / Activo (--bg-active)</label>
+                      <div class="custom-color-input-wrapper">
+                        <input type="color" id="picker-bg-active" class="custom-color-picker" data-token="--bg-active">
+                        <input type="text" id="token-bg-active" class="custom-hex-input" data-token="--bg-active" maxlength="7" placeholder="#4C9E5F">
+                      </div>
+                    </div>
+                    <div class="custom-token-control">
+                      <label class="custom-token-label" for="token-accent-hover" data-i18n="token_accent_hover">Acento Hover (--accent-hover)</label>
+                      <div class="custom-color-input-wrapper">
+                        <input type="color" id="picker-accent-hover" class="custom-color-picker" data-token="--accent-hover">
+                        <input type="text" id="token-accent-hover" class="custom-hex-input" data-token="--accent-hover" maxlength="7" placeholder="#3D834E">
+                      </div>
+                    </div>
+                    <div class="custom-token-control">
+                      <label class="custom-token-label" for="token-accent-secondary" data-i18n="token_accent_secondary">Acento Secundario (--accent-secondary)</label>
+                      <div class="custom-color-input-wrapper">
+                        <input type="color" id="picker-accent-secondary" class="custom-color-picker" data-token="--accent-secondary">
+                        <input type="text" id="token-accent-secondary" class="custom-hex-input" data-token="--accent-secondary" maxlength="7" placeholder="#6E9E4C">
+                      </div>
+                    </div>
+                    <div class="custom-token-control">
+                      <label class="custom-token-label" for="token-accent-terracotta" data-i18n="token_accent_terracotta">Acento Terracota (--accent-terracotta)</label>
+                      <div class="custom-color-input-wrapper">
+                        <input type="color" id="picker-accent-terracotta" class="custom-color-picker" data-token="--accent-terracotta">
+                        <input type="text" id="token-accent-terracotta" class="custom-hex-input" data-token="--accent-terracotta" maxlength="7" placeholder="#9E624C">
+                      </div>
+                    </div>
+                    <div class="custom-token-control">
+                      <label class="custom-token-label" for="token-accent-crimson" data-i18n="token_accent_crimson">Acento Carmesí (--accent-crimson)</label>
+                      <div class="custom-color-input-wrapper">
+                        <input type="color" id="picker-accent-crimson" class="custom-color-picker" data-token="--accent-crimson">
+                        <input type="text" id="token-accent-crimson" class="custom-hex-input" data-token="--accent-crimson" maxlength="7" placeholder="#9E4C53">
+                      </div>
                     </div>
                   </div>
                 </div>
