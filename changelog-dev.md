@@ -2,6 +2,24 @@
 
 This changelog records all granular updates, bug fixes, refactorings, and feature iterations developed on the `Dev` branch. Each version bump in `package.json` is documented here as it happens.
 
+## [1.2.1] - 2026-09-05
+### Refactored & Optimized
+- **Complete Internationalization (i18n) Architecture Audit & Asset Synchronization:**
+  - Audited `src/locales/` directory and expanded coverage to all top 50 most spoken world languages (including Punjabi, Javanese, Wu Chinese, Gujarati, Thai, Bhojpuri, Southern Min, Hakka, Jin Chinese, Polish, Pashto, Kannada, Malayalam, Sundanese, Odia, Burmese, Ukrainian, Sindhi, Romanian, Dutch, Amharic, Yoruba, Oromo, Uzbek, and Malay) plus constructed languages (Esperanto `eo.json`, Tengwar `tengwar.json`, and Klingon `klingon.json` / `tlh.json`), reaching 55 localized dictionary files.
+  - Enforced 100% key parity across all 55 JSON files (305 identical keys per locale file) with `en.json` serving as the single canonical source of truth.
+  - Expanded `supportedLanguages` and `nativeNames` in `src/renderer/renderer.js` to register all 50 global languages and conlangs in the language selection dropdown with native typography.
+- **Strict User Interface String Extraction (Zero-Hardcoding Enforcement):**
+  - Inspected and sanitized all UI markup in `src/renderer/index.html`, replacing hardcoded text with `data-i18n`, `data-i18n-title`, and `data-i18n-aria` attributes:
+    - Sidebar action buttons: `data-i18n-aria` for Add Account, Freedoom, Report Bug, Donations, and Settings.
+    - Custom dropdown trigger labels: `palette-select-label`, `theme-select-label`, `tray-style-select-label`, and `privacy-preset-select-label`.
+    - Form inputs: `download-path-input` placeholder mapped to `data-i18n="download_path_placeholder"`.
+    - License button tooltip: `btn-open-gpl-license` title mapped to `data-i18n-title="view_gpl_license_title"`.
+    - Modal dialogs: close buttons mapped to `data-i18n-aria="btn_close"`.
+  - Refactored `src/renderer/renderer.js` to eliminate embedded Spanish fallback strings across dynamic dialogs, tooltips, hidden notification masking (`notif_hidden_contact`, `notif_hidden_message`), version label formatting (`about_version_label`), and auto-updater button states.
+  - Localized the Freedoom easter egg webview (`src/assets/doom/index.html`), extracting controls overlay strings, button titles, and loading indicators into reactive `data-i18n` bindings fed via URL query parameter and local JSON fetch.
+- **Agent Governance & Architectural Policy:**
+  - Authored `.agents/rules/i18n.md` codifying strict zero-hardcoding rules, 100% locale key parity mandate, single-source-of-truth guidelines in `src/locales/`, and language registration procedures for all future agent tasks.
+
 ## [1.2.0] - 2026-09-05
 ### Added
 - **Conlang Custom Typography Architecture (Elvish Tengwar & Klingon pIqaD):**

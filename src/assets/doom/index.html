@@ -224,7 +224,7 @@
   <div id="game-container">
     <div id="loading-indicator">
       <div class="spinner"></div>
-      <span id="loading-text">Cargando recursos de Freedoom...</span>
+      <span id="loading-text" data-i18n="doom_loading">Loading Freedoom assets...</span>
     </div>
 
     <!-- Canvas Principal para WebAssembly -->
@@ -245,9 +245,9 @@
             <line x1="16" y1="12" x2="16.01" y2="12"></line>
             <line x1="7" y1="16" x2="17" y2="16"></line>
           </svg>
-          <span>Controles de Freedoom</span>
+          <span data-i18n="doom_controls_title">Freedoom Controls</span>
         </div>
-        <button id="toggle-controls-btn" class="toggle-btn" title="Ocultar / Mostrar controles" aria-label="Toggle Controls">
+        <button id="toggle-controls-btn" class="toggle-btn" data-i18n-title="doom_toggle_controls" title="Hide / Show controls" aria-label="Toggle Controls">
           <svg class="chevron-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
             <polyline points="18 15 12 9 6 15"></polyline>
           </svg>
@@ -255,37 +255,65 @@
       </div>
       <div id="controls-body" class="controls-body">
         <div class="control-row">
-          <span class="control-label">Movimiento:</span>
-          <span class="control-keys"><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> o <kbd>▲</kbd><kbd>◄</kbd><kbd>▼</kbd><kbd>►</kbd></span>
+          <span class="control-label" data-i18n="doom_movement">Movement:</span>
+          <span class="control-keys"><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> <span data-i18n="doom_or">or</span> <kbd>▲</kbd><kbd>◄</kbd><kbd>▼</kbd><kbd>►</kbd></span>
         </div>
         <div class="control-row">
-          <span class="control-label">Girar cámara:</span>
-          <span class="control-keys"><kbd>Ratón</kbd> o <kbd>O</kbd> / <kbd>P</kbd></span>
+          <span class="control-label" data-i18n="doom_turn_camera">Turn camera:</span>
+          <span class="control-keys"><kbd data-i18n="doom_mouse">Mouse</kbd> <span data-i18n="doom_or">or</span> <kbd>O</kbd> / <kbd>P</kbd></span>
         </div>
         <div class="control-row">
-          <span class="control-label">Disparar:</span>
-          <span class="control-keys"><kbd>Ctrl</kbd> o <kbd>Clic Izq</kbd></span>
+          <span class="control-label" data-i18n="doom_shoot">Fire:</span>
+          <span class="control-keys"><kbd>Ctrl</kbd> <span data-i18n="doom_or">or</span> <kbd data-i18n="doom_left_click">Left Click</kbd></span>
         </div>
         <div class="control-row">
-          <span class="control-label">Interactuar / Abrir:</span>
-          <span class="control-keys"><kbd>Espacio</kbd></span>
+          <span class="control-label" data-i18n="doom_interact">Interact / Open:</span>
+          <span class="control-keys"><kbd data-i18n="doom_space">Space</kbd></span>
         </div>
         <div class="control-row">
-          <span class="control-label">Correr:</span>
+          <span class="control-label" data-i18n="doom_run">Run:</span>
           <span class="control-keys"><kbd>Shift</kbd></span>
         </div>
         <div class="control-row">
-          <span class="control-label">Selección de armas:</span>
+          <span class="control-label" data-i18n="doom_weapons">Weapon select:</span>
           <span class="control-keys"><kbd>1</kbd> - <kbd>7</kbd></span>
         </div>
-        <div class="controls-note">
-          Nota: En Freedoom / DOOM clásico no existe salto por diseño de niveles (corre con Shift para cruzar abismos).
+        <div class="controls-note" data-i18n="doom_note">
+          Note: In classic DOOM / Freedoom, there is no jump by level design (run with Shift to cross gaps).
         </div>
       </div>
     </div>
   </div>
 
   <script>
+    async function loadDoomTranslations() {
+      try {
+        const urlParams = new URLSearchParams(window.location.search);
+        const langCode = urlParams.get('lang') || 'en';
+        let dict = {};
+        try {
+          const res = await fetch(`../../locales/${langCode}.json`);
+          if (res.ok) dict = await res.json();
+        } catch (_) {}
+        if (!dict || Object.keys(dict).length === 0) {
+          try {
+            const res = await fetch('../../locales/en.json');
+            if (res.ok) dict = await res.json();
+          } catch (_) {}
+        }
+        if (dict) {
+          document.querySelectorAll('[data-i18n]').forEach(el => {
+            const key = el.getAttribute('data-i18n');
+            if (dict[key]) el.innerText = dict[key];
+          });
+          document.querySelectorAll('[data-i18n-title]').forEach(el => {
+            const key = el.getAttribute('data-i18n-title');
+            if (dict[key]) el.title = dict[key];
+          });
+        }
+      } catch (_) {}
+    }
+    loadDoomTranslations();
     // 1. Control de visualización del overlay de controles
     const overlay = document.getElementById('controls-overlay');
     const toggleBtn = document.getElementById('toggle-controls-btn');

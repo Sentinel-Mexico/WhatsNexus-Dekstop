@@ -25,14 +25,19 @@ function escapeHtml(str) {
     .replace(/'/g, '&#039;');
 }
 
-// Supported languages (World languages + Conlangs Tengwar & Klingon)
+// Supported languages (World languages + Conlangs Esperanto, Tengwar & Klingon)
 const supportedLanguages = [
   'en', 'zh', 'hi', 'es', 'fr',
   'ar', 'bn', 'pt', 'ru', 'ur',
   'id', 'de', 'ja', 'mr', 'te',
   'tr', 'ta', 'yue', 'vi', 'fil',
   'ko', 'fa', 'ha', 'sw', 'it',
-  'tengwar', 'klingon'
+  'pa', 'jv', 'wuu', 'gu', 'th',
+  'bho', 'nan', 'hak', 'cjy', 'pl',
+  'ps', 'kn', 'ml', 'su', 'or',
+  'my', 'uk', 'sd', 'ro', 'nl',
+  'am', 'yo', 'om', 'uz', 'ms',
+  'eo', 'tengwar', 'klingon', 'tlh'
 ];
 
 // Native names for each language
@@ -62,8 +67,35 @@ const nativeNames = {
   ha: "Hausa",
   sw: "Kiswahili",
   it: "Italiano",
+  pa: "ਪੰਜਾਬੀ",
+  jv: "Basa Jawa",
+  wuu: "吴语",
+  gu: "ગુજરાતી",
+  th: "ไทย",
+  bho: "भोजपुरी",
+  nan: "閩南語",
+  hak: "客家話",
+  cjy: "晋语",
+  pl: "Polski",
+  ps: "پښتو",
+  kn: "ಕನ್ನಡ",
+  ml: "മലയാളം",
+  su: "Basa Sunda",
+  or: "ଓଡ଼ିଆ",
+  my: "မြန်မာစာ",
+  uk: "Українська",
+  sd: "سنڌي",
+  ro: "Română",
+  nl: "Nederlands",
+  am: "አማርኛ",
+  yo: "Èdè Yorùbá",
+  om: "Afaan Oromoo",
+  uz: "Oʻzbekcha",
+  ms: "Bahasa Melayu",
+  eo: "Esperanto",
   tengwar: "Tengwar (Élfico / Elvish)",
-  klingon: "tlhIngan Hol (Klingon / pIqaD)"
+  klingon: "tlhIngan Hol (Klingon / pIqaD)",
+  tlh: "tlhIngan Hol (Klingon / pIqaD)"
 };
 
 function getOSLanguage() {
@@ -444,11 +476,32 @@ function updateTranslations() {
   document.querySelectorAll('[data-i18n]').forEach(el => {
     const key = el.getAttribute('data-i18n');
     if (lang[key]) {
-      if (el.tagName === 'INPUT' && el.type === 'text') {
+      if (el.tagName === 'INPUT' && (el.type === 'text' || el.type === 'search')) {
         el.placeholder = lang[key];
       } else {
         el.innerText = lang[key];
       }
+    }
+  });
+
+  document.querySelectorAll('[data-i18n-title]').forEach(el => {
+    const key = el.getAttribute('data-i18n-title');
+    if (lang[key]) {
+      el.title = lang[key];
+    }
+  });
+
+  document.querySelectorAll('[data-i18n-aria]').forEach(el => {
+    const key = el.getAttribute('data-i18n-aria');
+    if (lang[key]) {
+      el.setAttribute('aria-label', lang[key]);
+    }
+  });
+
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+    const key = el.getAttribute('data-i18n-placeholder');
+    if (lang[key]) {
+      el.placeholder = lang[key];
     }
   });
 
@@ -848,24 +901,29 @@ function attachSidebarTooltip(el, getTooltipText) {
 // Initialize unified tooltips for bottom sidebar buttons
 function initSidebarBottomTooltips() {
   const addBtn = document.getElementById('add-account-btn');
+  const doomBtn = document.getElementById('doom-btn');
   const bugBtn = document.getElementById('report-bug-btn');
   const setBtn = document.getElementById('settings-btn');
+  const donBtn = document.getElementById('donate-btn');
 
   if (addBtn) {
-    attachSidebarTooltip(addBtn, () => (i18n[settings.language] || i18n['es'])?.tooltip_add_account || 'Añadir Cuenta');
+    attachSidebarTooltip(addBtn, () => (i18n[settings.language] || i18n['en'])?.tooltip_add_account || 'Add Account');
     addBtn.addEventListener('click', () => floatingTooltip.classList.remove('visible'));
   }
+  if (doomBtn) {
+    attachSidebarTooltip(doomBtn, () => (i18n[settings.language] || i18n['en'])?.tooltip_doom || 'Freedoom');
+    doomBtn.addEventListener('click', () => floatingTooltip.classList.remove('visible'));
+  }
   if (bugBtn) {
-    attachSidebarTooltip(bugBtn, () => (i18n[settings.language] || i18n['es'])?.tooltip_report_bug || 'Reportar Error');
+    attachSidebarTooltip(bugBtn, () => (i18n[settings.language] || i18n['en'])?.tooltip_report_bug || 'Report Bug');
     bugBtn.addEventListener('click', () => floatingTooltip.classList.remove('visible'));
   }
-  const donBtn = document.getElementById('donate-btn');
   if (donBtn) {
-    attachSidebarTooltip(donBtn, () => (i18n[settings.language] || i18n['es'])?.tooltip_donations || 'Donaciones');
+    attachSidebarTooltip(donBtn, () => (i18n[settings.language] || i18n['en'])?.tooltip_donations || 'Donations');
     donBtn.addEventListener('click', () => floatingTooltip.classList.remove('visible'));
   }
   if (setBtn) {
-    attachSidebarTooltip(setBtn, () => (i18n[settings.language] || i18n['es'])?.tooltip_settings || 'Configuración');
+    attachSidebarTooltip(setBtn, () => (i18n[settings.language] || i18n['en'])?.tooltip_settings || 'Settings');
     setBtn.addEventListener('click', () => floatingTooltip.classList.remove('visible'));
   }
 }
@@ -1112,12 +1170,14 @@ function buildWebviewDOM(account, parentContainer) {
 
       // Nombre de contacto
       if (settings.notifications.contactName === false) {
-        title = 'Nombre oculto';
+        const langDict = (typeof currentTranslations !== 'undefined' && currentTranslations) || (typeof i18n !== 'undefined' && i18n[settings.language]) || fallbackTranslations || {};
+        title = langDict.notif_hidden_contact || 'Hidden contact';
       }
 
       // Vista previa del mensaje
       if (settings.notifications.messagePreview === false) {
-        body = 'Mensaje oculto';
+        const langDict = (typeof currentTranslations !== 'undefined' && currentTranslations) || (typeof i18n !== 'undefined' && i18n[settings.language]) || fallbackTranslations || {};
+        body = langDict.notif_hidden_message || 'Hidden message';
       }
 
       // Foto de contacto
@@ -1230,7 +1290,8 @@ function openDoomView() {
       doomView.appendChild(doomWebview);
     }
     if (doomWebview && (!doomWebview.src || doomWebview.src === 'about:blank' || !doomWebview.src.includes('assets/doom/index.html'))) {
-      doomWebview.src = '../assets/doom/index.html';
+      const activeLang = settings.language || 'en';
+      doomWebview.src = `../assets/doom/index.html?lang=${encodeURIComponent(activeLang)}`;
     }
   }
 }
@@ -1320,8 +1381,8 @@ function promptDeleteAccount(id) {
     if (deleteMsg) {
       const acc = accounts.find(a => a.id === id);
       const lang = (typeof i18n !== 'undefined' && i18n[settings.language]) || (typeof i18n !== 'undefined' && i18n['en']) || {};
-      const baseMsg = (typeof currentTranslations !== 'undefined' && currentTranslations.modal_delete_account_msg) || lang.modal_delete_account_msg || '¿Estás seguro de que deseas eliminar esta cuenta?';
-      const accName = acc ? (acc.name || `${lang.default_account_name || 'Cuenta'} ${acc.index || ''}`.trim()) : '';
+      const baseMsg = (typeof currentTranslations !== 'undefined' && currentTranslations.modal_delete_account_msg) || lang.modal_delete_account_msg || 'Are you sure you want to delete this account?';
+      const accName = acc ? (acc.name || `${lang.default_account_name || 'Account'} ${acc.index || ''}`.trim()) : '';
       deleteMsg.innerText = accName ? `${baseMsg} ("${accName}")` : baseMsg;
     }
     deleteModal.classList.remove('hidden');
@@ -1481,7 +1542,7 @@ function renderSettingsAccounts() {
   accounts.forEach(acc => {
     const isEnabled = acc.enabled !== false;
     const isDnd = !!acc.dnd;
-    const rawAccountTitle = acc.name || lang.untitled_account || 'Cuenta sin nombre';
+    const rawAccountTitle = acc.name || lang.untitled_account || 'Untitled Account';
     const accountTitle = escapeHtml(rawAccountTitle);
     const safeId = escapeHtml(acc.id);
 
@@ -1888,7 +1949,10 @@ async function loadAboutInfo() {
     if (versionEl) {
       const activeVer = sysInfo.appVersion || sysInfo.version || (electronAPI.appInfo && (electronAPI.appInfo.appVersion || electronAPI.appInfo.version));
       if (activeVer) {
-        versionEl.innerText = `Versión ${activeVer}`;
+        const verLabel = (typeof currentTranslations !== 'undefined' && currentTranslations.about_version_label) ||
+          (typeof i18n !== 'undefined' && i18n[settings.language] && i18n[settings.language].about_version_label) ||
+          'Version';
+        versionEl.innerText = `${verLabel} ${activeVer}`;
       }
     }
     if (osEl) {
@@ -2084,7 +2148,7 @@ function initAutoUpdater() {
     if (typeof currentTranslations !== 'undefined' && currentTranslations && currentTranslations[key]) {
       return currentTranslations[key];
     }
-    const lang = (typeof settings !== 'undefined' && settings && settings.language) || 'es';
+    const lang = (typeof settings !== 'undefined' && settings && settings.language) || 'en';
     if (typeof i18n !== 'undefined' && i18n && i18n[lang] && i18n[lang][key]) {
       return i18n[lang][key];
     }
@@ -2104,19 +2168,19 @@ function initAutoUpdater() {
       case 'IDLE':
         btnUpdate.disabled = false;
         if (progressContainer) progressContainer.style.display = 'none';
-        btnUpdate.innerHTML = `<i class="fa-solid fa-arrows-rotate"></i> <span id="btn-update-text" data-i18n="btn_check_updates">${getTranslation('btn_check_updates', 'Buscar actualizaciones')}</span>`;
+        btnUpdate.innerHTML = `<i class="fa-solid fa-arrows-rotate"></i> <span id="btn-update-text" data-i18n="btn_check_updates">${getTranslation('btn_check_updates', 'Check for updates')}</span>`;
         break;
 
       case 'CHECKING':
         btnUpdate.disabled = true;
         if (progressContainer) progressContainer.style.display = 'none';
-        btnUpdate.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> <span id="btn-update-text" data-i18n="btn_checking_updates">${getTranslation('btn_checking_updates', 'Buscando...')}</span>`;
+        btnUpdate.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> <span id="btn-update-text" data-i18n="btn_checking_updates">${getTranslation('btn_checking_updates', 'Checking...')}</span>`;
         break;
 
       case 'UP_TO_DATE':
         btnUpdate.disabled = true;
         if (progressContainer) progressContainer.style.display = 'none';
-        btnUpdate.innerHTML = `<i class="fa-solid fa-circle-check"></i> <span id="btn-update-text" data-i18n="btn_up_to_date">${getTranslation('btn_up_to_date', 'Tienes la última versión')}</span>`;
+        btnUpdate.innerHTML = `<i class="fa-solid fa-circle-check"></i> <span id="btn-update-text" data-i18n="btn_up_to_date">${getTranslation('btn_up_to_date', 'You have the latest version')}</span>`;
         revertTimer = setTimeout(() => {
           setButtonState('IDLE');
         }, 3000);
@@ -2126,7 +2190,7 @@ function initAutoUpdater() {
         btnUpdate.disabled = false;
         btnUpdate.classList.add('update-available');
         if (progressContainer) progressContainer.style.display = 'none';
-        btnUpdate.innerHTML = `<i class="fa-solid fa-cloud-arrow-down"></i> <span id="btn-update-text" data-i18n="btn_update_available">${getTranslation('btn_update_available', 'Actualización disponible: Descargar ahora')}</span>`;
+        btnUpdate.innerHTML = `<i class="fa-solid fa-cloud-arrow-down"></i> <span id="btn-update-text" data-i18n="btn_update_available">${getTranslation('btn_update_available', 'Update available: Download now')}</span>`;
         break;
 
       case 'DOWNLOADING':
@@ -2135,20 +2199,20 @@ function initAutoUpdater() {
         const percent = (payload && typeof payload.percent === 'number') ? Math.round(payload.percent) : 0;
         if (progressBar) progressBar.style.width = `${percent}%`;
         if (progressText) progressText.innerText = `${percent}%`;
-        btnUpdate.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> <span id="btn-update-text">${getTranslation('btn_downloading_update', 'Descargando...')} ${percent > 0 ? percent + '%' : ''}</span>`;
+        btnUpdate.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> <span id="btn-update-text">${getTranslation('btn_downloading_update', 'Downloading...')} ${percent > 0 ? percent + '%' : ''}</span>`;
         break;
 
       case 'DOWNLOADED':
         btnUpdate.disabled = false;
         btnUpdate.classList.add('update-ready');
         if (progressContainer) progressContainer.style.display = 'none';
-        btnUpdate.innerHTML = `<i class="fa-solid fa-bolt"></i> <span id="btn-update-text" data-i18n="btn_install_restart">${getTranslation('btn_install_restart', 'Instalar y Reiniciar')}</span>`;
+        btnUpdate.innerHTML = `<i class="fa-solid fa-bolt"></i> <span id="btn-update-text" data-i18n="btn_install_restart">${getTranslation('btn_install_restart', 'Install & Restart')}</span>`;
         break;
 
       case 'ERROR':
         btnUpdate.disabled = true;
         if (progressContainer) progressContainer.style.display = 'none';
-        btnUpdate.innerHTML = `<i class="fa-solid fa-circle-exclamation"></i> <span id="btn-update-text" data-i18n="btn_update_error">${getTranslation('btn_update_error', 'Error al buscar actualizaciones')}</span>`;
+        btnUpdate.innerHTML = `<i class="fa-solid fa-circle-exclamation"></i> <span id="btn-update-text" data-i18n="btn_update_error">${getTranslation('btn_update_error', 'Error checking for updates')}</span>`;
         revertTimer = setTimeout(() => {
           setButtonState('IDLE');
         }, 3500);
