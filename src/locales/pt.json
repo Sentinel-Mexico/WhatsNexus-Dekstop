@@ -41,6 +41,7 @@
   "wake_button": "Acordar",
   "btn_edit": "Editar",
   "btn_delete": "Excluir",
+  "btn_clear_cache": "Limpar Cache",
   "account_status_title": "Status da conta",
   "account_status_desc": "Contas desativadas permanecem salvas, mas não são carregadas nem recebem notificações.",
   "status_active": "Ativa",

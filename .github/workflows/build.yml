@@ -103,12 +103,28 @@ jobs:
             echo "tag=v${VERSION}" >> $GITHUB_OUTPUT
           fi
 
+      - name: Extraer notas de lanzamiento de changelog.md
+        id: extract_notes
+        run: |
+          node -e '
+            const fs = require("fs");
+            const content = fs.readFileSync("changelog.md", "utf8");
+            const match = content.match(/##\s+\[([0-9]+\.[0-9]+\.[0-9]+[^\]]*)\][^\n]*\n([\s\S]*?)(?=\n##\s+\[|\s*$)/);
+            if (match) {
+              const notes = `## Registro de Cambios - v${match[1]}\n\n${match[2].trim()}`;
+              fs.writeFileSync("RELEASE_NOTES.md", notes, "utf8");
+            } else {
+              fs.writeFileSync("RELEASE_NOTES.md", "Release de WhatsNexus", "utf8");
+            }
+          '
+
       # Crea una única release con todos los instaladores juntos
       - name: Publicar Release Única
         uses: softprops/action-gh-release@v2
         with:
           draft: true
           tag_name: ${{ steps.release_tag.outputs.tag }}
+          body_path: RELEASE_NOTES.md
           files: release-assets/*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

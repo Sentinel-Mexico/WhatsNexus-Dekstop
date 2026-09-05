@@ -41,6 +41,7 @@
   "wake_button": "فعال‌سازی",
   "btn_edit": "ویرایش",
   "btn_delete": "حذف",
+  "btn_clear_cache": "پاک کردن حافظه پنهان",
   "account_status_title": "وضعیت حساب",
   "account_status_desc": "حساب‌های غیرفعال ذخیره می‌مانند اما لود نمی‌شوند و اعلانی دریافت نمی‌کنند.",
   "status_active": "فعال",

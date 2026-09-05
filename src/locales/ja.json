@@ -41,6 +41,7 @@
   "wake_button": "再開する",
   "btn_edit": "編集",
   "btn_delete": "削除",
+  "btn_clear_cache": "キャッシュを消去",
   "account_status_title": "アカウントの状態",
   "account_status_desc": "無効化されたアカウントは保存されたままですが、読み込まれず通知も受信しません。",
   "status_active": "有効",

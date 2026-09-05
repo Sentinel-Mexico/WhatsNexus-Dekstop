@@ -41,6 +41,7 @@
   "wake_button": "Veki",
   "btn_edit": "Redakti",
   "btn_delete": "Forigi",
+  "btn_clear_cache": "Forviŝi kaŝmemoron",
   "account_status_title": "Stato de konto",
   "account_status_desc": "Malaktivigitaj kontoj restas konservitaj, sed ne ŝargiĝas nek ricevas sciigojn.",
   "status_active": "Aktiva",

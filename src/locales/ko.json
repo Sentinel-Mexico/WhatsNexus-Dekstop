@@ -41,6 +41,7 @@
   "wake_button": "깨우기",
   "btn_edit": "수정",
   "btn_delete": "삭제",
+  "btn_clear_cache": "캐시 지우기",
   "account_status_title": "계정 상태",
   "account_status_desc": "비활성화된 계정은 저장된 상태로 유지되지만 로드되지 않으며 알림도 받지 않습니다.",
   "status_active": "활성",

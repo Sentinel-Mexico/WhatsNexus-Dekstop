@@ -669,6 +669,21 @@ async function init() {
   if (electronAPI.setSpellcheckerLanguages) {
     electronAPI.setSpellcheckerLanguages(settings.spellcheckLanguages || ['es-ES']);
   }
+
+  // Synchronize accounts with userData accounts.json file if available
+  if (typeof electronAPI !== 'undefined' && electronAPI.getAccounts) {
+    try {
+      const persistedAccounts = await electronAPI.getAccounts();
+      if (Array.isArray(persistedAccounts) && persistedAccounts.length > 0) {
+        accounts = persistedAccounts;
+        localStorage.setItem('whatsNexusAccounts', JSON.stringify(accounts));
+      } else if (accounts.length > 0 && electronAPI.saveAccounts) {
+        electronAPI.saveAccounts(accounts);
+      }
+    } catch (e) {
+      console.error('Failed to sync accounts from userData:', e);
+    }
+  }
   
   // Ensure enabled property on existing accounts
   accounts.forEach(acc => {
@@ -714,11 +729,16 @@ function saveAccounts() {
     name: a.name,
     partition: a.partition,
     avatarUrl: a.avatarUrl,
-    dnd: a.dnd,
+    dnd: !!a.dnd,
     enabled: a.enabled !== false,
     isCustomNamed: !!a.isCustomNamed
   }));
   localStorage.setItem('whatsNexusAccounts', JSON.stringify(toSave));
+  if (typeof electronAPI !== 'undefined' && electronAPI.saveAccounts) {
+    electronAPI.saveAccounts(toSave).catch(err => {
+      console.error('Error persisting accounts to userData:', err);
+    });
+  }
 }
 
 function saveSettings() {
@@ -1046,8 +1066,12 @@ function createWebviewContainer(account, startHibernated = false) {
     <i class="fa-solid fa-moon hibernation-icon"></i>
     <h3 data-i18n="hibernation_title">${escapeHtml(lang.hibernation_title)}</h3>
     <p data-i18n="hibernation_desc">${escapeHtml(lang.hibernation_desc)}</p>
-    <button class="wake-btn" onclick="wakeWebview('${escapeHtml(account.id)}')" data-i18n="wake_button">${escapeHtml(lang.wake_button)}</button>
+    <button type="button" class="wake-btn" data-i18n="wake_button">${escapeHtml(lang.wake_button)}</button>
   `;
+  const wakeBtn = overlay.querySelector('.wake-btn');
+  if (wakeBtn) {
+    wakeBtn.addEventListener('click', () => wakeWebview(account.id));
+  }
   container.appendChild(overlay);
 
   // Offline Overlay (Shown if account fails to load or app opened offline)
@@ -1060,11 +1084,15 @@ function createWebviewContainer(account, startHibernated = false) {
     </div>
     <h3 data-i18n="offline_screen_title">${escapeHtml(lang.offline_screen_title || 'Sin conexión a internet')}</h3>
     <p data-i18n="offline_screen_desc">${escapeHtml(lang.offline_screen_desc || 'No se puede conectar a WhatsApp Web. Comprueba tu conexión de red y vuelve a intentarlo.')}</p>
-    <button type="button" class="btn-primary-action retry-btn" onclick="retryLoadAccount('${escapeHtml(account.id)}')">
+    <button type="button" class="btn-primary-action retry-btn">
       <i class="fa-solid fa-rotate-right"></i>
       <span data-i18n="btn_retry">${escapeHtml(lang.btn_retry || 'Reintentar')}</span>
     </button>
   `;
+  const retryBtn = offlineOverlay.querySelector('.retry-btn');
+  if (retryBtn) {
+    retryBtn.addEventListener('click', () => retryLoadAccount(account.id));
+  }
   container.appendChild(offlineOverlay);
 
   webviewContainer.appendChild(container);
@@ -1473,6 +1501,11 @@ function closeDeleteModal() {
 function executeDeleteAccount(id) {
   accounts = accounts.filter(a => a.id !== id);
   saveAccounts();
+  if (typeof electronAPI !== 'undefined' && electronAPI.deleteAccountData) {
+    electronAPI.deleteAccountData(id).catch(err => {
+      console.error('Error deleting account data from disk:', err);
+    });
+  }
   
   const container = document.getElementById(`container_${id}`);
   if (container) container.remove();
@@ -1608,6 +1641,30 @@ tabBtns.forEach(btn => {
   });
 });
 
+async function clearAccountCache(accountId, buttonEl) {
+  const icon = buttonEl ? buttonEl.querySelector('i') : null;
+  if (icon) icon.classList.add('fa-spin');
+  if (buttonEl) buttonEl.disabled = true;
+
+  try {
+    if (typeof electronAPI !== 'undefined' && electronAPI.clearAccountCache) {
+      await electronAPI.clearAccountCache(accountId);
+    }
+    const wv = document.getElementById(`webview_${accountId}`);
+    if (wv && typeof wv.reloadIgnoringCache === 'function') {
+      wv.reloadIgnoringCache();
+    }
+  } catch (err) {
+    console.error('Error executing hard reset of account cache:', err);
+  } finally {
+    setTimeout(() => {
+      if (icon) icon.classList.remove('fa-spin');
+      if (buttonEl) buttonEl.disabled = false;
+    }, 800);
+  }
+}
+window.clearAccountCache = clearAccountCache;
+
 function renderSettingsAccounts() {
   settingsAccountList.innerHTML = '';
   const lang = i18n[settings.language] || i18n['en'];
@@ -1634,19 +1691,27 @@ function renderSettingsAccounts() {
             </div>
           </div>
           <div class="account-card-actions" style="display: flex; align-items: center; gap: 12px;">
-            <span class="account-status-badge badge-inactive">${escapeHtml(lang.status_inactive)}</span>
+            <span class="account-status-badge badge-inactive">${escapeHtml(lang.status_inactive || 'Inactiva')}</span>
             <label class="switch">
-              <input type="checkbox" onchange="setAccountStatus('${safeId}', this.checked)">
+              <input type="checkbox" class="account-status-checkbox">
               <span class="switch-slider"></span>
             </label>
           </div>
         </div>
       `;
+
+      const statusCheckbox = card.querySelector('.account-status-checkbox');
+      if (statusCheckbox) {
+        statusCheckbox.addEventListener('change', (e) => {
+          setAccountStatus(acc.id, e.target.checked);
+        });
+      }
+
       settingsAccountList.appendChild(card);
       return;
     }
 
-    // Cuenta ACTIVADA: Tarjeta completa con Editar, Eliminar, Estado y No Molestar
+    // Cuenta ACTIVADA: Tarjeta completa con Editar, Limpiar Caché, Eliminar, Estado y No Molestar
     card.className = 'settings-account-card';
     card.innerHTML = `
       <div class="account-card-header">
@@ -1658,11 +1723,17 @@ function renderSettingsAccounts() {
           </div>
         </div>
         <div class="account-card-actions">
-          <button class="btn-card-action edit-btn" onclick="toggleEditAccountName('${safeId}')">
-            <span>${escapeHtml(lang.btn_edit)}</span>
+          <button type="button" class="btn-card-action edit-btn" title="${escapeHtml(lang.btn_edit || 'Editar')}">
+            <i class="fa-solid fa-pen-to-square"></i>
+            <span>${escapeHtml(lang.btn_edit || 'Editar')}</span>
           </button>
-          <button class="btn-card-action delete-btn" onclick="promptDeleteAccount('${safeId}')">
-            <span>${escapeHtml(lang.btn_delete)}</span>
+          <button type="button" class="btn-card-action clear-cache-btn" title="${escapeHtml(lang.btn_clear_cache || 'Limpiar Caché')}">
+            <i class="fa-solid fa-arrows-rotate"></i>
+            <span>${escapeHtml(lang.btn_clear_cache || 'Limpiar Caché')}</span>
+          </button>
+          <button type="button" class="btn-card-action delete-btn" title="${escapeHtml(lang.btn_delete || 'Eliminar')}">
+            <i class="fa-solid fa-trash"></i>
+            <span>${escapeHtml(lang.btn_delete || 'Eliminar')}</span>
           </button>
         </div>
       </div>
@@ -1670,13 +1741,13 @@ function renderSettingsAccounts() {
       <!-- Fila: Estado de la cuenta -->
       <div class="account-card-row">
         <div class="account-row-info">
-          <h4 class="account-row-title">${escapeHtml(lang.account_status_title)}</h4>
-          <p class="account-row-desc">${escapeHtml(lang.account_status_desc)}</p>
+          <h4 class="account-row-title">${escapeHtml(lang.account_status_title || 'Estado de la cuenta')}</h4>
+          <p class="account-row-desc">${escapeHtml(lang.account_status_desc || 'Activa o desactiva esta sesión de WhatsApp.')}</p>
         </div>
         <div class="account-row-control" style="display: flex; align-items: center; gap: 12px;">
-          <span class="account-status-badge badge-active">${escapeHtml(lang.status_active)}</span>
+          <span class="account-status-badge badge-active">${escapeHtml(lang.status_active || 'Activa')}</span>
           <label class="switch">
-            <input type="checkbox" checked onchange="setAccountStatus('${safeId}', this.checked)">
+            <input type="checkbox" class="account-status-checkbox" checked>
             <span class="switch-slider"></span>
           </label>
         </div>
@@ -1685,17 +1756,47 @@ function renderSettingsAccounts() {
       <!-- Fila: No molestar -->
       <div class="account-card-row">
         <div class="account-row-info">
-          <h4 class="account-row-title">${escapeHtml(lang.dnd_title)}</h4>
-          <p class="account-row-desc">${escapeHtml(lang.dnd_desc)}</p>
+          <h4 class="account-row-title">${escapeHtml(lang.dnd_title || 'No Molestar')}</h4>
+          <p class="account-row-desc">${escapeHtml(lang.dnd_desc || 'Silencia temporalmente las notificaciones de esta cuenta.')}</p>
         </div>
         <div class="account-row-control">
           <label class="switch">
-            <input type="checkbox" id="dnd_switch_${safeId}" ${isDnd ? 'checked' : ''} onchange="toggleDND('${safeId}')">
+            <input type="checkbox" class="account-dnd-checkbox" id="dnd_switch_${safeId}" ${isDnd ? 'checked' : ''}>
             <span class="switch-slider"></span>
           </label>
         </div>
       </div>
     `;
+
+    // Programmatic event listeners strictly avoiding inline handlers for CSP compliance
+    const editBtn = card.querySelector('.edit-btn');
+    if (editBtn) {
+      editBtn.addEventListener('click', () => toggleEditAccountName(acc.id));
+    }
+
+    const clearCacheBtn = card.querySelector('.clear-cache-btn');
+    if (clearCacheBtn) {
+      clearCacheBtn.addEventListener('click', () => clearAccountCache(acc.id, clearCacheBtn));
+    }
+
+    const deleteBtn = card.querySelector('.delete-btn');
+    if (deleteBtn) {
+      deleteBtn.addEventListener('click', () => promptDeleteAccount(acc.id));
+    }
+
+    const statusCheckbox = card.querySelector('.account-status-checkbox');
+    if (statusCheckbox) {
+      statusCheckbox.addEventListener('change', (e) => {
+        setAccountStatus(acc.id, e.target.checked);
+      });
+    }
+
+    const dndCheckbox = card.querySelector('.account-dnd-checkbox');
+    if (dndCheckbox) {
+      dndCheckbox.addEventListener('change', () => {
+        toggleDND(acc.id);
+      });
+    }
 
     const input = card.querySelector(`#name_input_${acc.id}`);
     if (input) {

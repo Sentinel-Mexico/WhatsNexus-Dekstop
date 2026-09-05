@@ -47,6 +47,10 @@ contextBridge.exposeInMainWorld('electronAPI', {
   setSpellcheckerLanguages: (langs) => ipcRenderer.invoke('set-spellchecker-languages', Array.isArray(langs) ? langs : [langs]),
   getSystemInfo: () => ipcRenderer.invoke('get-system-info'),
   loadLocale: (lang) => ipcRenderer.invoke('load-locale', lang),
+  getAccounts: () => ipcRenderer.invoke('get-accounts'),
+  saveAccounts: (accounts) => ipcRenderer.invoke('save-accounts', accounts),
+  deleteAccountData: (accountId) => ipcRenderer.invoke('delete-account-data', accountId),
+  clearAccountCache: (accountId) => ipcRenderer.invoke('clear-account-cache', accountId),
   onSelectAccount: (callback) => {
     if (typeof callback !== 'function') return;
     const handler = (_event, accountId) => callback(accountId);

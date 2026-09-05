@@ -41,6 +41,7 @@
   "wake_button": "喚醒",
   "btn_edit": "編輯",
   "btn_delete": "刪除",
+  "btn_clear_cache": "清除快取",
   "account_status_title": "帳戶狀態",
   "account_status_desc": "停用嘅帳戶會保留，但唔會載入亦唔會收到通知。",
   "status_active": "使用中",

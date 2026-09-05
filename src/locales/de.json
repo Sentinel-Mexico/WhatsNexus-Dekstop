@@ -41,6 +41,7 @@
   "wake_button": "Aufwecken",
   "btn_edit": "Bearbeiten",
   "btn_delete": "Löschen",
+  "btn_clear_cache": "Cache leeren",
   "account_status_title": "Kontostatus",
   "account_status_desc": "Deaktivierte Konten bleiben gespeichert, empfangen aber keine Benachrichtigungen.",
   "status_active": "Aktiv",

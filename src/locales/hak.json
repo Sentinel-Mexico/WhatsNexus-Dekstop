@@ -41,6 +41,7 @@
   "wake_button": "唤醒",
   "btn_edit": "编辑",
   "btn_delete": "删除",
+  "btn_clear_cache": "清除快取",
   "account_status_title": "账户状态",
   "account_status_desc": "停用的账户保持保存，但不加载也不接收通知。",
   "status_active": "已启用",

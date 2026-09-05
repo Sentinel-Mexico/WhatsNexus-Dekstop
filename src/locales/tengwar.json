@@ -41,6 +41,7 @@
   "wake_button": "",
   "btn_edit": "",
   "btn_delete": "",
+  "btn_clear_cache": " ",
   "account_status_title": " ",
   "account_status_desc": "          ",
   "status_active": "",

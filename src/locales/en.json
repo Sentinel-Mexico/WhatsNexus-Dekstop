@@ -41,6 +41,7 @@
   "wake_button": "Wake Up",
   "btn_edit": "Edit",
   "btn_delete": "Delete",
+  "btn_clear_cache": "Clear Cache",
   "account_status_title": "Account status",
   "account_status_desc": "Deactivated accounts remain saved, but are not loaded nor receive notifications.",
   "status_active": "Active",

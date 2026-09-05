@@ -45,7 +45,7 @@ function createSplashWindow() {
       backgroundColor: '#111b21',
       alwaysOnTop: true,
       center: true,
-      show: false,
+      show: true,
       webPreferences: {
         nodeIntegration: false,
         contextIsolation: true,
@@ -59,14 +59,9 @@ function createSplashWindow() {
     splashWindow.once('ready-to-show', () => {
       if (splashWindow && !splashWindow.isDestroyed()) {
         splashWindow.show();
+        splashWindow.focus();
       }
     });
-
-    setTimeout(() => {
-      if (splashWindow && !splashWindow.isDestroyed() && !splashWindow.isVisible()) {
-        splashWindow.show();
-      }
-    }, 250);
 
     splashWindow.on('closed', () => {
       splashWindow = null;
@@ -137,15 +132,9 @@ function createWindow() {
   });
 }
 
-// Handle transition from splash screen to main window
+// Splash transition is governed strictly by the 5000ms timer in app.whenReady
 ipcMain.on('splash-finished', () => {
-  if (mainWindow && !mainWindow.isDestroyed()) {
-    mainWindow.show();
-    mainWindow.focus();
-  }
-  if (splashWindow && !splashWindow.isDestroyed()) {
-    splashWindow.close();
-  }
+  // Gracefully ignored; master 5000ms timer controls the transition
 });
 
 // Provide current dynamic application version
@@ -349,6 +338,91 @@ ipcMain.on('update-permission-settings', (event, permissions) => {
   if (permissions) {
     currentPermissions = { ...currentPermissions, ...permissions };
     savePermissions();
+  }
+});
+
+// Accounts configuration and persistence in userData directory
+let currentAccounts = [];
+
+function getAccountsFilePath() {
+  return path.join(app.getPath('userData'), 'accounts.json');
+}
+
+function loadSavedAccounts() {
+  try {
+    const filePath = getAccountsFilePath();
+    if (fs.existsSync(filePath)) {
+      const data = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+      if (Array.isArray(data)) {
+        currentAccounts = data;
+        return currentAccounts;
+      }
+    }
+  } catch (err) {
+    console.error('Error loading accounts from userData:', err);
+  }
+  return [];
+}
+
+function saveAccountsToUserData(accounts) {
+  try {
+    const filePath = getAccountsFilePath();
+    fs.writeFileSync(filePath, JSON.stringify(accounts, null, 2), 'utf8');
+    currentAccounts = accounts;
+    return true;
+  } catch (err) {
+    console.error('Error saving accounts to userData:', err);
+    return false;
+  }
+}
+
+ipcMain.handle('get-accounts', () => {
+  return loadSavedAccounts();
+});
+
+ipcMain.handle('save-accounts', (_event, accounts) => {
+  if (Array.isArray(accounts)) {
+    return saveAccountsToUserData(accounts);
+  }
+  return false;
+});
+
+ipcMain.handle('delete-account-data', async (_event, accountId) => {
+  try {
+    if (!accountId) return { success: false, error: 'Invalid account ID' };
+    const accounts = loadSavedAccounts();
+    const updated = accounts.filter(a => a.id !== accountId);
+    saveAccountsToUserData(updated);
+
+    const partition = accountId.startsWith('persist:') ? accountId : `persist:${accountId}`;
+    const ses = session.fromPartition(partition);
+    if (ses) {
+      await ses.clearStorageData();
+      await ses.clearCache();
+    }
+    return { success: true };
+  } catch (err) {
+    console.error('Error deleting account data:', err);
+    return { success: false, error: err.message };
+  }
+});
+
+ipcMain.handle('clear-account-cache', async (_event, accountId) => {
+  try {
+    if (!accountId) return { success: false, error: 'Invalid account ID' };
+    const partition = accountId.startsWith('persist:') ? accountId : `persist:${accountId}`;
+    const ses = session.fromPartition(partition);
+    if (ses) {
+      await ses.clearCache();
+      await ses.clearStorageData({
+        storages: ['appcache', 'filesystem', 'shadercache', 'serviceworkers', 'cachestorage']
+      });
+      return { success: true };
+    }
+    return { success: false, error: 'Session not found' };
+  } catch (err) {
+    console.error('Error clearing account cache:', err);
+    return { success: false, error: err.message };
   }
 });
 
@@ -882,25 +956,31 @@ function configureSession(ses) {
 app.whenReady().then(() => {
   loadSavedPermissions();
   loadSavedSystemSettings();
+  loadSavedAccounts();
   configureSession(session.defaultSession);
   app.on('session-created', (ses) => {
     configureSession(ses);
   });
 
   createSplashWindow();
+  if (splashWindow && !splashWindow.isDestroyed()) {
+    splashWindow.show();
+    splashWindow.focus();
+  }
   createWindow();
   createTray();
 
-  // Safety fallback: if splash hangs for more than 2.5s, reveal mainWindow
+  // Strict 5000ms (5 seconds) timer: destroy splashWindow and simultaneously show mainWindow
   setTimeout(() => {
-    if (mainWindow && !mainWindow.isDestroyed() && !mainWindow.isVisible()) {
+    if (splashWindow && !splashWindow.isDestroyed()) {
+      splashWindow.destroy();
+      splashWindow = null;
+    }
+    if (mainWindow && !mainWindow.isDestroyed()) {
       mainWindow.show();
       mainWindow.focus();
-      if (splashWindow && !splashWindow.isDestroyed()) {
-        splashWindow.close();
-      }
     }
-  }, 2500);
+  }, 5000);
   
   app.on('activate', function () {
     if (BrowserWindow.getAllWindows().length === 0) {

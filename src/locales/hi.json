@@ -41,6 +41,7 @@
   "wake_button": "सक्रिय करें",
   "btn_edit": "संपादित करें",
   "btn_delete": "हटाएं",
+  "btn_clear_cache": "कैश साफ़ करें",
   "account_status_title": "खाता स्थिति",
   "account_status_desc": "निष्क्रिय खाते सहेजे रहते हैं, लेकिन लोड नहीं होते न ही सूचनाएं प्राप्त करते हैं।",
   "status_active": "सक्रिय",

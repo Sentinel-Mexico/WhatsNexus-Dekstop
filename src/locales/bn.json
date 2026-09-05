@@ -41,6 +41,7 @@
   "wake_button": "সক্রিয় করুন",
   "btn_edit": "সম্পাদনা",
   "btn_delete": "মুছুন",
+  "btn_clear_cache": "ক্যাশ সাফ করুন",
   "account_status_title": "অ্যাকাউন্টের স্থিতি",
   "account_status_desc": "নিষ্ক্রিয় অ্যাকাউন্ট সংরক্ষিত থাকে, কিন্তু লোড হয় না বা বিজ্ঞপ্তি পায় না।",
   "status_active": "সক্রিয়",

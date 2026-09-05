@@ -41,6 +41,7 @@
   "wake_button": "Bangunkan",
   "btn_edit": "Edit",
   "btn_delete": "Hapus",
+  "btn_clear_cache": "Keshni tozalash",
   "account_status_title": "Status akun",
   "account_status_desc": "Akun yang dinonaktifkan tetap tersimpan tetapi tidak dimuat.",
   "status_active": "Aktif",

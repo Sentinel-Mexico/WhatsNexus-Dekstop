@@ -41,6 +41,7 @@
   "wake_button": "Wybudź",
   "btn_edit": "Edytuj",
   "btn_delete": "Usuń",
+  "btn_clear_cache": "Wyczyść pamięć podręczną",
   "account_status_title": "Stan konta",
   "account_status_desc": "Dezaktywowane konta pozostają zapisane, ale nie są ładowane ani nie otrzymują powiadomień.",
   "status_active": "Aktywne",

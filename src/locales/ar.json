@@ -41,6 +41,7 @@
   "wake_button": "تنشيط",
   "btn_edit": "تعديل",
   "btn_delete": "حذف",
+  "btn_clear_cache": "مسح ذاكرة التخزين المؤقت",
   "account_status_title": "حالة الحساب",
   "account_status_desc": "تبقى الحسابات المعطلة محفوظة ولكن لا يتم تحميلها ولا تتلقى إشعارات.",
   "status_active": "نشط",

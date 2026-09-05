@@ -41,6 +41,7 @@
   "wake_button": "Разбудить",
   "btn_edit": "Редактировать",
   "btn_delete": "Удалить",
+  "btn_clear_cache": "Очистить кэш",
   "account_status_title": "Статус аккаунта",
   "account_status_desc": "Отключенные аккаунты сохраняются, но не загружаются и не получают уведомлений.",
   "status_active": "Активен",

@@ -41,6 +41,7 @@
   "wake_button": "Uyandır",
   "btn_edit": "Düzenle",
   "btn_delete": "Sil",
+  "btn_clear_cache": "Önbelleği Temizle",
   "account_status_title": "Hesap durumu",
   "account_status_desc": "Devre dışı bırakılan hesaplar kayıtlı kalır ancak yüklenmez veya bildirim almaz.",
   "status_active": "Aktif",

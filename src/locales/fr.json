@@ -41,6 +41,7 @@
   "wake_button": "Réveiller",
   "btn_edit": "Modifier",
   "btn_delete": "Supprimer",
+  "btn_clear_cache": "Vider le cache",
   "account_status_title": "Statut du compte",
   "account_status_desc": "Les comptes désactivés restent enregistrés sans charger de session.",
   "status_active": "Activé",

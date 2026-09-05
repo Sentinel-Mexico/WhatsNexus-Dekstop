@@ -41,6 +41,7 @@
   "wake_button": "Activeren",
   "btn_edit": "Bewerken",
   "btn_delete": "Verwijderen",
+  "btn_clear_cache": "Cache wissen",
   "account_status_title": "Accountstatus",
   "account_status_desc": "Gedeactiveerde accounts blijven opgeslagen, maar worden niet geladen en ontvangen geen meldingen.",
   "status_active": "Actief",

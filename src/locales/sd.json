@@ -41,6 +41,7 @@
   "wake_button": "بیدار کریں",
   "btn_edit": "ترمیم کریں",
   "btn_delete": "حذف کریں",
+  "btn_clear_cache": "ڪيش صاف ڪريو",
   "account_status_title": "اکاؤنٹ کی حیثیت",
   "account_status_desc": "غیر فعال اکاؤنٹس محفوظ رہتے ہیں لیکن لوڈ نہیں ہوتے۔",
   "status_active": "فعال",

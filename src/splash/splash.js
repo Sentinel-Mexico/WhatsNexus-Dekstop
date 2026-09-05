@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
     { threshold: 85, text: 'Launching WhatsNexus...' }
   ];
 
-  const durationMs = 1800; // ~1.8 seconds
+  const durationMs = 4800; // ~4.8 seconds to smoothly fill before the 5000ms transition
   const startTime = performance.now();
 
   function updateProgress() {

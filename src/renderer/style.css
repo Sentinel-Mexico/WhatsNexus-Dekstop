@@ -1774,6 +1774,20 @@ body.theme-light .dropdown-menu ul::-webkit-scrollbar-thumb {
   color: #ef5350;
 }
 
+.btn-card-action.clear-cache-btn {
+  color: var(--accent-color);
+}
+
+.btn-card-action.clear-cache-btn:hover {
+  background-color: var(--accent-subtle, rgba(0, 168, 132, 0.12));
+  border-color: var(--accent-color);
+  color: var(--accent-color);
+}
+
+.btn-card-action i {
+  margin-right: 4px;
+}
+
 /* Filas internas de la tarjeta */
 .account-card-row {
   display: flex;

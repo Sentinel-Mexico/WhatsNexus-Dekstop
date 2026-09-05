@@ -41,6 +41,7 @@
   "wake_button": "Activează",
   "btn_edit": "Editează",
   "btn_delete": "Șterge",
+  "btn_clear_cache": "Golește memoria cache",
   "account_status_title": "Starea contului",
   "account_status_desc": "Conturile dezactivate rămân salvate, dar nu se încarcă și nu primesc notificări.",
   "status_active": "Activ",

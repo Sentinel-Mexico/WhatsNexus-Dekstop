@@ -41,6 +41,7 @@
   "wake_button": "Riattiva",
   "btn_edit": "Modifica",
   "btn_delete": "Elimina",
+  "btn_clear_cache": "Svuota cache",
   "account_status_title": "Stato dell'account",
   "account_status_desc": "Gli account disattivati rimangono salvati ma non ricevono notifiche.",
   "status_active": "Attivo",

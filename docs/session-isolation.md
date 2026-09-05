@@ -95,4 +95,12 @@ function buildWebviewDOM(account, parentContainer) {
 ```
 
 ### 3.3 Account Deletion Safeguard
-To prevent accidental session loss, deleting an account triggers a confirmation modal (`#delete-account-modal`) displaying the targeted account name, danger warning, and explicit cancel/confirm actions (supporting Escape key dismissal). Upon confirmation, its DOM container is removed, the `<webview>` is destroyed, its sidebar tab is purged, and `localStorage` is updated. To release disk space permanently, the underlying partition folder in the OS application data path can also be purged when required.
+To prevent accidental session loss, deleting an account triggers a confirmation modal (`#delete-account-modal`) displaying the targeted account name, danger warning, and explicit cancel/confirm actions (supporting Escape key dismissal). Upon confirmation, its DOM container is removed, the `<webview>` is destroyed, its sidebar tab is purged, its partition storage data is wiped via IPC (`delete-account-data`), and its record is synchronized in both `localStorage` and `accounts.json` within `app.getPath('userData')`.
+
+### 3.4 Session Cache Reset (Hard Reset)
+If an individual account gets frozen or fails to render due to corrupted web assets or stale service workers, users can perform a targeted hard reset from the Account Management card:
+- Clicking "Limpiar Caché" triggers the `clear-account-cache` IPC channel with the account partition.
+- In `main.js`, Electron purges the session network cache via `ses.clearCache()` and selective storage via `ses.clearStorageData({ storages: ['appcache', 'filesystem', 'shadercache', 'serviceworkers', 'cachestorage'] })`.
+- **Authentication Preservation:** Cookies and IndexedDB are preserved, meaning users are **not** logged out and do not need to re-scan the QR code.
+- The webview is immediately reloaded via `webview.reloadIgnoringCache()`.
+

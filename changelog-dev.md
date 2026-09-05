@@ -2,6 +2,27 @@
 
 This changelog records all granular updates, bug fixes, refactorings, and feature iterations developed on the `Dev` branch. Each version bump in `package.json` is documented here as it happens.
 
+## [1.6.0] - 2026-09-05
+### Added
+- **Session Hard Reset ("Limpiar Caché") in Account Cards:**
+  - Added "Limpiar Caché" button (`.clear-cache-btn`) with Font Awesome icon `fa-arrows-rotate` to the account card actions in Settings.
+  - Implemented `clear-account-cache` handler in `src/main.js` which purges Chromium cache and storage data (`appcache`, `filesystem`, `shadercache`, `serviceworkers`, `cachestorage`) for the specific partition while protecting `cookies` and `indexeddb` to prevent user logout.
+  - Automatically triggers `webview.reloadIgnoringCache()` upon cache eviction.
+  - Added `btn_clear_cache` across all 55 supported locale JSON files in `src/locales/`.
+- **Automated GitHub Actions Release Notes Extraction:**
+  - Configured step `extract_notes` in `.github/workflows/build.yml` before release creation.
+  - Parses the newest release block from `changelog.md` into `RELEASE_NOTES.md` and provides it to `softprops/action-gh-release@v2` via `body_path`.
+
+### Fixed
+- **Packaged Mode (.AppImage) Account Action Button Failure:**
+  - Fixed account card action buttons ("Eliminar", "Editar") and activation switch failure in production by removing all inline event handlers (`onclick`, `onchange`) that were blocked by Chromium CSP (`script-src 'self'`).
+  - Switched `renderSettingsAccounts()` to programmatic DOM binding (`addEventListener`).
+  - Added filesystem persistence in `app.getPath('userData')/accounts.json` with IPC channels `get-accounts`, `save-accounts`, and `delete-account-data` ensuring reliable operation inside `app.asar`.
+- **Forced & Strictly Timed 5-Second Splash Screen:**
+  - Set `splashWindow` to show and focus immediately on `app.whenReady()`.
+  - Implemented strict 5000ms timer (`setTimeout`) in `src/main.js` before destroying `splashWindow` and showing `mainWindow`.
+  - Tuned progress bar animation in `src/splash/splash.js` to 4800ms for smooth completion.
+
 ## [1.5.0] - 2026-09-05
 ### Added
 - **New Theme Color Palettes (Tier 2 & Tier 4):**
