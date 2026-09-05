@@ -7,8 +7,8 @@ try {
 
 contextBridge.exposeInMainWorld('electronAPI', {
   appInfo: {
-    version: initInfo.version || '1.4.0',
-    appVersion: initInfo.version || '1.4.0',
+    version: initInfo.version || '1.4.1',
+    appVersion: initInfo.version || '1.4.1',
     platform: initInfo.platform || (typeof process !== 'undefined' ? process.platform : 'linux'),
     arch: initInfo.arch || (typeof process !== 'undefined' ? process.arch : 'x64'),
     electronVersion: initInfo.electronVersion || (typeof process !== 'undefined' && process.versions ? process.versions.electron : 'N/A'),

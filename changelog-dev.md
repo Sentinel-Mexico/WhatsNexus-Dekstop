@@ -2,6 +2,28 @@
 
 This changelog records all granular updates, bug fixes, refactorings, and feature iterations developed on the `Dev` branch. Each version bump in `package.json` is documented here as it happens.
 
+## [1.4.1] - 2026-09-05
+### Fixed
+- **Settings Navigation Default Tab Enforcement:**
+  - Deactivated sticky tab memory behavior when opening Settings.
+  - Configured `openSettingsView()` in `src/renderer/renderer.js` to automatically reset the active view to "Gestión de cuentas" (`#tab-accounts`) every time Settings is opened.
+- **Language Dropdown Conlang Whitespace & Flex Separation:**
+  - Resolved flexbox text-node splitting issue in `.custom-option` (`justify-content: space-between`) that caused excessive whitespace around parentheses in Elvish Tengwar and Klingon pIqaD.
+  - Standardized `.custom-option` with `justify-content: flex-start` and unified inline label wrappers in `src/renderer/renderer.js`.
+  - Added zero-margin, zero-padding, normal letter-spacing, and inline display resets to `.font-tengwar` and `.font-klingon` in `src/renderer/style.css`.
+
+### Changed
+- **Color Palette Selector Hierarchy & Categorization:**
+  - Reordered `#palette-select` in `src/renderer/index.html` strictly according to visual categories:
+    1. *Tema propio del programa:* WhatsNexus.
+    2. *Temas personalizados / originales:* Bosque (Oliva y Tierra), Retro (Beige y Neón), Steampunk (Pergamino y Latón), Alto Contraste (Blanco y Negro), Dracula (Morado y Gris Oscuro), Nord (Hielo y Escarcha).
+    3. *Temas inspirados en mensajería:* WhatsApp (Esmeralda), Messenger (Azul Meta), Telegram (Azul Cian), Signal (Azul Real).
+    4. *Temas de cultura pop:* Star Wars (Sable de Luz).
+  - Aligned Messenger and Telegram default option labels in `src/renderer/index.html` with localized color descriptions ("Azul Meta", "Azul Cian").
+- **Agent Governance & Architecture Rules:**
+  - Created `.agents/rules/themes.md` establishing mandatory placement rules for any future color palette additions across the 4 canonical categories.
+  - Registered `.agents/rules/themes.md` in `.agents/README.md`.
+
 ## [1.4.0] - 2026-09-05
 ### Security
 - **Strict "Deny by Default" Session Permissions:**

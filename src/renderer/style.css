@@ -545,10 +545,18 @@ html[data-language="tlh"] textarea {
 
 .font-tengwar {
   font-family: 'Tengwar', sans-serif !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  letter-spacing: normal !important;
+  display: inline !important;
 }
 
 .font-klingon {
   font-family: 'Klingon pIqaD', sans-serif !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  letter-spacing: normal !important;
+  display: inline !important;
 }
 
 .custom-select-trigger,
@@ -1340,8 +1348,15 @@ body.theme-light .dropdown-menu ul::-webkit-scrollbar-thumb {
   transition: all 0.15s var(--motion-expressive);
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
+  gap: 6px;
   user-select: none;
+}
+
+.custom-option span {
+  margin: 0;
+  padding: 0;
+  display: inline;
 }
 
 .custom-option:hover {

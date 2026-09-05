@@ -295,11 +295,13 @@ function populateLanguageSelect() {
       const customOpt = document.createElement('div');
       customOpt.className = 'custom-option' + (code === currentLangCode ? ' selected' : '');
       if (code === 'tengwar') {
-        customOpt.innerHTML = `${escapeHtml(translatedName)} (<span class="font-tengwar" style="font-family: 'Tengwar' !important;">${nativeName}</span>)`;
+        const cleanNative = (nativeName || '').trim();
+        customOpt.innerHTML = `<span>${escapeHtml(translatedName)} (<span class="font-tengwar" style="font-family: 'Tengwar' !important;">${cleanNative}</span>)</span>`;
       } else if (code === 'tlh' || code === 'klingon') {
-        customOpt.innerHTML = `${escapeHtml(translatedName)} (<span class="font-klingon" style="font-family: 'Klingon pIqaD' !important;">${nativeName}</span>)`;
+        const cleanNative = (nativeName || '').trim();
+        customOpt.innerHTML = `<span>${escapeHtml(translatedName)} (<span class="font-klingon" style="font-family: 'Klingon pIqaD' !important;">${cleanNative}</span>)</span>`;
       } else {
-        customOpt.innerText = displayText;
+        customOpt.innerHTML = `<span>${escapeHtml(displayText)}</span>`;
       }
       customOpt.dataset.value = code;
 
@@ -340,9 +342,11 @@ function populateLanguageSelect() {
     const activeTranslated = dict[`lang_${currentLangCode}`] || nativeNames[currentLangCode] || currentLangCode;
     const activeNative = nativeNames[currentLangCode] || currentLangCode;
     if (currentLangCode === 'tengwar') {
-      triggerLabel.innerHTML = `${escapeHtml(activeTranslated)} (<span class="font-tengwar" style="font-family: 'Tengwar' !important;">${activeNative}</span>)`;
+      const cleanNative = (activeNative || '').trim();
+      triggerLabel.innerHTML = `${escapeHtml(activeTranslated)} (<span class="font-tengwar" style="font-family: 'Tengwar' !important;">${cleanNative}</span>)`;
     } else if (currentLangCode === 'tlh' || currentLangCode === 'klingon') {
-      triggerLabel.innerHTML = `${escapeHtml(activeTranslated)} (<span class="font-klingon" style="font-family: 'Klingon pIqaD' !important;">${activeNative}</span>)`;
+      const cleanNative = (activeNative || '').trim();
+      triggerLabel.innerHTML = `${escapeHtml(activeTranslated)} (<span class="font-klingon" style="font-family: 'Klingon pIqaD' !important;">${cleanNative}</span>)`;
     } else {
       triggerLabel.innerText = `${activeTranslated} (${activeNative})`;
     }
@@ -1378,6 +1382,14 @@ function openSettingsView() {
   // Activate settings button in sidebar
   if (settingsBtn) settingsBtn.classList.add('active');
   if (settingsView) settingsView.classList.remove('hidden');
+
+  // Always reset to default settings tab: "Gestión de cuentas" (tab-accounts)
+  tabBtns.forEach(b => b.classList.remove('active'));
+  settingsPanels.forEach(p => p.classList.remove('active'));
+  const defaultTabBtn = document.querySelector('.tab-btn[data-tab="tab-accounts"]');
+  const defaultPanel = document.getElementById('tab-accounts');
+  if (defaultTabBtn) defaultTabBtn.classList.add('active');
+  if (defaultPanel) defaultPanel.classList.add('active');
 
   renderSettingsAccounts();
   initDownloadPathUI();

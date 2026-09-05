@@ -15,6 +15,7 @@ All rules are defined as standalone markdown documents in the [`rules/`](rules/)
 | **Documentation Sync** | [`rules/documentation.md`](rules/documentation.md) | Mandates continuous synchronization of `docs/` technical documentation and this `.agents/README.md` index whenever code or rules change. Enforces relative markdown links. |
 | **Documentation & Code Language** | [`rules/language.md`](rules/language.md) | Enforces neutral English strictly for all code comments/notes, text files (`.md`, `.txt`), commit messages, and in-app strings without exception. |
 | **Interface Internationalization (i18n)** | [`rules/i18n.md`](rules/i18n.md) | Enforces zero-hardcoding (`data-i18n*`), strict 100% key parity across all 55+ locales with canonical `en.json`, strict prohibition of English fallback/placeholders in foreign locales, authentic conlang CSUR encoding, dropdown deduplication, and pre-commit audit. |
+| **Theme & Palette Categorization** | [`rules/themes.md`](rules/themes.md) | Mandates strict 4-category hierarchy for all theme palettes (Own, Original, Messaging, Pop Culture) and enforces category placement rules for future additions. |
 | **Semantic Versioning** | [`rules/versioning.md`](rules/versioning.md) | Defines strict SemVer (MAJOR.MINOR.PATCH), mandatory push to `Dev` on every version change, quartet synchronization (`changelog-dev.md`, `package.json`, `package-lock.json`, root `README.md` badge), and commit message format (`"v.<VERSION> <type>: <summary>"`). |
 
 ---
@@ -56,4 +57,9 @@ All rules are defined as standalone markdown documents in the [`rules/`](rules/)
 - **Conlang Standards:** Klingon (`tlh.json` / `klingon.json`) must use CSUR PUA `U+F8D0`–`U+F8FF`; Tengwar (`tengwar.json`) must use CSUR PUA `U+E000`–`U+E07D`.
 - **Selector Deduplication:** Languages must be registered strictly once in `supportedLanguages` and `nativeNames` in `src/renderer/renderer.js`.
 - **Pre-Commit Audit:** Agents must run automated parity and fallback checks before delivering localization updates.
+
+### 7. [Theme & Color Palette Categorization (`rules/themes.md`)](rules/themes.md)
+- **Hierarchy Structure:** Themes must follow the 4-tier hierarchy: Application Own (WhatsNexus), Custom/Original (Bosque, Retro, Steampunk, Alto Contraste, Dracula, Nord), Messaging (WhatsApp, Messenger, Telegram, Signal), and Pop Culture (Star Wars).
+- **Mandatory Insertion Rule:** Any newly requested palette must be inserted strictly within its corresponding category block in `#palette-select` and UI logic.
+- **Design Tokens & Parity:** Every palette requires complete light/dark CSS tokens, dynamic label mapping in `updateThemeLabels()`, and 100% translation coverage across all 55 locale files.
 
