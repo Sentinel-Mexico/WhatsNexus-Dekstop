@@ -6,27 +6,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ---
 
-## [1.6.0] - 2026-09-05
-### Added
-- **Account Cache Reset (Hard Reset) per Session:**
-  - Added a "Limpiar Caché" action button with dedicated icon (`fa-arrows-rotate`) to each active account card in Settings.
-  - Implemented IPC channel `clear-account-cache` invoking Electron Session APIs (`ses.clearCache()` and selective `ses.clearStorageData()` targeting cache, serviceworkers, and shadercache while preserving authentication cookies and IndexedDB to avoid logout).
-  - Webview is automatically reloaded via `webview.reloadIgnoringCache()` to restore frozen WhatsApp Web sessions.
-  - Added `btn_clear_cache` localization across all 55 supported locale JSON files.
-- **Automated GitHub Actions Release Notes:**
-  - Integrated dynamic changelog extraction into `.github/workflows/build.yml` in the unified `release` job.
-  - The step reads the latest version section from `changelog.md` and passes it as `body_path` to `softprops/action-gh-release@v2`, ensuring published releases include full changelog notes.
-
-### Fixed
-- **Packaged App Account Management Actions (.AppImage / app.asar):**
-  - Resolved issue in packaged production builds where "Eliminar" and the "Estado de la cuenta / Activa" toggle failed to respond due to inline event handler attributes being blocked by Content Security Policy (`script-src 'self'`).
-  - Refactored `renderSettingsAccounts()` to attach programmatic DOM event listeners (`addEventListener`) for edit, delete, status toggle, clear cache, and DND controls.
-  - Implemented persistent account storage in `app.getPath('userData')/accounts.json` with dedicated IPC handlers (`get-accounts`, `save-accounts`, `delete-account-data`), replacing fragile renderer-only storage and avoiding path failures inside `app.asar`.
-- **Enforced 5-Second Splash Screen Lifecycle:**
-  - Enforced immediate visibility (`show: true`, `.show()`, `.focus()`) of `splashWindow` upon `app.whenReady()`.
-  - Implemented a strict 5000ms (`setTimeout`) lifecycle timer, ensuring the splash screen displays for exactly 5 seconds before destroying `splashWindow` and revealing `mainWindow` simultaneously.
-  - Synchronized the splash progress bar animation in `src/splash/splash.js` to 4800ms to smoothly match the 5-second window.
-
 ## [1.5.0] - 2026-09-05
 ### Added
 - **Curated Theme Engine Expansion (16 Palettes across 4 Structured Tiers):**

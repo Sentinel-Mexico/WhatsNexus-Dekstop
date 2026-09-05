@@ -1,7 +1,7 @@
 # WhatsNexus ⚡
 
 ![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey)
-![Version](https://img.shields.io/badge/version-v1.6.0-brightgreen.svg)
+![Version](https://img.shields.io/badge/version-v1.6.1-brightgreen.svg)
 ![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)
 
 **WhatsNexus** is an open-source, production-ready desktop application built to manage multiple WhatsApp Web accounts concurrently. Built on top of Electron.js with strict session isolation (`StoragePartition`), dynamic tab hibernation, comprehensive offline protection, and 55 global languages, WhatsNexus keeps your personal, freelance, and business communications organized without data crossover.
@@ -19,7 +19,6 @@
 *   **Official Poppins Typography & Conlang Fonts:** Elegant and readable typography using Google Fonts Poppins, plus dedicated custom font stacks for constructed languages (Tengwar Telcontar and Klingon pIqaD).
 *   **Curated Theme Engine:** 16 curated color palettes across 4 structured visual tiers (Own, Original, Messaging, and Pop Culture: WhatsNexus, Alto Contraste, Bosque, Cyber-Nexus, Dracula, Nord, Retro, Steampunk, Messenger, Signal, Telegram, WhatsApp, Doom, Star Trek, Star Wars, Vóxel) with synchronized Light/Dark variations and dynamic switch labels.
 *   **Global Internationalization (i18n):** Modular on-demand translations across 55 global languages, including constructed languages (Elvish Tengwar and Klingon) with in-memory caching.
-*   **Freedoom Easter Egg:** 100% offline, native WebAssembly Chocolate Doom port loaded with BSD-licensed Freedoom: Phase 1, instant audio playback, and floating controls overlay.
 *   **Multiplatform CI/CD:** Automated GitHub Actions build pipeline generating `.deb`, `.AppImage` (Linux x64 and arm64), `.dmg` (macOS x64 and arm64), and `.exe` (Windows NSIS x64).
 
 ## ⚖️ Comparison: WhatsApp Web vs. ZapZap vs. WhatsNexus
@@ -44,7 +43,6 @@
 | **Custom CSS & JavaScript injection** | ❌ | ✅ | ✅ |
 | **Multi-language internationalization (i18n)** | Official languages | Partial | ✅ (55 Languages + Conlangs) |
 | **Open source license** | ❌ Proprietary | ✅ GPL-3.0 | ✅ GPL-3.0 |
-| **Freedoom Easter Egg** | ❌ | ❌ | ✅ *(Freedoom: Phase 1)* |
 | **Privacy model** | Browser shared session | Dedicated application | Dedicated isolated partitions + Sandbox |
 
 ## 🚀 Getting Started

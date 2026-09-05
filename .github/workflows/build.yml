@@ -103,12 +103,13 @@ jobs:
             echo "tag=v${VERSION}" >> $GITHUB_OUTPUT
           fi
 
-      - name: Extraer notas de lanzamiento de changelog.md
+      - name: Extraer notas de lanzamiento
         id: extract_notes
         run: |
           node -e '
             const fs = require("fs");
-            const content = fs.readFileSync("changelog.md", "utf8");
+            const changelogFile = fs.existsSync("changelog-dev.md") ? "changelog-dev.md" : "changelog.md";
+            const content = fs.readFileSync(changelogFile, "utf8");
             const match = content.match(/##\s+\[([0-9]+\.[0-9]+\.[0-9]+[^\]]*)\][^\n]*\n([\s\S]*?)(?=\n##\s+\[|\s*$)/);
             if (match) {
               const notes = `## Registro de Cambios - v${match[1]}\n\n${match[2].trim()}`;

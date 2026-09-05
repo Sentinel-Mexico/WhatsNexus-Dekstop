@@ -1,6 +1,6 @@
 {
   "name": "whatsnexus",
-  "version": "1.6.0",
+  "version": "1.6.1",
   "description": "Multi-account WhatsApp Web client using Electron",
   "main": "src/main.js",
   "scripts": {
@@ -17,6 +17,7 @@
   "build": {
     "appId": "com.sentinelstudio.whatsnexus",
     "productName": "WhatsNexus",
+    "artifactName": "whatsnexus-${version}-${os}-${arch}.${ext}",
     "linux": {
       "target": [
         {

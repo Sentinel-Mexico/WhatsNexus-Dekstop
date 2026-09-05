@@ -2,6 +2,15 @@
 
 This changelog records all granular updates, bug fixes, refactorings, and feature iterations developed on the `Dev` branch. Each version bump in `package.json` is documented here as it happens.
 
+## [1.6.1] - 2026-09-05
+### Changed
+- **Standardized Packaging Artifact Naming Convention (`artifactName`):**
+  - Configured `build.artifactName` in `package.json` to enforce `whatsnexus-${version}-${os}-${arch}.${ext}` across all platform distributions (AppImage, deb, nsis/exe, dmg).
+  - Ensured consistent and automated binary artifact naming for Windows, macOS, and Linux runners in GitHub Actions CI/CD workflows.
+- **Documentation Cleanup & Governance:**
+  - Removed obsolete Freedoom references from root `README.md`.
+  - Reverted `1.6.0` entry from `changelog.md` to adhere to repository branching conventions (`changelog.md` reserved strictly for stable promotions to `main`).
+
 ## [1.6.0] - 2026-09-05
 ### Added
 - **Session Hard Reset ("Limpiar Caché") in Account Cards:**
