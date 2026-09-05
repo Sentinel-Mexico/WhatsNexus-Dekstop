@@ -93,8 +93,9 @@ const nativeNames = {
   uz: "Oʻzbekcha",
   ms: "Bahasa Melayu",
   eo: "Esperanto",
-  tengwar: "Tengwar (Élfico / Elvish)",
-  tlh: "tlhIngan Hol (Klingon / pIqaD)"
+  tengwar: "\uE000\uE042\uE012\uE00F\uE040\uE018",
+  tlh: "\uF8E4\uF8D7\uF8DC\uF8D0\uF8DB \uF8D6\uF8DD\uF8D9",
+  klingon: "\uF8E4\uF8D7\uF8DC\uF8D0\uF8DB \uF8D6\uF8DD\uF8D9"
 };
 
 function getOSLanguage() {
@@ -287,7 +288,13 @@ function populateLanguageSelect() {
     if (customOptions) {
       const customOpt = document.createElement('div');
       customOpt.className = 'custom-option' + (code === currentLangCode ? ' selected' : '');
-      customOpt.innerText = displayText;
+      if (code === 'tengwar') {
+        customOpt.innerHTML = `${escapeHtml(translatedName)} (<span class="font-tengwar" style="font-family: 'Tengwar' !important;">${nativeName}</span>)`;
+      } else if (code === 'tlh' || code === 'klingon') {
+        customOpt.innerHTML = `${escapeHtml(translatedName)} (<span class="font-klingon" style="font-family: 'Klingon pIqaD' !important;">${nativeName}</span>)`;
+      } else {
+        customOpt.innerText = displayText;
+      }
       customOpt.dataset.value = code;
 
       customOpt.addEventListener('click', async (e) => {
@@ -326,7 +333,13 @@ function populateLanguageSelect() {
   if (triggerLabel) {
     const activeTranslated = dict[`lang_${currentLangCode}`] || nativeNames[currentLangCode] || currentLangCode;
     const activeNative = nativeNames[currentLangCode] || currentLangCode;
-    triggerLabel.innerText = `${activeTranslated} (${activeNative})`;
+    if (currentLangCode === 'tengwar') {
+      triggerLabel.innerHTML = `${escapeHtml(activeTranslated)} (<span class="font-tengwar" style="font-family: 'Tengwar' !important;">${activeNative}</span>)`;
+    } else if (currentLangCode === 'tlh' || currentLangCode === 'klingon') {
+      triggerLabel.innerHTML = `${escapeHtml(activeTranslated)} (<span class="font-klingon" style="font-family: 'Klingon pIqaD' !important;">${activeNative}</span>)`;
+    } else {
+      triggerLabel.innerText = `${activeTranslated} (${activeNative})`;
+    }
   }
 }
 

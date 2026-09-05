@@ -2,6 +2,15 @@
 
 This changelog records all granular updates, bug fixes, refactorings, and feature iterations developed on the `Dev` branch. Each version bump in `package.json` is documented here as it happens.
 
+## [1.2.4] - 2026-09-05
+### Fixed
+- **Language Selector Conlang Native Glyph Rendering (Tengwar & Klingon pIqaD):**
+  - Eliminated redundant parenthetical Latin descriptions for Elvish Tengwar (`"(Tengwar (Élfico / Elvish))"`) and Klingon (`"(tlhIngan Hol (Klingon / pIqaD))"`) in the interface language dropdown.
+  - Formatted Tengwar selector labels to display authentic Tengwar Unicode PUA glyphs (`\uE000\uE042\uE012\uE00F\uE040\uE018`) mapped to `TengwarTelcontar.ttf` / `.woff2`.
+  - Formatted Klingon selector labels to display authentic Klingon pIqaD CSUR Unicode PUA glyphs (`\uF8E4\uF8D7\uF8DC\uF8D0\uF8DB \uF8D6\uF8DD\uF8D9`) mapped to `Klingon-pIqaD.ttf` / `.woff2`.
+  - Enclosed native glyphs within custom dropdown options and active trigger label in dedicated `<span>` wrappers styled with `.font-tengwar` and `.font-klingon` classes (`font-family: 'Tengwar' !important;` and `font-family: 'Klingon pIqaD' !important;`).
+  - Added `'Tengwar'` and `'Klingon pIqaD'` to the primary global `font-family` CSS fallback stack on `body`, `select`, `.styled-select`, `.custom-select-trigger`, `.custom-select-options`, and `.custom-option` to guarantee seamless fallback rendering across both custom visual dropdowns and native select elements.
+
 ## [1.2.3] - 2026-09-05
 ### Fixed
 - **Comprehensive Internationalization (i18n) Leveling & Fallback Elimination:**
