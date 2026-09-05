@@ -37,7 +37,7 @@ const supportedLanguages = [
   'ps', 'kn', 'ml', 'su', 'or',
   'my', 'uk', 'sd', 'ro', 'nl',
   'am', 'yo', 'om', 'uz', 'ms',
-  'eo', 'tengwar', 'klingon', 'tlh'
+  'eo', 'tengwar', 'tlh'
 ];
 
 // Native names for each language
@@ -94,7 +94,6 @@ const nativeNames = {
   ms: "Bahasa Melayu",
   eo: "Esperanto",
   tengwar: "Tengwar (Élfico / Elvish)",
-  klingon: "tlhIngan Hol (Klingon / pIqaD)",
   tlh: "tlhIngan Hol (Klingon / pIqaD)"
 };
 
@@ -115,6 +114,10 @@ let settings = JSON.parse(localStorage.getItem('whatsNexusSettings')) || {
   language: getOSLanguage(),
   privacy: 'broad'
 };
+
+if (settings.language === 'klingon') {
+  settings.language = 'tlh';
+}
 
 if (!settings.notifications) {
   const legacyPrivacy = settings.privacy || 'broad';

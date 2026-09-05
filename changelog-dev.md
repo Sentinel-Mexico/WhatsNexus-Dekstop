@@ -2,6 +2,16 @@
 
 This changelog records all granular updates, bug fixes, refactorings, and feature iterations developed on the `Dev` branch. Each version bump in `package.json` is documented here as it happens.
 
+## [1.2.2] - 2026-09-05
+### Fixed
+- **Deduplication of Klingon in Language Selector:**
+  - Resolved duplicate Klingon dropdown entries in `src/renderer/renderer.js` by removing redundant `'klingon'` from `supportedLanguages` and `nativeNames`, preserving solely the canonical ISO 639-2/3 `'tlh'` entry (`"tlhIngan Hol (Klingon / pIqaD)"`).
+  - Added seamless backward-compatibility normalization converting existing stored settings with `language: 'klingon'` to `'tlh'`.
+- **Authentic Conlang Transliteration & Glyphic Encoding (Elvish Tengwar & Klingon pIqaD):**
+  - Eliminated English fallback placeholders in `src/locales/tlh.json` (and synchronized `src/locales/klingon.json`) by encoding authentic Klingon canon vocabulary (Okrandian tlhIngan Hol) into the ConScript Unicode Registry (CSUR) Private Use Area (`U+F8D0`–`U+F8FF`) required by `Klingon-pIqaD.ttf` to render native pIqaD glyphs.
+  - Replaced English strings in `src/locales/tengwar.json` with genuine Elvish transliteration mapped to the CSUR code points (`U+E000`–`U+E07D`) expected by `TengwarTelcontar.ttf`.
+  - Maintained complete key parity across all 305 locale keys for both conlang dictionaries.
+
 ## [1.2.1] - 2026-09-05
 ### Refactored & Optimized
 - **Complete Internationalization (i18n) Architecture Audit & Asset Synchronization:**
