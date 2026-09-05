@@ -6,6 +6,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ---
 
+## [1.0.4] - 2026-09-05
+### Fixed
+- **Linux Packaging Metadata (.deb Compliance):**
+  - Configured structured `author` metadata with name and email (`Sentinel Studio <studio@sentinelstudio.com>`) in `package.json`, fulfilling strict Debian package maintainer requirements.
+- **CI/CD Snapcraft Automation:**
+  - Integrated `snapcraft` installation into the Ubuntu Linux dependencies workflow step in `.github/workflows/build.yml`, eliminating runner `ENOENT` packaging errors.
+### Changed
+- **Repository Governance & Quartet Synchronization:**
+  - Standardized the Mandatory Version Synchronization Quartet across `changelog-dev.md`, `package.json`, `package-lock.json`, and the root `README.md` badge.
+
 ## [1.0.3] - 2026-09-04
 ### Fixed
 - **Classic Doom WebAssembly Engine Execution & Black Screen Resolution:**
