@@ -14,6 +14,7 @@ All rules are defined as standalone markdown documents in the [`rules/`](rules/)
 | **Changelog Maintenance** | [`rules/changelog.md`](rules/changelog.md) | Tracks granular development in `changelog-dev.md` and enforces mandatory version quartet synchronization (`changelog-dev.md`, `package.json`, `package-lock.json`, root `README.md` badge). Restricts modifying `changelog.md` strictly to user-requested pushes to `main`, generating a milestone summary from `changelog-dev.md`. |
 | **Documentation Sync** | [`rules/documentation.md`](rules/documentation.md) | Mandates continuous synchronization of `docs/` technical documentation and this `.agents/README.md` index whenever code or rules change. Enforces relative markdown links. |
 | **Documentation & Code Language** | [`rules/language.md`](rules/language.md) | Enforces neutral English strictly for all code comments/notes, text files (`.md`, `.txt`), commit messages, and in-app strings without exception. |
+| **Interface Internationalization (i18n)** | [`rules/i18n.md`](rules/i18n.md) | Enforces zero-hardcoding (`data-i18n*`), strict 100% key parity across all 55+ locales with canonical `en.json`, strict prohibition of English fallback/placeholders in foreign locales, authentic conlang CSUR encoding, dropdown deduplication, and pre-commit audit. |
 | **Semantic Versioning** | [`rules/versioning.md`](rules/versioning.md) | Defines strict SemVer (MAJOR.MINOR.PATCH), mandatory push to `Dev` on every version change, quartet synchronization (`changelog-dev.md`, `package.json`, `package-lock.json`, root `README.md` badge), and commit message format (`"v.<VERSION> <type>: <summary>"`). |
 
 ---
@@ -46,3 +47,13 @@ All rules are defined as standalone markdown documents in the [`rules/`](rules/)
 - **Quartet Parity:** Every version change in `package.json` and `changelog-dev.md` must be immediately matched in `package-lock.json` via `npm install --package-lock-only` and in the root `README.md` badge (`v<VERSION>`).
 - **Push to Dev:** Every version change must be pushed to `Dev` (`origin/Dev`).
 - **Commit Formatting:** Messages must strictly adhere to `"v.<VERSION> <type>: <summary>"`.
+
+### 6. [Interface Internationalization & Localization (`rules/i18n.md`)](rules/i18n.md)
+- **Zero-Hardcoding:** All user-facing strings must use `data-i18n*` attributes in HTML and dynamic lookups in JS.
+- **Single Source of Truth:** `src/locales/en.json` is the canonical reference containing 100% of keys.
+- **Symmetric 100% Key Parity:** Every supported locale in `src/locales/*.json` must match `en.json` keys exactly.
+- **Strict Anti-Fallback Mandate:** Copying English text into non-English locales is strictly forbidden; all strings must be genuinely translated (brand names and proper nouns are the sole exceptions).
+- **Conlang Standards:** Klingon (`tlh.json` / `klingon.json`) must use CSUR PUA `U+F8D0`–`U+F8FF`; Tengwar (`tengwar.json`) must use CSUR PUA `U+E000`–`U+E07D`.
+- **Selector Deduplication:** Languages must be registered strictly once in `supportedLanguages` and `nativeNames` in `src/renderer/renderer.js`.
+- **Pre-Commit Audit:** Agents must run automated parity and fallback checks before delivering localization updates.
+
