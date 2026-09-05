@@ -1,6 +1,6 @@
 {
   "name": "whatsnexus",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Multi-account WhatsApp Web client using Electron",
   "main": "src/main.js",
   "scripts": {
@@ -10,7 +10,7 @@
   },
   "author": {
     "name": "Sentinel Studio",
-    "email": "studio@sentinelstudio.com"
+    "email": "studio@somossentinel.com"
   },
   "license": "GPL-3.0-or-later",
   "build": {

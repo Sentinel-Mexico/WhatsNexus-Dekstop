@@ -2,6 +2,13 @@
 
 This changelog records all granular updates, bug fixes, refactorings, and feature iterations developed on the `Dev` branch. Each version bump in `package.json` is documented here as it happens.
 
+## [1.0.5] - 2026-09-05
+### Fixed
+- **Linux CI/CD Workflow & Target Streamlining:**
+  - Removed `snapcraft` from the Ubuntu APT package installation list in `.github/workflows/build.yml`, eliminating runner package acquisition failure on Ubuntu 24.04 (`noble`).
+  - Adjusted electron-builder Linux targets to generate `.deb` and `.AppImage` packages (`--linux deb AppImage`) for both x64 and arm64 architectures.
+  - Updated author contact email to `studio@somossentinel.com` across package metadata.
+
 ## [1.0.4] - 2026-09-05
 ### Fixed
 - **Linux Packaging Metadata (.deb Specification):**

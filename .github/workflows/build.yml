@@ -62,13 +62,13 @@ jobs:
           EOF
 
           sudo apt-get update
-          sudo apt-get install --no-install-recommends -y gcc-aarch64-linux-gnu g++-aarch64-linux-gnu snapcraft
+          sudo apt-get install --no-install-recommends -y gcc-aarch64-linux-gnu g++-aarch64-linux-gnu
 
       - name: Compilar y Desplegar (Linux)
         if: startsWith(matrix.os, 'ubuntu')
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: npx electron-builder --linux deb AppImage snap --x64 --arm64 --publish always
+        run: npx electron-builder --linux deb AppImage --x64 --arm64 --publish always
 
       - name: Compilar y Desplegar (macOS)
         if: startsWith(matrix.os, 'macos')
