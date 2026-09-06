@@ -298,97 +298,166 @@ async function loadActiveLocale(langCode) {
   }
 }
 
-function populateLanguageSelect() {
-  const langSelect = document.getElementById('language-select');
-  const customOptions = document.getElementById('language-select-options');
-  const triggerLabel = document.getElementById('language-select-label');
-  const trigger = document.getElementById('language-select-trigger');
-  
-  if (langSelect) langSelect.innerHTML = '';
-  let langList = null;
-  if (customOptions) {
-    customOptions.innerHTML = '';
-    langList = document.createElement('div');
-    langList.className = 'custom-options-list';
-    customOptions.appendChild(langList);
-  }
-  
-  const currentLangCode = settings.language || 'en';
-  const dict = i18n[currentLangCode] || i18n['en'] || {};
-  
-  supportedLanguages.forEach(code => {
-    const translatedName = dict[`lang_${code}`] || nativeNames[code] || code;
-    const nativeName = nativeNames[code] || code;
-    const displayText = `${translatedName} (${nativeName})`;
+// ========================================================
+// Gestor Universal de Menús Desplegables Personalizados (M3 Expressive)
+// ========================================================
+const customDropdowns = {};
 
-    // Hidden native select
-    if (langSelect) {
-      const option = document.createElement('option');
-      option.value = code;
-      option.innerText = displayText;
-      langSelect.appendChild(option);
-    }
+function initCustomDropdown(selectId, options = {}) {
+  const renderOptionCallback = typeof options === 'function' ? options : (options && options.renderOption);
+  const select = document.getElementById(selectId);
+  const wrapper = document.getElementById(`custom-${selectId}-wrapper`);
+  if (!select || !wrapper) return null;
 
-    // Custom visual dropdown
-    if (customOptions && langList) {
-      const customOpt = document.createElement('div');
-      customOpt.className = 'custom-option' + (code === currentLangCode ? ' selected' : '');
-      if (code === 'tengwar') {
-        const cleanNative = (nativeName || '').trim();
-        customOpt.innerHTML = `<span>${escapeHtml(translatedName)} (<span class="font-tengwar" style="font-family: 'Tengwar' !important;">${cleanNative}</span>)</span>`;
-      } else if (code === 'tlh' || code === 'klingon') {
-        const cleanNative = (nativeName || '').trim();
-        customOpt.innerHTML = `<span>${escapeHtml(translatedName)} (<span class="font-klingon" style="font-family: 'Klingon pIqaD' !important;">${cleanNative}</span>)</span>`;
-      } else {
-        customOpt.innerHTML = `<span>${escapeHtml(displayText)}</span>`;
+  const trigger = wrapper.querySelector('.custom-select-trigger');
+  const label = trigger ? trigger.querySelector('span') : null;
+  const optionsContainer = wrapper.querySelector('.custom-select-options');
+  if (!trigger || !optionsContainer || !label) return null;
+
+  function render() {
+    optionsContainer.innerHTML = '';
+    const list = document.createElement('div');
+    list.className = 'custom-options-list';
+    optionsContainer.appendChild(list);
+
+    const currentVal = select.value;
+    Array.from(select.options).forEach(opt => {
+      if (opt.disabled || opt.classList.contains('select-separator')) {
+        const sep = document.createElement('div');
+        sep.className = 'custom-option-separator';
+        sep.innerText = opt.innerText;
+        list.appendChild(sep);
+        return;
       }
-      customOpt.dataset.value = code;
 
-      customOpt.addEventListener('click', async (e) => {
+      const item = document.createElement('div');
+      item.className = 'custom-option' + (opt.value === currentVal ? ' selected' : '');
+      item.dataset.value = opt.value;
+
+      if (typeof renderOptionCallback === 'function') {
+        renderOptionCallback(opt, item);
+      } else {
+        item.innerText = opt.innerText;
+      }
+
+      item.addEventListener('click', (e) => {
         e.stopPropagation();
-        const selectedCode = customOpt.dataset.value || code;
-        try {
-          await loadActiveLocale(selectedCode);
-          settings.language = selectedCode;
-          saveSettings();
-          updateTranslations();
-        } catch (err) {
-          console.error(`[Language Selector Click Error] para "${selectedCode}":`, err);
+        select.value = opt.value;
+        if (typeof renderOptionCallback === 'function') {
+          renderOptionCallback(opt, label);
+        } else {
+          label.innerText = opt.innerText;
         }
-        if (customOptions) customOptions.classList.remove('open');
-        if (trigger) trigger.classList.remove('open');
+        optionsContainer.querySelectorAll('.custom-option').forEach(el => el.classList.remove('selected'));
+        item.classList.add('selected');
+        optionsContainer.classList.remove('open');
+        trigger.classList.remove('open');
+        select.dispatchEvent(new Event('change', { bubbles: true }));
       });
 
-      langList.appendChild(customOpt);
+      list.appendChild(item);
+    });
+
+    const nonSeparators = Array.from(select.options).filter(o => !o.disabled && !o.classList.contains('select-separator'));
+    let selectedOpt = select.options[select.selectedIndex];
+    if (!selectedOpt || selectedOpt.disabled || selectedOpt.classList.contains('select-separator')) {
+      selectedOpt = nonSeparators.find(o => o.value === currentVal) || nonSeparators[0];
     }
-  });
-  
-  if (langSelect) {
-    langSelect.value = currentLangCode;
-    langSelect.onchange = async (e) => {
-      const selectedCode = (e && e.target && e.target.value) ? e.target.value : langSelect.value;
-      try {
-        await loadActiveLocale(selectedCode);
-        settings.language = selectedCode;
-        saveSettings();
-        updateTranslations();
-      } catch (err) {
-        console.error(`[Language Selector Change Error] para "${selectedCode}":`, err);
+    if (selectedOpt) {
+      if (typeof renderOptionCallback === 'function') {
+        renderOptionCallback(selectedOpt, label);
+      } else {
+        label.innerText = selectedOpt.innerText;
       }
-    };
-  }
-  if (triggerLabel) {
-    const activeTranslated = dict[`lang_${currentLangCode}`] || nativeNames[currentLangCode] || currentLangCode;
-    const activeNative = nativeNames[currentLangCode] || currentLangCode;
-    if (currentLangCode === 'tengwar') {
-      const cleanNative = (activeNative || '').trim();
-      triggerLabel.innerHTML = `${escapeHtml(activeTranslated)} (<span class="font-tengwar" style="font-family: 'Tengwar' !important;">${cleanNative}</span>)`;
-    } else if (currentLangCode === 'tlh' || currentLangCode === 'klingon') {
-      const cleanNative = (activeNative || '').trim();
-      triggerLabel.innerHTML = `${escapeHtml(activeTranslated)} (<span class="font-klingon" style="font-family: 'Klingon pIqaD' !important;">${cleanNative}</span>)`;
-    } else {
-      triggerLabel.innerText = `${activeTranslated} (${activeNative})`;
     }
+  }
+
+  if (!trigger.dataset.dropdownBound) {
+    trigger.dataset.dropdownBound = 'true';
+    trigger.addEventListener('click', (e) => {
+      e.stopPropagation();
+      // Cerrar cualquier otro dropdown abierto
+      document.querySelectorAll('.custom-select-options.open').forEach(el => {
+        if (el !== optionsContainer) el.classList.remove('open');
+      });
+      document.querySelectorAll('.custom-select-trigger.open').forEach(el => {
+        if (el !== trigger) el.classList.remove('open');
+      });
+
+      const isOpen = optionsContainer.classList.contains('open');
+      if (isOpen) {
+        optionsContainer.classList.remove('open');
+        trigger.classList.remove('open');
+      } else {
+        optionsContainer.classList.add('open');
+        trigger.classList.add('open');
+        const selected = optionsContainer.querySelector('.custom-option.selected');
+        if (selected) {
+          selected.scrollIntoView({ block: 'nearest' });
+        }
+      }
+    });
+  }
+
+  render();
+  customDropdowns[selectId] = render;
+  return render;
+}
+
+function refreshAllCustomDropdowns() {
+  Object.values(customDropdowns).forEach(renderFn => {
+    if (typeof renderFn === 'function') renderFn();
+  });
+}
+
+function refreshCustomDropdown(selectId) {
+  if (customDropdowns[selectId] && typeof customDropdowns[selectId] === 'function') {
+    customDropdowns[selectId]();
+  }
+}
+
+function renderLanguageOption(opt, targetEl) {
+  const code = opt.value;
+  const translatedName = opt.dataset.translatedName || opt.text;
+  const nativeName = opt.dataset.nativeName || (typeof nativeNames !== 'undefined' && nativeNames[code]) || code;
+  if (code === 'tengwar') {
+    const cleanNative = (nativeName || '').trim();
+    targetEl.innerHTML = `<span>${escapeHtml(translatedName)} (<span class="font-tengwar" style="font-family: 'Tengwar' !important;">${cleanNative}</span>)</span>`;
+  } else if (code === 'tlh' || code === 'klingon') {
+    const cleanNative = (nativeName || '').trim();
+    targetEl.innerHTML = `<span>${escapeHtml(translatedName)} (<span class="font-klingon" style="font-family: 'Klingon pIqaD' !important;">${cleanNative}</span>)</span>`;
+  } else {
+    targetEl.innerHTML = `<span>${escapeHtml(opt.text || `${translatedName} (${nativeName})`)}</span>`;
+  }
+}
+
+function populateLanguageSelect() {
+  const langSelect = document.getElementById('language-select');
+  if (!langSelect) return;
+
+  langSelect.innerHTML = '';
+  const currentLangCode = settings.language || 'en';
+  const dict = (typeof i18n !== 'undefined' && (i18n[currentLangCode] || i18n['en'])) || {};
+
+  supportedLanguages.forEach(code => {
+    const translatedName = dict[`lang_${code}`] || (typeof nativeNames !== 'undefined' && nativeNames[code]) || code;
+    const nativeName = (typeof nativeNames !== 'undefined' && nativeNames[code]) || code;
+    const displayText = `${translatedName} (${nativeName})`;
+
+    const option = document.createElement('option');
+    option.value = code;
+    option.text = displayText;
+    option.dataset.translatedName = translatedName;
+    option.dataset.nativeName = nativeName;
+    langSelect.appendChild(option);
+  });
+
+  langSelect.value = currentLangCode;
+
+  if (customDropdowns['language-select']) {
+    refreshCustomDropdown('language-select');
+  } else {
+    initCustomDropdown('language-select', { renderOption: renderLanguageOption });
   }
 }
 
@@ -2067,111 +2136,17 @@ if (trayBadgeToggle) {
 }
 
 if (languageSelect) {
-  languageSelect.addEventListener('change', (e) => {
-    settings.language = e.target.value;
-    saveSettings();
-  });
-}
-
-// ========================================================
-// Gestor Universal de Menús Desplegables Personalizados (M3 Expressive)
-// ========================================================
-const customDropdowns = {};
-
-function initCustomDropdown(selectId) {
-  const select = document.getElementById(selectId);
-  const wrapper = document.getElementById(`custom-${selectId}-wrapper`);
-  if (!select || !wrapper) return null;
-
-  const trigger = wrapper.querySelector('.custom-select-trigger');
-  const label = trigger ? trigger.querySelector('span') : null;
-  const optionsContainer = wrapper.querySelector('.custom-select-options');
-  if (!trigger || !optionsContainer || !label) return null;
-
-  function render() {
-    optionsContainer.innerHTML = '';
-    const list = document.createElement('div');
-    list.className = 'custom-options-list';
-    optionsContainer.appendChild(list);
-
-    const currentVal = select.value;
-    Array.from(select.options).forEach(opt => {
-      if (opt.disabled || opt.classList.contains('select-separator')) {
-        const sep = document.createElement('div');
-        sep.className = 'custom-option-separator';
-        sep.innerText = opt.innerText;
-        list.appendChild(sep);
-        return;
-      }
-
-      const item = document.createElement('div');
-      item.className = 'custom-option' + (opt.value === currentVal ? ' selected' : '');
-      item.innerText = opt.innerText;
-      item.dataset.value = opt.value;
-
-      item.addEventListener('click', (e) => {
-        e.stopPropagation();
-        select.value = opt.value;
-        label.innerText = opt.innerText;
-        optionsContainer.querySelectorAll('.custom-option').forEach(el => el.classList.remove('selected'));
-        item.classList.add('selected');
-        optionsContainer.classList.remove('open');
-        trigger.classList.remove('open');
-        select.dispatchEvent(new Event('change', { bubbles: true }));
-      });
-
-      list.appendChild(item);
-    });
-
-    const nonSeparators = Array.from(select.options).filter(o => !o.disabled && !o.classList.contains('select-separator'));
-    let selectedOpt = select.options[select.selectedIndex];
-    if (!selectedOpt || selectedOpt.disabled || selectedOpt.classList.contains('select-separator')) {
-      selectedOpt = nonSeparators.find(o => o.value === currentVal) || nonSeparators[0];
-    }
-    if (selectedOpt) {
-      label.innerText = selectedOpt.innerText;
-    }
-  }
-
-  trigger.addEventListener('click', (e) => {
-    e.stopPropagation();
-    // Cerrar cualquier otro dropdown abierto
-    document.querySelectorAll('.custom-select-options.open').forEach(el => {
-      if (el !== optionsContainer) el.classList.remove('open');
-    });
-    document.querySelectorAll('.custom-select-trigger.open').forEach(el => {
-      if (el !== trigger) el.classList.remove('open');
-    });
-
-    const isOpen = optionsContainer.classList.contains('open');
-    if (isOpen) {
-      optionsContainer.classList.remove('open');
-      trigger.classList.remove('open');
-    } else {
-      optionsContainer.classList.add('open');
-      trigger.classList.add('open');
-      const selected = optionsContainer.querySelector('.custom-option.selected');
-      if (selected) {
-        selected.scrollIntoView({ block: 'nearest' });
-      }
+  languageSelect.addEventListener('change', async (e) => {
+    const selectedCode = e.target.value;
+    try {
+      await loadActiveLocale(selectedCode);
+      settings.language = selectedCode;
+      saveSettings();
+      updateTranslations();
+    } catch (err) {
+      console.error(`[Language Selector Change Error] para "${selectedCode}":`, err);
     }
   });
-
-  render();
-  customDropdowns[selectId] = render;
-  return render;
-}
-
-function refreshAllCustomDropdowns() {
-  Object.values(customDropdowns).forEach(renderFn => {
-    if (typeof renderFn === 'function') renderFn();
-  });
-}
-
-function refreshCustomDropdown(selectId) {
-  if (customDropdowns[selectId] && typeof customDropdowns[selectId] === 'function') {
-    customDropdowns[selectId]();
-  }
 }
 
 let customEditMode = 'dark';
@@ -2300,35 +2275,7 @@ initCustomDropdown('palette-select');
 initCustomDropdown('theme-select');
 initCustomDropdown('tray-style-select');
 initCustomDropdown('privacy-preset-select');
-
-// Manejo del selector de idioma personalizado con scroll limitado a 10 elementos
-const langTrigger = document.getElementById('language-select-trigger');
-const langOptions = document.getElementById('language-select-options');
-
-if (langTrigger && langOptions) {
-  langTrigger.addEventListener('click', (e) => {
-    e.stopPropagation();
-    document.querySelectorAll('.custom-select-options.open').forEach(el => {
-      if (el !== langOptions) el.classList.remove('open');
-    });
-    document.querySelectorAll('.custom-select-trigger.open').forEach(el => {
-      if (el !== langTrigger) el.classList.remove('open');
-    });
-
-    const isOpen = langOptions.classList.contains('open');
-    if (isOpen) {
-      langOptions.classList.remove('open');
-      langTrigger.classList.remove('open');
-    } else {
-      langOptions.classList.add('open');
-      langTrigger.classList.add('open');
-      const selected = langOptions.querySelector('.custom-option.selected');
-      if (selected) {
-        selected.scrollIntoView({ block: 'nearest' });
-      }
-    }
-  });
-}
+initCustomDropdown('language-select', { renderOption: renderLanguageOption });
 
 document.addEventListener('click', () => {
   document.querySelectorAll('.custom-select-options.open').forEach(el => el.classList.remove('open'));

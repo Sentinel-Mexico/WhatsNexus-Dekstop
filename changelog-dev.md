@@ -2,6 +2,22 @@
 
 This changelog records all granular updates, bug fixes, refactorings, and feature iterations developed on the `Dev` branch. Each version bump in `package.json` is documented here as it happens.
 
+## [2.0.0] - 2026-09-05
+### Changed
+- **Major Runtime Upgrade to Electron 43 & Dependency Alignment:**
+  - Upgraded core desktop runtime from Electron 29 (`^29.1.4`) to Electron 43 (`^43.6.0`), bringing modern Chromium sandbox improvements and V8 runtime performance optimizations.
+  - Upgraded `electron-builder` to `^26.15.3` ensuring compatibility with modern distribution targets across Linux (AppImage, deb, rpm), Windows (NSIS, portable), and macOS.
+  - Verified and aligned CI/CD pipeline (`.github/workflows/build.yml`) to leverage pure `npm ci` build resolution without legacy version pinning.
+  - Executed strict clean-room environment sanitation (`rm -rf node_modules dist out && npm cache clean --force`) to purge obsolete Electron 29 C++ binaries and build artifacts.
+- **Universal Custom Dropdown Engine & Clean Code Refactor:**
+  - Enhanced `initCustomDropdown(selectId, options)` in `src/renderer/renderer.js` with extensible `renderOption(opt, targetEl)` callback support.
+  - Extracted clean `renderLanguageOption()` providing specialized typography rendering for constructed languages (Elvish Tengwar and Klingon pIqaD) alongside native ISO language displays.
+  - Refactored `populateLanguageSelect()` to eliminate over 90 lines of duplicated DOM construction, manual `.selected` class manipulation, and custom click bindings, delegating visual lifecycle management to `refreshCustomDropdown('language-select')`.
+  - Removed obsolete manual event handlers on `#language-select-trigger`, unifying all dropdowns under centralized state and outside-click listeners.
+- **Version Quartet Synchronization:**
+  - Bumped major version to `2.0.0` across `package.json`, `package-lock.json`, `README.md`, `docs/README.md`, and `changelog-dev.md`.
+  - Upheld repository governance rules by maintaining `changelog.md` strictly untouched on branch `Dev`.
+
 ## [1.7.2] - 2026-09-05
 ### Fixed
 - **Critical Dynamic Light Theme Override Bug:**
