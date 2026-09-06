@@ -2,6 +2,19 @@
 
 This changelog records all granular updates, bug fixes, refactorings, and feature iterations developed on the `Dev` branch. Each version bump in `package.json` is documented here as it happens.
 
+## [2.2.8] - 2026-09-06
+### Fixes
+- **Global Scope Syntax Error Elimination & Script Execution Restoration:**
+  - Removed conflicting top-level `const electronAPI = window.electronAPI;` declaration in `renderer.js` that caused V8 to throw `Uncaught SyntaxError: Identifier 'electronAPI' has already been declared` upon script parsing due to `contextBridge.exposeInMainWorld('electronAPI', ...)` defining a non-configurable global accessor on `window`.
+  - Restored full execution and event registration across all renderer subsystems, resolving total interface freeze where sidebar navigation buttons and account tabs were non-responsive.
+- **Centralized & Early Navigation Listener Binding (`setupSidebarListeners`):**
+  - Unified all bottom sidebar action handlers (`#add-account-btn`, `#settings-btn`, `#donate-btn`, `#report-bug-btn`, `#doom-btn`) inside an idempotent `setupSidebarListeners()` function protected by `dataset.bound` flags against listener duplication.
+  - Executed `setupSidebarListeners()` immediately upon script evaluation, at the beginning of `init()`, and inside `DOMContentLoaded` to guarantee immediate interactivity regardless of asynchronous initialization tasks.
+  - Defensively chained asynchronous IPC calls (`setSpellcheckerLanguages`, `saveAccounts`) with `.catch(() => {})` to eliminate unhandled promise rejections during cold boot.
+- **Ghost Layer Suppression & CSS Pointer-Events Hardening:**
+  - Enforced `display: none !important; pointer-events: none !important; z-index: -1 !important;` on `.app-modal-backdrop.hidden`, `.offline-overlay.hidden`, and `.hibernation-overlay.hidden` to eliminate phantom click interception and transparent backdrop hit-testing blocking.
+  - Hardened `.sidebar` with `position: relative; z-index: 50; pointer-events: auto;` guaranteeing the navigation rail remains strictly stacked above any guest webview surface or internal container overlays.
+
 ## [2.2.7] - 2026-09-06
 ### Fixes
 - **Sidebar Account Tabs & DOM Synchronization Resolution:**

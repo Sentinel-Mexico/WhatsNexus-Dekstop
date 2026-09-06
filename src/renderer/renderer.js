@@ -14,7 +14,6 @@ if (typeof window.electronAPI === 'undefined') {
     onSelectAccount: () => {}
   };
 }
-const electronAPI = window.electronAPI;
 
 
 // S-03: Sanitization helper to prevent XSS via innerHTML
@@ -780,6 +779,13 @@ async function init() {
     }
   });
 
+  // Early attachment of navigation and sidebar event listeners
+  try {
+    setupSidebarListeners();
+  } catch (e) {
+    console.error('[Startup] Sidebar listeners setup error:', e);
+  }
+
   // Early render: instantly populate the sidebar with cached accounts
   if (accounts.length > 0) {
     try {
@@ -842,7 +848,7 @@ async function init() {
   // Spellchecker languages
   if (window.electronAPI && typeof electronAPI.setSpellcheckerLanguages === 'function') {
     try {
-      electronAPI.setSpellcheckerLanguages(settings.spellcheckLanguages || ['es-ES']);
+      electronAPI.setSpellcheckerLanguages(settings.spellcheckLanguages || ['es-ES']).catch(() => {});
     } catch (_) {}
   }
 
@@ -854,7 +860,7 @@ async function init() {
         accounts = persistedAccounts;
         localStorage.setItem('whatsNexusAccounts', JSON.stringify(accounts));
       } else if (accounts.length > 0 && typeof electronAPI.saveAccounts === 'function') {
-        electronAPI.saveAccounts(accounts);
+        electronAPI.saveAccounts(accounts).catch(() => {});
       }
     } catch (e) {
       console.error('Failed to sync accounts from userData:', e);
@@ -1316,8 +1322,9 @@ function applySettings() {
 
 function addAccount(name = null) {
   const accountId = 'acc_' + Date.now();
-  const lang = i18n[settings.language] || i18n['en'];
-  const accountName = name || `${lang.default_account_name} ${accounts.length + 1}`;
+  const lang = (typeof i18n !== 'undefined' && (i18n[settings.language] || i18n['en'])) || (typeof currentTranslations !== 'undefined' ? currentTranslations : {});
+  const defaultAccountPrefix = (lang && lang.default_account_name) || 'Account';
+  const accountName = name || `${defaultAccountPrefix} ${accounts.length + 1}`;
   
   const account = {
     id: accountId,
@@ -2066,9 +2073,98 @@ window.saveAccountName = function(id) {
   updateAccountSidebarItem(acc);
 };
 
-settingsBtn.addEventListener('click', () => {
-  openSettingsView();
-});
+function handleReportBug() {
+  const appInfo = (typeof window.electronAPI !== 'undefined' && window.electronAPI.appInfo) || {};
+  const currentVer = appInfo.appVersion || appInfo.version || '';
+  const osInfo = `${appInfo.platform || ''} ${appInfo.arch || ''}`.trim() || 'N/A';
+  const electronVer = appInfo.electronVersion || 'N/A';
+  const chromeVer = appInfo.chromeVersion || 'N/A';
+  const lang = settings.language || 'es';
+  const theme = settings.theme || 'theme-dark';
+  const totalAccounts = accounts.length;
+
+  const issueTitle = encodeURIComponent('[Bug]: ');
+  const issueBody = encodeURIComponent(
+`### 🐛 Descripción del Problema
+<!-- Explica de forma clara qué está sucediendo o qué falló -->
+
+
+### 🔁 Pasos para Reproducir
+1. Ir a '...'
+2. Hacer clic en '...'
+3. Ver el error
+
+### ✅ Comportamiento Esperado
+<!-- Qué esperabas que sucediera -->
+
+
+---
+
+### 💻 Información de Diagnóstico
+- **Versión de WhatsNexus:** v${currentVer} (Beta)
+- **Sistema Operativo:** ${osInfo}
+- **Electron:** v${electronVer}
+- **Chromium:** v${chromeVer}
+- **Idioma de la App:** ${lang}
+- **Tema Actual:** ${theme}
+- **Cuentas Configuradas:** ${totalAccounts}
+`
+  );
+
+  const url = `https://github.com/Sentinel-Mexico/WhatsNexus-Dekstop/issues/new?title=${issueTitle}&body=${issueBody}`;
+  if (typeof window.electronAPI !== 'undefined' && window.electronAPI.openExternal) {
+    window.electronAPI.openExternal(url);
+  } else {
+    window.open(url, '_blank');
+  }
+}
+
+function handleDoomClick() {
+  if (doomView && !doomView.classList.contains('hidden')) {
+    const enabledAccounts = accounts.filter(a => a.enabled !== false);
+    if (activeAccountId && enabledAccounts.some(a => a.id === activeAccountId)) {
+      activateAccount(activeAccountId);
+    } else if (enabledAccounts.length > 0) {
+      activateAccount(enabledAccounts[0].id);
+    } else {
+      closeDoomView();
+      if (emptyState) emptyState.classList.remove('hidden');
+    }
+  } else {
+    openDoomView();
+  }
+}
+
+function setupSidebarListeners() {
+  const addBtn = document.getElementById('add-account-btn');
+  const dBtn = document.getElementById('doom-btn');
+  const bugBtn = document.getElementById('report-bug-btn');
+  const donBtn = document.getElementById('donate-btn');
+  const setBtn = document.getElementById('settings-btn');
+
+  if (addBtn && !addBtn.dataset.bound) {
+    addBtn.dataset.bound = 'true';
+    addBtn.addEventListener('click', () => addAccount());
+  }
+  if (setBtn && !setBtn.dataset.bound) {
+    setBtn.dataset.bound = 'true';
+    setBtn.addEventListener('click', () => openSettingsView());
+  }
+  if (donBtn && !donBtn.dataset.bound) {
+    donBtn.dataset.bound = 'true';
+    donBtn.addEventListener('click', () => openDonationsView());
+  }
+  if (bugBtn && !bugBtn.dataset.bound) {
+    bugBtn.dataset.bound = 'true';
+    bugBtn.addEventListener('click', handleReportBug);
+  }
+  if (dBtn && !dBtn.dataset.bound) {
+    dBtn.dataset.bound = 'true';
+    dBtn.addEventListener('click', handleDoomClick);
+  }
+}
+
+setupSidebarListeners();
 
 if (backToChatsBtn) {
   backToChatsBtn.addEventListener('click', () => {
@@ -3278,78 +3374,7 @@ function initNetworkMonitor() {
   });
 }
 
-addAccountBtn.addEventListener('click', () => addAccount());
-
-if (reportBugBtn) {
-  reportBugBtn.addEventListener('click', () => {
-    const appInfo = electronAPI.appInfo || {};
-    const currentVer = appInfo.appVersion || appInfo.version || '';
-    const osInfo = `${appInfo.platform || ''} ${appInfo.arch || ''}`.trim() || 'N/A';
-    const electronVer = appInfo.electronVersion || 'N/A';
-    const chromeVer = appInfo.chromeVersion || 'N/A';
-    const lang = settings.language || 'es';
-    const theme = settings.theme || 'theme-dark';
-    const totalAccounts = accounts.length;
-
-    const issueTitle = encodeURIComponent('[Bug]: ');
-    const issueBody = encodeURIComponent(
-`### 🐛 Descripción del Problema
-<!-- Explica de forma clara qué está sucediendo o qué falló -->
-
-
-### 🔁 Pasos para Reproducir
-1. Ir a '...'
-2. Hacer clic en '...'
-3. Ver el error
-
-### ✅ Comportamiento Esperado
-<!-- Qué esperabas que sucediera -->
-
-
----
-
-### 💻 Información de Diagnóstico
-- **Versión de WhatsNexus:** v${currentVer} (Beta)
-- **Sistema Operativo:** ${osInfo}
-- **Electron:** v${electronVer}
-- **Chromium:** v${chromeVer}
-- **Idioma de la App:** ${lang}
-- **Tema Actual:** ${theme}
-- **Cuentas Configuradas:** ${totalAccounts}
-`
-    );
-
-    const url = `https://github.com/Sentinel-Mexico/WhatsNexus-Dekstop/issues/new?title=${issueTitle}&body=${issueBody}`;
-    electronAPI.openExternal(url);
-  });
-}
-
-// Controladores de la Vista de Donaciones
-if (donateBtn) {
-  donateBtn.addEventListener('click', () => {
-    openDonationsView();
-  });
-}
-
-// Easter Egg Controllers: Classic Doom
-if (doomBtn) {
-  doomBtn.addEventListener('click', () => {
-    if (doomView && !doomView.classList.contains('hidden')) {
-      // If already active, return to active chat or empty state
-      const enabledAccounts = accounts.filter(a => a.enabled !== false);
-      if (activeAccountId && enabledAccounts.some(a => a.id === activeAccountId)) {
-        activateAccount(activeAccountId);
-      } else if (enabledAccounts.length > 0) {
-        activateAccount(enabledAccounts[0].id);
-      } else {
-        closeDoomView();
-        emptyState.classList.remove('hidden');
-      }
-    } else {
-      openDoomView();
-    }
-  });
-}
+setupSidebarListeners();
 
 if (doomizateToggle) {
   doomizateToggle.addEventListener('change', (e) => {
