@@ -1,6 +1,11 @@
 # Documentation Synchronization and Maintenance Rule
 
-## 1. Living Documentation Mandate
+> **SUBORDINATION NOTICE:**
+> This rule is strictly subordinate to the **Global Agent Engineering & Operational Governance** (`antigravity-global-engineering-governance`). In the event of any conflict, the Global Governance takes absolute precedence.
+
+---
+
+## 1. Living Documentation Mandate (Global Phase 2 & Phase 4)
 The technical documentation stored in the `docs/` directory is an essential, first-class citizen of the repository. It must accurately represent the current state of the application at all times.
 
 ## 2. Continuous Synchronization Trigger

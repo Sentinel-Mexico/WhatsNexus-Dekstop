@@ -1,6 +1,7 @@
 # Theme & Color Palette Rules 🎨
 
-This document governs the creation, insertion, ordering, validation, and categorization of visual theme color palettes in **WhatsNexus**.
+> **SUBORDINATION NOTICE:**
+> This rule is strictly subordinate to the **Global Agent Engineering & Operational Governance** (`antigravity-global-engineering-governance`). It specifies the WhatsNexus domain rules for modular color schemes adhering to Global Phase 2 (`src/themes/`). In the event of any conflict, the Global Governance takes absolute precedence.
 
 ---
 
