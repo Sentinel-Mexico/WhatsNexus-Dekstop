@@ -7,87 +7,50 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 ---
 
 ## [2.2.4] - 2026-09-05
-### Fixed
-- **Cold Start Offline Black Screen Bug Resolution (Escenario B):**
-  - Eliminated premature overlay dismissal caused by partition disk cache (`persist:acc_*`) firing `dom-ready` and `did-finish-load` events during offline cold starts. Webview lifecycle listeners now strictly guard against hiding the overlay when an offline scenario is active.
-  - Implemented `checkInitialNetworkState()` as an agnostic, imperative startup verification function running on every cold start, independently verifying real network connectivity before webview activation without relying on cached flags or `localStorage`. Infallibly enforces Escenario B upon detecting lack of connectivity.
-  - Hardened `did-fail-load` event handling to intercept all critical network failures (`ERR_INTERNET_DISCONNECTED`, `ERR_NAME_NOT_RESOLVED`, `ERR_CONNECTION_REFUSED`, etc.) and route them directly to Escenario B.
-- **Interactive Rescan Button Animation & Validation (Escenario B):**
-  - Configured `#offline-rescan-btn` with immediate click lock (`disabled = true`, `pointer-events: none`, `opacity: 0.7`, and `.loading` class) preventing duplicate triggers.
-  - Integrated animated circular loading spinner (`fa-spinner fa-spin btn-spinner`) and localized connecting text (`status_connecting`).
-  - Implemented connectivity verification against `https://web.whatsapp.com` requiring HTTP 200–299 responses via backend IPC `check-internet` (utilizing Electron's `net.isOnline()`) and frontend fetch fallback. On success, reloads all active account webviews and dismisses the overlay; on failure or non-2xx status, halts the spinner and gracefully reactivates the button in idle state.
-
-## [2.2.3] - 2026-09-05
-### Changed
-- **Static Asset Structure Optimization (`src/assets/img/`):**
-  - Physically migrated all raster and vector image assets (`icon.png`, tray icons, monochrome/color logos, and badge variants) from the root of `src/assets/` into a dedicated `src/assets/img/` subfolder, ensuring a clean directory hierarchy with zero loose graphics at the root.
-- **Exhaustive Asset Path Synchronization:**
-  - **Main Process (`src/main.js`):** Updated `APP_ICON_PATH` and dynamic tray icon generator `getTrayIconPath` to resolve all system tray and window icons from `path.join(__dirname, 'assets', 'img', ...)`.
-  - **HTML Markup (`src/splash/splash.html`, `src/renderer/index.html`):** Synchronized all vector branding `<img>` references to load from `../assets/img/whatsnexus-logo.svg`.
-  - **Build & Packaging Toolchains (`package.json`, `scripts/aur/PKGBUILD.template`):** Updated `electron-builder` icon configuration to `"src/assets/img/icon.png"` and updated Arch Linux AUR recipe to install the application icon from the new location.
-  - **Technical Documentation (`docs/architecture.md`, `docs/maintenance.md`):** Updated architectural documentation and packaging CLI examples to reflect `src/assets/img/icon.png`.
-
-## [2.2.2] - 2026-09-05
-### Fixed
-- **Offline Overlay Black Screen Resolution (Escenario B):** Fixed `<webview>` out-of-process rendering occluding DOM overlays on Linux platforms during network load failures (`ERR_INTERNET_DISCONNECTED`) by dynamically hiding `<webview>` elements (`visibility = 'hidden'`) upon overlay activation and restoring them upon reconnection.
-- **Strict UI State Isolation (Escenario A vs. Escenario B):**
-  - **Escenario A (Disconnection During Active Use):** Displays the animated top radar spinner and the "Buscando señal..." indicator badge while strictly hiding the "Volver a escanear" button.
-  - **Escenario B (Application Started Offline):** Displays the animated top radar circle spinner, "Sin conexión a internet" title, informative subtitle, and clickable "Volver a escanear" button with background webview reload and spinner while strictly hiding the "Buscando señal..." badge.
-- **Content Security Policy & Node.js IPC Polling:** Updated CSP in `src/renderer/index.html` to allow `https://github.com` and `https://web.whatsapp.com` in `connect-src`, and introduced `check-internet` IPC handler in `src/main.js` and `src/preload-main.js` allowing reliable HTTPS HEAD requests without renderer sandboxing or CSP limitations.
-
 ### Added
-- **Modular DinoGame Architecture (`src/renderer/dino-game.js`):** Extracted all minigame logic (physics, jump parabola, ducking hitbox reduction to 24px, 3-tier pterodactyls, collision detection, and rendering loop) into an independent, modular `DinoGame` class loaded lazily on demand. Included complete memory and CPU leak prevention (`destruir()` calling `cancelAnimationFrame` and unbinding window keyboard listeners).
-- **Dynamic Offline Duration Timer:** Added real-time elapsed offline counter under the minigame canvas (`Estamos sin conexión desde hace {tiempo} {medición}.`), dynamically formatting seconds, minutes, hours, and days with reactive 1-second ticks and zero hardcoded strings.
-- **Expanded Canvas Dimensions:** Increased `#dino-game-canvas` height to 300px (`groundY = 260px`) and adjusted `.dino-game-wrapper` CSS for spacious flight clearance across all 3 pterodactyl altitude tiers and visible jump parabolic trajectory.
-
-### Changed
-- **Clean Code Separation in `renderer.js`:** Reduced renderer footprint by eliminating inline game logic, implementing lazy script injection (`ensureDinoGameLoaded()`), and centralizing offline lifecycle hooks.
-- **100% Symmetric Key Parity Across 55 Locales:** Added `offline_timer_prefix`, `time_seconds`, `time_minutes`, `time_hours`, and `time_days` across all 55 active locale files.
-
-## [2.2.1] - 2026-09-05
-### Fixed
-- **Offline Overlay UI State Isolation (Escenario A vs. Escenario B):**
-  - **Escenario A (Disconnection During Active Use):** Displays the animated top radar spinner and the "Buscando señal..." indicator badge while completely hiding the "Volver a escanear" button.
-  - **Escenario B (Application Started Offline):** Restored and ensured top radar circle spinner animation, displayed the active "Volver a escanear" button, and completely hid the "Buscando señal..." badge.
-- **Reliable Active Background Polling Reconnection:**
-  - Resolved `navigator.onLine` browser lockups by deploying an active 6-second polling interval (`setInterval`) executing lightweight HTTP HEAD requests to `https://github.com` with `cache: 'no-store'` and `mode: 'no-cors'`.
-  - Automatically stops polling and dismisses the offline overlay upon successful connection resolution without disturbing underlying webviews in Escenario A.
-- **"Volver a escanear" Button Repair (Escenario B):**
-  - Assigned dedicated event listener to `#offline-rescan-btn` with immediate loading spinner feedback and button disabling (`disabled = true`).
-  - Triggers immediate HEAD ping against `https://github.com`; upon success, reloads all active account `<webview>` tags and dismisses the overlay. Resets to idle state on failure.
-
-### Added
-- **T-Rex Minigame Expansion & Mechanics:**
-  - **Expanded Canvas Dimensions:** Scaled `#dino-game-canvas` and `.dino-game-wrapper` to 100% container width, significantly increasing canvas height to 260px (`groundY = 220px`) for optimal screen real estate.
-  - **Pterodactyl Aerial Enemies:** Implemented flying Pterodactyls with two-frame wing-flapping animations spawning across low (`groundY - 32px`), mid (`groundY - 54px`), and high (`groundY - 82px`) altitudes.
-  - **Strict Keyboard Controls (ArrowUp / ArrowDown):** Configured keyboard inputs strictly to `ArrowUp` (jump / restart) and `ArrowDown` (ducking with reduced 24px hitbox and crawling sprite).
-  - **Internationalization Parity:** Synchronized `dino_jump_hint` and `dino_restart_hint` strings across all 55 active locale dictionaries.
-
-## [2.2.0] - 2026-09-05
-### Added
-- **Expanded Multiplatform Distribution Channels (AppX, MSIX, Snap, Pacman):**
+- **Expanded Multiplatform Distribution Channels (AppX, MSIX, Snap, Pacman, AUR):**
   - **Windows Store & Enterprise Modern Packaging:** Added Windows `appx` target configuration in `package.json` with identity parameters (`SentinelMexico.WhatsNexus`), application ID (`WhatsNexus`), display name, publisher identity, and dual-language declarations (`es-ES`, `en-US`).
   - **Automated MSIX Generation Hook:** Implemented `scripts/generate-msix.js` as an `afterAllArtifactBuild` hook in `electron-builder` to automatically mirror AppX packages into `.msix` bundles with synchronized artifact registration.
   - **Canonical Snap Store Packaging:** Added `snap` target with strict confinement (`confinement: "strict"`, `grade: "stable"`) and comprehensive plug bindings (`default`, `network`, `network-bind`, `desktop`, `desktop-legacy`, `x11`, `wayland`, `unity7`, `audio-playback`, `pulseaudio`, `browser-support`).
   - **Native Arch Linux Distribution (`.pacman`):** Configured `pacman` target with xz compression, package categorization, and system integration.
   - **Arch Linux / AUR Packaging Template:** Created `scripts/aur/PKGBUILD.template` providing the complete PKGBUILD recipe for `whatsnexus-bin`, including `/opt/whatsnexus` installation, `/usr/bin/whatsnexus` binary symlinks, `.desktop` launcher entry, and 512x512 hicolor application icons.
-- **GitHub Actions Multiplatform Matrix Pipeline Enhancement (`.github/workflows/build.yml`):**
-  - Configured Linux packaging toolchains (`libarchive-tools`, `zstd`, `snapcraft`) on Ubuntu runners for seamless `.snap` and `.pacman` assembly.
-  - Integrated automated Windows post-build MSIX assurance step.
-  - Expanded artifact collection and release publishing globs to capture `dist/*.appx`, `dist/*.msix`, `dist/*.snap`, `dist/*.pacman`, `dist/*.pkg.tar.xz`, and `dist/*.pkg.tar.zst`.
+  - **GitHub Actions Multiplatform Matrix Pipeline Enhancement (`.github/workflows/build.yml`):** Configured Linux packaging toolchains (`libarchive-tools`, `zstd`, `snapcraft`) on Ubuntu runners for seamless `.snap` and `.pacman` assembly, integrated automated Windows post-build MSIX assurance step, and expanded artifact collection/publishing globs for all new distribution formats.
+- **Redesigned Bifurcated Offline Protections & UI Isolation:**
+  - Scoped offline overlay strictly inside `#webview-container` (`z-index: 20`), ensuring lateral sidebar (`<aside class="sidebar">`) and native views (`#settings-view`, `#donations-view`, `#doom-view`) remain 100% accessible and interactive when offline.
+  - **Escenario A (Hot Disconnection During Active Use):** Implemented passive reconnection wait with top animated radar spinner, pulsing indicator badge (`reconnecting_status`), and zero disturbance to underlying webviews, safeguarding draft messages and conversation context.
+  - **Escenario B (Cold Startup / Offline Boot):** Implemented active reconnection wait with localized title, subtitle (`offline_screen_startup_desc`), and interactive "Volver a escanear" button (`btn_rescan`).
+- **Modular Retro T-Rex Runner Minigame Engine (`src/renderer/dino-game.js`):**
+  - Modularized minigame architecture into an independent `DinoGame` class loaded lazily on demand (`ensureDinoGameLoaded()`) with leak-free lifecycle destruction (`destruir()`).
+  - Expanded canvas dimensions to 100% container width and 300px height (`groundY = 260px`) for optimal flight clearance and parabolic jump trajectory.
+  - Implemented 3-tier aerial Pterodactyl enemies spawning across low, mid, and high altitudes with animated wing flapping.
+  - Configured strict keyboard controls (`ArrowUp` to jump/restart, `ArrowDown` to duck with reduced 24px hitbox).
+  - Dynamic Theme Adaptation: Automatically repaints game elements using active CSS palette variables (`--text-primary`, `--accent-color`, `--border-color`, `--text-secondary`, `--whatsapp-bg`) across all 16 themes via MutationObserver.
+- **Dynamic Offline Duration Timer:**
+  - Integrated real-time counter ticking every second (`Estamos sin conexión desde hace {tiempo} {medición}.`), dynamically formatting seconds, minutes, hours, and days without hardcoded strings.
+- **Comprehensive 55-Language Internationalization (i18n):**
+  - Maintained 100% symmetric key parity across all 55 active locale dictionaries (359 keys each), adding translations for offline status, rescan button, minigame hints, and time duration counters.
 
-## [2.1.0] - 2026-09-05
-### Added
-- **Redesigned Bifurcated Offline Protections:**
-  - Restructured offline overlay scope strictly inside `#webview-container` (`z-index: 20`), ensuring the lateral sidebar (`<aside class="sidebar">`) and native views (`#settings-view`, `#donations-view`, `#doom-view`) remain 100% accessible and fully interactive without Internet.
-  - **Escenario A (Hot Disconnection During Active Use):** Implemented passive reconnection wait with dynamic radar animation, pulsing indicator dot, and non-clickable badge (`reconnecting_status`). Automatically and silently dismisses the overlay upon reconnection without reloading the underlying `<webview>` sessions, safeguarding draft messages and conversation context.
-  - **Escenario B (Cold Startup / Offline Boot):** Implemented active reconnection wait with localized subtitle (`offline_screen_startup_desc`) and interactive "Volver a escanear" button (`btn_rescan`). On interaction, displays a real-time spinner while executing background connectivity verification against WhatsApp servers; automatically resets to idle on failure and restores sessions on success.
-- **Integrated Retro T-Rex Runner Minigame Easter Egg:**
-  - Embedded an offline arcade T-Rex minigame within the lower half of the offline screen across both scenarios.
-  - Features authentic 2D pixel-art dinosaur rendering, obstacles (small, tall, and double cacti), drifting background clouds, dynamic jumping physics (`ArrowUp` to jump, `ArrowDown` to duck), score tracking with persistent high scores in `localStorage`, and Web Audio API synthesized sound effects.
-  - Real-time Theme Adaptation: Strictly derives rendering colors from active CSS variables (`getComputedStyle(document.documentElement)`: `--text-primary`, `--accent-color`, `--border-color`, `--text-secondary`, `--whatsapp-bg`), dynamically repainting across all 16 theme palettes via MutationObserver.
-- **Comprehensive Internationalization (i18n):**
-  - Integrated localization keys maintaining 100% symmetric key parity across all 55 supported languages.
+### Changed
+- **Static Asset Structure Optimization (`src/assets/img/`):**
+  - Physically migrated all raster and vector image assets (`icon.png`, tray icons, monochrome/color logos, and badge variants) from `src/assets/` into a dedicated `src/assets/img/` subfolder.
+  - Exhaustively updated all asset references across main process (`src/main.js`), renderer markup (`src/splash/splash.html`, `src/renderer/index.html`), packaging configuration (`package.json`), Arch Linux AUR script (`scripts/aur/PKGBUILD.template`), and technical documentation (`docs/`).
+- **Clean Code Separation in Renderer:**
+  - Decoupled minigame engine from `renderer.js`, implementing dynamic script injection and centralized offline event handlers.
+
+### Fixed
+- **Cold Start Offline Black Screen Bug Resolution (Escenario B):**
+  - Eliminated premature overlay dismissal caused by partition disk cache (`persist:acc_*`) firing `dom-ready` and `did-finish-load` events during offline cold starts. Webview lifecycle listeners strictly guard against hiding the overlay when an offline scenario is active.
+  - Implemented `checkInitialNetworkState()` as an agnostic, imperative startup verification function running on cold starts, independently verifying network connectivity before webview activation without relying on cached flags or `localStorage`.
+  - Hardened `did-fail-load` event handling to intercept all critical network failures (`ERR_INTERNET_DISCONNECTED`, `ERR_NAME_NOT_RESOLVED`, `ERR_CONNECTION_REFUSED`, etc.) and route them directly to Escenario B.
+- **Interactive Rescan Button Animation & Validation (Escenario B):**
+  - Configured `#offline-rescan-btn` with immediate click lock (`disabled = true`, `pointer-events: none`, `opacity: 0.7`, and `.loading` class) preventing duplicate triggers.
+  - Integrated animated circular loading spinner (`fa-spinner fa-spin btn-spinner`) and localized connecting text (`status_connecting`).
+  - Implemented connectivity verification against `https://web.whatsapp.com` requiring HTTP 200–299 responses via backend IPC `check-internet` (utilizing Electron's `net.isOnline()`) and frontend fetch fallback. On success, reloads all active account webviews and dismisses the overlay; on failure or non-2xx status, halts the spinner and gracefully reactivates the button in idle state.
+- **Linux Webview Occlusion Resolution:**
+  - Resolved `<webview>` out-of-process surface occlusion over HTML overlay on Linux platforms during network load failures by dynamically toggling `visibility = 'hidden'` on `<webview>` elements when the offline overlay is visible and restoring them upon reconnection.
+- **Background Reconnection Polling & Content Security Policy:**
+  - Updated CSP in `src/renderer/index.html` to allow `https://github.com` and `https://web.whatsapp.com` in `connect-src`.
+  - Implemented IPC-backed connectivity checks avoiding renderer sandboxing and browser `navigator.onLine` stale states.
 
 ## [2.0.2] - 2026-09-05
 ### Fixed
