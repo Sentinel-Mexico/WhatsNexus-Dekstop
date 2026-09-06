@@ -6,6 +6,21 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ---
 
+## [2.2.6] - 2026-09-06
+### Fixed
+- **Universal Hardware & Session Permissions Resolution (Microphone, Camera, Notifications):**
+  - Resolved structural failure in Chromium session permission checks where `PermissionCheckDetails.mediaType` (singular string) was not evaluated, causing `setPermissionCheckHandler` and `setPermissionRequestHandler` to reject microphone requests and trigger WhatsApp Web's blocking "Permitir micrófono" dialog when recording voice messages.
+  - Implemented `checkMediaPermission` in the main process to comprehensively support direct permission names (`'microphone'`, `'camera'`, `'audio'`, `'video'`) and `'media'` requests with both singular `mediaType` and plural `mediaTypes` payloads under user-configured settings.
+  - Implemented `checkDisplayCapturePermission` supporting both `mediaType` and `mediaTypes` for screen sharing with audio.
+  - Allowed clipboard permissions (`clipboard-read`, `clipboard-sanitized-write`) for seamless chat media copy/paste in webview sessions.
+  - Proactively registered permission handlers across all persisted account partitions (`persist:acc_*`) at application startup and during dynamic account registration (`save-accounts`).
+- **Real-Time Reactive Permission & Privacy Synchronization:**
+  - Implemented real-time IPC broadcasting (`broadcastPermissionsToAllWebContents`) delivering `permissions:updated` and `notifications:updated` across all active `webContents` and `<webview>` instances when toggling settings in the UI.
+  - Enhanced webview `preload.js` with dynamic `appPermissions` and `notificationSettings` state updating reactively without requiring application restarts.
+  - Extended `navigator.permissions.query` interception in webviews to support `'microphone'`, `'camera'`, `'geolocation'`, and `'notifications'`, returning `{ state: 'granted' }` (or `'denied'`) based on reactive settings and dispatching standard `change` events.
+  - Guarded `navigator.mediaDevices.getUserMedia` and legacy `navigator.getUserMedia` in webviews to cleanly reflect active user device permissions and prevent hangs.
+  - Implemented robust `CustomNotification` class inheriting from `EventTarget.prototype` with `.close()`, dynamic `permission` getter, and instant `requestPermission` resolution, completely eliminating the browser address bar "Permitir notificaciones" modal.
+
 ## [2.2.4] - 2026-09-05
 ### Added
 - **Expanded Multiplatform Distribution Channels (AppX, MSIX, Snap, Pacman, AUR):**
