@@ -1,7 +1,7 @@
 # WhatsNexus ⚡
 
 ![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey)
-![Version](https://img.shields.io/badge/version-v2.1.0-brightgreen.svg)
+![Version](https://img.shields.io/badge/version-v2.2.0-brightgreen.svg)
 ![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)
 
 **WhatsNexus** is an open-source, production-ready desktop application built to manage multiple WhatsApp Web accounts concurrently. Built on top of Electron.js with strict session isolation (`StoragePartition`), dynamic tab hibernation, comprehensive offline protection, and 55 global languages, WhatsNexus keeps your personal, freelance, and business communications organized without data crossover.
@@ -12,14 +12,14 @@
 *   **Strict Session Isolation & Sandboxing:** Every account operates in a sandboxed, persistent storage partition (`persist:acc_*`) with completely segregated cookies, cache, local storage, and IndexedDB under Chromium sandboxing (`sandbox: true`) and Deny-by-Default hardware permissions.
 *   **Persistent Login Sessions:** QR codes only need to be scanned once. Sessions persist securely on disk across application restarts.
 *   **Intelligent Tab Hibernation:** Inactive accounts automatically hibernate after 20 minutes of idle time, destroying unneeded `<webview>` instances to reclaim up to 450 MB RAM per tab.
-*   **Comprehensive Offline Protections:** Built-in offline container screens with retry buttons and a system-wide reconnection modal with reactive network state listeners.
+*   **Comprehensive Offline Protections:** Built-in offline container screens with retry buttons, bifurcated reconnection flows (passive hot recovery vs. active cold recovery), and an integrated retro T-Rex runner minigame easter egg.
 *   **Automated OTA Updates:** Integrated auto-updater powered by `electron-updater` and `electron-log` that checks, downloads, and restarts to apply new versions from GitHub Releases.
 *   **Native System Tray & Notification Badges:** Runs discreetly in the background, minimizing to the system tray with dynamic unread message count badges and in-memory circular avatar rendering.
 *   **Privacy Presets & DND:** Configurable notification privacy presets (Broad, Medium, Strict, Custom) and account-specific Do Not Disturb controls.
 *   **Official Poppins Typography & Conlang Fonts:** Elegant and readable typography using Google Fonts Poppins, plus dedicated custom font stacks for constructed languages (Tengwar Telcontar and Klingon pIqaD).
 *   **Modular Theme Engine & Customizer:** 16 modular color palettes stored in validated JSON definitions across 4 structured visual tiers (Own, Original, Messaging, and Pop Culture: WhatsNexus, Alto Contraste, Bosque, Cyber-Nexus, Dracula, Nord, Retro, Steampunk, Messenger, Signal, Telegram, WhatsApp, Doom, Star Trek, Star Wars, Vóxel) with dynamic startup scanning, dynamic switch labels, and an interactive real-time Customization studio.
 *   **Global Internationalization (i18n):** Modular on-demand translations across 55 global languages, including constructed languages (Elvish Tengwar and Klingon) with in-memory caching.
-*   **Multiplatform CI/CD:** Automated GitHub Actions build pipeline generating `.deb`, `.AppImage` (Linux x64 and arm64), `.dmg` (macOS x64 and arm64), and `.exe` (Windows NSIS x64).
+*   **Multiplatform CI/CD & Expanded Distribution Channels:** Automated GitHub Actions build pipeline generating `.deb`, `.AppImage`, `.snap`, `.pacman` (Linux x64 and arm64), `.dmg`, `.zip` (macOS x64 and arm64), `.exe` (NSIS), `.appx`, and `.msix` (Windows Store/Enterprise), plus Arch Linux AUR packaging recipes (`scripts/aur/PKGBUILD.template`).
 
 ## ⚖️ Comparison: WhatsApp Web vs. WhatsApp Desktop vs. ZapZap vs. WhatsNexus
 

@@ -1,0 +1,73 @@
+# Maintainer: Sentinel Mexico <studio@somossentinel.com>
+# Template for WhatsNexus Arch Linux / AUR Package (whatsnexus-bin)
+
+pkgname=whatsnexus-bin
+_pkgname=whatsnexus
+pkgver=${VERSION}
+pkgrel=1
+pkgdesc="Multi-account WhatsApp Web desktop client with strict session isolation, dynamic hibernation, offline protections, and custom themes"
+arch=('x86_64')
+url="https://github.com/Sentinel-Mexico/WhatsNexus-Dekstop"
+license=('GPL-3.0-or-later')
+depends=(
+  'gtk3'
+  'nss'
+  'alsa-lib'
+  'libxss'
+  'libxtst'
+  'libnotify'
+  'libsecret'
+  'libappindicator-gtk3'
+)
+optdepends=(
+  'xdg-utils: Open URLs and desktop integrations'
+)
+provides=('whatsnexus')
+conflicts=('whatsnexus')
+options=('!strip')
+
+# Source release binary from GitHub
+source=("https://github.com/Sentinel-Mexico/WhatsNexus-Dekstop/releases/download/v${pkgver}/whatsnexus-${pkgver}-linux-x64.pacman")
+sha256sums=('SKIP')
+
+package() {
+  # When extracted from the pacman binary distribution:
+  # Base files unpack directly into the package directory
+  install -d "${pkgdir}/opt/whatsnexus"
+  install -d "${pkgdir}/usr/bin"
+  install -d "${pkgdir}/usr/share/applications"
+  install -d "${pkgdir}/usr/share/icons/hicolor/512x512/apps"
+
+  # Copy application payload
+  if [ -d "${srcdir}/opt/WhatsNexus" ]; then
+    cp -a "${srcdir}/opt/WhatsNexus/." "${pkgdir}/opt/whatsnexus/"
+  elif [ -d "${srcdir}/opt/whatsnexus" ]; then
+    cp -a "${srcdir}/opt/whatsnexus/." "${pkgdir}/opt/whatsnexus/"
+  fi
+
+  # Binary executable symlink
+  chmod 755 "${pkgdir}/opt/whatsnexus/whatsnexus" || true
+  ln -sf "/opt/whatsnexus/whatsnexus" "${pkgdir}/usr/bin/whatsnexus"
+
+  # Desktop Entry
+  cat > "${pkgdir}/usr/share/applications/whatsnexus.desktop" << EOF
+[Desktop Entry]
+Name=WhatsNexus
+Comment=Multi-account WhatsApp Web client
+Exec=/usr/bin/whatsnexus %U
+Terminal=false
+Type=Application
+Icon=whatsnexus
+StartupWMClass=whatsnexus
+Categories=Network;InstantMessaging;Chat;
+MimeType=x-scheme-handler/whatsapp;
+EOF
+  chmod 644 "${pkgdir}/usr/share/applications/whatsnexus.desktop"
+
+  # System Icon
+  if [ -f "${pkgdir}/opt/whatsnexus/resources/src/assets/icon.png" ]; then
+    install -Dm644 "${pkgdir}/opt/whatsnexus/resources/src/assets/icon.png" "${pkgdir}/usr/share/icons/hicolor/512x512/apps/whatsnexus.png"
+  elif [ -f "${srcdir}/usr/share/icons/hicolor/512x512/apps/whatsnexus.png" ]; then
+    install -Dm644 "${srcdir}/usr/share/icons/hicolor/512x512/apps/whatsnexus.png" "${pkgdir}/usr/share/icons/hicolor/512x512/apps/whatsnexus.png"
+  fi
+}

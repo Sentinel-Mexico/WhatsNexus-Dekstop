@@ -2,6 +2,25 @@
 
 This changelog records all granular updates, bug fixes, refactorings, and feature iterations developed on the `Dev` branch. Each version bump in `package.json` is documented here as it happens.
 
+## [2.2.0] - 2026-09-05
+### Features
+- **Expanded Multiplatform Distribution Channels (AppX, MSIX, Snap, Pacman):**
+  - **Windows Store & Enterprise Modern Packaging:** Added Windows `appx` target configuration in `package.json` with identity parameters (`SentinelMexico.WhatsNexus`), application ID (`WhatsNexus`), display name, publisher identity, and dual-language declarations (`es-ES`, `en-US`).
+  - **Automated MSIX Generation Hook:** Implemented `scripts/generate-msix.js` as an `afterAllArtifactBuild` hook in `electron-builder` to automatically mirror AppX packages into `.msix` bundles with synchronized artifact registration.
+  - **Canonical Snap Store Packaging:** Added `snap` target with strict confinement (`confinement: "strict"`, `grade: "stable"`) and comprehensive plug bindings (`default`, `network`, `network-bind`, `desktop`, `desktop-legacy`, `x11`, `wayland`, `unity7`, `audio-playback`, `pulseaudio`, `browser-support`).
+  - **Native Arch Linux Distribution (`.pacman`):** Configured `pacman` target with xz compression, package categorization, and system integration.
+  - **Arch Linux / AUR Packaging Template:** Created `scripts/aur/PKGBUILD.template` providing the complete PKGBUILD recipe for `whatsnexus-bin`, including `/opt/whatsnexus` installation, `/usr/bin/whatsnexus` binary symlinks, `.desktop` launcher entry, and 512x512 hicolor application icons.
+
+### CI/CD
+- **GitHub Actions Multiplatform Matrix Pipeline Enhancement (`.github/workflows/build.yml`):**
+  - Configured Linux packaging toolchains (`libarchive-tools`, `zstd`, `snapcraft`) on Ubuntu runners for seamless `.snap` and `.pacman` assembly.
+  - Integrated automated Windows post-build MSIX assurance step.
+  - Expanded artifact collection and release publishing globs to capture `dist/*.appx`, `dist/*.msix`, `dist/*.snap`, `dist/*.pacman`, `dist/*.pkg.tar.xz`, and `dist/*.pkg.tar.zst`.
+
+### Changed
+- **Version Quartet Synchronization:**
+  - Bumped minor version to `2.2.0` across `package.json`, `package-lock.json`, `README.md`, `docs/README.md`, and `changelog-dev.md`.
+
 ## [2.1.0] - 2026-09-05
 ### Features
 - **Redesigned Bifurcated Offline Protections:**

@@ -1,6 +1,6 @@
 {
   "name": "whatsnexus",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "description": "Multi-account WhatsApp Web client using Electron",
   "main": "src/main.js",
   "scripts": {
@@ -19,6 +19,7 @@
     "productName": "WhatsNexus",
     "artifactName": "whatsnexus-${version}-${os}-${arch}.${ext}",
     "icon": "src/assets/icon.png",
+    "afterAllArtifactBuild": "scripts/generate-msix.js",
     "files": [
       "src/**/*",
       "src/assets/**/*",
@@ -40,9 +41,43 @@
             "x64",
             "arm64"
           ]
+        },
+        {
+          "target": "snap",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "pacman",
+          "arch": [
+            "x64"
+          ]
         }
       ],
       "category": "Network"
+    },
+    "snap": {
+      "grade": "stable",
+      "confinement": "strict",
+      "plugs": [
+        "default",
+        "network",
+        "network-bind",
+        "desktop",
+        "desktop-legacy",
+        "x11",
+        "wayland",
+        "unity7",
+        "audio-playback",
+        "pulseaudio",
+        "browser-support"
+      ]
+    },
+    "pacman": {
+      "compression": "xz",
+      "packageName": "whatsnexus",
+      "packageCategory": "Network"
     },
     "mac": {
       "target": [
@@ -63,7 +98,24 @@
           "arch": [
             "x64"
           ]
+        },
+        {
+          "target": "appx",
+          "arch": [
+            "x64"
+          ]
         }
+      ]
+    },
+    "appx": {
+      "identityName": "SentinelMexico.WhatsNexus",
+      "applicationId": "WhatsNexus",
+      "displayName": "WhatsNexus Desktop",
+      "publisherDisplayName": "Sentinel Mexico",
+      "publisher": "CN=SentinelMexico",
+      "languages": [
+        "es-ES",
+        "en-US"
       ]
     },
     "publish": [

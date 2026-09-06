@@ -52,12 +52,27 @@ jobs:
           EOF
 
           sudo apt-get update
-          sudo apt-get install --no-install-recommends -y gcc-aarch64-linux-gnu g++-aarch64-linux-gnu
+          sudo apt-get install --no-install-recommends -y gcc-aarch64-linux-gnu g++-aarch64-linux-gnu libarchive-tools zstd
+          sudo snap install snapcraft --classic || true
 
       - name: Compilar instaladores (sin publicar directo)
         run: npm run build
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Asegurar artefacto MSIX (Windows)
+        if: startsWith(matrix.os, 'windows')
+        shell: bash
+        run: |
+          for f in dist/*.appx; do
+            if [ -f "$f" ]; then
+              msix_file="${f%.appx}.msix"
+              if [ ! -f "$msix_file" ]; then
+                cp "$f" "$msix_file"
+                echo "MSIX generated: $msix_file"
+              fi
+            fi
+          done
 
       # Guarda los instaladores resultantes temporalmente
       - name: Guardar instaladores como artefactos
@@ -66,9 +81,15 @@ jobs:
           name: assets-${{ matrix.os }}
           path: |
             dist/*.exe
+            dist/*.appx
+            dist/*.msix
             dist/*.dmg
             dist/*.AppImage
             dist/*.deb
+            dist/*.snap
+            dist/*.pacman
+            dist/*.pkg.tar.xz
+            dist/*.pkg.tar.zst
             dist/*.zip
             dist/*.blockmap
             dist/latest*.yml
