@@ -350,7 +350,7 @@
   "token_accent_crimson": "Crimson Accent (--accent-crimson)",
   "offline_screen_startup_desc": "ምንም የበይነመረብ ግንኙነት አልተገኘም ፣ እባክዎ እንደገና ይቃኙ...",
   "btn_rescan": "እንደገና ቃኝ",
-  "dino_jump_hint": "ለመዝለል SPACE ን ይጫኑ ወይም ጠቅ ያድርጉ",
-  "dino_restart_hint": "እንደገና ለመጀመር SPACE ን ይጫኑ ወይም ጠቅ ያድርጉ",
+  "dino_jump_hint": "ለመዝለል ↑፣ ለመጎንበስ ↓ ይጫኑ",
+  "dino_restart_hint": "እንደገና ለመጀመር ↑ ን ይጫኑ ወይም ጠቅ ያድርጉ",
   "dino_game_over": "ጨዋታው አልቋል"
 }

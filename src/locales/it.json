@@ -350,7 +350,7 @@
   "token_accent_crimson": "Accento Cremisi (--accent-crimson)",
   "offline_screen_startup_desc": "Nessuna connessione Internet trovata, eseguire nuovamente la scansione...",
   "btn_rescan": "Scansiona di nuovo",
-  "dino_jump_hint": "Premi SPAZIO o fai clic per saltare",
-  "dino_restart_hint": "Premi SPAZIO o fai clic per ricominciare",
+  "dino_jump_hint": "Premi ↑ per saltare, ↓ per abbassarti",
+  "dino_restart_hint": "Premi ↑ o fai clic per ricominciare",
   "dino_game_over": "PARTITA FINITA"
 }

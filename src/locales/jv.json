@@ -350,7 +350,7 @@
   "token_accent_crimson": "Crimson Accent (--accent-crimson)",
   "offline_screen_startup_desc": "Ora ana sambungan internet sing ditemokake, mangga pindai maneh...",
   "btn_rescan": "Pindai maneh",
-  "dino_jump_hint": "Pencet SPASI utawa klik kanggo mlumpat",
-  "dino_restart_hint": "Pencet SPASI utawa klik kanggo miwiti maneh",
+  "dino_jump_hint": "Pencet ↑ kanggo mlumpat, ↓ kanggo mbungkuk",
+  "dino_restart_hint": "Pencet ↑ utawa klik kanggo miwiti maneh",
   "dino_game_over": "GAME RAMPUNG"
 }

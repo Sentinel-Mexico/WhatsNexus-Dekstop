@@ -350,7 +350,7 @@
   "token_accent_crimson": "Crimson Accent (--accent-crimson)",
   "offline_screen_startup_desc": "အင်တာနက်ချိတ်ဆက်မှု မတွေ့ရှိပါ၊ ကျေးဇူးပြု၍ ထပ်မံစကင်ဖတ်ပါ...",
   "btn_rescan": "ထပ်မံစကင်ဖတ်ပါ",
-  "dino_jump_hint": "ခုန်ရန် SPACE ကိုနှိပ်ပါ သို့မဟုတ် ကလစ်နှိပ်ပါ",
-  "dino_restart_hint": "ပြန်လည်စတင်ရန် SPACE ကိုနှိပ်ပါ သို့မဟုတ် ကလစ်နှိပ်ပါ",
+  "dino_jump_hint": "Press ↑ to jump, ↓ to duck",
+  "dino_restart_hint": "Press ↑ or click to restart",
   "dino_game_over": "ဂိမ်းပြီးပါပြီ"
 }

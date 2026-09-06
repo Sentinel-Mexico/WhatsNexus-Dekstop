@@ -350,7 +350,7 @@
   "token_accent_crimson": "Crimson Accent (--accent-crimson)",
   "offline_screen_startup_desc": "ਕੋਈ ਇੰਟਰਨੈੱਟ ਕਨੈਕਸ਼ਨ ਨਹੀਂ ਮਿਲਿਆ, ਕਿਰਪਾ ਕਰਕੇ ਦੁਬਾਰਾ ਸਕੈਨ ਕਰੋ...",
   "btn_rescan": "ਦੁਬਾਰਾ ਸਕੈਨ ਕਰੋ",
-  "dino_jump_hint": "ਛਾਲ ਮਾਰਨ ਲਈ ਸਪੇਸ ਦਬਾਓ ਜਾਂ ਕਲਿੱਕ ਕਰੋ",
-  "dino_restart_hint": "ਮੁੜ ਚਾਲੂ ਕਰਨ ਲਈ ਸਪੇਸ ਦਬਾਓ ਜਾਂ ਕਲਿੱਕ ਕਰੋ",
+  "dino_jump_hint": "ਛਾਲ ਮਾਰਨ ਲਈ ↑, ਝੁਕਣ ਲਈ ↓ ਦਬਾਓ",
+  "dino_restart_hint": "ਮੁੜ ਚਾਲੂ ਕਰਨ ਲਈ ↑ ਦਬਾਓ ਜਾਂ ਕਲਿੱਕ ਕਰੋ",
   "dino_game_over": "ਖੇਡ ਖਤਮ"
 }

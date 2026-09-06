@@ -350,7 +350,7 @@
   "token_accent_crimson": "Crimson Accent (--accent-crimson)",
   "offline_screen_startup_desc": "Nu a fost găsită nicio conexiune la internet, vă rugăm să scanați din nou...",
   "btn_rescan": "Scanează din nou",
-  "dino_jump_hint": "Apasă SPAȚIU sau fă clic pentru a sări",
-  "dino_restart_hint": "Apasă SPAȚIU sau fă clic pentru a reporni",
+  "dino_jump_hint": "Apasă ↑ pentru a sări, ↓ pentru a te lăsa jos",
+  "dino_restart_hint": "Apasă ↑ sau fă clic pentru a reporni",
   "dino_game_over": "JOC TERMINAT"
 }

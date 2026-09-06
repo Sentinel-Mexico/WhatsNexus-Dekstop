@@ -350,7 +350,7 @@
   "token_accent_crimson": "Crimson Accent (--accent-crimson)",
   "offline_screen_startup_desc": "No internet connection found, please scan again...",
   "btn_rescan": "Scan again",
-  "dino_jump_hint": "Press SPACE or click to jump",
-  "dino_restart_hint": "Press SPACE or click to restart",
+  "dino_jump_hint": "Press ↑ to jump, ↓ to duck",
+  "dino_restart_hint": "Press ↑ or click to restart",
   "dino_game_over": "GAME OVER"
 }

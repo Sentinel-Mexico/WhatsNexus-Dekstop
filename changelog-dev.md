@@ -2,6 +2,25 @@
 
 This changelog records all granular updates, bug fixes, refactorings, and feature iterations developed on the `Dev` branch. Each version bump in `package.json` is documented here as it happens.
 
+## [2.2.1] - 2026-09-05
+### Fixes
+- **Offline Overlay UI State Isolation (Escenario A vs. Escenario B):**
+  - **Escenario A (Disconnection During Active Use):** Displays the animated top radar spinner and the "Buscando señal..." indicator badge while completely hiding the "Volver a escanear" button.
+  - **Escenario B (Application Started Offline):** Restored and ensured top radar circle spinner animation, displayed the active "Volver a escanear" button, and completely hid the "Buscando señal..." badge.
+- **Reliable Active Background Polling Reconnection:**
+  - Resolved `navigator.onLine` browser lockups by deploying an active 6-second polling interval (`setInterval`) executing lightweight HTTP HEAD requests to `https://github.com` with `cache: 'no-store'` and `mode: 'no-cors'`.
+  - Automatically stops polling and dismisses the offline overlay upon successful connection resolution without disturbing underlying webviews in Escenario A.
+- **"Volver a escanear" Button Repair (Escenario B):**
+  - Assigned dedicated event listener to `#offline-rescan-btn` with immediate loading spinner feedback and button disabling (`disabled = true`).
+  - Triggers immediate HEAD ping against `https://github.com`; upon success, reloads all active account `<webview>` tags and dismisses the overlay. Resets to idle state on failure.
+
+### Features
+- **T-Rex Minigame Expansion & Mechanics:**
+  - **Expanded Canvas Dimensions:** Scaled `#dino-game-canvas` and `.dino-game-wrapper` to 100% container width, significantly increasing canvas height to 260px (`groundY = 220px`) for optimal screen real estate.
+  - **Pterodactyl Aerial Enemies:** Implemented flying Pterodactyls with two-frame wing-flapping animations spawning across low (`groundY - 32px`), mid (`groundY - 54px`), and high (`groundY - 82px`) altitudes.
+  - **Strict Keyboard Controls (ArrowUp / ArrowDown):** Configured keyboard inputs strictly to `ArrowUp` (jump / restart) and `ArrowDown` (ducking with reduced 24px hitbox and crawling sprite).
+  - **Internationalization Parity:** Synchronized `dino_jump_hint` and `dino_restart_hint` strings across all 55 active locale dictionaries.
+
 ## [2.2.0] - 2026-09-05
 ### Features
 - **Expanded Multiplatform Distribution Channels (AppX, MSIX, Snap, Pacman):**

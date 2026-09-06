@@ -350,7 +350,7 @@
   "token_accent_crimson": "Crimson Accent (--accent-crimson)",
   "offline_screen_startup_desc": "インターネット接続が見つかりません。もう一度スキャンしてください...",
   "btn_rescan": "もう一度スキャン",
-  "dino_jump_hint": "スペースキーまたはクリックでジャンプ",
-  "dino_restart_hint": "スペースキーまたはクリックでリスタート",
+  "dino_jump_hint": "↑ でジャンプ、↓ でしゃがむ",
+  "dino_restart_hint": "↑ またはクリックで再スタート",
   "dino_game_over": "ゲームオーバー"
 }

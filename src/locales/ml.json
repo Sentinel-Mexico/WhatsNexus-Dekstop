@@ -350,7 +350,7 @@
   "token_accent_crimson": "Crimson Accent (--accent-crimson)",
   "offline_screen_startup_desc": "ഇന്റർനെറ്റ് കണക്ഷൻ കണ്ടെത്തിയില്ല, ദയവായി വീണ്ടും സ്കാൻ ചെയ്യുക...",
   "btn_rescan": "വീണ്ടും സ്കാൻ ചെയ്യുക",
-  "dino_jump_hint": "ചാടാൻ SPACE അമർത്തുക അല്ലെങ്കിൽ ക്ലിക്ക് ചെയ്യുക",
-  "dino_restart_hint": "പുനരാരംഭിക്കാൻ SPACE അമർത്തുക അല്ലെങ്കിൽ ക്ലിക്ക് ചെയ്യുക",
+  "dino_jump_hint": "ചാടാൻ ↑, കുനിയാൻ ↓ അമർത്തുക",
+  "dino_restart_hint": "പുനരാരംഭിക്കാൻ ↑ അമർത്തുക അല്ലെങ്കിൽ ക്ലിക്ക് ചെയ്യുക",
   "dino_game_over": "കളി കഴിഞ്ഞു"
 }

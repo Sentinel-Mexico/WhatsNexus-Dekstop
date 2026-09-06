@@ -350,7 +350,7 @@
   "token_accent_crimson": "Crimson Accent (--accent-crimson)",
   "offline_screen_startup_desc": "Tiada sambungan internet ditemui, sila imbas lagi...",
   "btn_rescan": "Imbas lagi",
-  "dino_jump_hint": "Tekan SPACE atau klik untuk melompat",
-  "dino_restart_hint": "Tekan SPACE atau klik untuk mula semula",
+  "dino_jump_hint": "Tekan ↑ untuk melompat, ↓ untuk menunduk",
+  "dino_restart_hint": "Tekan ↑ atau klik untuk mulakan semula",
   "dino_game_over": "PERMAINAN TAMAT"
 }

@@ -350,7 +350,7 @@
   "token_accent_crimson": "Crimson Accent (--accent-crimson)",
   "offline_screen_startup_desc": "कोई इंटरनेट कनेक्शन नहीं मिला, कृपया पुनः स्कैन करें...",
   "btn_rescan": "पुनः स्कैन करें",
-  "dino_jump_hint": "कूदने के लिए स्पेस दबाएं या क्लिक करें",
-  "dino_restart_hint": "पुनः आरंभ करने के लिए स्पेस दबाएं या क्लिक करें",
+  "dino_jump_hint": "कूदने के लिए ↑, झुकने के लिए ↓ दबाएं",
+  "dino_restart_hint": "पुनः आरंभ करने के लिए ↑ दबाएं या क्लिक करें",
   "dino_game_over": "खेल समाप्त"
 }

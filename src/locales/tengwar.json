@@ -350,7 +350,7 @@
   "token_accent_crimson": "Crimson Accent (--accent-crimson)",
   "offline_screen_startup_desc": "  ,   ...",
   "btn_rescan": " ",
-  "dino_jump_hint": " SPACE  ",
-  "dino_restart_hint": " SPACE   ",
+  "dino_jump_hint": " ↑  , ↓ ",
+  "dino_restart_hint": " ↑  ",
   "dino_game_over": "METTA"
 }

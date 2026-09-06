@@ -350,7 +350,7 @@
   "token_accent_crimson": "Accent Cramoisi (--accent-crimson)",
   "offline_screen_startup_desc": "Aucune connexion Internet trouvée, veuillez scanner à nouveau...",
   "btn_rescan": "Scanner à nouveau",
-  "dino_jump_hint": "Appuyez sur ESPACE ou cliquez pour sauter",
-  "dino_restart_hint": "Appuyez sur ESPACE ou cliquez pour recommencer",
+  "dino_jump_hint": "Appuyez sur ↑ pour sauter, ↓ pour vous baisser",
+  "dino_restart_hint": "Appuyez sur ↑ ou cliquez pour recommencer",
   "dino_game_over": "PARTIE TERMINÉE"
 }

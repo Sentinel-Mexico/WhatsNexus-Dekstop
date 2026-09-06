@@ -350,7 +350,7 @@
   "token_accent_crimson": "Destaque Carmesim (--accent-crimson)",
   "offline_screen_startup_desc": "Nenhuma conexão com a internet encontrada, escaneie novamente...",
   "btn_rescan": "Escanear novamente",
-  "dino_jump_hint": "Pressione ESPAÇO ou clique para pular",
-  "dino_restart_hint": "Pressione ESPAÇO ou clique para reiniciar",
+  "dino_jump_hint": "Pressione ↑ para pular, ↓ para abaixar",
+  "dino_restart_hint": "Pressione ↑ ou clique para reiniciar",
   "dino_game_over": "FIM DE JOGO"
 }

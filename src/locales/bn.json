@@ -350,7 +350,7 @@
   "token_accent_crimson": "Crimson Accent (--accent-crimson)",
   "offline_screen_startup_desc": "কোনো ইন্টারনেট সংযোগ পাওয়া যায়নি, অনুগ্রহ করে আবার স্ক্যান করুন...",
   "btn_rescan": "আবার স্ক্যান করুন",
-  "dino_jump_hint": "লাফ দিতে স্পেস টিপুন বা ক্লিক করুন",
-  "dino_restart_hint": "পুনরায় শুরু করতে স্পেস টিপুন বা ক্লিক করুন",
+  "dino_jump_hint": "লাফ দিতে ↑, নিচু হতে ↓ টিপুন",
+  "dino_restart_hint": "পুনরায় শুরু করতে ↑ টিপুন বা ক্লিক করুন",
   "dino_game_over": "খেলা শেষ"
 }
