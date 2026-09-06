@@ -347,5 +347,10 @@
   "token_accent_hover": "Accent Hover (--accent-hover)",
   "token_accent_secondary": "Secondary Accent (--accent-secondary)",
   "token_accent_terracotta": "Terracotta Accent (--accent-terracotta)",
-  "token_accent_crimson": "Crimson Accent (--accent-crimson)"
+  "token_accent_crimson": "Crimson Accent (--accent-crimson)",
+  "offline_screen_startup_desc": "莫寻见网络连接，请重新扫描...",
+  "btn_rescan": "重新扫描",
+  "dino_jump_hint": "按空格键或点击跳跃",
+  "dino_restart_hint": "按空格键或点击重新开始",
+  "dino_game_over": "游戏结束"
 }

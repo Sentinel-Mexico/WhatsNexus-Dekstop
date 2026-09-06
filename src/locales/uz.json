@@ -347,5 +347,10 @@
   "token_accent_hover": "Accent Hover (--accent-hover)",
   "token_accent_secondary": "Secondary Accent (--accent-secondary)",
   "token_accent_terracotta": "Terracotta Accent (--accent-terracotta)",
-  "token_accent_crimson": "Crimson Accent (--accent-crimson)"
+  "token_accent_crimson": "Crimson Accent (--accent-crimson)",
+  "offline_screen_startup_desc": "Internet aloqasi topilmadi, iltimos, qayta skanerlang...",
+  "btn_rescan": "Qayta skanerlash",
+  "dino_jump_hint": "Sakrash uchun SPACE tugmasini bosing yoki bosing",
+  "dino_restart_hint": "Qayta boshlash uchun SPACE tugmasini bosing yoki bosing",
+  "dino_game_over": "O'YIN TUGADI"
 }

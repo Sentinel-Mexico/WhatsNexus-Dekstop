@@ -347,5 +347,10 @@
   "token_accent_hover": "Accent Hover (--accent-hover)",
   "token_accent_secondary": "Secondary Accent (--accent-secondary)",
   "token_accent_terracotta": "Terracotta Accent (--accent-terracotta)",
-  "token_accent_crimson": "Crimson Accent (--accent-crimson)"
+  "token_accent_crimson": "Crimson Accent (--accent-crimson)",
+  "offline_screen_startup_desc": "Hakuna muunganisho wa intaneti uliopatikana, tafadhali changanua tena...",
+  "btn_rescan": "Changanua tena",
+  "dino_jump_hint": "Bonyeza SPACE au bofya ili kuruka",
+  "dino_restart_hint": "Bonyeza SPACE au bofya ili kuanzisha upya",
+  "dino_game_over": "MCHEZO UMEKWISHA"
 }

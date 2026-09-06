@@ -2,6 +2,27 @@
 
 This changelog records all granular updates, bug fixes, refactorings, and feature iterations developed on the `Dev` branch. Each version bump in `package.json` is documented here as it happens.
 
+## [2.1.0] - 2026-09-05
+### Features
+- **Redesigned Bifurcated Offline Protections:**
+  - Restructured offline overlay scope strictly inside `#webview-container` (`z-index: 8`), ensuring the lateral sidebar (`<aside class="sidebar">`) and native views (`#settings-view`, `#donations-view`, `#doom-view` at `z-index: 10`) remain 100% accessible and fully interactive without Internet.
+  - **Escenario A (Hot Disconnection During Active Use):** Implemented passive reconnection wait with dynamic radar animation, pulsing indicator dot, and non-clickable badge (`reconnecting_status`). Automatically and silently dismisses the overlay upon reconnection without reloading the underlying `<webview>` sessions, safeguarding draft messages and conversation context.
+  - **Escenario B (Cold Startup / Offline Boot):** Implemented active reconnection wait with localized subtitle (`offline_screen_startup_desc`) and interactive "Volver a escanear" button (`btn_rescan`). On interaction, displays a real-time spinner while executing background connectivity verification against WhatsApp servers; automatically resets to idle on failure and restores sessions on success.
+- **Integrated Retro T-Rex Runner Minigame Easter Egg:**
+  - Embedded an offline arcade T-Rex minigame within the lower half of the offline screen across both scenarios.
+  - Features authentic 2D pixel-art dinosaur rendering, obstacles (small, tall, and double cacti), drifting background clouds, dynamic jumping physics (Spacebar, Up Arrow, or Click/Touch), score tracking with persistent high scores in `localStorage`, and Web Audio API synthesized sound effects.
+  - Real-time Theme Adaptation: Strictly derives rendering colors from active CSS variables (`getComputedStyle(document.documentElement)`: `--text-primary`, `--accent-color`, `--border-color`, `--text-secondary`, `--whatsapp-bg`), dynamically repainting across all 16 theme palettes via MutationObserver.
+- **Comprehensive Internationalization (i18n):**
+  - Integrated 5 new localization keys (`offline_screen_startup_desc`, `btn_rescan`, `dino_jump_hint`, `dino_restart_hint`, `dino_game_over`) maintaining 100% symmetric key parity across all 55 supported languages (354 keys total per locale).
+
+### Documentation
+- **Architecture & Technical Manual Synchronization:**
+  - Updated `docs/architecture.md` and `docs/README.md` to document the bifurcated offline protection engine and the HTML5 canvas Easter Egg minigame architecture.
+
+### Changed
+- **Version Quartet Synchronization:**
+  - Bumped minor version to `2.1.0` across `package.json`, `package-lock.json`, `README.md`, `docs/README.md`, and `changelog-dev.md`.
+
 ## [2.0.2] - 2026-09-05
 ### Fixed
 - **Explicit Window Icon Assignment & Cross-Platform Taskbar Identity:**

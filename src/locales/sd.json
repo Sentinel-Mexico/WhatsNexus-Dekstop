@@ -347,5 +347,10 @@
   "token_accent_hover": "Accent Hover (--accent-hover)",
   "token_accent_secondary": "Secondary Accent (--accent-secondary)",
   "token_accent_terracotta": "Terracotta Accent (--accent-terracotta)",
-  "token_accent_crimson": "Crimson Accent (--accent-crimson)"
+  "token_accent_crimson": "Crimson Accent (--accent-crimson)",
+  "offline_screen_startup_desc": "ڪو به انٽرنيٽ ڪنيڪشن نه مليو، مهرباني ڪري ٻيهر اسڪين ڪريو...",
+  "btn_rescan": "ٻيهر اسڪين ڪريو",
+  "dino_jump_hint": "ٽپو ڏيڻ لاءِ اسپيس دٻايو يا ڪلڪ ڪريو",
+  "dino_restart_hint": "ٻيهر شروع ڪرڻ لاءِ اسپيس دٻايو يا ڪلڪ ڪريو",
+  "dino_game_over": "راند ختم"
 }

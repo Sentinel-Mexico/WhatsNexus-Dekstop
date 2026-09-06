@@ -347,5 +347,10 @@
   "token_accent_hover": "Accent Hover (--accent-hover)",
   "token_accent_secondary": "Secondary Accent (--accent-secondary)",
   "token_accent_terracotta": "Terracotta Accent (--accent-terracotta)",
-  "token_accent_crimson": "Crimson Accent (--accent-crimson)"
+  "token_accent_crimson": "Crimson Accent (--accent-crimson)",
+  "offline_screen_startup_desc": "インターネット接続が見つかりません。もう一度スキャンしてください...",
+  "btn_rescan": "もう一度スキャン",
+  "dino_jump_hint": "スペースキーまたはクリックでジャンプ",
+  "dino_restart_hint": "スペースキーまたはクリックでリスタート",
+  "dino_game_over": "ゲームオーバー"
 }

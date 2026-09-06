@@ -347,5 +347,10 @@
   "token_accent_hover": "Accent Hover (--accent-hover)",
   "token_accent_secondary": "Secondary Accent (--accent-secondary)",
   "token_accent_terracotta": "Terracotta Accent (--accent-terracotta)",
-  "token_accent_crimson": "Crimson Accent (--accent-crimson)"
+  "token_accent_crimson": "Crimson Accent (--accent-crimson)",
+  "offline_screen_startup_desc": "Kò sí àsopọ̀ intanẹẹti kankan, jọ̀wọ́ tún ṣe àyẹ̀wò...",
+  "btn_rescan": "Tún ṣe àyẹ̀wò",
+  "dino_jump_hint": "Tẹ SPACE tàbí tẹ́ kí o lè fò",
+  "dino_restart_hint": "Tẹ SPACE tàbí tẹ́ láti tún bẹ̀rẹ̀",
+  "dino_game_over": "ERÉ TI PARÍ"
 }

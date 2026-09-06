@@ -347,5 +347,10 @@
   "token_accent_hover": "Accent Hover (--accent-hover)",
   "token_accent_secondary": "Secondary Accent (--accent-secondary)",
   "token_accent_terracotta": "Terracotta Accent (--accent-terracotta)",
-  "token_accent_crimson": "Crimson Accent (--accent-crimson)"
+  "token_accent_crimson": "Crimson Accent (--accent-crimson)",
+  "offline_screen_startup_desc": "Teu aya sambungan internét nu kapanggih, mangga scan deui...",
+  "btn_rescan": "Scan deui",
+  "dino_jump_hint": "Pencét SPASI atawa klik pikeun luncat",
+  "dino_restart_hint": "Pencét SPASI atawa klik pikeun ngamimitian deui",
+  "dino_game_over": "GAME RENGSE"
 }

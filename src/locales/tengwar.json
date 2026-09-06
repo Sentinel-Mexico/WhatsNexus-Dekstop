@@ -347,5 +347,10 @@
   "token_accent_hover": "Accent Hover (--accent-hover)",
   "token_accent_secondary": "Secondary Accent (--accent-secondary)",
   "token_accent_terracotta": "Terracotta Accent (--accent-terracotta)",
-  "token_accent_crimson": "Crimson Accent (--accent-crimson)"
+  "token_accent_crimson": "Crimson Accent (--accent-crimson)",
+  "offline_screen_startup_desc": "  ,   ...",
+  "btn_rescan": " ",
+  "dino_jump_hint": " SPACE  ",
+  "dino_restart_hint": " SPACE   ",
+  "dino_game_over": "METTA"
 }

@@ -347,5 +347,10 @@
   "token_accent_hover": "Accent Hover (--accent-hover)",
   "token_accent_secondary": "Secondary Accent (--accent-secondary)",
   "token_accent_terracotta": "Terracotta Accent (--accent-terracotta)",
-  "token_accent_crimson": "Crimson Accent (--accent-crimson)"
+  "token_accent_crimson": "Crimson Accent (--accent-crimson)",
+  "offline_screen_startup_desc": "Konneksiyiniin intarneetii hin argamne, mee lammata iskaan godhaa...",
+  "btn_rescan": "Ammas iskaan godhi",
+  "dino_jump_hint": "Utaaluuf SPACE dhiibaa yookaan cuqsaa",
+  "dino_restart_hint": "Lammata eegaluuf SPACE dhiibaa yookaan cuqsaa",
+  "dino_game_over": "TAPHOON XUMURAMEERA"
 }

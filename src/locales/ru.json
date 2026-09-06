@@ -347,5 +347,10 @@
   "token_accent_hover": "Accent Hover (--accent-hover)",
   "token_accent_secondary": "Secondary Accent (--accent-secondary)",
   "token_accent_terracotta": "Terracotta Accent (--accent-terracotta)",
-  "token_accent_crimson": "Crimson Accent (--accent-crimson)"
+  "token_accent_crimson": "Crimson Accent (--accent-crimson)",
+  "offline_screen_startup_desc": "Подключение к Интернету не найдено, пожалуйста, отсканируйте снова...",
+  "btn_rescan": "Сканировать снова",
+  "dino_jump_hint": "Нажмите ПРОБЕЛ или кликните для прыжка",
+  "dino_restart_hint": "Нажмите ПРОБЕЛ или кликните для перезапуска",
+  "dino_game_over": "ИГРА ОКОНЧЕНА"
 }

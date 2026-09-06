@@ -824,6 +824,47 @@
       <section id="doom-view" class="doom-view hidden">
         <webview id="doom-webview" src="about:blank" webpreferences="contextIsolation=true" allowpopups="false"></webview>
       </section>
+
+      <!-- Network Offline Overlay (Escenarios A y B con Easter Egg T-Rex) -->
+      <div id="network-offline-overlay" class="network-offline-overlay hidden" role="region" aria-label="Sin conexión a internet">
+        <div class="offline-top-half">
+          <div class="offline-card" id="offline-card">
+            <div class="offline-icon-container">
+              <div class="offline-radar-spinner" id="offline-radar-spinner"></div>
+              <div class="offline-icon-circle">
+                <i id="offline-main-icon" class="fa-solid fa-wifi-slash"></i>
+              </div>
+            </div>
+            <h2 id="offline-screen-title" class="offline-title" data-i18n="offline_screen_title">Sin conexión a internet</h2>
+            <p id="offline-screen-desc" class="offline-desc" data-i18n="reconnecting_desc">Se perdió la conexión a la red. Intentando reconectar automáticamente...</p>
+            
+            <!-- Controls slot: Scenario A (Badge) vs Scenario B (Button) -->
+            <div id="offline-controls-container" class="offline-controls">
+              <!-- Escenario A: Passive searching badge -->
+              <div id="offline-badge-scenario-a" class="offline-badge">
+                <span class="pulse-dot"></span>
+                <span data-i18n="reconnecting_status">Buscando señal...</span>
+              </div>
+              
+              <!-- Escenario B: Active scan button -->
+              <button id="offline-rescan-btn" type="button" class="btn-primary-action offline-rescan-btn hidden">
+                <i class="fa-solid fa-rotate-right btn-icon"></i>
+                <span class="btn-label" data-i18n="btn_rescan">Volver a escanear</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="offline-bottom-half">
+          <div class="dino-game-wrapper">
+            <div class="dino-game-instructions" id="dino-instructions">
+              <i class="fa-solid fa-gamepad"></i>
+              <span id="dino-hint-text" data-i18n="dino_jump_hint">Presiona ESPACIO o haz clic para saltar</span>
+            </div>
+            <canvas id="dino-game-canvas" width="800" height="150" tabindex="0"></canvas>
+          </div>
+        </div>
+      </div>
     </main>
   </div>
 
@@ -881,23 +922,6 @@
     </div>
   </div>
 
-  <!-- Modal Popup: Reconectando a Internet (Offline durante uso activo) -->
-  <div id="reconnecting-modal" class="app-modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="reconnecting-modal-title">
-    <div class="app-modal-card reconnecting-card">
-      <div class="reconnecting-content">
-        <div class="reconnecting-spinner-wrapper">
-          <div class="reconnecting-spinner"></div>
-          <i class="fa-solid fa-wifi reconnecting-icon"></i>
-        </div>
-        <h3 id="reconnecting-modal-title" class="reconnecting-title" data-i18n="reconnecting_title">Sin conexión a internet</h3>
-        <p class="reconnecting-desc" data-i18n="reconnecting_desc">Se perdió la conexión a la red. Intentando reconectar automáticamente...</p>
-        <div class="reconnecting-badge">
-          <span class="pulse-dot"></span>
-          <span data-i18n="reconnecting_status">Buscando señal...</span>
-        </div>
-      </div>
-    </div>
-  </div>
 
   <script src="renderer.js"></script>
 </body>

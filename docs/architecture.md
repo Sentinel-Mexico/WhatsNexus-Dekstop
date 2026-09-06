@@ -88,9 +88,11 @@ The primary UI layer consists of vanilla HTML5, CSS3, and modern JavaScript:
 - **Session Manager:** Manages account metadata persistence in `localStorage` and `app.getPath('userData')/accounts.json`, orchestrates dynamic creation/removal of `<webview>` elements, and executes the 20-minute idle hibernation cycle.
 - **Zero-Mute Multimedia Audio Pipeline:** Dispatches notification preferences without ever muting `webContents`, ensuring voice notes and chat videos play continuously. Configured with `--autoplay-policy=no-user-gesture-required`.
 - **Modular Internationalization (i18n):** Translates the interface dynamically across 55 global languages using a lazy-loading architecture with in-memory `Map` caching from `src/locales/*.json`. Only the active locale and the `en.json` fallback are retained in memory, drastically optimizing RAM footprint.
-- **Offline Protections & Network Auto-Reconnection:**
-  - Dedicated container offline overlay with status badge and manual retry trigger on failed webview loads (`did-fail-load`).
-  - System-wide `#reconnecting-modal` with high z-index backdrop that blocks accidental interactions when the machine loses Internet access, seamlessly auto-dismissing and reloading upon `window.addEventListener('online')`.
+- **Bifurcated Offline Protections & T-Rex Easter Egg Minigame:**
+  - Scoped strictly to `#webview-container` (`z-index: 8`), guaranteeing that the lateral sidebar (`<aside class="sidebar">`) and full-window native views (`#settings-view`, `#donations-view`, `#doom-view` at `z-index: 10`) remain 100% accessible and functional even without Internet connectivity.
+  - **Escenario A (Pérdida en caliente durante el uso):** Passive wait state. Displays "Sin conexión a internet" with a non-clickable status badge ("Buscando señal...") and radar spinner. Upon reconnection, silently dismisses the overlay without reloading the `<webview>` instances, preserving user drafts and open chat states.
+  - **Escenario B (Arranque offline / En frío):** Active wait state. Displays "Sin conexión a internet" with subtitle "No se ha encontrado conexión a internet, por favor vuelva a escanear..." and an interactive button "Volver a escanear". On click, triggers a background connectivity check with spinner state; if unreachable, gracefully resets to idle, and if restored, reloads accounts and resumes normal service.
+  - **Interactive T-Rex Runner Easter Egg:** Lower half of the offline screen features an integrated HTML5 canvas retro dinosaur runner with collision physics, jump mechanics (Space/Click), audio synthesizer beeps, score tracking (`localStorage`), and dynamic theme synchronization extracting colors in real-time from active CSS custom properties (`getComputedStyle(document.documentElement)`).
 
 ### 2.4 Guest Preload Script (`src/preload.js`)
 Injected directly into each WhatsApp Web `<webview>` tag:

@@ -347,5 +347,10 @@
   "token_accent_hover": "Accent Hover (--accent-hover)",
   "token_accent_secondary": "Secondary Accent (--accent-secondary)",
   "token_accent_terracotta": "Terracotta Accent (--accent-terracotta)",
-  "token_accent_crimson": "Crimson Accent (--accent-crimson)"
+  "token_accent_crimson": "Crimson Accent (--accent-crimson)",
+  "offline_screen_startup_desc": "İnternet bağlantısı bulunamadı, lütfen tekrar tarayın...",
+  "btn_rescan": "Tekrar tara",
+  "dino_jump_hint": "Zıplamak için BOŞLUK tuşuna basın veya tıklayın",
+  "dino_restart_hint": "Yeniden başlatmak için BOŞLUK tuşuna basın veya tıklayın",
+  "dino_game_over": "OYUN BİTTİ"
 }

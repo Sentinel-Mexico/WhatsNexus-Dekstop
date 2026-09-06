@@ -347,5 +347,10 @@
   "token_accent_hover": "Accent Hover (--accent-hover)",
   "token_accent_secondary": "Secondary Accent (--accent-secondary)",
   "token_accent_terracotta": "Terracotta Accent (--accent-terracotta)",
-  "token_accent_crimson": "Crimson Accent (--accent-crimson)"
+  "token_accent_crimson": "Crimson Accent (--accent-crimson)",
+  "offline_screen_startup_desc": "کوئی انٹرنیٹ کنکشن نہیں ملا، براہ کرم دوبارہ اسکین کریں...",
+  "btn_rescan": "دوبارہ اسکین کریں",
+  "dino_jump_hint": "چھلانگ لگانے کے لیے اسپیس دبائیں یا کلک کریں",
+  "dino_restart_hint": "دوبارہ شروع کرنے کے لیے اسپیس دبائیں یا کلک کریں",
+  "dino_game_over": "کھیل ختم"
 }

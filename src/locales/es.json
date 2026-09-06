@@ -347,5 +347,10 @@
   "token_accent_hover": "Acento Hover (--accent-hover)",
   "token_accent_secondary": "Acento Secundario (--accent-secondary)",
   "token_accent_terracotta": "Acento Terracota (--accent-terracotta)",
-  "token_accent_crimson": "Acento Carmesí (--accent-crimson)"
+  "token_accent_crimson": "Acento Carmesí (--accent-crimson)",
+  "offline_screen_startup_desc": "No se ha encontrado conexión a internet, por favor vuelva a escanear...",
+  "btn_rescan": "Volver a escanear",
+  "dino_jump_hint": "Presiona ESPACIO o haz clic para saltar",
+  "dino_restart_hint": "Presiona ESPACIO o haz clic para reiniciar",
+  "dino_game_over": "GAME OVER"
 }

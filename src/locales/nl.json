@@ -347,5 +347,10 @@
   "token_accent_hover": "Accent Hover (--accent-hover)",
   "token_accent_secondary": "Secondary Accent (--accent-secondary)",
   "token_accent_terracotta": "Terracotta Accent (--accent-terracotta)",
-  "token_accent_crimson": "Crimson Accent (--accent-crimson)"
+  "token_accent_crimson": "Crimson Accent (--accent-crimson)",
+  "offline_screen_startup_desc": "Geen internetverbinding gevonden, scan opnieuw...",
+  "btn_rescan": "Opnieuw scannen",
+  "dino_jump_hint": "Druk op SPATIE of klik om te springen",
+  "dino_restart_hint": "Druk op SPATIE of klik om te herstarten",
+  "dino_game_over": "GAME OVER"
 }

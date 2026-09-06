@@ -347,5 +347,10 @@
   "token_accent_hover": "Accent Hover (--accent-hover)",
   "token_accent_secondary": "Secondary Accent (--accent-secondary)",
   "token_accent_terracotta": "Terracotta Accent (--accent-terracotta)",
-  "token_accent_crimson": "Crimson Accent (--accent-crimson)"
+  "token_accent_crimson": "Crimson Accent (--accent-crimson)",
+  "offline_screen_startup_desc": "Không tìm thấy kết nối internet, vui lòng quét lại...",
+  "btn_rescan": "Quét lại",
+  "dino_jump_hint": "Nhấn SPACE hoặc nhấp để nhảy",
+  "dino_restart_hint": "Nhấn SPACE hoặc nhấp để khởi động lại",
+  "dino_game_over": "TRÒ CHƠI KẾT THÚC"
 }

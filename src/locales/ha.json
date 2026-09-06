@@ -347,5 +347,10 @@
   "token_accent_hover": "Accent Hover (--accent-hover)",
   "token_accent_secondary": "Secondary Accent (--accent-secondary)",
   "token_accent_terracotta": "Terracotta Accent (--accent-terracotta)",
-  "token_accent_crimson": "Crimson Accent (--accent-crimson)"
+  "token_accent_crimson": "Crimson Accent (--accent-crimson)",
+  "offline_screen_startup_desc": "Ba a sami haɗin intanet ba, da fatan za a sake dubawa...",
+  "btn_rescan": "Sake dubawa",
+  "dino_jump_hint": "Danna SPACE ko danna don tsalle",
+  "dino_restart_hint": "Danna SPACE ko danna don sake farawa",
+  "dino_game_over": "WASAN YA ƘARE"
 }

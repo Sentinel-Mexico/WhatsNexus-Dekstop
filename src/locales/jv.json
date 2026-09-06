@@ -347,5 +347,10 @@
   "token_accent_hover": "Accent Hover (--accent-hover)",
   "token_accent_secondary": "Secondary Accent (--accent-secondary)",
   "token_accent_terracotta": "Terracotta Accent (--accent-terracotta)",
-  "token_accent_crimson": "Crimson Accent (--accent-crimson)"
+  "token_accent_crimson": "Crimson Accent (--accent-crimson)",
+  "offline_screen_startup_desc": "Ora ana sambungan internet sing ditemokake, mangga pindai maneh...",
+  "btn_rescan": "Pindai maneh",
+  "dino_jump_hint": "Pencet SPASI utawa klik kanggo mlumpat",
+  "dino_restart_hint": "Pencet SPASI utawa klik kanggo miwiti maneh",
+  "dino_game_over": "GAME RAMPUNG"
 }

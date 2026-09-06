@@ -347,5 +347,10 @@
   "token_accent_hover": "Akzent Hover (--accent-hover)",
   "token_accent_secondary": "Sekundärakzent (--accent-secondary)",
   "token_accent_terracotta": "Terrakotta-Akzent (--accent-terracotta)",
-  "token_accent_crimson": "Karminrot-Akzent (--accent-crimson)"
+  "token_accent_crimson": "Karminrot-Akzent (--accent-crimson)",
+  "offline_screen_startup_desc": "Keine Internetverbindung gefunden, bitte scannen Sie erneut...",
+  "btn_rescan": "Erneut scannen",
+  "dino_jump_hint": "LEERTASTE drücken oder klicken zum Springen",
+  "dino_restart_hint": "LEERTASTE drücken oder klicken zum Neustarten",
+  "dino_game_over": "SPIEL VORBEI"
 }

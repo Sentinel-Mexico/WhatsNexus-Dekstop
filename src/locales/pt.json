@@ -347,5 +347,10 @@
   "token_accent_hover": "Destaque Hover (--accent-hover)",
   "token_accent_secondary": "Destaque Secundário (--accent-secondary)",
   "token_accent_terracotta": "Destaque Terracota (--accent-terracotta)",
-  "token_accent_crimson": "Destaque Carmesim (--accent-crimson)"
+  "token_accent_crimson": "Destaque Carmesim (--accent-crimson)",
+  "offline_screen_startup_desc": "Nenhuma conexão com a internet encontrada, escaneie novamente...",
+  "btn_rescan": "Escanear novamente",
+  "dino_jump_hint": "Pressione ESPAÇO ou clique para pular",
+  "dino_restart_hint": "Pressione ESPAÇO ou clique para reiniciar",
+  "dino_game_over": "FIM DE JOGO"
 }

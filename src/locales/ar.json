@@ -347,5 +347,10 @@
   "token_accent_hover": "Accent Hover (--accent-hover)",
   "token_accent_secondary": "Secondary Accent (--accent-secondary)",
   "token_accent_terracotta": "Terracotta Accent (--accent-terracotta)",
-  "token_accent_crimson": "Crimson Accent (--accent-crimson)"
+  "token_accent_crimson": "Crimson Accent (--accent-crimson)",
+  "offline_screen_startup_desc": "لم يتم العثور على اتصال بالإنترنت، يرجى إعادة المسح...",
+  "btn_rescan": "إعادة المسح",
+  "dino_jump_hint": "اضغط على المسافة أو انقر للقفز",
+  "dino_restart_hint": "اضغط على المسافة أو انقر لإعادة التشغيل",
+  "dino_game_over": "انتهت اللعبة"
 }

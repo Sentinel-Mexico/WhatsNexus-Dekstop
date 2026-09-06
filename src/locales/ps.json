@@ -347,5 +347,10 @@
   "token_accent_hover": "Accent Hover (--accent-hover)",
   "token_accent_secondary": "Secondary Accent (--accent-secondary)",
   "token_accent_terracotta": "Terracotta Accent (--accent-terracotta)",
-  "token_accent_crimson": "Crimson Accent (--accent-crimson)"
+  "token_accent_crimson": "Crimson Accent (--accent-crimson)",
+  "offline_screen_startup_desc": "د انټرنیټ اتصال ونه موندل شو، مهرباني وکړئ بیا سکین کړئ...",
+  "btn_rescan": "بیا سکین کړئ",
+  "dino_jump_hint": "د ټوپ وهلو لپاره سپیس فشار ورکړئ یا کلیک وکړئ",
+  "dino_restart_hint": "د بیا پیل لپاره سپیس فشار ورکړئ یا کلیک وکړئ",
+  "dino_game_over": "لوبه پای ته ورسېده"
 }

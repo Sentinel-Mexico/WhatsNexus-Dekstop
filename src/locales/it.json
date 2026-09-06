@@ -347,5 +347,10 @@
   "token_accent_hover": "Accento Hover (--accent-hover)",
   "token_accent_secondary": "Accento Secondario (--accent-secondary)",
   "token_accent_terracotta": "Accento Terracotta (--accent-terracotta)",
-  "token_accent_crimson": "Accento Cremisi (--accent-crimson)"
+  "token_accent_crimson": "Accento Cremisi (--accent-crimson)",
+  "offline_screen_startup_desc": "Nessuna connessione Internet trovata, eseguire nuovamente la scansione...",
+  "btn_rescan": "Scansiona di nuovo",
+  "dino_jump_hint": "Premi SPAZIO o fai clic per saltare",
+  "dino_restart_hint": "Premi SPAZIO o fai clic per ricominciare",
+  "dino_game_over": "PARTITA FINITA"
 }

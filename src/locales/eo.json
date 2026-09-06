@@ -347,5 +347,10 @@
   "token_accent_hover": "Accent Hover (--accent-hover)",
   "token_accent_secondary": "Secondary Accent (--accent-secondary)",
   "token_accent_terracotta": "Terracotta Accent (--accent-terracotta)",
-  "token_accent_crimson": "Crimson Accent (--accent-crimson)"
+  "token_accent_crimson": "Crimson Accent (--accent-crimson)",
+  "offline_screen_startup_desc": "Neniu interreta konekto trovita, bonvolu skani denove...",
+  "btn_rescan": "Skani denove",
+  "dino_jump_hint": "Premu SPACON aŭ alklaku por salti",
+  "dino_restart_hint": "Premu SPACON aŭ alklaku por rekomenci",
+  "dino_game_over": "LUDO FINITA"
 }

@@ -347,5 +347,10 @@
   "token_accent_hover": "Accent Hover (--accent-hover)",
   "token_accent_secondary": "Secondary Accent (--accent-secondary)",
   "token_accent_terracotta": "Terracotta Accent (--accent-terracotta)",
-  "token_accent_crimson": "Crimson Accent (--accent-crimson)"
+  "token_accent_crimson": "Crimson Accent (--accent-crimson)",
+  "offline_screen_startup_desc": "कवनो इंटरनेट कनेक्शन नइखे मिलल, फेर से स्कैन करीं...",
+  "btn_rescan": "फेर से स्कैन करीं",
+  "dino_jump_hint": "कूदे खातिर स्पेस दबाईं चाहे क्लिक करीं",
+  "dino_restart_hint": "फेर चालू करे खातिर स्पेस दबाईं चाहे क्लिक करीं",
+  "dino_game_over": "खेल खतम"
 }

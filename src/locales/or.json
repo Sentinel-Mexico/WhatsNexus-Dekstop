@@ -347,5 +347,10 @@
   "token_accent_hover": "Accent Hover (--accent-hover)",
   "token_accent_secondary": "Secondary Accent (--accent-secondary)",
   "token_accent_terracotta": "Terracotta Accent (--accent-terracotta)",
-  "token_accent_crimson": "Crimson Accent (--accent-crimson)"
+  "token_accent_crimson": "Crimson Accent (--accent-crimson)",
+  "offline_screen_startup_desc": "କୌଣସି ଇଣ୍ଟରନେଟ୍ ସଂଯୋଗ ମିଳିଲା ନାହିଁ, ଦୟାକରି ପୁଣି ସ୍କାନ୍ କରନ୍ତୁ...",
+  "btn_rescan": "ପୁଣି ସ୍କାନ୍ କରନ୍ତୁ",
+  "dino_jump_hint": "ଡେଇଁବା ପାଇଁ ସ୍ପେସ୍ ଦବାନ୍ତୁ କିମ୍ବା କ୍ଲିକ୍ କରନ୍ତୁ",
+  "dino_restart_hint": "ପୁନରାରମ୍ଭ ପାଇଁ ସ୍ପେସ୍ ଦବାନ୍ତୁ କିମ୍ବା କ୍ଲିକ୍ କରନ୍ତୁ",
+  "dino_game_over": "ଖେଳ ଶେଷ"
 }

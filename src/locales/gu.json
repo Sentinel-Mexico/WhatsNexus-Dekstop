@@ -347,5 +347,10 @@
   "token_accent_hover": "Accent Hover (--accent-hover)",
   "token_accent_secondary": "Secondary Accent (--accent-secondary)",
   "token_accent_terracotta": "Terracotta Accent (--accent-terracotta)",
-  "token_accent_crimson": "Crimson Accent (--accent-crimson)"
+  "token_accent_crimson": "Crimson Accent (--accent-crimson)",
+  "offline_screen_startup_desc": "કોઈ ઇન્ટરનેટ કનેક્શન મળ્યું નથી, કૃપા કરીને ફરીથી સ્કેન કરો...",
+  "btn_rescan": "ફરીથી સ્કેન કરો",
+  "dino_jump_hint": "કૂદવા માટે સ્પેસ દબાવો અથવા ક્લિક કરો",
+  "dino_restart_hint": "ફરીથી શરૂ કરવા માટે સ્પેસ દબાવો અથવા ક્લિક કરો",
+  "dino_game_over": "રમત સમાપ્ત"
 }

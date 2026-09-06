@@ -347,5 +347,10 @@
   "token_accent_hover": "Accent Hover (--accent-hover)",
   "token_accent_secondary": "Secondary Accent (--accent-secondary)",
   "token_accent_terracotta": "Terracotta Accent (--accent-terracotta)",
-  "token_accent_crimson": "Crimson Accent (--accent-crimson)"
+  "token_accent_crimson": "Crimson Accent (--accent-crimson)",
+  "offline_screen_startup_desc": "Walang nakitang koneksyon sa internet, mangyaring mag-scan muli...",
+  "btn_rescan": "Mag-scan muli",
+  "dino_jump_hint": "Pindutin ang SPACE o mag-click upang tumalon",
+  "dino_restart_hint": "Pindutin ang SPACE o mag-click upang mag-restart",
+  "dino_game_over": "TAPOS NA ANG LARO"
 }

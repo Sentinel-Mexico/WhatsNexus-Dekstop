@@ -347,5 +347,10 @@
   "token_accent_hover": "Accent Hover (--accent-hover)",
   "token_accent_secondary": "Secondary Accent (--accent-secondary)",
   "token_accent_terracotta": "Terracotta Accent (--accent-terracotta)",
-  "token_accent_crimson": "Crimson Accent (--accent-crimson)"
+  "token_accent_crimson": "Crimson Accent (--accent-crimson)",
+  "offline_screen_startup_desc": "ไม่พบการเชื่อมต่ออินเทอร์เน็ต กรุณาสแกนใหม่อีกครั้ง...",
+  "btn_rescan": "สแกนอีกครั้ง",
+  "dino_jump_hint": "กด SPACE หรือคลิกเพื่อกระโดด",
+  "dino_restart_hint": "กด SPACE หรือคลิกเพื่อเริ่มใหม่",
+  "dino_game_over": "จบเกม"
 }

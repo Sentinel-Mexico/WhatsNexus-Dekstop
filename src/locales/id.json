@@ -347,5 +347,10 @@
   "token_accent_hover": "Accent Hover (--accent-hover)",
   "token_accent_secondary": "Secondary Accent (--accent-secondary)",
   "token_accent_terracotta": "Terracotta Accent (--accent-terracotta)",
-  "token_accent_crimson": "Crimson Accent (--accent-crimson)"
+  "token_accent_crimson": "Crimson Accent (--accent-crimson)",
+  "offline_screen_startup_desc": "Tidak ada koneksi internet ditemukan, silakan pindai lagi...",
+  "btn_rescan": "Pindai lagi",
+  "dino_jump_hint": "Tekan SPASI atau klik untuk melompat",
+  "dino_restart_hint": "Tekan SPASI atau klik untuk mulai ulang",
+  "dino_game_over": "PERMAINAN BERAKHIR"
 }
