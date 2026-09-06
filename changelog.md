@@ -6,6 +6,20 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ---
 
+## [2.0.2] - 2026-09-05
+### Fixed
+- **Cross-Platform Window Identity & High-Resolution Icon Assignment:**
+  - Resolved generic framework fallback icon issue on the startup splash screen and secondary windows across Windows, macOS, and Linux desktop environments.
+  - Explicitly assigned 512x512 high-resolution icon (`APP_ICON_PATH`) to all `BrowserWindow` instances (`splashWindow` and `mainWindow`) in `src/main.js`.
+  - Regenerated `src/assets/icon.png` at 512x512 RGBA directly from the official vector source (`src/assets/whatsnexus-logo.svg`) for pixel-perfect HiDPI display rendering.
+  - Configured `app.setAppUserModelId('com.sentinelstudio.whatsnexus')` for Windows, ensuring native taskbar grouping and notification attribution.
+  - Configured runtime macOS dock icon assignment via `app.dock.setIcon(APP_ICON_PATH)` within `app.whenReady()`.
+  - Configured `"icon": "src/assets/icon.png"` and included `"src/assets/**/*"` in `build.files` inside `package.json` for `electron-builder` packaging.
+
+### Changed
+- **Technical Documentation & QA Audit Suite:**
+  - Fully expanded architectural and testing documentation across `/docs`, formally documenting the 7-tab navigation model, the Theme Customization Studio ("Personalización"), modular theme schema specifications, and automated integrity validation scripts.
+
 ## [2.0.1] - 2026-09-05
 ### Fixed
 - **Production Theme Packaging & Dynamic Theme Scanner (`app.asar`):**
