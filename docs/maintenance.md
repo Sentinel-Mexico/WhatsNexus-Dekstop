@@ -63,6 +63,8 @@ Before tagging or releasing any update:
    node -c src/renderer/renderer.js
    node -c src/preload.js
    node -c scripts/download-doom.js
+   # Validate all 16 modular theme JSON schemas
+   node -e "const fs = require('fs'), path = require('path'); const d = 'src/themes'; fs.readdirSync(d).filter(f => f.endsWith('.json')).forEach(f => { const t = JSON.parse(fs.readFileSync(path.join(d, f), 'utf-8')); if (!t.id || !t.nameKey || !t.category || !t.modes) throw new Error('Invalid theme: ' + f); }); console.log('Themes OK');"
    ```
 2. **Synchronize Offline Freedoom Assets:**
    ```bash

@@ -63,6 +63,14 @@ The main process acts as the supervisor for the entire operating system interfac
 - **Multi-Session Proxy Engine & Strict Isolation:** Dynamically provisions HTTP/SOCKS5 proxy rules or system proxy discovery across `session.defaultSession` and all partitioned sessions (`persist:acc_*`) via `session.setProxy()`. When Strict Proxy Isolation is enabled, local bypass rules are removed (`proxyBypassRules: ''`) to ensure no direct network connections evade the tunnel. Reverts to direct connections on demand (`{ mode: 'direct' }`).
 - **WebRTC IP Leak Mitigation:** Enforces `session.setWebRTCIPHandlingPolicy('disable-non-proxied-udp')` at the Chromium networking layer across all sessions when WebRTC protection is enabled, preventing local and public IP disclosures over non-proxied UDP.
 - **Real-Time System Diagnostics & Engine Introspection:** Exposes dynamic runtime parameters via IPC (`get-system-info`), sourcing live metrics directly from `app.getVersion()`, `process.versions` (Electron, Chromium, Node.js, V8), and Node's native `os` module (`os.type()`, `os.release()`, `os.arch()`).
+- **Cross-Platform Window Identity & High-Resolution Icons:**
+  - Explicitly assigns `APP_ICON_PATH` (`src/assets/icon.png`, 512x512 RGBA) to all `BrowserWindow` instances (`splashWindow` and `mainWindow`), ensuring consistent branding across Windows, macOS, and Linux desktop taskbars and docks.
+  - Registers `app.setAppUserModelId('com.sentinelstudio.whatsnexus')` for Windows environments to enforce proper taskbar process grouping and notification center attribution.
+  - Assigns `app.dock.setIcon(APP_ICON_PATH)` dynamically on macOS runtimes within `app.whenReady()`.
+- **Dynamic Modular Theme Discovery & Security Auditing (`load-themes`):**
+  - Scans `src/themes/*.json` on startup with defensive multi-path resolution (`app.getAppPath()`, development root, unpacked resources) to guarantee reliable asset discovery inside packaged `app.asar` archives.
+  - Enforces JSON schema validation and category access control, demoting unauthorized third-party themes attempting to claim internal Tier 1 (`own`) or Tier 2 (`custom`) categories to Tier 5 (`community`).
+  - Provides a resilient dual-layer fail-safe (`FALLBACK_BASE_THEME`) ensuring the core WhatsNexus palette is always initialized even under filesystem anomalies.
 - **Automated OTA Update Engine:** Integrates `electron-updater` with `electron-log` targeting GitHub Releases (`Sentinel-Mexico/WhatsNexus-Dekstop`). Provides safe manual update verification, download progress streaming, and restart-and-install lifecycle control.
 
 ### 2.2 Secure Preloads (`src/preload-main.js` & `src/splash/splash-preload.js`)
@@ -106,7 +114,14 @@ Instead of relying on pop-up dialogs or modal windows that obstruct the interfac
    - Treated as an internal full-window view that occupies 100% width and height of the main content workspace.
    - Triggered by `#settings-btn` in the sidebar, which assumes an `.active` tab state.
    - Provides a "Back to chats" action in the header to return to the last active WhatsApp session.
-   - Includes real-time Update Check state machine under the "About" module.
+   - Subdivided into 7 specialized functional modules:
+     - **Gestión de Cuentas (`#tab-accounts`):** Account registration, avatar synchronization, active/inactive toggles, DND switches, session cache hard-reset ("Limpiar Caché"), and safe deletion.
+     - **Apariencia (`#tab-appearance`):** 16-palette dropdown across 4 tiers, dynamic Light/Dark/System mode selector, and tray icon style options.
+     - **Personalización (`#tab-customizer`):** Real-time theme studio with HTML5 color pickers, 6-digit hex inputs, dual-mode editing (Light/Dark), and instant live CSS variable injection.
+     - **Notificaciones (`#tab-notifications`):** Desktop alerts, sounds, and privacy presets (Broad, Medium, Strict, Custom).
+     - **Permisos (`#tab-permissions`):** Granular hardware capability authorization (Microphone, Camera, Location, Screen Share) under Deny-by-Default rules.
+     - **Privacidad y Red (`#tab-privacy`):** HTTP/SOCKS5 proxy tunnels, Strict Isolation mode, and WebRTC leak protection.
+     - **Acerca de (`#tab-about`):** Real-time OTA updater state machine, system runtime diagnostics, Freedoom easter egg toggle, and GNU GPL v3 license modal trigger.
 3. **Dedicated Donations View (`#donations-view`):**
    - Full-window view triggered by `#donate-btn` in the sidebar, positioned strictly between Bug Report and Settings.
    - Houses a card grid of project sponsorship channels (GitHub Sponsors, PayPal) with direct OS browser dispatching.
@@ -121,8 +136,55 @@ Instead of relying on pop-up dialogs or modal windows that obstruct the interfac
 
 ## 4. Global Configuration Model (Universal Settings Enforcement)
 
-All preferences defined in the Settings panels (**Apariencia**, **Notificaciones**, **Permisos**, **Privacidad y Red**, and **Acerca de**) operate under a **Global Enforcement Architecture**:
+All preferences defined across the Settings panels (**Cuentas**, **Apariencia**, **Personalización**, **Notificaciones**, **Permisos**, **Privacidad y Red**, and **Acerca de**) operate under a **Global Enforcement Architecture**:
 
-1. **Universal Scope:** Configuration parameters are global application policies stored in `settings` (`localStorage`) and mirrored to the Electron main process via IPC (`permissions.json`, `system_settings.json`, and `network_settings.json`).
+1. **Universal Scope:** Configuration parameters are global application policies stored in `settings` (`localStorage`) and mirrored to the Electron main process via IPC (`permissions.json`, `system_settings.json`, `network_settings.json`, and `accounts.json`).
 2. **Present Accounts:** Modifications made in Settings are reactively broadcast to all active `<webview>` instances, Chromium sessions, download interceptors, spellcheckers, network proxy tunnels, and audio outputs in real time.
 3. **Future Accounts:** Whenever a new account is registered (`addAccount`) or awakened from hibernation (`wakeWebview`), its newly created `<webview>` and isolated partition (`persist:acc_*`) automatically inherit the full global settings schema upon instantiation, guaranteeing absolute behavioral consistency across all profiles without requiring manual per-account setup.
+
+---
+
+## 5. Modular Theme Engine & Customization Studio ("Personalización")
+
+WhatsNexus features a decoupled, modular design token architecture that replaces static stylesheets with dynamically scanned JSON schemas and an interactive real-time Customization Studio.
+
+```text
+  src/themes/*.json (16 Built-in Schemas)
+          │
+          ▼
+  Main Process (load-themes IPC + ASAR multi-path resolver + Tier access control)
+          │
+          ▼
+  Renderer: initThemes() & Universal Custom Dropdown Engine
+          │
+          ├─────────────────────────────────────────────────┐
+          ▼                                                 ▼
+  Standard Palette Selection                 Customization Studio ("Personalización")
+  (16 palettes across 4 tiers)               (Interactive HTML5 pickers + hex inputs)
+          │                                                 │
+          └────────────────────────┬────────────────────────┘
+                                   │
+                                   ▼
+          applyThemeTokens() (Dual-Level Injection: :root + body.style)
+                                   │
+                                   ▼
+          Derived Semantic Tokens propagated to modals, sidebars, and webview guests
+```
+
+### 5.1 Modular Theme Schemas (`src/themes/*.json`)
+Each color scheme is defined in an isolated JSON schema declaring metadata and mode tokens:
+- **Metadata:** `id`, `nameKey` (localized key from `src/locales/`), `category` (`own`, `custom`, `messaging`, `pop_culture`), `builtin: true`, and dynamic mode `labels` (e.g., "Overworld" / "Nether/End" for Vóxel; "Jedi" / "Sith" for Star Wars; "Día" / "Noche" for High Contrast).
+- **Token Trees (`modes.light` and `modes.dark`):** Defines base background surfaces (`--bg-primary`, `--bg-sidebar`, `--bg-hover`, `--bg-modal`, `--whatsapp-bg`), typography and borders (`--text-primary`, `--text-secondary`, `--border-color`, `--text-on-accent`), and action accents (`--bg-active`, `--accent-hover`, `--accent-secondary`, `--accent-terracotta`, `--accent-crimson`).
+- **Security & Categorization:** The main process audits loaded schemas. External or third-party additions attempting to inject into Tier 1 (`own`) or Tier 2 (`custom`) without presence in `OFFICIAL_THEME_IDS` are defensively demoted to Tier 5 (`community`).
+
+### 5.2 Dynamic Startup Discovery & Fail-Safe Pipeline
+- **ASAR & Unpacked Path Resolution:** The `load-themes` IPC handler in `src/main.js` scans candidate directories (`path.join(app.getAppPath(), 'src', 'themes')`, `path.join(__dirname, 'themes')`, and development roots), bypassing virtual filesystem limitations inside packaged `app.asar`.
+- **Built-in Fail-Safe (`FALLBACK_BASE_THEME`):** If the filesystem is damaged or inaccessible, a hardcoded fallback definition of the WhatsNexus brand palette is returned to ensure the UI renders without errors.
+
+### 5.3 Interactive Customization Studio (`#tab-customizer`)
+Located as a dedicated section in the Settings view immediately before "Acerca de", the Customization Studio allows users to craft bespoke palettes:
+- **Dual-Mode Editor:** Segmented controls allow editing Light and Dark tokens independently with instant visual reflection.
+- **Bidirectional Color Controls:** Synchronizes native HTML5 color pickers (`<input type="color">`) with uppercase `#RRGGBB` text fields with input validation.
+- **Live `:root` Cascade:** Token changes call `applyThemeTokens()` immediately without saving delays, injecting custom CSS variables into `:root` and `document.body.style`.
+- **Automatic Palette Switch & Persistence:** Modifying any token automatically switches the active palette to `"custom"` ("Personalizado") and serializes the complete token dictionary into `settings.customTheme` in `localStorage`.
+- **One-Click Reset:** A dedicated "Restablecer a valores de WhatsNexus" action restores custom tokens back to official WhatsNexus defaults.
