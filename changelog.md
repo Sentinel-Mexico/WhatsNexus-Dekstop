@@ -6,6 +6,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ---
 
+## [2.0.1] - 2026-09-05
+### Fixed
+- **Production Theme Packaging & Dynamic Theme Scanner (`app.asar`):**
+  - Resolved a critical issue in packaged production distributions where the modular theme scanner failed to load JSON schemas inside `app.asar`, causing the appearance palette menu to only display the "Personalizado" option.
+  - Added explicit `files` packaging configuration (`"src/**/*"`, `"src/themes/**/*"`, `"package.json"`) in `package.json` under `build` for `electron-builder`.
+  - Fortified `load-themes` IPC handler in `src/main.js` with multi-path resolution (`app.getAppPath()`, development root, unpacked resources) and virtual directory descriptor bypasses.
+  - Implemented dual-layer fallback (`FALLBACK_BASE_THEME`) in both main and renderer processes, guaranteeing the primary WhatsNexus palette is always initialized.
+
 ## [2.0.0] - 2026-09-05
 ### Added
 - **Modular Theme Architecture (`src/themes/`):**
