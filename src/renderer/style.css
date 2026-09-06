@@ -2510,8 +2510,21 @@ body.theme-light .permissions-notice-box {
 
 .offline-rescan-btn:disabled,
 .offline-rescan-btn.loading {
-  opacity: 0.85;
-  cursor: wait;
+  opacity: 0.7;
+  cursor: not-allowed;
+  pointer-events: none;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+.offline-rescan-btn .btn-spinner {
+  display: inline-block;
+  animation: spin-rescan 0.85s linear infinite;
+}
+
+@keyframes spin-rescan {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
 .offline-bottom-half {

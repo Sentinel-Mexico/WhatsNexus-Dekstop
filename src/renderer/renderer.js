@@ -785,6 +785,7 @@ async function init() {
   loadAboutInfo();
   initAutoUpdater();
   initNetworkMonitor();
+  await checkInitialNetworkState();
   if (electronAPI.setSpellcheckerLanguages) {
     electronAPI.setSpellcheckerLanguages(settings.spellcheckLanguages || ['es-ES']);
   }
@@ -1508,20 +1509,17 @@ function buildWebviewDOM(account, parentContainer) {
   webview.setAttribute('useragent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36');
   webview.className = 'webview-active';
 
-  // Si no hay conexión al iniciar o cargar la cuenta, mostrar la pantalla offline
-  if (!navigator.onLine) {
-    if (!hasEverLoadedSuccessfully) {
-      showOfflineOverlay('scenario-b');
-    } else {
-      showOfflineOverlay('scenario-a');
-    }
+  // Si no hay conexión o el escenario offline ya está activo, asegurar despliegue de overlay y ocultar webview
+  if (!navigator.onLine || activeNetworkScenario === 'scenario-b') {
+    webview.style.visibility = 'hidden';
+    showOfflineOverlay('scenario-b');
   }
 
   // Detección de errores de carga de red
   webview.addEventListener('did-fail-load', (e) => {
-    if (e.isMainFrame && e.errorCode !== -3) {
+    if (e.errorCode !== -3) {
       console.warn(`[Webview ${account.id}] Falló la carga (código ${e.errorCode}):`, e.errorDescription);
-      if (!hasEverLoadedSuccessfully) {
+      if (!hasEverLoadedSuccessfully || activeNetworkScenario === 'scenario-b') {
         showOfflineOverlay('scenario-b');
       } else {
         showOfflineOverlay('scenario-a');
@@ -1530,6 +1528,11 @@ function buildWebviewDOM(account, parentContainer) {
   });
 
   webview.addEventListener('did-finish-load', () => {
+    // Si un overlay offline está activo (ej. arranque en frío sin conexión), ignorar eventos de caché de disco
+    if (activeNetworkScenario) {
+      console.warn(`[Webview ${account.id}] did-finish-load ignorado debido a que activeNetworkScenario es ${activeNetworkScenario}`);
+      return;
+    }
     hasEverLoadedSuccessfully = true;
     hideOfflineOverlay();
     hideAccountOfflineScreen(account.id);
@@ -1537,6 +1540,11 @@ function buildWebviewDOM(account, parentContainer) {
 
   // Synchronize notifications, DND, and theme configuration upon session load
   webview.addEventListener('dom-ready', () => {
+    // Si un overlay offline está activo (ej. arranque en frío sin conexión), ignorar eventos de dom-ready de caché de disco
+    if (activeNetworkScenario) {
+      console.warn(`[Webview ${account.id}] dom-ready ignorado debido a que activeNetworkScenario es ${activeNetworkScenario}`);
+      return;
+    }
     hasEverLoadedSuccessfully = true;
     hideOfflineOverlay();
     hideAccountOfflineScreen(account.id);
@@ -2900,29 +2908,43 @@ function stopOfflineTimer() {
   offlineStartTime = null;
 }
 
-async function checkConnectivity() {
-  // Primary attempt: IPC request to Node.js backend (bypasses CSP & CORS)
+async function checkConnectivity(targetUrl = 'https://web.whatsapp.com') {
+  // Primary attempt: IPC request to Node.js backend (bypasses CSP & CORS, validates net.isOnline() and HTTP 200-299)
   if (window.electronAPI && typeof electronAPI.checkInternet === 'function') {
     try {
-      const isOnline = await electronAPI.checkInternet();
+      const isOnline = await electronAPI.checkInternet(targetUrl);
       if (isOnline) return true;
     } catch (_) {}
   }
 
-  // Secondary attempt: renderer HTTP HEAD fetch ping
+  // Secondary attempt: renderer HTTP HEAD fetch ping directly to targetUrl
   try {
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 4000);
-    const response = await fetch('https://github.com', {
+    const timeoutId = setTimeout(() => controller.abort(), 4500);
+    const response = await fetch(targetUrl, {
       method: 'HEAD',
       cache: 'no-store',
       mode: 'no-cors',
       signal: controller.signal
     });
     clearTimeout(timeoutId);
-    return (response.status >= 200 && response.status < 300) || response.type === 'opaque' || response.ok;
+    return (response.status >= 200 && response.status <= 299) || response.type === 'opaque' || response.ok;
   } catch (_) {
-    return false;
+    // Fallback ping to github.com
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 3500);
+      const res = await fetch('https://github.com', {
+        method: 'HEAD',
+        cache: 'no-store',
+        mode: 'no-cors',
+        signal: controller.signal
+      });
+      clearTimeout(timeoutId);
+      return (res.status >= 200 && res.status <= 299) || res.type === 'opaque' || res.ok;
+    } catch (_) {
+      return false;
+    }
   }
 }
 
@@ -2966,6 +2988,8 @@ function showOfflineOverlay(scenario) {
       rescanBtn.classList.remove('hidden');
       rescanBtn.style.display = 'inline-flex';
       rescanBtn.disabled = false;
+      rescanBtn.style.pointerEvents = '';
+      rescanBtn.style.opacity = '';
       rescanBtn.classList.remove('loading');
       const rescanText = getLocaleString('btn_rescan', 'Volver a escanear');
       rescanBtn.innerHTML = `<i class="fa-solid fa-rotate-right btn-icon"></i> <span class="btn-label" data-i18n="btn_rescan">${escapeHtml(rescanText)}</span>`;
@@ -3038,7 +3062,7 @@ function startOfflinePolling() {
       return;
     }
 
-    const isOnline = await checkConnectivity();
+    const isOnline = await checkConnectivity('https://web.whatsapp.com');
     if (isOnline) {
       console.log('[Network] Hot reconnection detected via background polling.');
       hasEverLoadedSuccessfully = true;
@@ -3067,12 +3091,14 @@ async function handleRescanClick() {
 
   isTestingConnection = true;
   btn.disabled = true;
+  btn.style.pointerEvents = 'none';
+  btn.style.opacity = '0.7';
   btn.classList.add('loading');
   const connectingText = getLocaleString('status_connecting', 'Conectando...');
-  btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> <span>${escapeHtml(connectingText)}</span>`;
+  btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin btn-spinner"></i> <span class="btn-label">${escapeHtml(connectingText)}</span>`;
 
   try {
-    const isConnected = await checkConnectivity();
+    const isConnected = await checkConnectivity('https://web.whatsapp.com');
     if (isConnected) {
       console.log('[Network] Startup connection verified via rescan. Restoring service.');
       hasEverLoadedSuccessfully = true;
@@ -3081,28 +3107,49 @@ async function handleRescanClick() {
         retryLoadAccount(acc.id);
       });
     } else {
-      console.warn('[Network] Rescan attempt failed - still offline.');
+      console.warn('[Network] Rescan attempt failed - still offline or non-2xx status.');
     }
   } catch (err) {
     console.error('[Network] Rescan error:', err);
   } finally {
-    btn.disabled = false;
-    btn.classList.remove('loading');
-    const rescanText = getLocaleString('btn_rescan', 'Volver a escanear');
-    btn.innerHTML = `<i class="fa-solid fa-rotate-right btn-icon"></i> <span class="btn-label" data-i18n="btn_rescan">${escapeHtml(rescanText)}</span>`;
+    if (activeNetworkScenario) {
+      btn.disabled = false;
+      btn.style.pointerEvents = '';
+      btn.style.opacity = '';
+      btn.classList.remove('loading');
+      const rescanText = getLocaleString('btn_rescan', 'Volver a escanear');
+      btn.innerHTML = `<i class="fa-solid fa-rotate-right btn-icon"></i> <span class="btn-label" data-i18n="btn_rescan">${escapeHtml(rescanText)}</span>`;
+    }
     isTestingConnection = false;
+  }
+}
+
+async function checkInitialNetworkState() {
+  console.log('[Network] Running checkInitialNetworkState verification at cold start...');
+  hasEverLoadedSuccessfully = false;
+
+  const isOnline = await checkConnectivity('https://web.whatsapp.com');
+  if (!isOnline) {
+    console.warn('[Network] Cold start offline detected. Enforcing Scenario B.');
+    hasEverLoadedSuccessfully = false;
+    showOfflineOverlay('scenario-b');
+    return false;
+  } else {
+    console.log('[Network] Cold start network verified - online.');
+    return true;
   }
 }
 
 function initNetworkMonitor() {
   const rescanBtn = document.getElementById('offline-rescan-btn');
   if (rescanBtn) {
+    rescanBtn.removeEventListener('click', handleRescanClick);
     rescanBtn.addEventListener('click', handleRescanClick);
   }
 
   window.addEventListener('online', async () => {
     console.log('[Network] Online event received.');
-    const isOnline = await checkConnectivity();
+    const isOnline = await checkConnectivity('https://web.whatsapp.com');
     if (isOnline) {
       hasEverLoadedSuccessfully = true;
       const currentScenario = activeNetworkScenario;
@@ -3118,13 +3165,6 @@ function initNetworkMonitor() {
     if (hasEverLoadedSuccessfully) {
       showOfflineOverlay('scenario-a');
     } else {
-      showOfflineOverlay('scenario-b');
-    }
-  });
-
-  // Verificación al arranque inicial
-  checkConnectivity().then(isOnline => {
-    if (!isOnline && !hasEverLoadedSuccessfully) {
       showOfflineOverlay('scenario-b');
     }
   });

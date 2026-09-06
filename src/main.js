@@ -435,19 +435,54 @@ ipcMain.handle('clear-account-cache', async (_event, accountId) => {
   }
 });
 
-ipcMain.handle('check-internet', async () => {
+ipcMain.handle('check-internet', async (event, customUrl) => {
   const https = require('https');
-  return new Promise((resolve) => {
-    const req = https.request('https://github.com', { method: 'HEAD', timeout: 4000 }, (res) => {
-      resolve(res.statusCode >= 200 && res.statusCode < 400);
+  const { net } = require('electron');
+
+  // Fast check: Electron net.isOnline()
+  if (typeof net !== 'undefined' && typeof net.isOnline === 'function') {
+    if (!net.isOnline()) {
+      return false;
+    }
+  }
+
+  const targetUrl = customUrl || 'https://web.whatsapp.com';
+
+  const checkUrl = (urlStr) => {
+    return new Promise((resolve) => {
+      try {
+        const parsed = new URL(urlStr);
+        const req = https.request({
+          protocol: parsed.protocol,
+          hostname: parsed.hostname,
+          port: parsed.port || 443,
+          path: parsed.pathname || '/',
+          method: 'HEAD',
+          timeout: 4500,
+          headers: {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+          }
+        }, (res) => {
+          // Strict HTTP 200 to 299 range as required
+          resolve(res.statusCode >= 200 && res.statusCode <= 299);
+        });
+        req.on('error', () => resolve(false));
+        req.on('timeout', () => {
+          req.destroy();
+          resolve(false);
+        });
+        req.end();
+      } catch (_) {
+        resolve(false);
+      }
     });
-    req.on('error', () => resolve(false));
-    req.on('timeout', () => {
-      req.destroy();
-      resolve(false);
-    });
-    req.end();
-  });
+  };
+
+  let isOk = await checkUrl(targetUrl);
+  if (!isOk && targetUrl !== 'https://github.com') {
+    isOk = await checkUrl('https://github.com');
+  }
+  return isOk;
 });
 
 // System Configuration (Downloads and Spellchecker)

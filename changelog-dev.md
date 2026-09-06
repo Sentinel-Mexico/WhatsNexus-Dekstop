@@ -2,6 +2,17 @@
 
 This changelog records all granular updates, bug fixes, refactorings, and feature iterations developed on the `Dev` branch. Each version bump in `package.json` is documented here as it happens.
 
+## [2.2.4] - 2026-09-05
+### Fixes
+- **Cold Start Offline Black Screen Bug Resolution (Escenario B):**
+  - Identified and eliminated premature overlay dismissal caused by partition disk cache (`persist:acc_*`) firing `dom-ready` and `did-finish-load` events during offline cold starts. Webview lifecycle listeners now strictly guard against hiding the overlay when an offline scenario is active.
+  - Implemented `checkInitialNetworkState()` as an agnostic, imperative startup verification function that runs on every cold start, independently verifying real network connectivity before webview activation without relying on cached flags or `localStorage`. Infallibly enforces Escenario B upon detecting lack of connectivity.
+  - Hardened `did-fail-load` event handling to intercept all critical network failures (`ERR_INTERNET_DISCONNECTED`, `ERR_NAME_NOT_RESOLVED`, `ERR_CONNECTION_REFUSED`, etc.) and route them directly to Escenario B.
+- **Interactive Rescan Button Animation & Validation (Escenario B):**
+  - Configured `#offline-rescan-btn` with immediate click lock (`disabled = true`, `pointer-events: none`, `opacity: 0.7`, and `.loading` class) preventing duplicate triggers.
+  - Integrated animated circular loading spinner (`fa-spinner fa-spin btn-spinner`) and localized connecting text (`status_connecting`).
+  - Implemented connectivity verification against `https://web.whatsapp.com` requiring HTTP 200–299 responses via backend IPC `check-internet` (utilizing Electron's `net.isOnline()`) and frontend fetch fallback. On success, reloads all active account webviews and dismisses the overlay; on failure or non-2xx status, halts the spinner and gracefully reactivates the button in idle state.
+
 ## [2.2.3] - 2026-09-05
 ### Refactoring
 - **Static Asset Structure Optimization (`src/assets/img/`):**
