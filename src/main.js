@@ -347,10 +347,49 @@ function savePermissions() {
   } catch (_) {}
 }
 
+function broadcastPermissionsToAllWebContents(perms) {
+  const allWc = webContents.getAllWebContents();
+  for (const wc of allWc) {
+    if (!wc.isDestroyed()) {
+      try {
+        wc.send('update-permission-settings', perms);
+        wc.send('permissions:updated', perms);
+      } catch (_) {}
+    }
+  }
+}
+
 ipcMain.on('update-permission-settings', (event, permissions) => {
   if (permissions) {
     currentPermissions = { ...currentPermissions, ...permissions };
     savePermissions();
+    broadcastPermissionsToAllWebContents(currentPermissions);
+  }
+});
+
+ipcMain.on('permissions:updated', (event, permissions) => {
+  if (permissions) {
+    currentPermissions = { ...currentPermissions, ...permissions };
+    savePermissions();
+    broadcastPermissionsToAllWebContents(currentPermissions);
+  }
+});
+
+ipcMain.on('notifications:updated', (event, notifSettings) => {
+  if (notifSettings) {
+    if (typeof notifSettings.desktopNotifications === 'boolean') {
+      currentPermissions.notifications = notifSettings.desktopNotifications;
+      savePermissions();
+    }
+    const allWc = webContents.getAllWebContents();
+    for (const wc of allWc) {
+      if (!wc.isDestroyed()) {
+        try {
+          wc.send('update-notification-settings', notifSettings);
+          wc.send('notifications:updated', notifSettings);
+        } catch (_) {}
+      }
+    }
   }
 });
 
@@ -1123,6 +1162,39 @@ ipcMain.handle('install-update', () => {
   }
 });
 
+function checkMediaPermission(permission, details) {
+  const isAudioDirect = permission === 'microphone' || permission === 'audio';
+  const isVideoDirect = permission === 'camera' || permission === 'video';
+
+  const singleType = details && details.mediaType;
+  const multiTypes = (details && details.mediaTypes) || [];
+
+  const wantsAudio = isAudioDirect || singleType === 'audio' || multiTypes.includes('audio');
+  const wantsVideo = isVideoDirect || singleType === 'video' || multiTypes.includes('video');
+
+  if (wantsAudio && wantsVideo) {
+    return !!currentPermissions.camera && currentPermissions.microphone !== false;
+  }
+  if (wantsAudio) {
+    return currentPermissions.microphone !== false;
+  }
+  if (wantsVideo) {
+    return !!currentPermissions.camera;
+  }
+
+  return currentPermissions.microphone !== false || !!currentPermissions.camera;
+}
+
+function checkDisplayCapturePermission(details) {
+  const singleType = details && details.mediaType;
+  const multiTypes = (details && details.mediaTypes) || [];
+  const wantsAudio = singleType === 'audio' || multiTypes.includes('audio');
+  if (wantsAudio) {
+    return currentPermissions.screenShare !== false && !!currentPermissions.screenShareAudio;
+  }
+  return currentPermissions.screenShare !== false;
+}
+
 function configureSessionPermissions(ses) {
   if (!ses) return;
   ses.setPermissionRequestHandler((webContents, permission, callback, details) => {
@@ -1134,19 +1206,8 @@ function configureSessionPermissions(ses) {
       return callback(true);
     }
 
-    if (permission === 'media') {
-      const mediaTypes = (details && details.mediaTypes) || [];
-      const wantsAudio = mediaTypes.includes('audio');
-      const wantsVideo = mediaTypes.includes('video');
-
-      if (wantsAudio && wantsVideo) {
-        return callback(!!currentPermissions.camera && !!currentPermissions.microphone);
-      } else if (wantsAudio) {
-        return callback(!!currentPermissions.microphone);
-      } else if (wantsVideo) {
-        return callback(!!currentPermissions.camera);
-      }
-      return callback(false);
+    if (permission === 'media' || permission === 'microphone' || permission === 'camera' || permission === 'audio' || permission === 'video') {
+      return callback(checkMediaPermission(permission, details));
     }
 
     if (permission === 'geolocation') {
@@ -1154,12 +1215,7 @@ function configureSessionPermissions(ses) {
     }
 
     if (permission === 'display-capture') {
-      const mediaTypes = (details && details.mediaTypes) || [];
-      const wantsAudio = mediaTypes.includes('audio');
-      if (wantsAudio) {
-        return callback(!!currentPermissions.screenShare && !!currentPermissions.screenShareAudio);
-      }
-      return callback(!!currentPermissions.screenShare);
+      return callback(checkDisplayCapturePermission(details));
     }
 
     callback(false); // Deny by default
@@ -1174,19 +1230,8 @@ function configureSessionPermissions(ses) {
       return true;
     }
 
-    if (permission === 'media') {
-      const mediaTypes = (details && details.mediaTypes) || [];
-      const wantsAudio = mediaTypes.includes('audio');
-      const wantsVideo = mediaTypes.includes('video');
-
-      if (wantsAudio && wantsVideo) {
-        return !!currentPermissions.camera && !!currentPermissions.microphone;
-      } else if (wantsAudio) {
-        return !!currentPermissions.microphone;
-      } else if (wantsVideo) {
-        return !!currentPermissions.camera;
-      }
-      return false;
+    if (permission === 'media' || permission === 'microphone' || permission === 'camera' || permission === 'audio' || permission === 'video') {
+      return checkMediaPermission(permission, details);
     }
 
     if (permission === 'geolocation') {
@@ -1194,12 +1239,7 @@ function configureSessionPermissions(ses) {
     }
 
     if (permission === 'display-capture') {
-      const mediaTypes = (details && details.mediaTypes) || [];
-      const wantsAudio = mediaTypes.includes('audio');
-      if (wantsAudio) {
-        return !!currentPermissions.screenShare && !!currentPermissions.screenShareAudio;
-      }
-      return !!currentPermissions.screenShare;
+      return checkDisplayCapturePermission(details);
     }
 
     return false; // Deny by default

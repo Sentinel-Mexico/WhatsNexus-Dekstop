@@ -24,9 +24,11 @@ contextBridge.exposeInMainWorld('electronAPI', {
     return () => ipcRenderer.removeListener('system-theme-updated', handler);
   },
   updateTrayBadge: (count) => ipcRenderer.send('update-tray-badge', count),
-  setThemeMode: (mode) => ipcRenderer.send('set-theme-mode', mode),
-  updatePermissionSettings: (perms) => ipcRenderer.send('update-permission-settings', perms),
-  updateTraySettings: (settings) => ipcRenderer.send('update-tray-settings', settings),
+  updatePermissionSettings: (perms) => {
+    ipcRenderer.send('update-permission-settings', perms);
+    ipcRenderer.send('permissions:updated', perms);
+  },
+  updateNotificationSettings: (notifs) => ipcRenderer.send('notifications:updated', notifs),
   showNativeNotification: (data) => ipcRenderer.send('show-native-notification', data),
   openExternal: (url) => ipcRenderer.send('open-external', url),
   openExternalUrl: (url) => ipcRenderer.invoke('open-external-url', url),

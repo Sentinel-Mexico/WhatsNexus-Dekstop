@@ -1164,6 +1164,10 @@ function applySettings() {
     document.querySelectorAll('webview').forEach(wv => {
       try {
         wv.send('update-notification-settings', settings.notifications);
+        if (settings.permissions) {
+          wv.send('update-permission-settings', settings.permissions);
+          wv.send('permissions:updated', settings.permissions);
+        }
         wv.send('set-dark-mode', isDark);
       } catch (_) {}
     });
@@ -1200,6 +1204,9 @@ function applySettings() {
       ...settings.permissions,
       notifications: settings.notifications ? (settings.notifications.desktopNotifications !== false) : true
     });
+    if (electronAPI.updateNotificationSettings && settings.notifications) {
+      electronAPI.updateNotificationSettings(settings.notifications);
+    }
   }
 
   // Synchronize tray appearance with main process
@@ -1555,6 +1562,10 @@ function buildWebviewDOM(account, parentContainer) {
     try {
       if (settings && settings.notifications) {
         webview.send('update-notification-settings', settings.notifications);
+      }
+      if (settings && settings.permissions) {
+        webview.send('update-permission-settings', settings.permissions);
+        webview.send('permissions:updated', settings.permissions);
       }
       webview.send('update-account-settings', { dnd: !!account.dnd });
       webview.send('set-dark-mode', isDark);

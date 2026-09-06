@@ -2,6 +2,18 @@
 
 This changelog records all granular updates, bug fixes, refactorings, and feature iterations developed on the `Dev` branch. Each version bump in `package.json` is documented here as it happens.
 
+## [2.2.6] - 2026-09-06
+### Fixes
+- **Microphone and Device Permission Handlers & Voice Message Capture Resolution:**
+  - Resolved structural failure in Chromium session permission checks where `PermissionCheckDetails.mediaType` (singular string) was not evaluated, causing `setPermissionCheckHandler` and `setPermissionRequestHandler` to reject microphone requests and trigger WhatsApp Web's blocking "Permitir micrófono" dialog.
+  - Implemented `checkMediaPermission` in the main process to comprehensively support direct permission names (`'microphone'`, `'camera'`, `'audio'`, `'video'`) and `'media'` requests with both singular `mediaType` and plural `mediaTypes` payloads.
+  - Implemented `checkDisplayCapturePermission` supporting both `mediaType` and `mediaTypes` for screen sharing.
+  - Added real-time reactive permission synchronization:
+    - Broadcasts `permissions:updated` and `notifications:updated` across all active `webContents` and `<webview>` instances via `broadcastPermissionsToAllWebContents`.
+    - Enhanced webview `preload.js` with `appPermissions` state, dynamically updating upon permission changes without requiring application restarts.
+    - Extended `navigator.permissions.query` interception to support `'microphone'`, `'camera'`, and `'geolocation'` alongside `'notifications'`, returning `{ state: 'granted' }` (or `'denied'`) based on reactive settings.
+    - Guarded `navigator.mediaDevices.getUserMedia` and legacy `navigator.getUserMedia` in webviews to cleanly reflect active user device permissions and prevent hangs.
+
 ## [2.2.5] - 2026-09-06
 ### Fixes
 - **WhatsApp Web Session Notification Permission Handlers & Modal Suppression:**

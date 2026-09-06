@@ -24,15 +24,63 @@ ipcRenderer.on('update-account-settings', (event, data) => {
 
 const activePermissionStatuses = [];
 
-ipcRenderer.on('update-notification-settings', (event, data) => {
-  if (data) {
-    const oldDesktop = notificationSettings.desktopNotifications !== false;
-    notificationSettings = { ...notificationSettings, ...data };
-    const newDesktop = notificationSettings.desktopNotifications !== false;
+let appPermissions = {
+  microphone: true,
+  camera: false,
+  location: false,
+  screenShare: true,
+  screenShareAudio: false
+};
 
-    if (oldDesktop !== newDesktop) {
-      const state = newDesktop ? 'granted' : 'denied';
-      activePermissionStatuses.forEach(s => {
+function updatePreloadPermissions(perms) {
+  if (!perms) return;
+  const oldMic = appPermissions.microphone !== false;
+  const oldCam = !!appPermissions.camera;
+  const oldLoc = !!appPermissions.location;
+
+  appPermissions = { ...appPermissions, ...perms };
+
+  const newMic = appPermissions.microphone !== false;
+  const newCam = !!appPermissions.camera;
+  const newLoc = !!appPermissions.location;
+
+  activePermissionStatuses.forEach(s => {
+    try {
+      let stateChanged = false;
+      let newState = s.state;
+      if (s.name === 'microphone' && oldMic !== newMic) {
+        newState = newMic ? 'granted' : 'denied';
+        stateChanged = true;
+      } else if (s.name === 'camera' && oldCam !== newCam) {
+        newState = newCam ? 'granted' : 'denied';
+        stateChanged = true;
+      } else if (s.name === 'geolocation' && oldLoc !== newLoc) {
+        newState = newLoc ? 'granted' : 'denied';
+        stateChanged = true;
+      }
+
+      if (stateChanged) {
+        s.state = newState;
+        s.status = newState;
+        if (typeof s.onchange === 'function') {
+          s.onchange(new Event('change'));
+        }
+        s.dispatchEvent(new Event('change'));
+      }
+    } catch (_) {}
+  });
+}
+
+function updatePreloadNotifications(data) {
+  if (!data) return;
+  const oldDesktop = notificationSettings.desktopNotifications !== false;
+  notificationSettings = { ...notificationSettings, ...data };
+  const newDesktop = notificationSettings.desktopNotifications !== false;
+
+  if (oldDesktop !== newDesktop) {
+    const state = newDesktop ? 'granted' : 'denied';
+    activePermissionStatuses.forEach(s => {
+      if (s.name === 'notifications') {
         try {
           s.state = state;
           s.status = state;
@@ -41,9 +89,25 @@ ipcRenderer.on('update-notification-settings', (event, data) => {
           }
           s.dispatchEvent(new Event('change'));
         } catch (_) {}
-      });
-    }
+      }
+    });
   }
+}
+
+ipcRenderer.on('update-notification-settings', (event, data) => {
+  updatePreloadNotifications(data);
+});
+
+ipcRenderer.on('notifications:updated', (event, data) => {
+  updatePreloadNotifications(data);
+});
+
+ipcRenderer.on('update-permission-settings', (event, data) => {
+  updatePreloadPermissions(data);
+});
+
+ipcRenderer.on('permissions:updated', (event, data) => {
+  updatePreloadPermissions(data);
 });
 
 // Silenciar ÚNICAMENTE la alerta de notificación cuando DND está activo o el sonido de notificación
@@ -193,26 +257,67 @@ try {
   console.error('Error defining window.Notification:', e);
 }
 
-// Mock navigator.permissions.query for notifications
+// Mock navigator.permissions.query for notifications, microphone, camera, and geolocation
 if (navigator.permissions && typeof navigator.permissions.query === 'function') {
   const origQuery = navigator.permissions.query.bind(navigator.permissions);
   navigator.permissions.query = function(params) {
-    if (params && params.name === 'notifications') {
-      const state = (notificationSettings && notificationSettings.desktopNotifications === false) ? 'denied' : 'granted';
-      const eventTarget = new EventTarget();
-      const statusObj = {
-        name: 'notifications',
-        state: state,
-        status: state,
-        onchange: null,
-        addEventListener: eventTarget.addEventListener.bind(eventTarget),
-        removeEventListener: eventTarget.removeEventListener.bind(eventTarget),
-        dispatchEvent: eventTarget.dispatchEvent.bind(eventTarget)
-      };
-      activePermissionStatuses.push(statusObj);
-      return Promise.resolve(statusObj);
+    if (params && params.name) {
+      const name = params.name;
+      if (name === 'notifications' || name === 'microphone' || name === 'camera' || name === 'geolocation') {
+        let isGranted = false;
+        if (name === 'notifications') {
+          isGranted = notificationSettings && notificationSettings.desktopNotifications !== false;
+        } else if (name === 'microphone') {
+          isGranted = appPermissions && appPermissions.microphone !== false;
+        } else if (name === 'camera') {
+          isGranted = appPermissions && !!appPermissions.camera;
+        } else if (name === 'geolocation') {
+          isGranted = appPermissions && !!appPermissions.location;
+        }
+
+        const state = isGranted ? 'granted' : 'denied';
+        const eventTarget = new EventTarget();
+        const statusObj = {
+          name: name,
+          state: state,
+          status: state,
+          onchange: null,
+          addEventListener: eventTarget.addEventListener.bind(eventTarget),
+          removeEventListener: eventTarget.removeEventListener.bind(eventTarget),
+          dispatchEvent: eventTarget.dispatchEvent.bind(eventTarget)
+        };
+        activePermissionStatuses.push(statusObj);
+        return Promise.resolve(statusObj);
+      }
     }
     return origQuery(params);
+  };
+}
+
+// Ensure navigator.mediaDevices.getUserMedia adheres reactively to app permissions
+if (navigator.mediaDevices && typeof navigator.mediaDevices.getUserMedia === 'function') {
+  const origGetUserMedia = navigator.mediaDevices.getUserMedia.bind(navigator.mediaDevices);
+  navigator.mediaDevices.getUserMedia = function(constraints) {
+    if (constraints) {
+      if (constraints.audio && appPermissions && appPermissions.microphone === false) {
+        return Promise.reject(new DOMException('Permission denied', 'NotAllowedError'));
+      }
+      if (constraints.video && appPermissions && !appPermissions.camera) {
+        return Promise.reject(new DOMException('Permission denied', 'NotAllowedError'));
+      }
+    }
+    return origGetUserMedia(constraints);
+  };
+}
+
+if (navigator.getUserMedia) {
+  const origLegacyGUM = navigator.getUserMedia.bind(navigator);
+  navigator.getUserMedia = function(constraints, success, error) {
+    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+      navigator.mediaDevices.getUserMedia(constraints).then(success).catch(error);
+    } else {
+      origLegacyGUM(constraints, success, error);
+    }
   };
 }
 
