@@ -350,7 +350,12 @@
   "token_accent_crimson": "Crimson Accent (--accent-crimson)",
   "offline_screen_startup_desc": "कोई इंटरनेट कनेक्शन नहीं मिला, कृपया पुनः स्कैन करें...",
   "btn_rescan": "पुनः स्कैन करें",
-  "dino_jump_hint": "कूदने के लिए ↑, झुकने के लिए ↓ दबाएं",
+  "dino_jump_hint": "कूदने के लिए ↑ दबाएं, झुकने के लिए ↓ दबाएं",
   "dino_restart_hint": "पुनः आरंभ करने के लिए ↑ दबाएं या क्लिक करें",
-  "dino_game_over": "खेल समाप्त"
+  "dino_game_over": "खेल समाप्त",
+  "offline_timer_prefix": "ऑफ़लाइन हुए समय:",
+  "time_seconds": "सेकंड",
+  "time_minutes": "मिनट",
+  "time_hours": "घंटे",
+  "time_days": "दिन"
 }

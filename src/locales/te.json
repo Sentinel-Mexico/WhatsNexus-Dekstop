@@ -350,7 +350,12 @@
   "token_accent_crimson": "Crimson Accent (--accent-crimson)",
   "offline_screen_startup_desc": "ఇంటర్నెట్ కనెక్షన్ కనుగొనబడలేదు, దయచేసి మళ్లీ స్కాన్ చేయండి...",
   "btn_rescan": "మళ్లీ స్కాన్ చేయండి",
-  "dino_jump_hint": "దూకడానికి ↑, వంగడానికి ↓ నొక్కండి",
+  "dino_jump_hint": "దూకడానికి ↑ నొక్కండి, వంగడానికి ↓ నొక్కండి",
   "dino_restart_hint": "పునఃప్రారంభించడానికి ↑ నొక్కండి లేదా క్లిక్ చేయండి",
-  "dino_game_over": "ఆట ముగిసింది"
+  "dino_game_over": "ఆట ముగిసింది",
+  "offline_timer_prefix": "కనెక్షన్ లేక",
+  "time_seconds": "సెకన్లు",
+  "time_minutes": "నిమిషాలు",
+  "time_hours": "గంటలు",
+  "time_days": "రోజులు"
 }

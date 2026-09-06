@@ -352,5 +352,10 @@
   "btn_rescan": "Mag-scan muli",
   "dino_jump_hint": "Pindutin ang ↑ para tumalon, ↓ para yumuko",
   "dino_restart_hint": "Pindutin ang ↑ o mag-click upang mag-restart",
-  "dino_game_over": "TAPOS NA ANG LARO"
+  "dino_game_over": "TAPOS NA ANG LARO",
+  "offline_timer_prefix": "Walang koneksyon sa loob ng",
+  "time_seconds": "Segundo",
+  "time_minutes": "Minuto",
+  "time_hours": "Oras",
+  "time_days": "Araw"
 }

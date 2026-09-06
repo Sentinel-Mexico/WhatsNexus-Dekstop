@@ -350,7 +350,12 @@
   "token_accent_crimson": "Crimson Accent (--accent-crimson)",
   "offline_screen_startup_desc": "لم يتم العثور على اتصال بالإنترنت، يرجى إعادة المسح...",
   "btn_rescan": "إعادة المسح",
-  "dino_jump_hint": "اضغط على ↑ للقفز، و↓ للانحناء",
+  "dino_jump_hint": "اضغط على ↑ للقفز، وعلى ↓ للانحناء",
   "dino_restart_hint": "اضغط على ↑ أو انقر لإعادة التشغيل",
-  "dino_game_over": "انتهت اللعبة"
+  "dino_game_over": "انتهت اللعبة",
+  "offline_timer_prefix": "نحن غير متصلين منذ",
+  "time_seconds": "ثوانٍ",
+  "time_minutes": "دقائق",
+  "time_hours": "ساعات",
+  "time_days": "أيام"
 }

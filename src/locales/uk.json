@@ -352,5 +352,10 @@
   "btn_rescan": "Сканувати знову",
   "dino_jump_hint": "Натисніть ↑ для стрибка, ↓ щоб пригнутися",
   "dino_restart_hint": "Натисніть ↑ або клікніть для перезапуску",
-  "dino_game_over": "ГРУ ЗАКІНЧЕНО"
+  "dino_game_over": "ГРУ ЗАКІНЧЕНО",
+  "offline_timer_prefix": "Немає підключення вже",
+  "time_seconds": "Секунд",
+  "time_minutes": "Хвилин",
+  "time_hours": "Годин",
+  "time_days": "Днів"
 }

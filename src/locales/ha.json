@@ -352,5 +352,10 @@
   "btn_rescan": "Sake dubawa",
   "dino_jump_hint": "Danna ↑ don tsalle, ↓ don rusunawa",
   "dino_restart_hint": "Danna ↑ ko danna don sake farawa",
-  "dino_game_over": "WASAN YA ƘARE"
+  "dino_game_over": "WASAN YA ƘARE",
+  "offline_timer_prefix": "Ba mu da haɗin yanar gizo tun",
+  "time_seconds": "Daƙiƙa",
+  "time_minutes": "Minti",
+  "time_hours": "Sa'o'i",
+  "time_days": "Kwanaki"
 }

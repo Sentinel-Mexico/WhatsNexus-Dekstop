@@ -350,7 +350,12 @@
   "token_accent_crimson": "Crimson Accent (--accent-crimson)",
   "offline_screen_startup_desc": "ڪو به انٽرنيٽ ڪنيڪشن نه مليو، مهرباني ڪري ٻيهر اسڪين ڪريو...",
   "btn_rescan": "ٻيهر اسڪين ڪريو",
-  "dino_jump_hint": "ٽپو ڏيڻ لاءِ ↑، نمڻ لاءِ ↓ دٻايو",
+  "dino_jump_hint": "ٽپو ڏيڻ لاءِ ↑ دٻايو، نمڻ لاءِ ↓ دٻايو",
   "dino_restart_hint": "ٻيهر شروع ڪرڻ لاءِ ↑ دٻايو يا ڪلڪ ڪريو",
-  "dino_game_over": "راند ختم"
+  "dino_game_over": "راند ختم",
+  "offline_timer_prefix": "اسان آف لائن آهيون کان",
+  "time_seconds": "سيڪنڊ",
+  "time_minutes": "منٽ",
+  "time_hours": "ڪلاڪ",
+  "time_days": "ڏينهن"
 }

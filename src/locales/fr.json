@@ -352,5 +352,10 @@
   "btn_rescan": "Scanner à nouveau",
   "dino_jump_hint": "Appuyez sur ↑ pour sauter, ↓ pour vous baisser",
   "dino_restart_hint": "Appuyez sur ↑ ou cliquez pour recommencer",
-  "dino_game_over": "PARTIE TERMINÉE"
+  "dino_game_over": "PARTIE TERMINÉE",
+  "offline_timer_prefix": "Nous sommes hors ligne depuis",
+  "time_seconds": "Secondes",
+  "time_minutes": "Minutes",
+  "time_hours": "Heures",
+  "time_days": "Jours"
 }

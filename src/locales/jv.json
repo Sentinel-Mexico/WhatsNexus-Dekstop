@@ -350,7 +350,12 @@
   "token_accent_crimson": "Crimson Accent (--accent-crimson)",
   "offline_screen_startup_desc": "Ora ana sambungan internet sing ditemokake, mangga pindai maneh...",
   "btn_rescan": "Pindai maneh",
-  "dino_jump_hint": "Pencet ↑ kanggo mlumpat, ↓ kanggo mbungkuk",
+  "dino_jump_hint": "Pencet ↑ kanggo mlumpat, ↓ kanggo ndheprok",
   "dino_restart_hint": "Pencet ↑ utawa klik kanggo miwiti maneh",
-  "dino_game_over": "GAME RAMPUNG"
+  "dino_game_over": "GAME RAMPUNG",
+  "offline_timer_prefix": "Ora ana sambungan wiwit",
+  "time_seconds": "Detik",
+  "time_minutes": "Menit",
+  "time_hours": "Jam",
+  "time_days": "Dina"
 }

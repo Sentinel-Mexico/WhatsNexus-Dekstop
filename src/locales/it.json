@@ -352,5 +352,10 @@
   "btn_rescan": "Scansiona di nuovo",
   "dino_jump_hint": "Premi ↑ per saltare, ↓ per abbassarti",
   "dino_restart_hint": "Premi ↑ o fai clic per ricominciare",
-  "dino_game_over": "PARTITA FINITA"
+  "dino_game_over": "PARTITA FINITA",
+  "offline_timer_prefix": "Siamo offline da",
+  "time_seconds": "Secondi",
+  "time_minutes": "Minuti",
+  "time_hours": "Ore",
+  "time_days": "Giorni"
 }

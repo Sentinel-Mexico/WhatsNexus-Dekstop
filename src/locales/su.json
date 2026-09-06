@@ -352,5 +352,10 @@
   "btn_rescan": "Scan deui",
   "dino_jump_hint": "Pencét ↑ pikeun luncat, ↓ pikeun tungkul",
   "dino_restart_hint": "Pencét ↑ atawa klik pikeun ngamimitian deui",
-  "dino_game_over": "GAME RENGSE"
+  "dino_game_over": "GAME RENGSE",
+  "offline_timer_prefix": "Teu aya sambungan ti",
+  "time_seconds": "Detik",
+  "time_minutes": "Menit",
+  "time_hours": "Jam",
+  "time_days": "Poé"
 }

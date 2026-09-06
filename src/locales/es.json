@@ -352,5 +352,10 @@
   "btn_rescan": "Volver a escanear",
   "dino_jump_hint": "Presiona ↑ para saltar, ↓ para agacharte",
   "dino_restart_hint": "Presiona ↑ o haz clic para reiniciar",
-  "dino_game_over": "GAME OVER"
+  "dino_game_over": "GAME OVER",
+  "offline_timer_prefix": "Estamos sin conexión desde hace",
+  "time_seconds": "Segundos",
+  "time_minutes": "Minutos",
+  "time_hours": "Horas",
+  "time_days": "Días"
 }

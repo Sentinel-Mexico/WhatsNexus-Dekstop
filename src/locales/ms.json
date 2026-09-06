@@ -350,7 +350,12 @@
   "token_accent_crimson": "Crimson Accent (--accent-crimson)",
   "offline_screen_startup_desc": "Tiada sambungan internet ditemui, sila imbas lagi...",
   "btn_rescan": "Imbas lagi",
-  "dino_jump_hint": "Tekan ↑ untuk melompat, ↓ untuk menunduk",
+  "dino_jump_hint": "Tekan ↑ untuk melompat, ↓ untuk tunduk",
   "dino_restart_hint": "Tekan ↑ atau klik untuk mulakan semula",
-  "dino_game_over": "PERMAINAN TAMAT"
+  "dino_game_over": "PERMAINAN TAMAT",
+  "offline_timer_prefix": "Terputus dari sambungan sejak",
+  "time_seconds": "Saat",
+  "time_minutes": "Minit",
+  "time_hours": "Jam",
+  "time_days": "Hari"
 }

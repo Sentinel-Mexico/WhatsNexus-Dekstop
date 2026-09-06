@@ -435,6 +435,21 @@ ipcMain.handle('clear-account-cache', async (_event, accountId) => {
   }
 });
 
+ipcMain.handle('check-internet', async () => {
+  const https = require('https');
+  return new Promise((resolve) => {
+    const req = https.request('https://github.com', { method: 'HEAD', timeout: 4000 }, (res) => {
+      resolve(res.statusCode >= 200 && res.statusCode < 400);
+    });
+    req.on('error', () => resolve(false));
+    req.on('timeout', () => {
+      req.destroy();
+      resolve(false);
+    });
+    req.end();
+  });
+});
+
 // System Configuration (Downloads and Spellchecker)
 let currentSystemSettings = {
   downloadPath: '',

@@ -350,7 +350,12 @@
   "token_accent_crimson": "Crimson Accent (--accent-crimson)",
   "offline_screen_startup_desc": "揣無網路連線，請重新掃描...",
   "btn_rescan": "重新掃描",
-  "dino_jump_hint": "按 ↑ 跳躍，按 ↓ 蹲下",
+  "dino_jump_hint": "按 ↑ 趒，按 ↓ 蹲",
   "dino_restart_hint": "按 ↑ 或點擊重新開始",
-  "dino_game_over": "遊戲結束"
+  "dino_game_over": "遊戲結束",
+  "offline_timer_prefix": "已經離線",
+  "time_seconds": "秒",
+  "time_minutes": "分鐘",
+  "time_hours": "點鐘",
+  "time_days": "工"
 }

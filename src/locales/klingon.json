@@ -350,7 +350,12 @@
   "token_accent_crimson": "Crimson Accent (--accent-crimson)",
   "offline_screen_startup_desc": "  ,  ...",
   "btn_rescan": " ",
-  "dino_jump_hint": " ↑ , ↓ ",
+  "dino_jump_hint": "yIchoHmeH ↑ yI'uy, yI'obmeH ↓ yI'uy",
   "dino_restart_hint": " ↑ ",
-  "dino_game_over": " "
+  "dino_game_over": " ",
+  "offline_timer_prefix": "rarbe'taH",
+  "time_seconds": "lup",
+  "time_minutes": "tup",
+  "time_hours": "rep",
+  "time_days": "jaj"
 }

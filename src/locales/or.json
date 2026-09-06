@@ -350,7 +350,12 @@
   "token_accent_crimson": "Crimson Accent (--accent-crimson)",
   "offline_screen_startup_desc": "କୌଣସି ଇଣ୍ଟରନେଟ୍ ସଂଯୋଗ ମିଳିଲା ନାହିଁ, ଦୟାକରି ପୁଣି ସ୍କାନ୍ କରନ୍ତୁ...",
   "btn_rescan": "ପୁଣି ସ୍କାନ୍ କରନ୍ତୁ",
-  "dino_jump_hint": "ଡେଇଁବା ପାଇଁ ↑, ତଳକୁ ହେବା ପାଇଁ ↓ ଦବାନ୍ତୁ",
+  "dino_jump_hint": "ଡେଇଁବା ପାଇଁ ↑ ଦବାନ୍ତୁ, ଝୁଙ୍କିବା ପାଇଁ ↓ ଦବାନ୍ତୁ",
   "dino_restart_hint": "ପୁନର୍ବାର ଆରମ୍ଭ କରିବା ପାଇଁ ↑ ଦବାନ୍ତୁ କିମ୍ବା କ୍ଲିକ୍ କରନ୍ତୁ",
-  "dino_game_over": "ଖେଳ ଶେଷ"
+  "dino_game_over": "ଖେଳ ଶେଷ",
+  "offline_timer_prefix": "ଅଫଲାଇନ୍ ରହିଛି",
+  "time_seconds": "ସେକେଣ୍ଡ",
+  "time_minutes": "ମିନିଟ୍",
+  "time_hours": "ଘଣ୍ଟା",
+  "time_days": "ଦିନ"
 }

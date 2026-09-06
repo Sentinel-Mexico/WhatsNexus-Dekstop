@@ -350,7 +350,12 @@
   "token_accent_crimson": "Karminrot-Akzent (--accent-crimson)",
   "offline_screen_startup_desc": "Keine Internetverbindung gefunden, bitte scannen Sie erneut...",
   "btn_rescan": "Erneut scannen",
-  "dino_jump_hint": "↑ drücken zum Springen, ↓ zum Ducken",
+  "dino_jump_hint": "Drücke ↑ zum Springen, ↓ zum Ducken",
   "dino_restart_hint": "↑ drücken oder klicken zum Neustarten",
-  "dino_game_over": "SPIEL VORBEI"
+  "dino_game_over": "SPIEL VORBEI",
+  "offline_timer_prefix": "Wir sind offline seit",
+  "time_seconds": "Sekunden",
+  "time_minutes": "Minuten",
+  "time_hours": "Stunden",
+  "time_days": "Tage"
 }

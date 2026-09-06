@@ -350,7 +350,12 @@
   "token_accent_crimson": "Crimson Accent (--accent-crimson)",
   "offline_screen_startup_desc": "কোনো ইন্টারনেট সংযোগ পাওয়া যায়নি, অনুগ্রহ করে আবার স্ক্যান করুন...",
   "btn_rescan": "আবার স্ক্যান করুন",
-  "dino_jump_hint": "লাফ দিতে ↑, নিচু হতে ↓ টিপুন",
+  "dino_jump_hint": "লাফাতে ↑ চাপুন, নিচু হতে ↓ চাপুন",
   "dino_restart_hint": "পুনরায় শুরু করতে ↑ টিপুন বা ক্লিক করুন",
-  "dino_game_over": "খেলা শেষ"
+  "dino_game_over": "খেলা শেষ",
+  "offline_timer_prefix": "সংযোগ বিচ্ছিন্ন রয়েছে",
+  "time_seconds": "সেকেন্ড",
+  "time_minutes": "মিনিট",
+  "time_hours": "ঘণ্টা",
+  "time_days": "দিন"
 }

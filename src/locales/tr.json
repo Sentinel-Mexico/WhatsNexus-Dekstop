@@ -352,5 +352,10 @@
   "btn_rescan": "Tekrar tara",
   "dino_jump_hint": "Zıplamak için ↑, eğilmek için ↓ tuşuna basın",
   "dino_restart_hint": "Yeniden başlatmak için ↑ tuşuna basın veya tıklayın",
-  "dino_game_over": "OYUN BİTTİ"
+  "dino_game_over": "OYUN BİTTİ",
+  "offline_timer_prefix": "Şu kadar süredir çevrimdışıyız:",
+  "time_seconds": "Saniye",
+  "time_minutes": "Dakika",
+  "time_hours": "Saat",
+  "time_days": "Gün"
 }

@@ -350,7 +350,12 @@
   "token_accent_crimson": "Crimson Accent (--accent-crimson)",
   "offline_screen_startup_desc": "インターネット接続が見つかりません。もう一度スキャンしてください...",
   "btn_rescan": "もう一度スキャン",
-  "dino_jump_hint": "↑ でジャンプ、↓ でしゃがむ",
+  "dino_jump_hint": "↑キーでジャンプ、↓キーでしゃがむ",
   "dino_restart_hint": "↑ またはクリックで再スタート",
-  "dino_game_over": "ゲームオーバー"
+  "dino_game_over": "ゲームオーバー",
+  "offline_timer_prefix": "オフライン経過時間:",
+  "time_seconds": "秒",
+  "time_minutes": "分",
+  "time_hours": "時間",
+  "time_days": "日"
 }

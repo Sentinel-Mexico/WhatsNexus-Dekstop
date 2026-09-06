@@ -350,7 +350,12 @@
   "token_accent_crimson": "Crimson Accent (--accent-crimson)",
   "offline_screen_startup_desc": "ಯಾವುದೇ ಇಂಟರ್ನೆಟ್ ಸಂಪರ್ಕ ಕಂಡುಬಂದಿಲ್ಲ, ದಯವಿಟ್ಟು ಮತ್ತೆ ಸ್ಕ್ಯಾನ್ ಮಾಡಿ...",
   "btn_rescan": "ಮತ್ತೆ ಸ್ಕ್ಯಾನ್ ಮಾಡಿ",
-  "dino_jump_hint": "ಜಿಗಿಯಲು ↑, ಬಗ್ಗಲು ↓ ಒತ್ತಿರಿ",
+  "dino_jump_hint": "ಹಾರಲು ↑ ಒತ್ತಿ, ಬಗ್ಗಲು ↓ ಒತ್ತಿ",
   "dino_restart_hint": "ಮರುಪ್ರಾರಂಭಿಸಲು ↑ ಒತ್ತಿರಿ ಅಥವಾ ಕ್ಲಿಕ್ ಮಾಡಿ",
-  "dino_game_over": "ಆಟ ಮುಗಿದಿದೆ"
+  "dino_game_over": "ಆಟ ಮುಗಿದಿದೆ",
+  "offline_timer_prefix": "ಸಂಪರ್ಕ ಕಡಿತಗೊಂಡು",
+  "time_seconds": "ಸೆಕೆಂಡುಗಳು",
+  "time_minutes": "ನಿಮಿಷಗಳು",
+  "time_hours": "ಗಂಟೆಗಳು",
+  "time_days": "ದಿನಗಳು"
 }

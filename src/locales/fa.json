@@ -350,7 +350,12 @@
   "token_accent_crimson": "Crimson Accent (--accent-crimson)",
   "offline_screen_startup_desc": "اتصال اینترنت یافت نشد، لطفاً دوباره اسکن کنید...",
   "btn_rescan": "اسکن مجدد",
-  "dino_jump_hint": "برای پریدن ↑ و خم شدن ↓ را فشار دهید",
+  "dino_jump_hint": "برای پرش ↑ و برای خم شدن ↓ را فشار دهید",
   "dino_restart_hint": "برای راه‌اندازی مجدد ↑ را فشار دهید یا کلیک کنید",
-  "dino_game_over": "بازی تمام شد"
+  "dino_game_over": "بازی تمام شد",
+  "offline_timer_prefix": "مدت زمان آفلاین بودن:",
+  "time_seconds": "ثانیه",
+  "time_minutes": "دقیقه",
+  "time_hours": "ساعت",
+  "time_days": "روز"
 }

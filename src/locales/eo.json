@@ -352,5 +352,10 @@
   "btn_rescan": "Skani denove",
   "dino_jump_hint": "Premu ↑ por salti, ↓ por kaŭri",
   "dino_restart_hint": "Premu ↑ aŭ alklaku por restartigi",
-  "dino_game_over": "LUDO FINITA"
+  "dino_game_over": "LUDO FINITA",
+  "offline_timer_prefix": "Ni estas senkonektaj de",
+  "time_seconds": "Sekundoj",
+  "time_minutes": "Minutoj",
+  "time_hours": "Horoj",
+  "time_days": "Tagoj"
 }

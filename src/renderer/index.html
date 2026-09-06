@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com data:; img-src 'self' data: blob: https:; connect-src 'self';">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com data:; img-src 'self' data: blob: https:; connect-src 'self' https://github.com https://web.whatsapp.com;">
   <title>WhatsNexus</title>
   <link rel="stylesheet" href="style.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -861,7 +861,11 @@
               <i class="fa-solid fa-gamepad"></i>
               <span id="dino-hint-text" data-i18n="dino_jump_hint">Presiona ↑ para saltar, ↓ para agacharte</span>
             </div>
-            <canvas id="dino-game-canvas" width="800" height="260" tabindex="0"></canvas>
+            <canvas id="dino-game-canvas" width="800" height="300" tabindex="0"></canvas>
+            <div class="offline-timer-container" id="offline-timer-container">
+              <i class="fa-regular fa-clock"></i>
+              <span id="offline-timer-text">Estamos sin conexión desde hace 0 Segundos.</span>
+            </div>
           </div>
         </div>
       </div>

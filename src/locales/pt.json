@@ -350,7 +350,12 @@
   "token_accent_crimson": "Destaque Carmesim (--accent-crimson)",
   "offline_screen_startup_desc": "Nenhuma conexão com a internet encontrada, escaneie novamente...",
   "btn_rescan": "Escanear novamente",
-  "dino_jump_hint": "Pressione ↑ para pular, ↓ para abaixar",
+  "dino_jump_hint": "Pressione ↑ para pular, ↓ para agachar",
   "dino_restart_hint": "Pressione ↑ ou clique para reiniciar",
-  "dino_game_over": "FIM DE JOGO"
+  "dino_game_over": "FIM DE JOGO",
+  "offline_timer_prefix": "Estamos desconectados há",
+  "time_seconds": "Segundos",
+  "time_minutes": "Minutos",
+  "time_hours": "Horas",
+  "time_days": "Dias"
 }

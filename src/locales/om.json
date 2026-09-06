@@ -350,7 +350,12 @@
   "token_accent_crimson": "Crimson Accent (--accent-crimson)",
   "offline_screen_startup_desc": "Konneksiyiniin intarneetii hin argamne, mee lammata iskaan godhaa...",
   "btn_rescan": "Ammas iskaan godhi",
-  "dino_jump_hint": "Utaaluuf ↑, gadi jechuuf ↓ dhiibaa",
+  "dino_jump_hint": "Utaaluuf ↑ dhiibi, gadi jechuuf ↓ dhiibi",
   "dino_restart_hint": "Irra deebi'anii eegaluuf ↑ dhiibaa yookaan cuqsaa",
-  "dino_game_over": "TAPHOON XUMURAMEERA"
+  "dino_game_over": "TAPHOON XUMURAMEERA",
+  "offline_timer_prefix": "Konneekshinii malee erga taanee",
+  "time_seconds": "Sekondii",
+  "time_minutes": "Daqiiqaa",
+  "time_hours": "Sa'aatii",
+  "time_days": "Guyyoota"
 }

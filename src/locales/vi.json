@@ -352,5 +352,10 @@
   "btn_rescan": "Quét lại",
   "dino_jump_hint": "Nhấn ↑ để nhảy, ↓ để cúi",
   "dino_restart_hint": "Nhấn ↑ hoặc nhấp để khởi động lại",
-  "dino_game_over": "TRÒ CHƠI KẾT THÚC"
+  "dino_game_over": "TRÒ CHƠI KẾT THÚC",
+  "offline_timer_prefix": "Đã ngoại tuyến trong",
+  "time_seconds": "Giây",
+  "time_minutes": "Phút",
+  "time_hours": "Giờ",
+  "time_days": "Ngày"
 }

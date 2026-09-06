@@ -2,6 +2,25 @@
 
 This changelog records all granular updates, bug fixes, refactorings, and feature iterations developed on the `Dev` branch. Each version bump in `package.json` is documented here as it happens.
 
+## [2.2.2] - 2026-09-05
+### Fixes
+- **Offline Overlay Black Screen Resolution (Escenario B):** Fixed `<webview>` out-of-process rendering occluding DOM overlays on Linux platforms during network load failures (`ERR_INTERNET_DISCONNECTED`) by dynamically hiding `<webview>` elements (`visibility = 'hidden'`) upon overlay activation and restoring them upon reconnection.
+- **Strict UI State Isolation (Escenario A vs. Escenario B):**
+  - **Escenario A (Disconnection During Active Use):** Displays the animated top radar spinner and the "Buscando señal..." indicator badge while strictly hiding the "Volver a escanear" button.
+  - **Escenario B (Application Started Offline):** Displays the animated top radar circle spinner, "Sin conexión a internet" title, informative subtitle, and clickable "Volver a escanear" button with background webview reload and spinner while strictly hiding the "Buscando señal..." badge.
+- **Content Security Policy & Node.js IPC Polling:** Updated CSP in `src/renderer/index.html` to allow `https://github.com` and `https://web.whatsapp.com` in `connect-src`, and introduced `check-internet` IPC handler in `src/main.js` and `src/preload-main.js` allowing reliable HTTPS HEAD requests without renderer sandboxing or CSP limitations.
+
+### Features
+- **Modular DinoGame Architecture (`src/renderer/dino-game.js`):** Extracted all minigame logic (physics, jump parabola, ducking hitbox reduction to 24px, 3-tier pterodactyls, collision detection, and rendering loop) into an independent, modular `DinoGame` class loaded lazily on demand. Included complete memory and CPU leak prevention (`destruir()` calling `cancelAnimationFrame` and unbinding window keyboard listeners).
+- **Dynamic Offline Duration Timer:** Added real-time elapsed offline counter under the minigame canvas (`Estamos sin conexión desde hace {tiempo} {medición}.`), dynamically formatting seconds, minutes, hours, and days with reactive 1-second ticks and zero hardcoded strings.
+- **Expanded Canvas Dimensions:** Increased `#dino-game-canvas` height to 300px (`groundY = 260px`) and adjusted `.dino-game-wrapper` CSS for spacious flight clearance across all 3 pterodactyl altitude tiers and visible jump parabolic trajectory.
+
+### Refactoring
+- **Clean Code Separation in `renderer.js`:** Reduced renderer footprint by eliminating inline game logic, implementing lazy script injection (`ensureDinoGameLoaded()`), and centralizing offline lifecycle hooks.
+
+### Internationalization
+- **100% Symmetric Key Parity Across 55 Locales:** Added `offline_timer_prefix`, `time_seconds`, `time_minutes`, `time_hours`, and `time_days` across all 55 active locale files.
+
 ## [2.2.1] - 2026-09-05
 ### Fixes
 - **Offline Overlay UI State Isolation (Escenario A vs. Escenario B):**

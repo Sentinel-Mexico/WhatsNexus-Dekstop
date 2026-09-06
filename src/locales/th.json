@@ -352,5 +352,10 @@
   "btn_rescan": "สแกนอีกครั้ง",
   "dino_jump_hint": "กด ↑ เพื่อกระโดด, ↓ เพื่อหมอบ",
   "dino_restart_hint": "กด ↑ หรือคลิกเพื่อเริ่มใหม่",
-  "dino_game_over": "จบเกม"
+  "dino_game_over": "จบเกม",
+  "offline_timer_prefix": "ออฟไลน์มาเป็นเวลา",
+  "time_seconds": "วินาที",
+  "time_minutes": "นาที",
+  "time_hours": "ชั่วโมง",
+  "time_days": "วัน"
 }

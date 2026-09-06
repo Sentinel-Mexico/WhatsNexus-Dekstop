@@ -350,7 +350,12 @@
   "token_accent_crimson": "Crimson Accent (--accent-crimson)",
   "offline_screen_startup_desc": "कवनो इंटरनेट कनेक्शन नइखे मिलल, फेर से स्कैन करीं...",
   "btn_rescan": "फेर से स्कैन करीं",
-  "dino_jump_hint": "कूदे खातिर ↑, झुके खातिर ↓ दबाईं",
+  "dino_jump_hint": "कूदे खातिर ↑ दबाईं, झुके खातिर ↓ दबाईं",
   "dino_restart_hint": "फेरु से शुरू करे खातिर ↑ दबाईं चाहे क्लिक करीं",
-  "dino_game_over": "खेल खतम"
+  "dino_game_over": "खेल खतम",
+  "offline_timer_prefix": "ऑफ़लाइन भइला से:",
+  "time_seconds": "सेकंड",
+  "time_minutes": "मिनट",
+  "time_hours": "घंटा",
+  "time_days": "दिन"
 }

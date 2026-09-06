@@ -350,7 +350,12 @@
   "token_accent_crimson": "Crimson Accent (--accent-crimson)",
   "offline_screen_startup_desc": "Kò sí àsopọ̀ intanẹẹti kankan, jọ̀wọ́ tún ṣe àyẹ̀wò...",
   "btn_rescan": "Tún ṣe àyẹ̀wò",
-  "dino_jump_hint": "Tẹ ↑ láti fò, ↓ láti bẹ̀rẹ̀",
+  "dino_jump_hint": "Tẹ ↑ lati fo, ↓ lati tẹriba",
   "dino_restart_hint": "Tẹ ↑ tàbí tẹ́ láti tún bẹ̀rẹ̀",
-  "dino_game_over": "ERÉ TI PARÍ"
+  "dino_game_over": "ERÉ TI PARÍ",
+  "offline_timer_prefix": "A ko ni asopọ lati",
+  "time_seconds": "Iṣẹju-aaya",
+  "time_minutes": "Iṣẹju",
+  "time_hours": "Wakati",
+  "time_days": "Ọjọ"
 }

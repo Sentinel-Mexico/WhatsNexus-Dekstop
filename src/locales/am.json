@@ -350,7 +350,12 @@
   "token_accent_crimson": "Crimson Accent (--accent-crimson)",
   "offline_screen_startup_desc": "ምንም የበይነመረብ ግንኙነት አልተገኘም ፣ እባክዎ እንደገና ይቃኙ...",
   "btn_rescan": "እንደገና ቃኝ",
-  "dino_jump_hint": "ለመዝለል ↑፣ ለመጎንበስ ↓ ይጫኑ",
+  "dino_jump_hint": "ለመዝለል ↑ ይጫኑ፣ ለመጎንበስ ↓ ይጫኑ",
   "dino_restart_hint": "እንደገና ለመጀመር ↑ ን ይጫኑ ወይም ጠቅ ያድርጉ",
-  "dino_game_over": "ጨዋታው አልቋል"
+  "dino_game_over": "ጨዋታው አልቋል",
+  "offline_timer_prefix": "መስመር ላይ ካልሆንን ቆይቷል:",
+  "time_seconds": "ሰከንዶች",
+  "time_minutes": "ደቂቃዎች",
+  "time_hours": "ሰዓታት",
+  "time_days": "ቀናት"
 }

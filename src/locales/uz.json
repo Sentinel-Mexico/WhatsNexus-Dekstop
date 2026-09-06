@@ -350,7 +350,12 @@
   "token_accent_crimson": "Crimson Accent (--accent-crimson)",
   "offline_screen_startup_desc": "Internet aloqasi topilmadi, iltimos, qayta skanerlang...",
   "btn_rescan": "Qayta skanerlash",
-  "dino_jump_hint": "Sakrash uchun ↑, egilish uchun ↓ tugmasini bosing",
+  "dino_jump_hint": "Sakrash uchun ↑, egilish uchun ↓ bosing",
   "dino_restart_hint": "Qayta boshlash uchun ↑ tugmasini bosing yoki bosing",
-  "dino_game_over": "O'YIN TUGADI"
+  "dino_game_over": "O'YIN TUGADI",
+  "offline_timer_prefix": "Oflayn holatdamiz:",
+  "time_seconds": "Soniya",
+  "time_minutes": "Daqiqa",
+  "time_hours": "Soat",
+  "time_days": "Kun"
 }

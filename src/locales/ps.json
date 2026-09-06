@@ -350,7 +350,12 @@
   "token_accent_crimson": "Crimson Accent (--accent-crimson)",
   "offline_screen_startup_desc": "د انټرنیټ اتصال ونه موندل شو، مهرباني وکړئ بیا سکین کړئ...",
   "btn_rescan": "بیا سکین کړئ",
-  "dino_jump_hint": "د ټوپ لپاره ↑ او د ټیټېدو لپاره ↓ فشار ورکړئ",
+  "dino_jump_hint": "د ټوپ وهلو لپاره ↑ او د ټيټېدو لپاره ↓ کېکاږئ",
   "dino_restart_hint": "د بیا پیل لپاره ↑ فشار ورکړئ یا کلیک وکړئ",
-  "dino_game_over": "لوبه پای ته ورسېده"
+  "dino_game_over": "لوبه پای ته ورسېده",
+  "offline_timer_prefix": "موږ آفلاین یو د",
+  "time_seconds": "ثانیې",
+  "time_minutes": "دقیقې",
+  "time_hours": "ساعتونه",
+  "time_days": "ورځې"
 }

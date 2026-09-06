@@ -352,5 +352,10 @@
   "btn_rescan": "Changanua tena",
   "dino_jump_hint": "Bonyeza ↑ kuruka, ↓ kuinama",
   "dino_restart_hint": "Bonyeza ↑ au bofya ili kuanzisha upya",
-  "dino_game_over": "MCHEZO UMEKWISHA"
+  "dino_game_over": "MCHEZO UMEKWISHA",
+  "offline_timer_prefix": "Hatuna mtandao tangu",
+  "time_seconds": "Sekunde",
+  "time_minutes": "Dakika",
+  "time_hours": "Masaa",
+  "time_days": "Siku"
 }

@@ -350,7 +350,12 @@
   "token_accent_crimson": "Crimson Accent (--accent-crimson)",
   "offline_screen_startup_desc": "Nie znaleziono połączenia z Internetem, zeskanuj ponownie...",
   "btn_rescan": "Skanuj ponownie",
-  "dino_jump_hint": "Naciśnij ↑, aby skoczyć, ↓ aby kucnąć",
+  "dino_jump_hint": "Naciśnij ↑, aby skoczyć, ↓, aby kucnąć",
   "dino_restart_hint": "Naciśnij ↑ lub kliknij, aby zrestartować",
-  "dino_game_over": "KONIEC GRY"
+  "dino_game_over": "KONIEC GRY",
+  "offline_timer_prefix": "Brak połączenia od",
+  "time_seconds": "Sekund",
+  "time_minutes": "Minut",
+  "time_hours": "Godzin",
+  "time_days": "Dni"
 }

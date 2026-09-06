@@ -2810,714 +2810,14 @@ function initAutoUpdater() {
 }
 
 // ==========================================================================
-// Easter Egg: T-Rex Runner Canvas Engine
-// ==========================================================================
-class DinoGame {
-  constructor(canvasId) {
-    this.canvas = document.getElementById(canvasId);
-    if (!this.canvas) return;
-    this.ctx = this.canvas.getContext('2d');
-    this.wrapper = this.canvas.parentElement;
-    this.hintEl = document.getElementById('dino-hint-text');
-
-    this.isRunning = false;
-    this.isGameOver = false;
-    this.animationFrameId = null;
-
-    this.groundY = 220;
-    this.gravity = 0.65;
-    this.jumpForce = -12.5;
-
-    this.dino = {
-      x: 50,
-      y: this.groundY - 40,
-      width: 40,
-      height: 40,
-      vy: 0,
-      isJumping: false,
-      isDucking: false,
-      legFrame: 0,
-      legTimer: 0
-    };
-
-    this.obstacles = [];
-    this.clouds = [
-      { x: 140, y: 35, speed: 0.5, width: 44 },
-      { x: 480, y: 55, speed: 0.35, width: 38 },
-      { x: 820, y: 30, speed: 0.45, width: 50 }
-    ];
-    this.groundDashes = [];
-    this.initGround();
-
-    this.score = 0;
-    this.highScore = parseInt(localStorage.getItem('whatsnexus_dino_hi') || '0', 10);
-    this.speed = 5.5;
-    this.minSpawnDist = 280;
-    this.nextSpawnDist = 320;
-    this.distanceSinceSpawn = 0;
-
-    this.audioCtx = null;
-
-    this.resize();
-    window.addEventListener('resize', () => this.resize());
-    this.setupInputs();
-
-    // Dinamismo de temas: redibujar automáticamente si la app cambia de tema
-    const themeObserver = new MutationObserver(() => {
-      if (!this.isRunning) {
-        this.draw();
-      }
-    });
-    themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['class', 'style'] });
-  }
-
-  initAudio() {
-    if (!this.audioCtx) {
-      const AudioContext = window.AudioContext || window.webkitAudioContext;
-      if (AudioContext) {
-        this.audioCtx = new AudioContext();
-      }
-    }
-  }
-
-  playBeep(type) {
-    try {
-      this.initAudio();
-      if (!this.audioCtx) return;
-      if (this.audioCtx.state === 'suspended') {
-        this.audioCtx.resume();
-      }
-      const osc = this.audioCtx.createOscillator();
-      const gain = this.audioCtx.createGain();
-      osc.connect(gain);
-      gain.connect(this.audioCtx.destination);
-      const now = this.audioCtx.currentTime;
-
-      if (type === 'jump') {
-        osc.frequency.setValueAtTime(450, now);
-        osc.frequency.exponentialRampToValueAtTime(700, now + 0.08);
-        gain.gain.setValueAtTime(0.04, now);
-        gain.gain.linearRampToValueAtTime(0.001, now + 0.08);
-        osc.start(now);
-        osc.stop(now + 0.08);
-      } else if (type === 'hit') {
-        osc.type = 'sawtooth';
-        osc.frequency.setValueAtTime(220, now);
-        osc.frequency.linearRampToValueAtTime(90, now + 0.18);
-        gain.gain.setValueAtTime(0.06, now);
-        gain.gain.linearRampToValueAtTime(0.001, now + 0.18);
-        osc.start(now);
-        osc.stop(now + 0.18);
-      } else if (type === 'score') {
-        osc.frequency.setValueAtTime(587, now);
-        osc.frequency.setValueAtTime(880, now + 0.08);
-        gain.gain.setValueAtTime(0.04, now);
-        gain.gain.linearRampToValueAtTime(0.001, now + 0.16);
-        osc.start(now);
-        osc.stop(now + 0.16);
-      }
-    } catch (_) {}
-  }
-
-  initGround() {
-    this.groundDashes = [];
-    for (let x = 0; x < 1600; x += 18) {
-      if (Math.random() > 0.45) {
-        this.groundDashes.push({
-          x: x,
-          width: Math.floor(Math.random() * 8) + 4,
-          yOffset: Math.floor(Math.random() * 4)
-        });
-      }
-    }
-  }
-
-  resize() {
-    if (!this.canvas) return;
-    const parentWidth = this.wrapper ? this.wrapper.clientWidth : (this.canvas.parentElement ? this.canvas.parentElement.clientWidth : 800);
-    const targetWidth = Math.max(parentWidth || 800, 300);
-    const targetHeight = 260;
-    this.canvas.width = targetWidth;
-    this.canvas.height = targetHeight;
-    this.groundY = 220;
-
-    if (!this.dino.isJumping) {
-      this.dino.height = this.dino.isDucking ? 24 : 40;
-      this.dino.y = this.groundY - this.dino.height;
-    }
-
-    if (!this.isRunning && !this.isGameOver) {
-      this.draw();
-    }
-  }
-
-  setupInputs() {
-    this.canvas.addEventListener('click', (e) => {
-      e.stopPropagation();
-      this.handleAction();
-    });
-
-    window.addEventListener('keydown', (e) => {
-      const overlay = document.getElementById('network-offline-overlay');
-      if (!overlay || overlay.classList.contains('hidden')) return;
-
-      if (e.code === 'ArrowUp') {
-        e.preventDefault();
-        this.handleAction();
-      } else if (e.code === 'ArrowDown') {
-        e.preventDefault();
-        if (this.isRunning && !this.isGameOver) {
-          if (this.dino.isJumping) {
-            this.dino.vy += 6;
-          } else {
-            this.dino.isDucking = true;
-          }
-        }
-      }
-    });
-
-    window.addEventListener('keyup', (e) => {
-      const overlay = document.getElementById('network-offline-overlay');
-      if (!overlay || overlay.classList.contains('hidden')) return;
-
-      if (e.code === 'ArrowDown') {
-        e.preventDefault();
-        this.dino.isDucking = false;
-      }
-    });
-  }
-
-  handleAction() {
-    if (this.isGameOver) {
-      this.restart();
-    } else if (!this.isRunning) {
-      this.start();
-      this.jump();
-    } else {
-      this.jump();
-    }
-  }
-
-  jump() {
-    if (!this.dino.isJumping && !this.dino.isDucking) {
-      this.dino.isJumping = true;
-      this.dino.vy = this.jumpForce;
-      this.playBeep('jump');
-    }
-  }
-
-  start() {
-    this.resize();
-    if (this.animationFrameId) {
-      cancelAnimationFrame(this.animationFrameId);
-    }
-    this.isRunning = true;
-    this.isGameOver = false;
-    this.updateHint();
-    this.loop();
-  }
-
-  stop() {
-    this.isRunning = false;
-    if (this.animationFrameId) {
-      cancelAnimationFrame(this.animationFrameId);
-      this.animationFrameId = null;
-    }
-  }
-
-  restart() {
-    this.score = 0;
-    this.speed = 5.5;
-    this.obstacles = [];
-    this.distanceSinceSpawn = 0;
-    this.nextSpawnDist = 320;
-    this.dino.height = 40;
-    this.dino.width = 40;
-    this.dino.y = this.groundY - this.dino.height;
-    this.dino.vy = 0;
-    this.dino.isJumping = false;
-    this.dino.isDucking = false;
-    this.isGameOver = false;
-    this.isRunning = true;
-    this.updateHint();
-    this.loop();
-  }
-
-  updateHint() {
-    if (!this.hintEl) return;
-    if (this.isGameOver) {
-      this.hintEl.textContent = getLocaleString('dino_restart_hint', 'Presiona ↑ o haz clic para reiniciar');
-    } else {
-      this.hintEl.textContent = getLocaleString('dino_jump_hint', 'Presiona ↑ para saltar, ↓ para agacharte');
-    }
-  }
-
-  getThemeColors() {
-    const cs = getComputedStyle(document.documentElement);
-    return {
-      textPrimary: cs.getPropertyValue('--text-primary').trim() || '#e9edef',
-      textSecondary: cs.getPropertyValue('--text-secondary').trim() || '#8696a0',
-      accent: cs.getPropertyValue('--accent-color').trim() || '#4C9E5F',
-      border: cs.getPropertyValue('--border-color').trim() || '#2a3942',
-      bg: cs.getPropertyValue('--whatsapp-bg').trim() || '#0c1317'
-    };
-  }
-
-  loop() {
-    if (!this.isRunning) return;
-    this.update();
-    this.draw();
-    if (!this.isGameOver) {
-      this.animationFrameId = requestAnimationFrame(() => this.loop());
-    }
-  }
-
-  update() {
-    if (this.speed < 11.5) {
-      this.speed += 0.0012;
-    }
-
-    const prevScore = Math.floor(this.score);
-    this.score += this.speed * 0.025;
-    const curScore = Math.floor(this.score);
-    if (curScore > 0 && curScore % 100 === 0 && Math.floor(prevScore / 100) !== Math.floor(curScore / 100)) {
-      this.playBeep('score');
-    }
-
-    if (this.score > this.highScore) {
-      this.highScore = Math.floor(this.score);
-      localStorage.setItem('whatsnexus_dino_hi', this.highScore.toString());
-    }
-
-    // Dino Physics & Ducking State
-    if (this.dino.isDucking && !this.dino.isJumping) {
-      this.dino.height = 24;
-      this.dino.width = 54;
-      this.dino.y = this.groundY - 24;
-    } else {
-      this.dino.height = 40;
-      this.dino.width = 40;
-      if (!this.dino.isJumping) {
-        this.dino.y = this.groundY - 40;
-      }
-    }
-
-    if (this.dino.isJumping) {
-      this.dino.y += this.dino.vy;
-      this.dino.vy += this.gravity;
-      if (this.dino.y >= this.groundY - this.dino.height) {
-        this.dino.y = this.groundY - this.dino.height;
-        this.dino.vy = 0;
-        this.dino.isJumping = false;
-      }
-    } else {
-      this.dino.legTimer++;
-      if (this.dino.legTimer > 5) {
-        this.dino.legFrame = this.dino.legFrame === 0 ? 1 : 0;
-        this.dino.legTimer = 0;
-      }
-    }
-
-    // Ground scroll
-    this.groundDashes.forEach(d => {
-      d.x -= this.speed;
-      if (d.x < -20) {
-        d.x = this.canvas.width + Math.random() * 40;
-      }
-    });
-
-    // Clouds scroll
-    this.clouds.forEach(c => {
-      c.x -= c.speed;
-      if (c.x + c.width < -10) {
-        c.x = this.canvas.width + Math.random() * 120;
-        c.y = 20 + Math.random() * 45;
-      }
-    });
-
-    // Obstacles spawn
-    this.distanceSinceSpawn += this.speed;
-    if (this.distanceSinceSpawn >= this.nextSpawnDist) {
-      this.spawnObstacle();
-      this.distanceSinceSpawn = 0;
-      this.nextSpawnDist = this.minSpawnDist + Math.random() * 260 + (11.5 - this.speed) * 15;
-    }
-
-    // Update obstacles & collision
-    for (let i = this.obstacles.length - 1; i >= 0; i--) {
-      const obs = this.obstacles[i];
-      obs.x -= this.speed;
-
-      if (obs.isPtero) {
-        obs.wingTimer = (obs.wingTimer || 0) + 1;
-        if (obs.wingTimer > 7) {
-          obs.wingFrame = obs.wingFrame === 0 ? 1 : 0;
-          obs.wingTimer = 0;
-        }
-      }
-
-      // Hitboxes
-      const dinoBox = {
-        left: this.dino.x + 5,
-        right: this.dino.x + this.dino.width - 5,
-        top: this.dino.y + 4,
-        bottom: this.dino.y + this.dino.height
-      };
-      const obsBox = {
-        left: obs.x + 4,
-        right: obs.x + obs.width - 4,
-        top: obs.y + 3,
-        bottom: obs.y + obs.height - 2
-      };
-
-      if (
-        dinoBox.left < obsBox.right &&
-        dinoBox.right > obsBox.left &&
-        dinoBox.top < obsBox.bottom &&
-        dinoBox.bottom > obsBox.top
-      ) {
-        this.triggerGameOver();
-        break;
-      }
-
-      if (obs.x + obs.width < -20) {
-        this.obstacles.splice(i, 1);
-      }
-    }
-  }
-
-  spawnObstacle() {
-    let types = ['small', 'double', 'tall'];
-    if (this.score > 35) {
-      types = ['small', 'double', 'tall', 'ptero-low', 'ptero-mid', 'ptero-high'];
-    }
-    const chosen = types[Math.floor(Math.random() * types.length)];
-    let width = 18;
-    let height = 36;
-    let y = this.groundY - height;
-    let isPtero = false;
-
-    if (chosen === 'double') {
-      width = 36;
-      height = 34;
-      y = this.groundY - height;
-    } else if (chosen === 'tall') {
-      width = 24;
-      height = 48;
-      y = this.groundY - height;
-    } else if (chosen === 'ptero-low') {
-      isPtero = true;
-      width = 44;
-      height = 28;
-      y = this.groundY - 32;
-    } else if (chosen === 'ptero-mid') {
-      isPtero = true;
-      width = 44;
-      height = 28;
-      y = this.groundY - 54;
-    } else if (chosen === 'ptero-high') {
-      isPtero = true;
-      width = 44;
-      height = 28;
-      y = this.groundY - 82;
-    }
-
-    this.obstacles.push({
-      x: this.canvas.width + 10,
-      y,
-      width,
-      height,
-      type: chosen,
-      isPtero,
-      wingFrame: 0,
-      wingTimer: 0
-    });
-  }
-
-  triggerGameOver() {
-    this.isGameOver = true;
-    this.isRunning = false;
-    this.playBeep('hit');
-    this.updateHint();
-    this.draw();
-  }
-
-  draw() {
-    const ctx = this.ctx;
-    const w = this.canvas.width;
-    const h = this.canvas.height;
-    const colors = this.getThemeColors();
-
-    ctx.clearRect(0, 0, w, h);
-
-    // Clouds
-    ctx.fillStyle = colors.border;
-    this.clouds.forEach(c => {
-      this.drawCloud(ctx, c.x, c.y);
-    });
-
-    // Ground line
-    ctx.strokeStyle = colors.border;
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.moveTo(0, this.groundY);
-    ctx.lineTo(w, this.groundY);
-    ctx.stroke();
-
-    // Ground dashes
-    ctx.fillStyle = colors.textSecondary;
-    this.groundDashes.forEach(d => {
-      if (d.x >= 0 && d.x <= w) {
-        ctx.fillRect(d.x, this.groundY + 4 + d.yOffset, d.width, 1.5);
-      }
-    });
-
-    // Obstacles
-    this.obstacles.forEach(obs => {
-      if (obs.isPtero) {
-        this.drawPterodactyl(ctx, obs, colors);
-      } else {
-        this.drawCactus(ctx, obs, colors.textPrimary, colors.accent);
-      }
-    });
-
-    // Dino (Standing or Ducking)
-    if (this.dino.isDucking && !this.dino.isJumping) {
-      this.drawDuckingDino(ctx, this.dino.x, this.dino.y, colors);
-    } else {
-      this.drawStandingDino(ctx, this.dino.x, this.dino.y, colors);
-    }
-
-    // Score
-    this.drawScore(ctx, w, colors);
-
-    // Game Over Banner
-    if (this.isGameOver) {
-      this.drawGameOverBanner(ctx, w, colors);
-    }
-  }
-
-  drawCloud(ctx, x, y) {
-    ctx.beginPath();
-    ctx.arc(x + 12, y + 10, 9, 0, Math.PI * 2);
-    ctx.arc(x + 22, y + 6, 12, 0, Math.PI * 2);
-    ctx.arc(x + 34, y + 10, 8, 0, Math.PI * 2);
-    ctx.fill();
-  }
-
-  drawCactus(ctx, obs, primaryColor, accentColor) {
-    ctx.fillStyle = accentColor;
-    const x = obs.x;
-    const y = obs.y;
-    const h = obs.height;
-
-    if (obs.type === 'double') {
-      ctx.fillRect(x + 4, y, 6, h);
-      ctx.fillRect(x, y + 8, 4, 10);
-      ctx.fillRect(x, y + 16, 5, 4);
-      ctx.fillRect(x + 18, y + 4, 6, h - 4);
-      ctx.fillRect(x + 24, y + 12, 4, 8);
-      ctx.fillRect(x + 22, y + 18, 4, 4);
-    } else if (obs.type === 'tall') {
-      ctx.fillRect(x + 7, y, 8, h);
-      ctx.fillRect(x + 1, y + 12, 6, 4);
-      ctx.fillRect(x + 1, y + 8, 4, 8);
-      ctx.fillRect(x + 15, y + 16, 6, 4);
-      ctx.fillRect(x + 17, y + 10, 4, 10);
-    } else {
-      ctx.fillRect(x + 5, y, 6, h);
-      ctx.fillRect(x, y + 8, 5, 4);
-      ctx.fillRect(x, y + 6, 4, 6);
-      ctx.fillRect(x + 11, y + 12, 5, 4);
-      ctx.fillRect(x + 12, y + 9, 4, 6);
-    }
-  }
-
-  drawPterodactyl(ctx, obs, colors) {
-    const x = obs.x;
-    const y = obs.y;
-    const accent = colors.accent;
-    const eyeBg = colors.bg;
-
-    ctx.fillStyle = accent;
-
-    // Body
-    ctx.fillRect(x + 12, y + 10, 22, 9);
-    // Tail
-    ctx.fillRect(x + 34, y + 12, 8, 4);
-    ctx.fillRect(x + 40, y + 13, 4, 2);
-    // Neck & Head
-    ctx.fillRect(x + 6, y + 7, 8, 8);
-    // Beak
-    ctx.fillRect(x, y + 9, 7, 4);
-    // Crest (back of head)
-    ctx.fillRect(x + 12, y + 4, 6, 4);
-
-    // Eye
-    ctx.fillStyle = eyeBg;
-    ctx.fillRect(x + 5, y + 8, 2, 2);
-    ctx.fillStyle = accent;
-
-    // Wings Flapping Animation
-    if (obs.wingFrame === 0) {
-      // Wings UP
-      ctx.fillRect(x + 16, y - 2, 8, 12);
-      ctx.fillRect(x + 18, y - 8, 6, 7);
-      ctx.fillRect(x + 20, y - 12, 4, 5);
-    } else {
-      // Wings DOWN
-      ctx.fillRect(x + 16, y + 15, 8, 8);
-      ctx.fillRect(x + 18, y + 21, 6, 6);
-      ctx.fillRect(x + 20, y + 25, 4, 4);
-    }
-  }
-
-  drawDuckingDino(ctx, x, y, colors) {
-    ctx.fillStyle = colors.accent;
-    const p = 2;
-
-    // Body & Tail (elongated posture)
-    ctx.fillRect(x + 8 * p, y + 2 * p, 14 * p, 6 * p);
-    ctx.fillRect(x + 2 * p, y + 3 * p, 6 * p, 4 * p);
-    ctx.fillRect(x + 0 * p, y + 4 * p, 2 * p, 2 * p);
-
-    // Extended neck & head
-    ctx.fillRect(x + 20 * p, y + 0 * p, 7 * p, 6 * p);
-    ctx.fillRect(x + 25 * p, y + 1 * p, 2 * p, 4 * p);
-
-    // Eye
-    if (this.isGameOver) {
-      ctx.fillStyle = colors.bg;
-      ctx.fillRect(x + 22 * p, y + 1 * p, 2 * p, 2 * p);
-      ctx.strokeStyle = colors.textPrimary;
-      ctx.lineWidth = 1;
-      ctx.beginPath();
-      ctx.moveTo(x + 22 * p, y + 1 * p);
-      ctx.lineTo(x + 24 * p, y + 3 * p);
-      ctx.moveTo(x + 24 * p, y + 1 * p);
-      ctx.lineTo(x + 22 * p, y + 3 * p);
-      ctx.stroke();
-      ctx.fillStyle = colors.accent;
-    } else {
-      ctx.fillStyle = colors.bg;
-      ctx.fillRect(x + 22 * p, y + 1 * p, 2 * p, 2 * p);
-      ctx.fillStyle = colors.accent;
-    }
-
-    // Legs (crawling/running frames)
-    if (this.dino.legFrame === 0) {
-      ctx.fillRect(x + 10 * p, y + 8 * p, 3 * p, 4 * p);
-      ctx.fillRect(x + 18 * p, y + 8 * p, 3 * p, 2 * p);
-    } else {
-      ctx.fillRect(x + 10 * p, y + 8 * p, 3 * p, 2 * p);
-      ctx.fillRect(x + 18 * p, y + 8 * p, 3 * p, 4 * p);
-    }
-  }
-
-  drawStandingDino(ctx, x, y, colors) {
-    ctx.fillStyle = colors.accent;
-    const p = 2;
-
-    // Head & Snout
-    ctx.fillRect(x + 14 * p, y + 0 * p, 8 * p, 2 * p);
-    ctx.fillRect(x + 12 * p, y + 2 * p, 10 * p, 4 * p);
-    ctx.fillRect(x + 12 * p, y + 6 * p, 6 * p, 2 * p);
-    ctx.fillRect(x + 12 * p, y + 7 * p, 9 * p, 2 * p);
-
-    // Eye
-    if (this.isGameOver) {
-      ctx.fillStyle = colors.bg;
-      ctx.fillRect(x + 15 * p, y + 2 * p, 3 * p, 3 * p);
-      ctx.strokeStyle = colors.textPrimary;
-      ctx.lineWidth = 1.5;
-      ctx.beginPath();
-      ctx.moveTo(x + 15 * p, y + 2 * p);
-      ctx.lineTo(x + 18 * p, y + 5 * p);
-      ctx.moveTo(x + 18 * p, y + 2 * p);
-      ctx.lineTo(x + 15 * p, y + 5 * p);
-      ctx.stroke();
-      ctx.fillStyle = colors.accent;
-    } else {
-      ctx.fillStyle = colors.bg;
-      ctx.fillRect(x + 15 * p, y + 2 * p, 2 * p, 2 * p);
-      ctx.fillStyle = colors.accent;
-    }
-
-    // Body & Tail
-    ctx.fillRect(x + 8 * p, y + 8 * p, 6 * p, 8 * p);
-    ctx.fillRect(x + 6 * p, y + 9 * p, 4 * p, 6 * p);
-    ctx.fillRect(x + 4 * p, y + 10 * p, 3 * p, 4 * p);
-    ctx.fillRect(x + 2 * p, y + 11 * p, 3 * p, 2 * p);
-
-    // Arms
-    ctx.fillRect(x + 14 * p, y + 10 * p, 3 * p, 2 * p);
-    ctx.fillRect(x + 16 * p, y + 11 * p, 1 * p, 2 * p);
-
-    // Legs
-    if (this.dino.isJumping) {
-      ctx.fillRect(x + 8 * p, y + 16 * p, 2 * p, 4 * p);
-      ctx.fillRect(x + 12 * p, y + 16 * p, 2 * p, 4 * p);
-    } else if (this.isGameOver) {
-      ctx.fillRect(x + 8 * p, y + 16 * p, 2 * p, 4 * p);
-      ctx.fillRect(x + 8 * p, y + 19 * p, 3 * p, 1 * p);
-      ctx.fillRect(x + 12 * p, y + 16 * p, 2 * p, 4 * p);
-      ctx.fillRect(x + 12 * p, y + 19 * p, 3 * p, 1 * p);
-    } else if (this.dino.legFrame === 0) {
-      ctx.fillRect(x + 8 * p, y + 16 * p, 2 * p, 4 * p);
-      ctx.fillRect(x + 8 * p, y + 19 * p, 3 * p, 1 * p);
-      ctx.fillRect(x + 12 * p, y + 16 * p, 2 * p, 2 * p);
-    } else {
-      ctx.fillRect(x + 8 * p, y + 16 * p, 2 * p, 2 * p);
-      ctx.fillRect(x + 12 * p, y + 16 * p, 2 * p, 4 * p);
-      ctx.fillRect(x + 12 * p, y + 19 * p, 3 * p, 1 * p);
-    }
-  }
-
-  drawScore(ctx, w, colors) {
-    const sStr = Math.floor(this.score).toString().padStart(5, '0');
-    const hiStr = this.highScore.toString().padStart(5, '0');
-
-    ctx.font = '700 13px ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace';
-    ctx.textAlign = 'right';
-
-    ctx.fillStyle = colors.textSecondary;
-    ctx.fillText(`HI ${hiStr}  `, w - 75, 24);
-
-    ctx.fillStyle = colors.textPrimary;
-    ctx.fillText(sStr, w - 16, 24);
-  }
-
-  drawGameOverBanner(ctx, w, colors) {
-    const text = getLocaleString('dino_game_over', 'GAME OVER');
-    ctx.fillStyle = colors.textPrimary;
-    ctx.font = '800 18px ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace';
-    ctx.textAlign = 'center';
-    ctx.fillText(text, w / 2, 60);
-
-    const cx = w / 2;
-    const cy = 92;
-    ctx.strokeStyle = colors.accent;
-    ctx.lineWidth = 2.5;
-    ctx.beginPath();
-    ctx.arc(cx, cy, 11, 0.4 * Math.PI, 1.8 * Math.PI);
-    ctx.stroke();
-
-    ctx.fillStyle = colors.accent;
-    ctx.beginPath();
-    ctx.moveTo(cx + 7, cy - 13);
-    ctx.lineTo(cx + 14, cy - 7);
-    ctx.lineTo(cx + 6, cy - 3);
-    ctx.fill();
-  }
-}
-
-// ==========================================================================
 // Network Connectivity Monitoring & Bifurcated Offline Overlay
 // ==========================================================================
 let hasEverLoadedSuccessfully = false;
 let activeNetworkScenario = null;
 let dinoGame = null;
 let offlinePollTimer = null;
+let offlineStartTime = null;
+let offlineDurationTimer = null;
 let isTestingConnection = false;
 
 function getLocaleString(key, fallback) {
@@ -3527,10 +2827,92 @@ function getLocaleString(key, fallback) {
   return fallback;
 }
 
+// Lazy loader for modularized DinoGame engine
+async function ensureDinoGameLoaded() {
+  if (window.DinoGame) return window.DinoGame;
+  return new Promise((resolve, reject) => {
+    const existing = document.querySelector('script[src="dino-game.js"]');
+    if (existing) {
+      if (window.DinoGame) return resolve(window.DinoGame);
+      existing.addEventListener('load', () => resolve(window.DinoGame));
+      existing.addEventListener('error', reject);
+      return;
+    }
+    const script = document.createElement('script');
+    script.src = 'dino-game.js';
+    script.onload = () => resolve(window.DinoGame);
+    script.onerror = reject;
+    document.head.appendChild(script);
+  });
+}
+
+// Format duration dynamically based on elapsed time units
+function formatOfflineDuration(ms) {
+  const totalSeconds = Math.max(0, Math.floor(ms / 1000));
+  const days = Math.floor(totalSeconds / 86400);
+  const hours = Math.floor((totalSeconds % 86400) / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = totalSeconds % 60;
+
+  const dStr = getLocaleString('time_days', 'Días');
+  const hStr = getLocaleString('time_hours', 'Horas');
+  const mStr = getLocaleString('time_minutes', 'Minutos');
+  const sStr = getLocaleString('time_seconds', 'Segundos');
+  const prefix = getLocaleString('offline_timer_prefix', 'Estamos sin conexión desde hace');
+
+  let timePart = '';
+  if (days > 0) {
+    timePart = `${days} ${dStr}, ${hours} ${hStr}, ${minutes} ${mStr}.`;
+  } else if (hours > 0) {
+    timePart = `${hours} ${hStr}, ${minutes} ${mStr}, ${seconds} ${sStr}.`;
+  } else if (minutes > 0) {
+    timePart = `${minutes} ${mStr}, ${seconds} ${sStr}.`;
+  } else {
+    timePart = `${seconds} ${sStr}.`;
+  }
+
+  return `${prefix} ${timePart}`;
+}
+
+function startOfflineTimer() {
+  stopOfflineTimer();
+  if (!offlineStartTime) {
+    offlineStartTime = Date.now();
+  }
+  const timerTextEl = document.getElementById('offline-timer-text');
+  if (timerTextEl) {
+    timerTextEl.textContent = formatOfflineDuration(Date.now() - offlineStartTime);
+  }
+
+  offlineDurationTimer = setInterval(() => {
+    const el = document.getElementById('offline-timer-text');
+    if (el && offlineStartTime) {
+      el.textContent = formatOfflineDuration(Date.now() - offlineStartTime);
+    }
+  }, 1000);
+}
+
+function stopOfflineTimer() {
+  if (offlineDurationTimer) {
+    clearInterval(offlineDurationTimer);
+    offlineDurationTimer = null;
+  }
+  offlineStartTime = null;
+}
+
 async function checkConnectivity() {
+  // Primary attempt: IPC request to Node.js backend (bypasses CSP & CORS)
+  if (window.electronAPI && typeof electronAPI.checkInternet === 'function') {
+    try {
+      const isOnline = await electronAPI.checkInternet();
+      if (isOnline) return true;
+    } catch (_) {}
+  }
+
+  // Secondary attempt: renderer HTTP HEAD fetch ping
   try {
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 5000);
+    const timeoutId = setTimeout(() => controller.abort(), 4000);
     const response = await fetch('https://github.com', {
       method: 'HEAD',
       cache: 'no-store',
@@ -3555,12 +2937,17 @@ function showOfflineOverlay(scenario) {
 
   if (!overlay) return;
 
+  // Make sure webviews are hidden so their native window surface does not occlude the overlay in Linux
+  document.querySelectorAll('#webview-container webview').forEach(wv => {
+    wv.style.visibility = 'hidden';
+  });
+
   if (titleEl) {
     titleEl.textContent = getLocaleString('offline_screen_title', 'Sin conexión a internet');
     titleEl.setAttribute('data-i18n', 'offline_screen_title');
   }
 
-  // Ambos escenarios muestran la animación del círculo superior
+  // Animated top radar spinner is visible in both scenarios
   if (radarEl) {
     radarEl.style.display = '';
   }
@@ -3571,9 +2958,13 @@ function showOfflineOverlay(scenario) {
       descEl.textContent = getLocaleString('offline_screen_startup_desc', 'No se ha encontrado conexión a internet, por favor vuelva a escanear...');
       descEl.setAttribute('data-i18n', 'offline_screen_startup_desc');
     }
-    if (badgeEl) badgeEl.classList.add('hidden');
+    if (badgeEl) {
+      badgeEl.classList.add('hidden');
+      badgeEl.style.display = 'none';
+    }
     if (rescanBtn) {
       rescanBtn.classList.remove('hidden');
+      rescanBtn.style.display = 'inline-flex';
       rescanBtn.disabled = false;
       rescanBtn.classList.remove('loading');
       const rescanText = getLocaleString('btn_rescan', 'Volver a escanear');
@@ -3586,19 +2977,33 @@ function showOfflineOverlay(scenario) {
       descEl.textContent = getLocaleString('reconnecting_desc', 'Se perdió la conexión a la red. Intentando reconectar automáticamente...');
       descEl.setAttribute('data-i18n', 'reconnecting_desc');
     }
-    if (badgeEl) badgeEl.classList.remove('hidden');
-    if (rescanBtn) rescanBtn.classList.add('hidden');
+    if (badgeEl) {
+      badgeEl.classList.remove('hidden');
+      badgeEl.style.display = 'inline-flex';
+    }
+    if (rescanBtn) {
+      rescanBtn.classList.add('hidden');
+      rescanBtn.style.display = 'none';
+    }
   }
 
   startOfflinePolling();
+  startOfflineTimer();
   overlay.classList.remove('hidden');
 
-  if (!dinoGame) {
-    dinoGame = new DinoGame('dino-game-canvas');
-  }
-  if (dinoGame) {
-    dinoGame.start();
-  }
+  // Lazy loading DinoGame instance upon offline overlay invocation
+  ensureDinoGameLoaded().then(DinoGameClass => {
+    if (activeNetworkScenario) {
+      if (!dinoGame) {
+        dinoGame = new DinoGameClass('dino-game-canvas');
+      }
+      if (dinoGame) {
+        dinoGame.iniciar();
+      }
+    }
+  }).catch(err => {
+    console.error('[DinoGame] Failed to load dino-game.js:', err);
+  });
 }
 
 function hideOfflineOverlay() {
@@ -3607,9 +3012,19 @@ function hideOfflineOverlay() {
   if (overlay) {
     overlay.classList.add('hidden');
   }
+
+  // Restore webview visibility
+  document.querySelectorAll('#webview-container webview').forEach(wv => {
+    wv.style.visibility = '';
+  });
+
   stopOfflinePolling();
+  stopOfflineTimer();
+
+  // Clean destruction of game instance to prevent background CPU usage
   if (dinoGame) {
-    dinoGame.stop();
+    dinoGame.destruir();
+    dinoGame = null;
   }
 }
 

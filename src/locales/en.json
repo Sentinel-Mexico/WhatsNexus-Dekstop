@@ -352,5 +352,10 @@
   "btn_rescan": "Scan again",
   "dino_jump_hint": "Press ↑ to jump, ↓ to duck",
   "dino_restart_hint": "Press ↑ or click to restart",
-  "dino_game_over": "GAME OVER"
+  "dino_game_over": "GAME OVER",
+  "offline_timer_prefix": "We have been offline for",
+  "time_seconds": "Seconds",
+  "time_minutes": "Minutes",
+  "time_hours": "Hours",
+  "time_days": "Days"
 }

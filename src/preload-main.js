@@ -48,6 +48,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   getSystemInfo: () => ipcRenderer.invoke('get-system-info'),
   loadLocale: (lang) => ipcRenderer.invoke('load-locale', lang),
   loadThemes: () => ipcRenderer.invoke('load-themes'),
+  checkInternet: () => ipcRenderer.invoke('check-internet'),
   getAccounts: () => ipcRenderer.invoke('get-accounts'),
   saveAccounts: (accounts) => ipcRenderer.invoke('save-accounts', accounts),
   deleteAccountData: (accountId) => ipcRenderer.invoke('delete-account-data', accountId),

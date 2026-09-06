@@ -352,5 +352,10 @@
   "btn_rescan": "Opnieuw scannen",
   "dino_jump_hint": "Druk op ↑ om te springen, ↓ om te bukken",
   "dino_restart_hint": "Druk op ↑ of klik om te herstarten",
-  "dino_game_over": "GAME OVER"
+  "dino_game_over": "GAME OVER",
+  "offline_timer_prefix": "We zijn offline sinds",
+  "time_seconds": "Seconden",
+  "time_minutes": "Minuten",
+  "time_hours": "Uur",
+  "time_days": "Dagen"
 }
