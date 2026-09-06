@@ -22,9 +22,27 @@ ipcRenderer.on('update-account-settings', (event, data) => {
   }
 });
 
+const activePermissionStatuses = [];
+
 ipcRenderer.on('update-notification-settings', (event, data) => {
   if (data) {
+    const oldDesktop = notificationSettings.desktopNotifications !== false;
     notificationSettings = { ...notificationSettings, ...data };
+    const newDesktop = notificationSettings.desktopNotifications !== false;
+
+    if (oldDesktop !== newDesktop) {
+      const state = newDesktop ? 'granted' : 'denied';
+      activePermissionStatuses.forEach(s => {
+        try {
+          s.state = state;
+          s.status = state;
+          if (typeof s.onchange === 'function') {
+            s.onchange(new Event('change'));
+          }
+          s.dispatchEvent(new Event('change'));
+        } catch (_) {}
+      });
+    }
   }
 });
 
@@ -104,38 +122,62 @@ function dispatchNotificationToHost(title, options = {}) {
   }
 }
 
+// ========================================================
+// Notification API Mocking & Session Interception
+// ========================================================
 function CustomNotification(title, options = {}) {
-  if (isDnd || notificationSettings.desktopNotifications === false) {
-    return {
-      onclick: null,
-      onclose: null,
-      onerror: null,
-      onshow: null,
-      addEventListener: function() {},
-      removeEventListener: function() {},
-      close: function() {}
-    };
+  const self = (this instanceof CustomNotification) ? this : Object.create(CustomNotification.prototype);
+  self.title = title || 'WhatsApp';
+  self.body = options.body || '';
+  self.icon = options.icon || '';
+  self.tag = options.tag || '';
+  self.data = options.data || null;
+  self.timestamp = Date.now();
+  self.onclick = null;
+  self.onclose = null;
+  self.onerror = null;
+  self.onshow = null;
+
+  if (!isDnd && notificationSettings && notificationSettings.desktopNotifications !== false) {
+    dispatchNotificationToHost(title, options);
   }
-  dispatchNotificationToHost(title, options);
-  return {
-    onclick: null,
-    onclose: null,
-    onerror: null,
-    onshow: null,
-    addEventListener: function() {},
-    removeEventListener: function() {},
-    close: function() {}
-  };
+
+  return self;
 }
 
+CustomNotification.prototype = Object.create(EventTarget.prototype);
+CustomNotification.prototype.constructor = CustomNotification;
+CustomNotification.prototype.close = function() {};
+CustomNotification.maxActions = 2;
+
 Object.defineProperty(CustomNotification, 'permission', {
-  get: () => 'granted',
+  get: () => {
+    if (notificationSettings && notificationSettings.desktopNotifications === false) {
+      return 'denied';
+    }
+    return 'granted';
+  },
+  configurable: true
+});
+
+Object.defineProperty(CustomNotification.prototype, 'permission', {
+  get: () => {
+    if (notificationSettings && notificationSettings.desktopNotifications === false) {
+      return 'denied';
+    }
+    return 'granted';
+  },
   configurable: true
 });
 
 CustomNotification.requestPermission = function(cb) {
-  const p = Promise.resolve('granted');
-  if (typeof cb === 'function') p.then(cb);
+  const perm = (notificationSettings && notificationSettings.desktopNotifications === false) ? 'denied' : 'granted';
+  const p = Promise.resolve(perm);
+  if (typeof cb === 'function') {
+    try {
+      cb(perm);
+    } catch (_) {}
+  }
   return p;
 };
 
@@ -148,7 +190,30 @@ try {
     configurable: true
   });
 } catch (e) {
-  console.error('Error definying window.Notification:', e);
+  console.error('Error defining window.Notification:', e);
+}
+
+// Mock navigator.permissions.query for notifications
+if (navigator.permissions && typeof navigator.permissions.query === 'function') {
+  const origQuery = navigator.permissions.query.bind(navigator.permissions);
+  navigator.permissions.query = function(params) {
+    if (params && params.name === 'notifications') {
+      const state = (notificationSettings && notificationSettings.desktopNotifications === false) ? 'denied' : 'granted';
+      const eventTarget = new EventTarget();
+      const statusObj = {
+        name: 'notifications',
+        state: state,
+        status: state,
+        onchange: null,
+        addEventListener: eventTarget.addEventListener.bind(eventTarget),
+        removeEventListener: eventTarget.removeEventListener.bind(eventTarget),
+        dispatchEvent: eventTarget.dispatchEvent.bind(eventTarget)
+      };
+      activePermissionStatuses.push(statusObj);
+      return Promise.resolve(statusObj);
+    }
+    return origQuery(params);
+  };
 }
 
 // Deshabilitar Service Workers para forzar el canal Notification
@@ -168,7 +233,7 @@ if (navigator.serviceWorker) {
 // Interceptar también ServiceWorkerRegistration si llegara a existir
 if (window.ServiceWorkerRegistration && window.ServiceWorkerRegistration.prototype.showNotification) {
   window.ServiceWorkerRegistration.prototype.showNotification = function(title, options) {
-    if (isDnd || notificationSettings.desktopNotifications === false) {
+    if (isDnd || (notificationSettings && notificationSettings.desktopNotifications === false)) {
       return Promise.resolve();
     }
     dispatchNotificationToHost(title, options);

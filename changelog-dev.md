@@ -2,6 +2,18 @@
 
 This changelog records all granular updates, bug fixes, refactorings, and feature iterations developed on the `Dev` branch. Each version bump in `package.json` is documented here as it happens.
 
+## [2.2.5] - 2026-09-06
+### Fixes
+- **WhatsApp Web Session Notification Permission Handlers & Modal Suppression:**
+  - Configured `session.setPermissionRequestHandler` and `session.setPermissionCheckHandler` in the main process to automatically grant `'notifications'` permission to account partitions when desktop notifications are enabled, preventing WhatsApp Web from displaying the browser-level "Permitir notificaciones desde la barra de direcciones" prompt.
+  - Implemented proactive session configuration across all saved account partitions at startup and during dynamic account registration (`save-accounts`).
+  - Allowed clipboard permissions (`clipboard-read`, `clipboard-sanitized-write`) for seamless chat media copy/paste in webview sessions.
+  - Enhanced webview `preload.js` with comprehensive Notification API mocking:
+    - Structured `CustomNotification` with `EventTarget` inheritance, `.close()`, and dynamic `permission` getter reporting `'granted'` when desktop notifications are active and `'denied'` when disabled.
+    - Implemented synchronous `navigator.permissions.query({ name: 'notifications' })` interception returning `{ state: 'granted' }` (or `'denied'`), bypassing Chromium permission prompt checks.
+    - Added reactive `PermissionStatus` change event dispatching on notification setting toggles.
+  - Synchronized desktop notification preference reactively between renderer settings (`notif-desktop-toggle`), webview preloads, and main process permission handlers.
+
 ## [2.2.4] - 2026-09-05
 ### Fixes
 - **Cold Start Offline Black Screen Bug Resolution (Escenario B):**

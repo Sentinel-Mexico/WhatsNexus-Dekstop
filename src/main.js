@@ -315,6 +315,7 @@ ipcMain.on('show-native-notification', (event, data) => {
 });
 
 let currentPermissions = {
+  notifications: true,
   microphone: true,
   camera: false,
   location: false,
@@ -332,6 +333,9 @@ function loadSavedPermissions() {
     if (fs.existsSync(filePath)) {
       const data = JSON.parse(fs.readFileSync(filePath, 'utf8'));
       currentPermissions = { ...currentPermissions, ...data };
+      if (typeof currentPermissions.notifications !== 'boolean') {
+        currentPermissions.notifications = true;
+      }
     }
   } catch (_) {}
 }
@@ -391,6 +395,15 @@ ipcMain.handle('get-accounts', () => {
 
 ipcMain.handle('save-accounts', (_event, accounts) => {
   if (Array.isArray(accounts)) {
+    accounts.forEach(acc => {
+      const partition = acc.partition || (acc.id && (acc.id.startsWith('persist:') ? acc.id : `persist:${acc.id}`));
+      if (partition) {
+        try {
+          const ses = session.fromPartition(partition);
+          configureSession(ses);
+        } catch (_) {}
+      }
+    });
     return saveAccountsToUserData(accounts);
   }
   return false;
@@ -1114,7 +1127,11 @@ function configureSessionPermissions(ses) {
   if (!ses) return;
   ses.setPermissionRequestHandler((webContents, permission, callback, details) => {
     if (permission === 'notifications') {
-      return callback(false); // Block Chromium native web notifications
+      return callback(currentPermissions.notifications !== false);
+    }
+
+    if (permission === 'clipboard-read' || permission === 'clipboard-sanitized-write') {
+      return callback(true);
     }
 
     if (permission === 'media') {
@@ -1150,7 +1167,11 @@ function configureSessionPermissions(ses) {
 
   ses.setPermissionCheckHandler((webContents, permission, requestingOrigin, details) => {
     if (permission === 'notifications') {
-      return false; // Block Chromium native permission check
+      return currentPermissions.notifications !== false;
+    }
+
+    if (permission === 'clipboard-read' || permission === 'clipboard-sanitized-write') {
+      return true;
     }
 
     if (permission === 'media') {
@@ -1205,8 +1226,22 @@ app.whenReady().then(() => {
 
   loadSavedPermissions();
   loadSavedSystemSettings();
-  loadSavedAccounts();
+  const savedAccs = loadSavedAccounts();
   configureSession(session.defaultSession);
+
+  // Proactively configure sessions for all persisted account partitions
+  if (Array.isArray(savedAccs)) {
+    savedAccs.forEach(acc => {
+      const partition = acc.partition || (acc.id && (acc.id.startsWith('persist:') ? acc.id : `persist:${acc.id}`));
+      if (partition) {
+        try {
+          const ses = session.fromPartition(partition);
+          configureSession(ses);
+        } catch (_) {}
+      }
+    });
+  }
+
   app.on('session-created', (ses) => {
     configureSession(ses);
   });

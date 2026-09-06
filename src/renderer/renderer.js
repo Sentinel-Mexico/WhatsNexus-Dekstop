@@ -1196,7 +1196,10 @@ function applySettings() {
     if (permScreenAudioToggle) permScreenAudioToggle.checked = !!settings.permissions.screenShareAudio;
 
     // Synchronize permissions with main process
-    electronAPI.updatePermissionSettings(settings.permissions);
+    electronAPI.updatePermissionSettings({
+      ...settings.permissions,
+      notifications: settings.notifications ? (settings.notifications.desktopNotifications !== false) : true
+    });
   }
 
   // Synchronize tray appearance with main process
