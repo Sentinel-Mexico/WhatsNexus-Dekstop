@@ -2,6 +2,19 @@
 
 This changelog records all granular updates, bug fixes, refactorings, and feature iterations developed on the `Dev` branch. Each version bump in `package.json` is documented here as it happens.
 
+## [2.0.1] - 2026-09-05
+### Fixed
+- **Production Theme Packaging & Dynamic Theme Scanner:**
+  - Resolved a critical bug where production builds generated via `electron-builder` failed to locate modular theme schemas in `src/themes/`, causing the palette dropdown to only display the "Personalizado" option.
+  - Explicitly configured `"files"` in `package.json` under `build` (`"src/**/*"`, `"src/themes/**/*"`, `"package.json"`) ensuring all 16 JSON theme schemas are fully packaged into `app.asar`.
+  - Refactored `src/main.js` `load-themes` IPC handler with defensive path resolution across development, `app.asar` (`path.join(app.getAppPath(), 'src', 'themes')`), and unpacked distribution paths.
+  - Eliminated `fs.promises.access` validation that threw on virtual directory descriptors within `app.asar`, adding synchronous and asynchronous I/O fallbacks.
+  - Implemented dual-layer fail-safe fallback (`FALLBACK_BASE_THEME`) in both backend (`src/main.js`) and frontend (`src/renderer/renderer.js`) to guarantee that the primary "WhatsNexus" theme is always available in the UI even under severe filesystem degradation.
+
+### Changed
+- **Version Quartet Synchronization:**
+  - Bumped patch version to `2.0.1` across `package.json`, `package-lock.json`, `README.md`, `docs/README.md`, and `changelog-dev.md`.
+
 ## [2.0.0] - 2026-09-05
 ### Changed
 - **Major Runtime Upgrade to Electron 43 & Dependency Alignment:**

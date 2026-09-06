@@ -817,26 +817,116 @@ const OFFICIAL_THEME_IDS = new Set([
   'doom', 'startrek', 'starwars', 'voxel'
 ]);
 
+// Built-in Base Theme Fallback (Guaranteed available even on severe filesystem degradation)
+const FALLBACK_BASE_THEME = {
+  id: 'whatsnexus',
+  nameKey: 'palette_whatsnexus',
+  category: 'own',
+  builtin: true,
+  labels: {
+    light: 'theme_light',
+    dark: 'theme_dark'
+  },
+  modes: {
+    dark: {
+      '--bg-primary': '#151c17',
+      '--bg-sidebar': '#1e2922',
+      '--bg-hover': '#2b3b31',
+      '--bg-active': '#4c9e5f',
+      '--bg-modal': '#1e2922',
+      '--bg-modal-overlay': 'rgba(18, 26, 20, 0.85)',
+      '--text-primary': '#edf4ef',
+      '--text-secondary': '#9cb0a2',
+      '--text-color': 'var(--text-primary)',
+      '--border-color': '#2d3d33',
+      '--whatsapp-bg': '#111813',
+      '--whatsapp-green': '#4c9e5f',
+      '--whatsapp-green-hover': '#3d834e',
+      '--bg-surface': 'var(--bg-sidebar)',
+      '--accent-color': 'var(--bg-active)',
+      '--accent-hover': 'var(--whatsapp-green-hover)',
+      '--text-on-accent': '#ffffff',
+      '--accent-secondary': '#6e9e4c',
+      '--accent-terracotta': '#9e624c',
+      '--accent-crimson': '#9e4c53'
+    },
+    light: {
+      '--bg-primary': '#f3f6f4',
+      '--bg-sidebar': '#ffffff',
+      '--bg-hover': '#e8eee9',
+      '--bg-active': '#3f8851',
+      '--bg-modal': '#ffffff',
+      '--bg-modal-overlay': 'rgba(243, 246, 244, 0.85)',
+      '--text-primary': '#152219',
+      '--text-secondary': '#506456',
+      '--text-color': 'var(--text-primary)',
+      '--border-color': '#d6e0d8',
+      '--whatsapp-bg': '#ebf0ec',
+      '--whatsapp-green': '#3f8851',
+      '--whatsapp-green-hover': '#347243',
+      '--bg-surface': 'var(--bg-sidebar)',
+      '--accent-color': 'var(--bg-active)',
+      '--accent-hover': 'var(--whatsapp-green-hover)',
+      '--text-on-accent': '#ffffff',
+      '--accent-secondary': '#5c8c3e',
+      '--accent-terracotta': '#9e624c',
+      '--accent-crimson': '#9e4c53'
+    }
+  }
+};
+
 let cachedThemes = null;
 
 ipcMain.handle('load-themes', async () => {
-  if (cachedThemes && Array.isArray(cachedThemes)) {
+  if (cachedThemes && Array.isArray(cachedThemes) && cachedThemes.length > 0) {
     return cachedThemes;
   }
 
-  const themesDir = path.join(__dirname, 'themes');
+  // Candidate paths to resolve themes folder robustly across development, app.asar, and unpacked distributions
+  const candidateDirs = [
+    path.join(app.getAppPath(), 'src', 'themes'),
+    path.join(__dirname, 'themes'),
+    path.join(process.resourcesPath, 'src', 'themes'),
+    path.join(process.resourcesPath, 'themes'),
+    path.join(process.resourcesPath, 'app.asar', 'src', 'themes')
+  ];
+
+  let themesDir = null;
+  for (const candidate of candidateDirs) {
+    try {
+      if (fs.existsSync(candidate)) {
+        themesDir = candidate;
+        break;
+      }
+    } catch (_) {}
+  }
+
+  if (!themesDir) {
+    themesDir = path.join(app.getAppPath(), 'src', 'themes');
+  }
+
   const validatedThemes = [];
 
   try {
-    await fs.promises.access(themesDir, fs.constants.R_OK);
-    const files = await fs.promises.readdir(themesDir);
+    let files = [];
+    try {
+      files = await fs.promises.readdir(themesDir);
+    } catch (_) {
+      files = fs.readdirSync(themesDir);
+    }
 
     for (const file of files) {
       if (!file.endsWith('.json')) continue;
       const filePath = path.join(themesDir, file);
 
       try {
-        const raw = await fs.promises.readFile(filePath, 'utf8');
+        let raw;
+        try {
+          raw = await fs.promises.readFile(filePath, 'utf8');
+        } catch (_) {
+          raw = fs.readFileSync(filePath, 'utf8');
+        }
+
         let theme;
         try {
           theme = JSON.parse(raw);
@@ -888,6 +978,12 @@ ipcMain.handle('load-themes', async () => {
     }
   } catch (dirErr) {
     console.warn(`[Theme Engine Warning]: Unable to access themes directory at ${themesDir}:`, dirErr.message);
+  }
+
+  // Defensive Fallback: If no themes could be parsed or loaded, activate the built-in WhatsNexus base theme
+  if (validatedThemes.length === 0) {
+    console.warn('[Theme Engine Warning]: Theme scanner found 0 themes. Activating built-in fallback theme.');
+    validatedThemes.push(FALLBACK_BASE_THEME);
   }
 
   cachedThemes = validatedThemes;
