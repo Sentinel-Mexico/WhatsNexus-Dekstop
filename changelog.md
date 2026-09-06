@@ -6,6 +6,38 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ---
 
+## [2.0.0] - 2026-09-05
+### Added
+- **Modular Theme Architecture (`src/themes/`):**
+  - Completely modularized all 16 built-in color palettes into standalone JSON schemas (`src/themes/*.json`) across 4 tiers (Own, Custom, Messaging, and Pop Culture).
+  - Added startup filesystem scanning and security validation via IPC handler `load-themes` in `src/main.js`, shielding system categories against unauthorized third-party escalation.
+  - Implemented dynamic runtime token injection into `:root`, removing over 600 lines of coupled static CSS stylesheets.
+- **Interactive Theme Customization Studio ("Personalización"):**
+  - Integrated a dedicated real-time customization workspace directly in the navigation hierarchy.
+  - Features real-time dark/light segmented controls, interactive HTML5 color pickers, and validated 6-digit hex input fields for immediate UI tuning.
+- **Expanded Feature Comparison Matrix:**
+  - Enriched the repository documentation with an in-depth comparative evaluation table benchmarking WhatsApp Web, the official native WhatsApp Desktop app, ZapZap, and WhatsNexus across 18 technical capabilities.
+
+### Changed
+- **Major Runtime Upgrade to Electron 43 & Dependency Alignment:**
+  - Migrated core desktop runtime from legacy Electron 29 to **Electron 43 (`^43.6.0`)**, unlocking modern Chromium sandbox primitives, V8 performance optimizations, and full Wayland/Linux desktop compatibility.
+  - Upgraded `electron-builder` to `^26.15.3` ensuring modern distribution targets across Linux (AppImage, deb, rpm), Windows (NSIS, portable), and macOS.
+  - Aligned CI/CD workflow (`.github/workflows/build.yml`) to utilize pure `npm ci` resolution without version pinning.
+- **Universal Custom Dropdown Engine & Clean Code Refactoring:**
+  - Enhanced `initCustomDropdown()` in `src/renderer/renderer.js` to support extensible `renderOption(opt, targetEl)` callbacks.
+  - Extracted `renderLanguageOption()` to provide high-fidelity typography rendering for constructed languages (Elvish Tengwar and Klingon pIqaD font stacks) seamlessly alongside standard ISO languages.
+  - Refactored `populateLanguageSelect()`, eliminating over 90 lines of duplicate DOM elements, manual active class toggles, and redundant click listeners.
+  - Visual polish across category headers in theme dropdowns, removing decorative hyphens and enforcing uppercase display cleanly via CSS `text-transform`.
+- **Dracula Palette Aesthetic Overhaul:**
+  - Redesigned `src/themes/dracula.json` to feature deep crimson red accents (`#991111`, `#8B0000`) and charcoal dark gray backgrounds (`#121214`), preventing eye strain while capturing the authentic Dracula aesthetic.
+
+### Fixed
+- **Dynamic Light Theme Override Bug:**
+  - Fixed an issue where selecting light mode on custom themes mistakenly rendered default WhatsNexus light tokens due to a high-specificity static CSS block.
+  - Implemented dual-level token injection on `:root` and `document.body.style` for guaranteed runtime cascade.
+- **High Contrast Dark Dropdown Legibility:**
+  - Configured `.custom-option.selected` to utilize `color: var(--text-on-accent, #ffffff)`, rendering bold black text over high-contrast yellow accent backgrounds (`#FFE600`) for 100% legibility.
+
 ## [1.6.1] - 2026-09-05
 ### Added
 - **Account Cache Reset (Hard Reset) per Session:**
