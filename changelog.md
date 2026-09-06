@@ -6,6 +6,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ---
 
+## [2.2.7] - 2026-09-06
+### Fixed
+- **Sidebar Account Tabs & DOM Synchronization Resolution:**
+  - Resolved critical regression where active account icons disappeared from the left sidebar navigation rail due to missing IPC method exposures (`updateTraySettings` and `setThemeMode`) in `preload-main.js` which caused an unhandled `TypeError` during `applySettings()` in the cold-start initialization sequence.
+  - Exposed `updateTraySettings` and `setThemeMode` in `preload-main.js` context bridge and declared `const electronAPI = window.electronAPI;` for safe, reliable global access across execution scopes.
+  - Implemented early rendering of sidebar account tabs immediately on DOM readiness from cached account configurations, preventing delays or failure cascading from downstream asynchronous network or updater tasks.
+  - Wrapped all subsystem initialization steps in defensive `try/catch` blocks and enforced `typeof electronAPI.<method> === 'function'` checks in `applySettings()`.
+  - Added defensive error handling in `getAvatarHtml()` with `onerror` attribute falling back smoothly to `<i class="fa-solid fa-circle-user"></i>` to prevent broken avatar URLs from blocking tab mounting.
+  - Normalized legacy asset image paths in existing account profiles (mapping `src/assets/` to `src/assets/img/`).
+  - Ensured active account state (`.active`) selection and verified `<webview>` container mounting and visibility upon account activation.
+
 ## [2.2.6] - 2026-09-06
 ### Fixed
 - **Universal Hardware & Session Permissions Resolution (Microphone, Camera, Notifications):**
