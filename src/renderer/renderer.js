@@ -4,14 +4,17 @@ if (typeof window.electronAPI === 'undefined') {
     appInfo: { version: '', appVersion: '', platform: 'linux', arch: 'x64', electronVersion: 'N/A', chromeVersion: 'N/A' },
     webviewPreloadPath: '',
     updateTrayBadge: () => {},
+    updateTraySettings: () => {},
     setThemeMode: () => {},
     updatePermissionSettings: () => {},
-    updateTraySettings: () => {},
+    updateNotificationSettings: () => {},
     showNativeNotification: () => {},
     openExternal: (url) => window.open(url, '_blank'),
+    openExternalUrl: (url) => window.open(url, '_blank'),
     onSelectAccount: () => {}
   };
 }
+const electronAPI = window.electronAPI;
 
 
 // S-03: Sanitization helper to prevent XSS via innerHTML
@@ -767,7 +770,27 @@ function getEffectiveThemeIsDark() {
 }
 
 async function init() {
-  if (window.electronAPI && electronAPI.getSystemTheme) {
+  // Normalize accounts and ensure legacy avatar paths are valid
+  accounts.forEach(acc => {
+    if (acc.enabled === undefined) acc.enabled = true;
+    if (acc.avatarUrl && typeof acc.avatarUrl === 'string') {
+      if (acc.avatarUrl.startsWith('src/assets/') && !acc.avatarUrl.startsWith('src/assets/img/')) {
+        acc.avatarUrl = acc.avatarUrl.replace('src/assets/', 'src/assets/img/');
+      }
+    }
+  });
+
+  // Early render: instantly populate the sidebar with cached accounts
+  if (accounts.length > 0) {
+    try {
+      renderAllSidebarAccounts();
+    } catch (e) {
+      console.error('[Startup] Early sidebar render error:', e);
+    }
+  }
+
+  // System dark/light theme detection
+  if (window.electronAPI && typeof electronAPI.getSystemTheme === 'function') {
     try {
       const themeInfo = await electronAPI.getSystemTheme();
       if (themeInfo && typeof themeInfo.shouldUseDarkColors === 'boolean') {
@@ -776,28 +799,61 @@ async function init() {
     } catch (_) {}
   }
 
-  await loadActiveLocale(settings.language || 'es');
-  await initThemeEngine();
-  applySettings();
-  initCustomizationUI();
-  initDownloadPathUI();
-  renderSpellcheckList();
-  loadAboutInfo();
-  initAutoUpdater();
-  initNetworkMonitor();
-  await checkInitialNetworkState();
-  if (electronAPI.setSpellcheckerLanguages) {
-    electronAPI.setSpellcheckerLanguages(settings.spellcheckLanguages || ['es-ES']);
+  // Load active locale and translations
+  try {
+    await loadActiveLocale(settings.language || 'es');
+  } catch (err) {
+    console.error('[Startup] Locale load error:', err);
+  }
+
+  // Initialize theme engine
+  try {
+    await initThemeEngine();
+  } catch (err) {
+    console.error('[Startup] Theme engine init error:', err);
+  }
+
+  // Apply application settings
+  try {
+    applySettings();
+  } catch (err) {
+    console.error('[Startup] Apply settings error:', err);
+  }
+
+  // Initialize secondary UI modules
+  try {
+    initCustomizationUI();
+    initDownloadPathUI();
+    renderSpellcheckList();
+    loadAboutInfo();
+    initAutoUpdater();
+    initNetworkMonitor();
+  } catch (err) {
+    console.error('[Startup] UI modules init error:', err);
+  }
+
+  // Check initial network connectivity
+  try {
+    await checkInitialNetworkState();
+  } catch (err) {
+    console.error('[Startup] Initial network check error:', err);
+  }
+
+  // Spellchecker languages
+  if (window.electronAPI && typeof electronAPI.setSpellcheckerLanguages === 'function') {
+    try {
+      electronAPI.setSpellcheckerLanguages(settings.spellcheckLanguages || ['es-ES']);
+    } catch (_) {}
   }
 
   // Synchronize accounts with userData accounts.json file if available
-  if (typeof electronAPI !== 'undefined' && electronAPI.getAccounts) {
+  if (typeof electronAPI !== 'undefined' && typeof electronAPI.getAccounts === 'function') {
     try {
       const persistedAccounts = await electronAPI.getAccounts();
       if (Array.isArray(persistedAccounts) && persistedAccounts.length > 0) {
         accounts = persistedAccounts;
         localStorage.setItem('whatsNexusAccounts', JSON.stringify(accounts));
-      } else if (accounts.length > 0 && electronAPI.saveAccounts) {
+      } else if (accounts.length > 0 && typeof electronAPI.saveAccounts === 'function') {
         electronAPI.saveAccounts(accounts);
       }
     } catch (e) {
@@ -805,14 +861,19 @@ async function init() {
     }
   }
   
-  // Ensure enabled property on existing accounts
+  // Ensure enabled property and avatar normalization on synced accounts
   accounts.forEach(acc => {
     if (acc.enabled === undefined) acc.enabled = true;
+    if (acc.avatarUrl && typeof acc.avatarUrl === 'string') {
+      if (acc.avatarUrl.startsWith('src/assets/') && !acc.avatarUrl.startsWith('src/assets/img/')) {
+        acc.avatarUrl = acc.avatarUrl.replace('src/assets/', 'src/assets/img/');
+      }
+    }
   });
 
   if (accounts.length === 0) {
-    const lang = i18n[settings.language] || i18n['en'];
-    addAccount(`${lang.default_account_name} 1`);
+    const lang = (typeof i18n !== 'undefined' && (i18n[settings.language] || i18n['en'])) || {};
+    addAccount(`${lang.default_account_name || 'Account'} 1`);
   } else {
     // Only enabled accounts can be displayed and selected
     const enabledAccounts = accounts.filter(a => a.enabled !== false);
@@ -822,6 +883,7 @@ async function init() {
       : (enabledAccounts.length > 0 ? enabledAccounts[0].id : null);
 
     renderAllSidebarAccounts();
+    renderSettingsAccounts();
 
     accounts.forEach(acc => {
       acc.lastAccessed = Date.now();
@@ -1200,20 +1262,24 @@ function applySettings() {
     if (permScreenAudioToggle) permScreenAudioToggle.checked = !!settings.permissions.screenShareAudio;
 
     // Synchronize permissions with main process
-    electronAPI.updatePermissionSettings({
-      ...settings.permissions,
-      notifications: settings.notifications ? (settings.notifications.desktopNotifications !== false) : true
-    });
-    if (electronAPI.updateNotificationSettings && settings.notifications) {
+    if (window.electronAPI && typeof electronAPI.updatePermissionSettings === 'function') {
+      electronAPI.updatePermissionSettings({
+        ...settings.permissions,
+        notifications: settings.notifications ? (settings.notifications.desktopNotifications !== false) : true
+      });
+    }
+    if (window.electronAPI && typeof electronAPI.updateNotificationSettings === 'function' && settings.notifications) {
       electronAPI.updateNotificationSettings(settings.notifications);
     }
   }
 
   // Synchronize tray appearance with main process
-  electronAPI.updateTraySettings({
-    style: settings.trayStyle || 'auto',
-    showBadge: settings.trayShowBadge !== false
-  });
+  if (window.electronAPI && typeof electronAPI.updateTraySettings === 'function') {
+    electronAPI.updateTraySettings({
+      style: settings.trayStyle || 'auto',
+      showBadge: settings.trayShowBadge !== false
+    });
+  }
   
   // Synchronize Doomizate UI (Easter Egg)
   if (doomizateToggle) {
@@ -1278,20 +1344,32 @@ function addAccount(name = null) {
 
 function getAvatarHtml(account) {
   if (account && account.avatarUrl) {
-    return `<img src="${escapeHtml(account.avatarUrl)}" alt="Avatar">`;
+    return `<img src="${escapeHtml(account.avatarUrl)}" alt="Avatar" class="account-avatar-img" onerror="this.onerror=null; this.style.display='none'; if(this.nextElementSibling) this.nextElementSibling.style.display='inline-flex';"><i class="fa-solid fa-circle-user fallback-avatar-icon" style="display:none;"></i>`;
   }
   return `<i class="fa-solid fa-circle-user"></i>`;
 }
 
 function renderAllSidebarAccounts() {
-  accountList.innerHTML = '';
-  accounts.forEach(acc => {
-    if (acc.enabled !== false) {
-      renderAccountSidebarItem(acc);
-    }
+  const listEl = accountList || document.getElementById('account-list');
+  if (!listEl) return;
+  listEl.innerHTML = '';
+
+  const enabledAccounts = accounts.filter(acc => acc.enabled !== false);
+  enabledAccounts.forEach(acc => {
+    renderAccountSidebarItem(acc);
   });
 
-  if (activeAccountId) {
+  if (enabledAccounts.length > 0) {
+    const savedActiveId = localStorage.getItem('whatsNexusActiveAccount');
+    if (!activeAccountId || !enabledAccounts.some(a => a.id === activeAccountId)) {
+      if (savedActiveId && enabledAccounts.some(a => a.id === savedActiveId)) {
+        activeAccountId = savedActiveId;
+      } else {
+        activeAccountId = enabledAccounts[0].id;
+      }
+      localStorage.setItem('whatsNexusActiveAccount', activeAccountId);
+    }
+
     document.querySelectorAll('.account-item').forEach(item => {
       if (item.dataset.id === activeAccountId) item.classList.add('active');
       else item.classList.remove('active');
@@ -1359,6 +1437,9 @@ function initSidebarBottomTooltips() {
 initSidebarBottomTooltips();
 
 function renderAccountSidebarItem(account) {
+  const listEl = accountList || document.getElementById('account-list');
+  if (!listEl) return;
+
   const li = document.createElement('li');
   li.className = 'account-item';
   li.dataset.id = account.id;
@@ -1380,7 +1461,7 @@ function renderAccountSidebarItem(account) {
     activateAccount(account.id);
   });
   
-  accountList.appendChild(li);
+  listEl.appendChild(li);
 }
 
 function updateAccountSidebarItem(account) {
@@ -1826,9 +1907,22 @@ function activateAccount(id) {
     else item.classList.remove('active');
   });
   
-  document.querySelectorAll('.account-container').forEach(container => {
-    if (container.id === `container_${id}`) container.classList.remove('hidden');
-    else container.classList.add('hidden');
+  let container = document.getElementById(`container_${id}`);
+  if (!container && targetAcc) {
+    createWebviewContainer(targetAcc, false);
+    container = document.getElementById(`container_${id}`);
+  }
+
+  document.querySelectorAll('.account-container').forEach(c => {
+    if (c.id === `container_${id}`) {
+      c.classList.remove('hidden');
+      const wv = c.querySelector('webview');
+      if (wv && !activeNetworkScenario) {
+        wv.style.visibility = 'visible';
+      }
+    } else {
+      c.classList.add('hidden');
+    }
   });
   
   if (targetAcc) {

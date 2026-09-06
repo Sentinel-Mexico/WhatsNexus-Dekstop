@@ -24,6 +24,8 @@ contextBridge.exposeInMainWorld('electronAPI', {
     return () => ipcRenderer.removeListener('system-theme-updated', handler);
   },
   updateTrayBadge: (count) => ipcRenderer.send('update-tray-badge', count),
+  updateTraySettings: (settings) => ipcRenderer.send('update-tray-settings', settings),
+  setThemeMode: (mode) => ipcRenderer.send('set-theme-mode', mode),
   updatePermissionSettings: (perms) => {
     ipcRenderer.send('update-permission-settings', perms);
     ipcRenderer.send('permissions:updated', perms);
