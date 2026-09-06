@@ -30,7 +30,7 @@ if (!gotTheLock) {
   });
 }
 
-const APP_ICON_PATH = path.join(__dirname, 'assets', 'icon.png');
+const APP_ICON_PATH = path.join(__dirname, 'assets', 'img', 'icon.png');
 const APP_USER_MODEL_ID = 'com.sentinelstudio.whatsnexus';
 
 // Set Application User Model ID for Windows taskbar grouping and notification attribution
@@ -180,7 +180,7 @@ function getTrayIconPath(unreadCount = 0, style = 'auto', showBadge = true) {
     else filename = 'tray-green-badge.png';
   }
 
-  return path.join(__dirname, 'assets', filename);
+  return path.join(__dirname, 'assets', 'img', filename);
 }
 
 function updateTrayImage() {

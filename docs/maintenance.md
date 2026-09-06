@@ -41,7 +41,7 @@ For local testing or standalone compilation, `electron-packager` can be used:
 
 ```bash
 # Linux
-npx electron-packager . WhatsNexus --platform=linux --arch=x64 --out=dist/ --overwrite --icon=src/assets/icon.png
+npx electron-packager . WhatsNexus --platform=linux --arch=x64 --out=dist/ --overwrite --icon=src/assets/img/icon.png
 
 # Windows
 npx electron-packager . WhatsNexus --platform=win32 --arch=x64 --out=dist/ --overwrite --icon=src/assets/icon.ico

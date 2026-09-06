@@ -64,7 +64,7 @@ The main process acts as the supervisor for the entire operating system interfac
 - **WebRTC IP Leak Mitigation:** Enforces `session.setWebRTCIPHandlingPolicy('disable-non-proxied-udp')` at the Chromium networking layer across all sessions when WebRTC protection is enabled, preventing local and public IP disclosures over non-proxied UDP.
 - **Real-Time System Diagnostics & Engine Introspection:** Exposes dynamic runtime parameters via IPC (`get-system-info`), sourcing live metrics directly from `app.getVersion()`, `process.versions` (Electron, Chromium, Node.js, V8), and Node's native `os` module (`os.type()`, `os.release()`, `os.arch()`).
 - **Cross-Platform Window Identity & High-Resolution Icons:**
-  - Explicitly assigns `APP_ICON_PATH` (`src/assets/icon.png`, 512x512 RGBA) to all `BrowserWindow` instances (`splashWindow` and `mainWindow`), ensuring consistent branding across Windows, macOS, and Linux desktop taskbars and docks.
+  - Explicitly assigns `APP_ICON_PATH` (`src/assets/img/icon.png`, 512x512 RGBA) to all `BrowserWindow` instances (`splashWindow` and `mainWindow`), ensuring consistent branding across Windows, macOS, and Linux desktop taskbars and docks.
   - Registers `app.setAppUserModelId('com.sentinelstudio.whatsnexus')` for Windows environments to enforce proper taskbar process grouping and notification center attribution.
   - Assigns `app.dock.setIcon(APP_ICON_PATH)` dynamically on macOS runtimes within `app.whenReady()`.
 - **Dynamic Modular Theme Discovery & Security Auditing (`load-themes`):**

@@ -65,8 +65,8 @@ EOF
   chmod 644 "${pkgdir}/usr/share/applications/whatsnexus.desktop"
 
   # System Icon
-  if [ -f "${pkgdir}/opt/whatsnexus/resources/src/assets/icon.png" ]; then
-    install -Dm644 "${pkgdir}/opt/whatsnexus/resources/src/assets/icon.png" "${pkgdir}/usr/share/icons/hicolor/512x512/apps/whatsnexus.png"
+  if [ -f "${pkgdir}/opt/whatsnexus/resources/src/assets/img/icon.png" ]; then
+    install -Dm644 "${pkgdir}/opt/whatsnexus/resources/src/assets/img/icon.png" "${pkgdir}/usr/share/icons/hicolor/512x512/apps/whatsnexus.png"
   elif [ -f "${srcdir}/usr/share/icons/hicolor/512x512/apps/whatsnexus.png" ]; then
     install -Dm644 "${srcdir}/usr/share/icons/hicolor/512x512/apps/whatsnexus.png" "${pkgdir}/usr/share/icons/hicolor/512x512/apps/whatsnexus.png"
   fi

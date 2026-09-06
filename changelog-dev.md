@@ -2,6 +2,16 @@
 
 This changelog records all granular updates, bug fixes, refactorings, and feature iterations developed on the `Dev` branch. Each version bump in `package.json` is documented here as it happens.
 
+## [2.2.3] - 2026-09-05
+### Refactoring
+- **Static Asset Structure Optimization (`src/assets/img/`):**
+  - Physically migrated all raster and vector image assets (`icon.png`, tray icons, monochrome/color logos, and badge variants) from the root of `src/assets/` into a dedicated `src/assets/img/` subfolder, ensuring a clean directory hierarchy with zero loose graphics at the root.
+- **Exhaustive Asset Path Synchronization:**
+  - **Main Process (`src/main.js`):** Updated `APP_ICON_PATH` and dynamic tray icon generator `getTrayIconPath` to resolve all system tray and window icons from `path.join(__dirname, 'assets', 'img', ...)`.
+  - **HTML Markup (`src/splash/splash.html`, `src/renderer/index.html`):** Synchronized all vector branding `<img>` references to load from `../assets/img/whatsnexus-logo.svg`.
+  - **Build & Packaging Toolchains (`package.json`, `scripts/aur/PKGBUILD.template`):** Updated `electron-builder` icon configuration to `"src/assets/img/icon.png"` and updated Arch Linux AUR recipe to install the application icon from the new location.
+  - **Technical Documentation (`docs/architecture.md`, `docs/maintenance.md`):** Updated architectural documentation and packaging CLI examples to reflect `src/assets/img/icon.png`.
+
 ## [2.2.2] - 2026-09-05
 ### Fixes
 - **Offline Overlay Black Screen Resolution (Escenario B):** Fixed `<webview>` out-of-process rendering occluding DOM overlays on Linux platforms during network load failures (`ERR_INTERNET_DISCONNECTED`) by dynamically hiding `<webview>` elements (`visibility = 'hidden'`) upon overlay activation and restoring them upon reconnection.
