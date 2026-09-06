@@ -2,6 +2,20 @@
 
 This changelog records all granular updates, bug fixes, refactorings, and feature iterations developed on the `Dev` branch. Each version bump in `package.json` is documented here as it happens.
 
+## [2.0.2] - 2026-09-05
+### Fixed
+- **Explicit Window Icon Assignment & Cross-Platform Taskbar Identity:**
+  - Resolved generic framework fallback icon issue on the startup splash screen and secondary windows across Windows, macOS, and Linux desktop environments.
+  - Added explicit `icon: APP_ICON_PATH` to all `BrowserWindow` instances (`createSplashWindow` and `createWindow`) in `src/main.js`.
+  - Regenerated `src/assets/icon.png` at high-resolution 512x512 RGBA directly from the official vector source (`src/assets/whatsnexus-logo.svg`) to ensure optimal runtime scaling on high-DPI displays.
+  - Configured `app.setAppUserModelId('com.sentinelstudio.whatsnexus')` for Windows, preventing window ungrouping and ensuring notifications and taskbar instances correctly attribute to WhatsNexus.
+  - Configured dynamic runtime macOS dock icon assignment via `app.dock.setIcon(APP_ICON_PATH)` within `app.whenReady()`.
+  - Explicitly declared `"icon": "src/assets/icon.png"` and included `"src/assets/**/*"` in `build.files` inside `package.json` for `electron-builder` production packaging.
+
+### Changed
+- **Version Quartet Synchronization:**
+  - Bumped patch version to `2.0.2` across `package.json`, `package-lock.json`, `README.md`, `docs/README.md`, and `changelog-dev.md`.
+
 ## [2.0.1] - 2026-09-05
 ### Fixed
 - **Production Theme Packaging & Dynamic Theme Scanner:**

@@ -30,6 +30,14 @@ if (!gotTheLock) {
   });
 }
 
+const APP_ICON_PATH = path.join(__dirname, 'assets', 'icon.png');
+const APP_USER_MODEL_ID = 'com.sentinelstudio.whatsnexus';
+
+// Set Application User Model ID for Windows taskbar grouping and notification attribution
+if (process.platform === 'win32') {
+  app.setAppUserModelId(APP_USER_MODEL_ID);
+}
+
 let mainWindow;
 let splashWindow = null;
 let tray = null;
@@ -46,6 +54,7 @@ function createSplashWindow() {
       alwaysOnTop: true,
       center: true,
       show: true,
+      icon: APP_ICON_PATH,
       webPreferences: {
         nodeIntegration: false,
         contextIsolation: true,
@@ -81,7 +90,7 @@ function createWindow() {
     height: 800,
     show: false, // Preloaded in background while splash is animating
     title: 'WhatsNexus',
-    icon: path.join(__dirname, 'assets', 'icon.png'), // Placeholder icon path
+    icon: APP_ICON_PATH,
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
@@ -270,7 +279,7 @@ nativeTheme.on('updated', () => {
 ipcMain.on('show-native-notification', (event, data) => {
   if (!Notification.isSupported()) return;
 
-  let icon = path.join(__dirname, 'assets', 'icon.png');
+  let icon = APP_ICON_PATH;
 
   // If a base64 circular avatar was provided, construct NativeImage directly in RAM
   if (data.iconDataUrl && typeof data.iconDataUrl === 'string' && data.iconDataUrl.startsWith('data:image/')) {
@@ -1135,6 +1144,15 @@ function configureSession(ses) {
 }
 
 app.whenReady().then(() => {
+  // Set macOS dock icon at runtime if available
+  if (process.platform === 'darwin' && app.dock) {
+    try {
+      app.dock.setIcon(APP_ICON_PATH);
+    } catch (e) {
+      console.warn('Failed to set dock icon:', e.message);
+    }
+  }
+
   loadSavedPermissions();
   loadSavedSystemSettings();
   loadSavedAccounts();
