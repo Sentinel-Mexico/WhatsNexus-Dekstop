@@ -2,6 +2,22 @@
 
 This changelog records all granular updates, bug fixes, refactorings, and feature iterations developed on the `Dev` branch. Each version bump in `package.json` is documented here as it happens.
 
+## [2.2.9] - 2026-09-06
+### Fixes
+- **100% Internationalization (i18n) Coverage for Customization Subsystem:**
+  - Resolved critical i18n coverage gap where the "Personalización" (Color Customization) tab label, section headers, segmented mode controls, and color token descriptions defaulted to hardcoded English strings across non-English locales (notably Arabic, Persian, Urdu, Pashto, Sindhi, Asian, Indic, and African languages).
+  - Translated and synchronized 30 critical keys across all 55 supported locale dictionaries in `src/locales/`:
+    - Navigation & Panel: `tab_customization`, `heading_customization`, `desc_customization`.
+    - Mode Toggles & Actions: `custom_mode_edit_dark`, `custom_mode_edit_light`, `btn_reset_custom_theme`.
+    - Token Groups: `custom_group_backgrounds`, `custom_group_typography`, `custom_group_accents`.
+    - Surface Tokens: `token_bg_primary`, `token_bg_sidebar`, `token_bg_hover`, `token_bg_modal`, `token_whatsapp_bg`.
+    - Typography Tokens: `token_text_primary`, `token_text_secondary`, `token_border_color`, `token_text_on_accent`.
+    - Accent & State Tokens: `token_bg_active`, `token_accent_hover`, `token_accent_secondary`, `token_accent_terracotta`, `token_accent_crimson`.
+    - Palette Categories & Options: `category_main`, `category_custom`, `category_messaging`, `category_pop_culture`, `category_user`, `palette_custom`, `theme_system`.
+  - Preserved all technical CSS variable names in parentheses (e.g. `(--bg-primary)`) while translating descriptive labels naturally into each target tongue.
+  - Verified 100% key symmetry and parity (359 keys across each of the 55 locale files) with zero English fallbacks in non-English dictionaries.
+  - Verified live reactivity in `updateTranslations()` ensuring immediate DOM re-rendering when switching languages in real time without application restarts.
+
 ## [2.2.8] - 2026-09-06
 ### Fixes
 - **Global Scope Syntax Error Elimination & Script Execution Restoration:**
