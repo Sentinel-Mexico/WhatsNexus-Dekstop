@@ -121,7 +121,9 @@ function createWindow() {
 
   mainWindow.webContents.setWindowOpenHandler(({ url }) => {
     if (isSafeExternalUrl(url)) {
-      shell.openExternal(url);
+      shell.openExternal(url).catch(err => {
+        log.warn('[Navigation] shell.openExternal failed:', err.message);
+      });
     }
     return { action: 'deny' };
   });
@@ -129,6 +131,28 @@ function createWindow() {
   mainWindow.webContents.on('did-attach-webview', (event, wc) => {
     if (wc && wc.session) {
       configureSession(wc.session);
+    }
+    if (wc) {
+      wc.setWindowOpenHandler(({ url }) => {
+        if (isSafeExternalUrl(url)) {
+          shell.openExternal(url).catch(err => {
+            log.warn('[Webview Navigation] shell.openExternal failed:', err.message);
+          });
+        }
+        return { action: 'deny' };
+      });
+
+      wc.on('will-navigate', (navEvent, url) => {
+        if (isInternalNavigationUrl(url)) {
+          return;
+        }
+        navEvent.preventDefault();
+        if (isSafeExternalUrl(url)) {
+          shell.openExternal(url).catch(err => {
+            log.warn('[Webview Navigation] shell.openExternal failed:', err.message);
+          });
+        }
+      });
     }
   });
 
@@ -725,6 +749,10 @@ function configureSessionDownloads(ses) {
 function isSafeExternalUrl(rawUrl) {
   if (typeof rawUrl !== 'string') return false;
   try {
+    if (rawUrl.startsWith('mailto:')) {
+      const email = rawUrl.slice(7);
+      return email.length > 0 && !email.includes(' ') && !email.includes('\n');
+    }
     const parsed = new URL(rawUrl);
     if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') {
       return false;
@@ -753,9 +781,29 @@ function isSafeExternalUrl(rawUrl) {
   }
 }
 
+function isInternalNavigationUrl(rawUrl) {
+  if (typeof rawUrl !== 'string') return false;
+  try {
+    if (rawUrl === 'about:blank') return true;
+    const parsed = new URL(rawUrl);
+    if (parsed.protocol === 'file:' || parsed.protocol === 'devtools:' || parsed.protocol === 'about:') {
+      return true;
+    }
+    const hostname = parsed.hostname.toLowerCase();
+    if (hostname === 'web.whatsapp.com') {
+      return true;
+    }
+    return false;
+  } catch (_) {
+    return false;
+  }
+}
+
 ipcMain.on('open-external', (event, url) => {
   if (isSafeExternalUrl(url)) {
-    shell.openExternal(url);
+    shell.openExternal(url).catch(err => {
+      log.warn('[Navigation] shell.openExternal failed:', err.message);
+    });
   } else {
     console.warn(`[Security Warning]: Blocked dangerous external URL: ${url}`);
   }
@@ -1393,6 +1441,29 @@ app.whenReady().then(() => {
 
   app.on('session-created', (ses) => {
     configureSession(ses);
+  });
+
+  app.on('web-contents-created', (event, contents) => {
+    contents.setWindowOpenHandler(({ url }) => {
+      if (isSafeExternalUrl(url)) {
+        shell.openExternal(url).catch(err => {
+          log.warn('[WebContents] shell.openExternal failed:', err.message);
+        });
+      }
+      return { action: 'deny' };
+    });
+
+    contents.on('will-navigate', (navEvent, url) => {
+      if (isInternalNavigationUrl(url)) {
+        return;
+      }
+      navEvent.preventDefault();
+      if (isSafeExternalUrl(url)) {
+        shell.openExternal(url).catch(err => {
+          log.warn('[WebContents] shell.openExternal failed:', err.message);
+        });
+      }
+    });
   });
 
   createSplashWindow();

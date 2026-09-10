@@ -1613,6 +1613,27 @@ function buildWebviewDOM(account, parentContainer) {
     showOfflineOverlay('scenario-b');
   }
 
+  // Intercept new-window and external navigation to open in default system browser
+  webview.addEventListener('new-window', (e) => {
+    e.preventDefault();
+    const url = e.url;
+    if (url && window.electronAPI && typeof window.electronAPI.openExternal === 'function') {
+      window.electronAPI.openExternal(url);
+    }
+  });
+
+  webview.addEventListener('will-navigate', (e) => {
+    try {
+      const parsed = new URL(e.url);
+      if (parsed.hostname !== 'web.whatsapp.com' && parsed.protocol !== 'about:') {
+        e.preventDefault();
+        if (window.electronAPI && typeof window.electronAPI.openExternal === 'function') {
+          window.electronAPI.openExternal(e.url);
+        }
+      }
+    } catch (_) {}
+  });
+
   // Detección de errores de carga de red
   webview.addEventListener('did-fail-load', (e) => {
     if (e.errorCode !== -3) {
@@ -1834,6 +1855,12 @@ function openDoomView() {
       doomWebview.id = 'doom-webview';
       doomWebview.setAttribute('webpreferences', 'contextIsolation=true');
       doomWebview.setAttribute('allowpopups', 'false');
+      doomWebview.addEventListener('new-window', (e) => {
+        e.preventDefault();
+        if (e.url && window.electronAPI && typeof window.electronAPI.openExternal === 'function') {
+          window.electronAPI.openExternal(e.url);
+        }
+      });
       doomView.appendChild(doomWebview);
     }
     if (doomWebview && (!doomWebview.src || doomWebview.src === 'about:blank' || !doomWebview.src.includes('assets/doom/index.html'))) {

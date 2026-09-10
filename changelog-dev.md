@@ -2,6 +2,17 @@
 
 This changelog records all granular updates, bug fixes, refactorings, and feature iterations developed on the `Dev` branch. Each version bump in `package.json` is documented here as it happens.
 
+## [2.3.1] - 2026-09-10
+### Fixes
+- **External Web Link Interception & System Browser Delegation:**
+  - Resolved critical navigation bug where clicking hyperlinks inside WhatsApp conversations either failed silently or attempted to navigate inside the sandboxed `<webview>` container instead of opening the user's default OS browser.
+  - Implemented multi-layered navigation interception:
+    - **Main Process (`src/main.js`):** Registered `setWindowOpenHandler` and `will-navigate` listeners on `mainWindow.webContents`, all dynamic `<webview>` instances upon `did-attach-webview`, and globally via `app.on('web-contents-created')`. Non-internal URLs are intercepted, blocked from internal guest rendering (`event.preventDefault()`, `{ action: 'deny' }`), and forwarded to `shell.openExternal(url)`.
+    - **Guest Preload (`src/preload.js`):** Attached capture-phase event listeners on `click` and `auxclick` (middle click) on all `<a>` tags with valid `href` attributes, capturing both external URLs and `target="_blank"` anchors before WhatsApp Web's synthetic React event dispatchers can suppress them, forwarding to `ipcRenderer.send('open-external', url)`. Overrode guest `window.open` to safely redirect to external browser.
+    - **Renderer Process (`src/renderer/renderer.js`):** Attached `new-window` and `will-navigate` event handlers on all mounted `<webview>` elements (including Doom minigame), cleanly delegating to `window.electronAPI.openExternal(url)`.
+  - Hardened protocol and security validation (`isSafeExternalUrl`): Enforced strict protocol filtering (`http:`, `https:`, and validated `mailto:`), blocked embedded credentials (`username`/`password`), and prevented SSRF against internal/local interfaces (`127.0.0.1`, `localhost`, `::1`, `169.254.`, `*.local`).
+  - Implemented `isInternalNavigationUrl` to strictly protect legitimate WhatsApp Web runtime navigations (`web.whatsapp.com`, `about:blank`, local `file:` assets) while preserving conversation state.
+
 ## [2.3.0] - 2026-09-10
 ### Features
 - **Automatic & Non-Intrusive Background Update Workflow:**

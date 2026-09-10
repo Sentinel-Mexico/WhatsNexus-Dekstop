@@ -541,3 +541,60 @@ window.matchMedia = function(query) {
 window.addEventListener('DOMContentLoaded', () => {
   applyThemeToGuest(isDarkMode);
 });
+
+// ==========================================================================
+// External Link Interceptor (Open in Default System Browser)
+// ==========================================================================
+function handleExternalLinkClick(event) {
+  const anchor = event.target && event.target.closest ? event.target.closest('a') : null;
+  if (!anchor) return;
+
+  const rawHref = anchor.getAttribute('href') || anchor.href;
+  if (!rawHref || typeof rawHref !== 'string') return;
+
+  // Ignore javascript:, in-page hash links, or empty refs
+  if (rawHref.startsWith('javascript:') || rawHref.startsWith('#')) return;
+
+  try {
+    const parsed = new URL(anchor.href);
+    const isWhatsappHost = parsed.hostname === 'web.whatsapp.com';
+    const isBlobOrData = parsed.protocol === 'blob:' || parsed.protocol === 'data:';
+
+    // WhatsApp renders external message links as target="_blank"
+    // Any link pointing outside web.whatsapp.com or having target="_blank" must open externally
+    if ((!isWhatsappHost && !isBlobOrData) || anchor.target === '_blank') {
+      event.preventDefault();
+      event.stopPropagation();
+      ipcRenderer.send('open-external', anchor.href);
+    }
+  } catch (_) {
+    // If URL parsing fails but starts with valid web schemes
+    if (rawHref.startsWith('http://') || rawHref.startsWith('https://') || rawHref.startsWith('mailto:')) {
+      event.preventDefault();
+      event.stopPropagation();
+      ipcRenderer.send('open-external', rawHref);
+    }
+  }
+}
+
+// Attach in capture phase so it triggers before WhatsApp's synthetic React events
+document.addEventListener('click', handleExternalLinkClick, true);
+document.addEventListener('auxclick', (event) => {
+  // Middle click (wheel click)
+  if (event.button === 1) {
+    handleExternalLinkClick(event);
+  }
+}, true);
+
+// Intercept window.open calls from guest page
+try {
+  const originalWindowOpen = window.open;
+  window.open = function(url, target, features) {
+    if (typeof url === 'string' && url && !url.startsWith('about:blank') && !url.startsWith('javascript:')) {
+      ipcRenderer.send('open-external', url);
+      return null;
+    }
+    return originalWindowOpen ? originalWindowOpen.call(window, url, target, features) : null;
+  };
+} catch (_) {}
+
