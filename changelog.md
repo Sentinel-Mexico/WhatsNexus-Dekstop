@@ -7,67 +7,36 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 ---
 
 ## [2.3.2] - 2026-09-10
-### Optimized
-- **Chromium Efficiency Switches & Tab Hibernation Throttling:**
-  - Configured switches before `app.whenReady()` in `src/main.js`: enabled background timer throttling (`disable-background-timer-throttling=false`) and activated performance feature flags `CalculateNativeWinOcclusion`, `IntensiveWakeUpThrottling`, and `ThrottleDisplayNoneAndVisibilityHiddenCrossOriginIframes` to allow Chromium to freeze timers and throttle background tasks in non-visible contexts.
-  - Implemented background tab throttling and visibility toggling upon account switching in `src/renderer/renderer.js`: inactive `<webview>` tags are marked `visibility: hidden` and dispatched a `set-tab-active: false` signal, reducing background rendering overhead. Active accounts receive `visibility: visible` and `set-tab-active: true`.
-- **Clean Memory Management & Explicit WebContents Destruction:**
-  - Added explicit `webContents.stop()` and `webContents.destroy()` invocations in `src/main.js` for all partition-bound WebContents during account deletion (`delete-account-data`) and added a new IPC channel `destroy-webview-contents`.
-  - Updated `hibernateWebview(id)` and `executeDeleteAccount(id)` in `src/renderer/renderer.js` to call `webview.stop()` and invoke `electronAPI.destroyWebviewContents(partition)` before DOM removal, eliminating dangling Chromium renderer processes.
-  - Exposed `destroyWebviewContents` in `src/preload-main.js` under `window.electronAPI`.
-- **Adaptive Network Polling (Smart Polling) & Power-Saving Pausing:**
-  - Replaced linear interval polling in `startOfflinePolling()` with an adaptive stepped schedule (`[5000, 10000, 30000, 60000]` ms) that backs off gracefully during extended outages.
-  - Paused offline polling probes and duration timer DOM ticks when the application window is minimized or hidden (`document.hidden`). Automatically resumes polling and synchronizes duration on window `visibilitychange` and `focus`.
-- **DinoGame & Overlay Dormancy:**
-  - Added `visibilitychange` and `blur` event listeners to `DinoGame` in `src/renderer/dino-game.js` to cancel active `requestAnimationFrame` render loops via `pausar()` when the window loses focus or visibility.
-  - Updated `destruir()` to cleanly deregister all event listeners (`blur`, `visibilitychange`, `resize`, `keydown`, `keyup`, `click`).
-- **Guest Preload DOM Observer Optimization:**
-  - In `src/preload.js`, bound `set-tab-active` IPC listener to track tab focus state; bypassed DOM scanning and interval execution when tab is inactive.
-  - Narrowed `MutationObserver` scope from unbounded `document.body` to `#app` / `#side` containers, increased debounce interval to 2500ms, and implemented a hard 60-second self-termination timer to free observer resources once profile data is acquired.
-
-## [2.3.1] - 2026-09-10
-### Fixed
-- **External Web Link Interception & System Browser Delegation:**
-  - Resolved critical navigation bug where clicking hyperlinks inside WhatsApp conversations either failed silently or attempted to navigate inside the sandboxed `<webview>` container instead of opening the user's default OS browser.
-  - Implemented multi-layered navigation interception:
-    - **Main Process (`src/main.js`):** Registered `setWindowOpenHandler` and `will-navigate` listeners on `mainWindow.webContents`, all dynamic `<webview>` instances upon `did-attach-webview`, and globally via `app.on('web-contents-created')`. Non-internal URLs are intercepted, blocked from internal guest rendering (`event.preventDefault()`, `{ action: 'deny' }`), and forwarded to `shell.openExternal(url)`.
-    - **Guest Preload (`src/preload.js`):** Attached capture-phase event listeners on `click` and `auxclick` (middle click) on all `<a>` tags with valid `href` attributes, capturing both external URLs and `target="_blank"` anchors before WhatsApp Web's synthetic React event dispatchers can suppress them, forwarding to `ipcRenderer.send('open-external', url)`. Overrode guest `window.open` to safely redirect to external browser.
-    - **Renderer Process (`src/renderer/renderer.js`):** Attached `new-window` and `will-navigate` event handlers on all mounted `<webview>` elements (including Doom minigame), cleanly delegating to `window.electronAPI.openExternal(url)`.
-  - Hardened protocol and security validation (`isSafeExternalUrl`): Enforced strict protocol filtering (`http:`, `https:`, and validated `mailto:`), blocked embedded credentials (`username`/`password`), and prevented SSRF against internal/local interfaces (`127.0.0.1`, `localhost`, `::1`, `169.254.`, `*.local`).
-  - Implemented `isInternalNavigationUrl` to strictly protect legitimate WhatsApp Web runtime navigations (`web.whatsapp.com`, `about:blank`, local `file:` assets) while preserving conversation state.
-
-## [2.3.0] - 2026-09-10
 ### Added
 - **Automatic & Non-Intrusive Background Update Workflow:**
-  - Configured silent background update verification at application launch, triggered 1.5s after the splash window transition completes (6.5s post-boot) to ensure zero latency during WhatsApp `<webview>` initialization and account mounting.
-  - Implemented dual update resolution pipeline supporting both `electron-updater` and a lightweight HTTP fallback against GitHub Releases API (`api.github.com/repos/Sentinel-Mexico/WhatsNexus-Dekstop/releases/latest`) with SemVer version comparison.
-  - Handled network errors, offline states, and GitHub API rate limits defensively with silent failure suppression in background mode.
-  - Configured full IPC channel suite with primary and alias routes (`updater:check` / `check-for-updates`, `updater:start-download` / `download-update`, `updater:install-and-restart` / `install-update`).
-  - Exposed complete updater lifecycle methods and subscription handlers in `src/preload-main.js` under `window.electronAPI.updater`.
-- **Interactive Themed Update Notification Modal:**
-  - Added `#update-notification-modal` component in `src/renderer/index.html` strictly managed with `.app-modal-backdrop.hidden` (`display: none !important`, `pointer-events: none !important`, `z-index: -1 !important`) to eliminate phantom click interception.
-  - Styled with application theme design tokens (`--bg-modal`, `--border-color`, `--bg-active`, `--text-primary`, `--text-secondary`).
-  - Implemented 20-second upgrade window advisory message with dual actions:
-    - Primary: `"Actualizar y reiniciar"` triggering download state, disabling buttons to prevent double-clicks, and displaying a live progress bar with percentage.
-    - Secondary: `"Recordar más tarde"` dismissing the modal without disrupting ongoing communications.
-  - Synchronized real-time state with the existing manual `"Buscar actualizaciones"` button in the About tab.
-  - Enforced 100% internationalization coverage (365 keys) across all 55 supported languages for all modal labels and status indicators.
+  - Automated startup verification against GitHub Releases API and `electron-updater` executing silently 1.5s after the splash screen transition.
+  - Interactive themed update notification modal (`#update-notification-modal`) styled with application tokens, informing the user of an estimated 20-second upgrade window with "Actualizar y reiniciar" and "Recordar más tarde" actions.
+  - Live download progress indicator with percentage, double-click prevention, and synchronization with the manual update checker in the About tab.
+  - Complete internationalization coverage (365 keys) across all 55 supported languages for updater dialogs and status indicators.
 
-## [2.2.9] - 2026-09-06
 ### Fixed
-- **100% Internationalization (i18n) Coverage for Customization Subsystem:**
-  - Resolved critical i18n coverage gap where the "Personalización" (Color Customization) tab label, section headers, segmented mode controls, and color token descriptions defaulted to hardcoded English strings across non-English locales (notably Arabic, Persian, Urdu, Pashto, Sindhi, Asian, Indic, and African languages).
-  - Translated and synchronized 30 critical keys across all 55 supported locale dictionaries in `src/locales/`:
-    - Navigation & Panel: `tab_customization`, `heading_customization`, `desc_customization`.
-    - Mode Toggles & Actions: `custom_mode_edit_dark`, `custom_mode_edit_light`, `btn_reset_custom_theme`.
-    - Token Groups: `custom_group_backgrounds`, `custom_group_typography`, `custom_group_accents`.
-    - Surface Tokens: `token_bg_primary`, `token_bg_sidebar`, `token_bg_hover`, `token_bg_modal`, `token_whatsapp_bg`.
-    - Typography Tokens: `token_text_primary`, `token_text_secondary`, `token_border_color`, `token_text_on_accent`.
-    - Accent & State Tokens: `token_bg_active`, `token_accent_hover`, `token_accent_secondary`, `token_accent_terracotta`, `token_accent_crimson`.
-    - Palette Categories & Options: `category_main`, `category_custom`, `category_messaging`, `category_pop_culture`, `category_user`, `palette_custom`, `theme_system`.
-  - Preserved all technical CSS variable names in parentheses (e.g. `(--bg-primary)`) while translating descriptive labels naturally into each target tongue.
-  - Verified 100% key symmetry and parity (359 keys across each of the 55 locale files) with zero English fallbacks in non-English dictionaries.
-  - Verified live reactivity in `updateTranslations()` ensuring immediate DOM re-rendering when switching languages in real time without application restarts.
+- **External Web Link Interception & System Browser Delegation:**
+  - Resolved navigation issue where clicking links inside WhatsApp conversations failed silently or attempted to navigate inside the sandboxed `<webview>`.
+  - Implemented multi-layered interception (`main.js`, `preload.js`, and `renderer.js`) blocking internal navigation and delegating external HTTP/HTTPS links cleanly to the user's default OS browser via `shell.openExternal`.
+  - Enforced strict URL safety validation preventing SSRF against loopback/private IP addresses and blocking embedded credentials.
+- **100% Internationalization Coverage for Customization Subsystem:**
+  - Audited and eliminated hardcoded English strings across all 55 supported locales for the "Personalización" (Color Customization) tab, category headers, mode toggles, and token descriptions.
+  - Preserved technical CSS variable identifiers while translating UI descriptors with 100% key symmetry and live reactivity.
+
+### Optimized
+- **Hardware Resource Conservation & Tab Hibernation Throttling:**
+  - Configured Chromium efficiency switches before `app.whenReady()` (`disable-background-timer-throttling=false`, `CalculateNativeWinOcclusion`, `IntensiveWakeUpThrottling`, `ThrottleDisplayNoneAndVisibilityHiddenCrossOriginIframes`).
+  - Implemented background tab throttling: inactive `<webview>` tags are marked `visibility: hidden` and sent `set-tab-active: false` to suspend background rendering and timers. Active tabs receive `visibility: visible` and `set-tab-active: true`.
+- **Clean Memory Management & WebContents Destruction:**
+  - Implemented explicit `webContents.stop()` and `webContents.destroy()` on account deletion (`delete-account-data`) and tab hibernation (`destroy-webview-contents`), eliminating dangling Chromium renderer processes.
+- **Adaptive Network Polling (Smart Polling) & Power-Saving Pausing:**
+  - Replaced linear interval polling with stepped backoff intervals (`5s`, `10s`, `30s`, `60s`) during network outages.
+  - Paused polling probes and offline duration timers when the application window is minimized or hidden (`document.hidden`), resuming on `visibilitychange` or `focus`.
+- **DinoGame & Overlay Dormancy:**
+  - Added `visibilitychange` and `blur` listeners to cancel active `requestAnimationFrame` render loops via `pausar()` when window loses focus.
+  - Ensured complete unbinding of all event listeners upon `destruir()`.
+- **Preload MutationObserver Throttling:**
+  - Narrowed observer scope to specific container nodes (`#app`, `#side`) instead of `document.body`, debounced execution to 2500ms, paused callbacks when tab is inactive, and added a 60-second self-termination timeout.
 
 ## [2.2.8] - 2026-09-06
 ### Fixed
