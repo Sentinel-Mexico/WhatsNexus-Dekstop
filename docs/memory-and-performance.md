@@ -51,6 +51,10 @@ To guarantee zero-flicker tab switching and preserve GPU rasterization integrity
 Configured in `src/main.js` before the Electron `app` is ready:
 
 ```javascript
+// Enable background timer throttling and occlusion-based wake-up throttling
+app.commandLine.appendSwitch('disable-background-timer-throttling', 'false');
+app.commandLine.appendSwitch('enable-features', 'CalculateNativeWinOcclusion,IntensiveWakeUpThrottling,ThrottleDisplayNoneAndVisibilityHiddenCrossOriginIframes');
+
 // Disable unnecessary background media services and Wayland color manager issues
 app.commandLine.appendSwitch('disable-features', 'HardwareMediaKeyHandling,MediaSessionService,WaylandWpColorManagerV1');
 
@@ -59,13 +63,13 @@ app.commandLine.appendSwitch('autoplay-policy', 'no-user-gesture-required');
 ```
 
 > [!NOTE]
-> Aggressive flags such as `--enable-low-end-device-mode` and artificial `--renderer-process-limit` caps are intentionally avoided. On modern multi-monitor, high-DPI, and Wayland compositor environments, low-end device mode starves the GPU tile rasterizer memory budget, leading to missing tile artifacts (black or stale rectangular patches). True memory efficiency is achieved cleanly via the 20-minute hibernation cycle and lazy loading.
+> Aggressive flags such as `--enable-low-end-device-mode` and artificial `--renderer-process-limit` caps are intentionally avoided. On modern multi-monitor, high-DPI, and Wayland compositor environments, low-end device mode starves the GPU tile rasterizer memory budget, leading to missing tile artifacts (black or stale rectangular patches). True memory efficiency is achieved cleanly via the 20-minute hibernation cycle, active tab throttling, and lazy loading.
 
 ---
 
 ## 5. Debounced Preload Observers & Fallback Polling Cancellation
 
-In `src/preload.js`, DOM mutation observers that monitor for profile picture updates and unread chat indicators are debounced using timer thresholds. Furthermore, as soon as the `MutationObserver` triggers its first callback, the fallback `setInterval` polling loop is immediately cleared (`clearInterval(intervalId); intervalId = null;`), completely cutting off redundant periodic timer wakeups and preserving CPU and battery life.
+In `src/preload.js`, DOM mutation observers that monitor for profile picture updates and unread chat indicators are debounced using timer thresholds (2500ms) and restricted specifically to `#app` or `#side` container nodes rather than unbounded `document.body` observations. When tabs are in the background, observer callbacks are bypassed (`isTabActive === false`), and a hard 60-second self-termination timer automatically deallocates the observer once profile initialization is complete.
 
 ---
 
@@ -82,3 +86,24 @@ When switching languages, parsed locale dictionaries are retained in memory. Sub
 The native desktop notification pipeline converts incoming base64 circular avatars directly into native image instances in memory using Electron's `nativeImage.createFromDataURL(data.iconDataUrl)`. 
 
 By completely eliminating temporary disk file writes (`fs.writeFileSync` inside `userData`), disk wear is prevented during high-frequency messaging bursts, avoiding I/O bottlenecks and ensuring instantaneous notification dispatch.
+
+---
+
+## 8. WebContents Explicit Destruction & Guest Memory Freeing
+
+To prevent dangling Chromium renderer processes from leaking RAM when accounts are deleted or hibernated:
+1. `hibernateWebview(id)` and `executeDeleteAccount(id)` in `src/renderer/renderer.js` invoke `webview.stop()` immediately before DOM removal.
+2. The renderer calls `electronAPI.destroyWebviewContents(partition)` which signals the main process to locate all `WebContents` assigned to the session partition, call `wc.stop()` and `wc.destroy()`, and trigger garbage collection.
+
+---
+
+## 9. Adaptive Network Polling (Smart Polling) & Power-Saving Pausing
+
+During offline network loss states, linear continuous polling is replaced with an adaptive stepped backoff algorithm (`[5000, 10000, 30000, 60000]` ms) to conserve CPU cycles and battery. 
+Furthermore, polling probes and offline duration timer ticks are automatically paused whenever the application window is minimized or occluded (`document.hidden`), resuming immediately upon regain of visibility or focus.
+
+---
+
+## 10. Minigame (DinoGame) & Animation Dormancy
+
+The integrated offline T-Rex minigame registers `blur` and `visibilitychange` listeners to immediately cancel active `requestAnimationFrame` render loops via `pausar()` when the application loses focus or is minimized. Its `destruir()` method cleanly unbinds all canvas and window event listeners, ensuring zero residual CPU cycles when connectivity is restored.
