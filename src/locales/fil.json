@@ -357,5 +357,11 @@
   "time_seconds": "Segundo",
   "time_minutes": "Minuto",
   "time_hours": "Oras",
-  "time_days": "Araw"
+  "time_days": "Araw",
+  "update_modal_title": "May bagong bersyon",
+  "update_modal_desc": "May bagong bersyon ng WhatsNexus na magagamit. Ang proseso ng pag-update at pag-restart ay aabutin ng mas mababa sa 20 segundo.",
+  "update_modal_btn_update": "I-update at i-restart",
+  "update_modal_btn_later": "Ipaalala mamaya",
+  "update_modal_downloading": "Dina-download ang update...",
+  "update_modal_ready": "Handa na ang update. Nagre-restart..."
 }

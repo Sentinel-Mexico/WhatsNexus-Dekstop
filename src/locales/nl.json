@@ -357,5 +357,11 @@
   "time_seconds": "Seconden",
   "time_minutes": "Minuten",
   "time_hours": "Uur",
-  "time_days": "Dagen"
+  "time_days": "Dagen",
+  "update_modal_title": "Nieuwe versie beschikbaar",
+  "update_modal_desc": "Er is een nieuwe versie van WhatsNexus beschikbaar. Het bijwerken en herstarten duurt minder dan 20 seconden.",
+  "update_modal_btn_update": "Bijwerken en herstarten",
+  "update_modal_btn_later": "Herinner mij later",
+  "update_modal_downloading": "Update downloaden...",
+  "update_modal_ready": "Update gereed. Bezig met herstarten..."
 }

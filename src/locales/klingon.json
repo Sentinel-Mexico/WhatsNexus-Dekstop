@@ -357,5 +357,11 @@
   "time_seconds": "lup",
   "time_minutes": "tup",
   "time_hours": "rep",
-  "time_days": "jaj"
+  "time_days": "jaj",
+  "update_modal_title": "chu' choH tu'lu'",
+  "update_modal_desc": "WhatsNexus chu' choH tu'lu'. chu'choH 'ej taghqa' loS 20 lup puS.",
+  "update_modal_btn_update": "chu'choH 'ej taghqa'",
+  "update_modal_btn_later": "tugh qawmoH",
+  "update_modal_downloading": "choH lI'taH...",
+  "update_modal_ready": "choH Suvrup. taghqa'taH..."
 }

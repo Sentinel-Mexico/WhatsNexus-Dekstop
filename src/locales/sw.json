@@ -357,5 +357,11 @@
   "time_seconds": "Sekunde",
   "time_minutes": "Dakika",
   "time_hours": "Masaa",
-  "time_days": "Siku"
+  "time_days": "Siku",
+  "update_modal_title": "Toleo jipya linapatikana",
+  "update_modal_desc": "Toleo jipya la WhatsNexus linapatikana. Mchakato wa kusasisha na kuwasha upya utachukua chini ya sekunde 20.",
+  "update_modal_btn_update": "Sasisha na uwashe upya",
+  "update_modal_btn_later": "Nikumbushe baadaye",
+  "update_modal_downloading": "Inapakua sasisho...",
+  "update_modal_ready": "Sasisho liko tayari. Inawasha upya..."
 }

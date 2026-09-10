@@ -357,5 +357,11 @@
   "time_seconds": "Lúe",
   "time_minutes": "Lúti",
   "time_hours": "Lúrier",
-  "time_days": "Enor"
+  "time_days": "Enor",
+  "update_modal_title": "Vinyë Céwë",
+  "update_modal_desc": "Vinyë céwë WhatsNexus ëa. Céwë ar enyalië lehta nuhu 20 lúmenili.",
+  "update_modal_btn_update": "Ceura ar Enquanta",
+  "update_modal_btn_later": "En-enyala céno",
+  "update_modal_downloading": "Ambilta céwë...",
+  "update_modal_ready": "Céwë ferin. Enyalië..."
 }

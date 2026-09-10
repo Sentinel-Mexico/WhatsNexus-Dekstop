@@ -357,5 +357,11 @@
   "time_seconds": "Soniya",
   "time_minutes": "Daqiqa",
   "time_hours": "Soat",
-  "time_days": "Kun"
+  "time_days": "Kun",
+  "update_modal_title": "Yangi versiya mavjud",
+  "update_modal_desc": "WhatsNexus dasturining yangi versiyasi mavjud. Yangilash va qayta ishga tushirish jarayoni 20 soniyadan kam vaqt oladi.",
+  "update_modal_btn_update": "Yangilash va qayta ishga tushirish",
+  "update_modal_btn_later": "Keyinroq eslatish",
+  "update_modal_downloading": "Yangilanish yuklab olinmoqda...",
+  "update_modal_ready": "Yangilanish tayyor. Qayta ishga tushirilmoqda..."
 }

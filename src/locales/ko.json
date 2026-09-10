@@ -357,5 +357,11 @@
   "time_seconds": "초",
   "time_minutes": "분",
   "time_hours": "시간",
-  "time_days": "일"
+  "time_days": "일",
+  "update_modal_title": "새 버전 사용 가능",
+  "update_modal_desc": "WhatsNexus의 새 버전을 사용할 수 있습니다. 업데이트 및 재시작 프로세스는 20초 이내에 완료됩니다.",
+  "update_modal_btn_update": "업데이트 및 재시작",
+  "update_modal_btn_later": "나중에 알림",
+  "update_modal_downloading": "업데이트 다운로드 중...",
+  "update_modal_ready": "업데이트 완료. 재시작 중..."
 }

@@ -357,5 +357,11 @@
   "time_seconds": "Secunde",
   "time_minutes": "Minute",
   "time_hours": "Ore",
-  "time_days": "Zile"
+  "time_days": "Zile",
+  "update_modal_title": "Versiune nouă disponibilă",
+  "update_modal_desc": "O nouă versiune WhatsNexus este disponibilă. Actualizarea și repornirea vor dura mai puțin de 20 de secunde.",
+  "update_modal_btn_update": "Actualizează și repornește",
+  "update_modal_btn_later": "Amintește-mi mai târziu",
+  "update_modal_downloading": "Se descarcă actualizarea...",
+  "update_modal_ready": "Actualizare gata. Se repornește..."
 }

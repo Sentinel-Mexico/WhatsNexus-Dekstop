@@ -1133,18 +1133,116 @@ autoUpdater.on('error', (err) => {
   sendToRenderer('update-error', err == null ? 'Error checking for updates' : (err.message || String(err)));
 });
 
-// AutoUpdater IPC Handlers
-ipcMain.handle('check-for-updates', async () => {
+// Fallback checking GitHub Releases API directly
+async function checkGitHubReleaseFallback() {
+  return new Promise((resolve) => {
+    try {
+      const https = require('https');
+      const semver = require('semver');
+      const currentVersion = app.getVersion();
+
+      const options = {
+        hostname: 'api.github.com',
+        path: '/repos/Sentinel-Mexico/WhatsNexus-Dekstop/releases/latest',
+        method: 'GET',
+        headers: {
+          'User-Agent': `WhatsNexus/${currentVersion}`
+        },
+        timeout: 6000
+      };
+
+      const req = https.request(options, (res) => {
+        if (res.statusCode !== 200) {
+          log.info(`[AutoUpdater] GitHub release fallback returned HTTP ${res.statusCode}`);
+          return resolve(null);
+        }
+
+        let raw = '';
+        res.on('data', (chunk) => { raw += chunk; });
+        res.on('end', () => {
+          try {
+            const data = JSON.parse(raw);
+            const latestTag = (data.tag_name || '').replace(/^v/, '').trim();
+
+            if (semver.valid(latestTag) && semver.gt(latestTag, currentVersion)) {
+              const info = {
+                version: data.tag_name,
+                releaseName: data.name || data.tag_name,
+                releaseNotes: data.body || '',
+                html_url: data.html_url,
+                assets: data.assets || []
+              };
+              log.info('[AutoUpdater] Newer release detected via GitHub API:', info.version);
+              sendToRenderer('update-available', info);
+              return resolve(info);
+            } else {
+              log.info('[AutoUpdater] App is up to date via GitHub release check.');
+              sendToRenderer('update-not-available', { version: currentVersion });
+              return resolve(null);
+            }
+          } catch (parseErr) {
+            log.warn('[AutoUpdater] JSON parse error in GitHub release fallback:', parseErr.message);
+            resolve(null);
+          }
+        });
+      });
+
+      req.on('error', (netErr) => {
+        log.warn('[AutoUpdater] Network error in GitHub release fallback:', netErr.message);
+        resolve(null);
+      });
+
+      req.on('timeout', () => {
+        req.destroy();
+        resolve(null);
+      });
+
+      req.end();
+    } catch (err) {
+      log.warn('[AutoUpdater] checkGitHubReleaseFallback unexpected error:', err);
+      resolve(null);
+    }
+  });
+}
+
+async function handleCheckForUpdates(isSilent = false) {
   try {
-    return await autoUpdater.checkForUpdates();
+    if (app.isPackaged) {
+      return await autoUpdater.checkForUpdates();
+    } else {
+      return await checkGitHubReleaseFallback();
+    }
   } catch (err) {
-    log.error('[AutoUpdater] Check for updates failed:', err);
-    sendToRenderer('update-error', err.message || 'Check for updates failed');
+    log.warn('[AutoUpdater] Primary checkForUpdates failed, attempting GitHub API fallback:', err.message);
+    try {
+      const fallbackResult = await checkGitHubReleaseFallback();
+      if (!fallbackResult && !isSilent) {
+        sendToRenderer('update-error', err.message || 'Check for updates failed');
+      }
+      return fallbackResult;
+    } catch (fallbackErr) {
+      if (!isSilent) {
+        sendToRenderer('update-error', fallbackErr.message || 'Check for updates failed');
+      }
+      return null;
+    }
+  }
+}
+
+// AutoUpdater IPC Handlers (Primary & Aliases)
+ipcMain.handle('check-for-updates', () => handleCheckForUpdates(false));
+ipcMain.handle('updater:check', () => handleCheckForUpdates(false));
+
+ipcMain.handle('download-update', async () => {
+  try {
+    return await autoUpdater.downloadUpdate();
+  } catch (err) {
+    log.error('[AutoUpdater] Download update failed:', err);
+    sendToRenderer('update-error', err.message || 'Download update failed');
     throw err;
   }
 });
-
-ipcMain.handle('download-update', async () => {
+ipcMain.handle('updater:start-download', async () => {
   try {
     return await autoUpdater.downloadUpdate();
   } catch (err) {
@@ -1159,6 +1257,17 @@ ipcMain.handle('install-update', () => {
     autoUpdater.quitAndInstall();
   } catch (err) {
     log.error('[AutoUpdater] Install update failed:', err);
+    app.relaunch();
+    app.exit(0);
+  }
+});
+ipcMain.handle('updater:install-and-restart', () => {
+  try {
+    autoUpdater.quitAndInstall();
+  } catch (err) {
+    log.error('[AutoUpdater] Install update failed:', err);
+    app.relaunch();
+    app.exit(0);
   }
 });
 
@@ -1304,6 +1413,16 @@ app.whenReady().then(() => {
       mainWindow.show();
       mainWindow.focus();
     }
+
+    // Silent background update check after UI is fully mounted and idle
+    setTimeout(() => {
+      if (mainWindow && !mainWindow.isDestroyed()) {
+        log.info('[AutoUpdater] Initiating silent startup background update check...');
+        handleCheckForUpdates(true).catch((err) => {
+          log.info('[AutoUpdater] Silent background check caught exception:', err.message);
+        });
+      }
+    }, 2000);
   }, 5000);
   
   app.on('activate', function () {

@@ -357,5 +357,11 @@
   "time_seconds": "秒",
   "time_minutes": "分鐘",
   "time_hours": "個鐘",
-  "time_days": "日"
+  "time_days": "日",
+  "update_modal_title": "有新版本可用",
+  "update_modal_desc": "WhatsNexus 有新版本喇。更新同埋重啟程序喺 20 秒之內搞掂。",
+  "update_modal_btn_update": "即刻更新並重啟",
+  "update_modal_btn_later": "等陣先提我",
+  "update_modal_downloading": "下載緊更新...",
+  "update_modal_ready": "更新搞掂，準備緊重啟..."
 }

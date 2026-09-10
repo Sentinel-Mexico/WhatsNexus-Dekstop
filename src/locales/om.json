@@ -357,5 +357,11 @@
   "time_seconds": "Sekondii",
   "time_minutes": "Daqiiqaa",
   "time_hours": "Sa'aatii",
-  "time_days": "Guyyoota"
+  "time_days": "Guyyoota",
+  "update_modal_title": "Gosa haaraan jira",
+  "update_modal_desc": "Gosti haaraan WhatsNexus jira. Adeemsi haaromsuu fi deebisanii jalqabuu seekondii 20 gadi fudhata.",
+  "update_modal_btn_update": "Haaromsiitii deebisii jalqabi",
+  "update_modal_btn_later": "Booda na yaadachiisi",
+  "update_modal_downloading": "Haaromsa buufataa jira...",
+  "update_modal_ready": "Haaromfamuun qophaa'eera. Deebisee jalqabaa jira..."
 }

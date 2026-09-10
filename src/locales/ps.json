@@ -357,5 +357,11 @@
   "time_seconds": "ثانیې",
   "time_minutes": "دقیقې",
   "time_hours": "ساعتونه",
-  "time_days": "ورځې"
+  "time_days": "ورځې",
+  "update_modal_title": "نوې بڼه شتون لري",
+  "update_modal_desc": "د WhatsNexus نوې نسخه شتون لري. د تازه کولو او بیا پیل پروسه به تر ۲۰ ثانیو کمه وخت ونیسي.",
+  "update_modal_btn_update": "تازه کول او بیا پیل کول",
+  "update_modal_btn_later": "وروسته را یاد کړئ",
+  "update_modal_downloading": "تازه کول ډاونلوډ کیږي...",
+  "update_modal_ready": "تازه کول چمتو دي. بیا پیل کیږي..."
 }

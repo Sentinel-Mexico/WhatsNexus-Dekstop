@@ -2874,29 +2874,40 @@ document.addEventListener('keydown', (e) => {
     if (deleteAccountModal && !deleteAccountModal.classList.contains('hidden')) {
       closeDeleteModal();
     }
+    const updateModal = document.getElementById('update-notification-modal');
+    if (updateModal && !updateModal.classList.contains('hidden') && !isUpdateDownloading) {
+      updateModal.classList.add('hidden');
+    }
   }
 });
 
 // ========================================================
-// Auto-Updater State Machine (OTA Updates)
+// Auto-Updater State Machine (OTA Updates) & Notification Modal
 // ========================================================
+let isUpdateDownloading = false;
+
 function initAutoUpdater() {
   const btnUpdate = document.getElementById('btn-update');
   const progressContainer = document.getElementById('update-progress-container');
   const progressBar = document.getElementById('update-progress-bar');
   const progressText = document.getElementById('update-progress-text');
 
-  if (!btnUpdate) return;
+  const updateModal = document.getElementById('update-notification-modal');
+  const btnCloseUpdateModal = document.getElementById('btn-close-update-modal');
+  const btnUpdateLater = document.getElementById('btn-update-later');
+  const btnUpdateNow = document.getElementById('btn-update-now');
+  const updateModalProgressSection = document.getElementById('update-modal-progress-section');
+  const updateModalProgressFill = document.getElementById('update-modal-progress-fill');
+  const updateModalProgressPercent = document.getElementById('update-modal-progress-percent');
+  const updateModalProgressStatusText = document.getElementById('update-modal-progress-status-text');
 
-  const updater = window.electronAPI && window.electronAPI.updater;
-  if (!updater) {
-    console.warn('[AutoUpdater] electronAPI.updater is not available');
-    return;
+  if (updateModal) {
+    updateModal.addEventListener('click', (e) => {
+      if (e.target === updateModal && !isUpdateDownloading) {
+        hideUpdateModal();
+      }
+    });
   }
-
-  // Update States: 'IDLE' | 'CHECKING' | 'UP_TO_DATE' | 'AVAILABLE' | 'DOWNLOADING' | 'DOWNLOADED' | 'ERROR'
-  let currentState = 'IDLE';
-  let revertTimer = null;
 
   function getTranslation(key, fallback) {
     if (typeof currentTranslations !== 'undefined' && currentTranslations && currentTranslations[key]) {
@@ -2909,6 +2920,84 @@ function initAutoUpdater() {
     return fallback;
   }
 
+  function showUpdateModal(info) {
+    if (!updateModal) return;
+    isUpdateDownloading = false;
+    if (btnUpdateLater) btnUpdateLater.disabled = false;
+    if (btnUpdateNow) {
+      btnUpdateNow.disabled = false;
+      btnUpdateNow.innerHTML = `<i class="fa-solid fa-bolt"></i> <span id="btn-update-now-text" data-i18n="update_modal_btn_update">${getTranslation('update_modal_btn_update', 'Actualizar y reiniciar')}</span>`;
+    }
+    if (updateModalProgressSection) {
+      updateModalProgressSection.style.display = 'none';
+    }
+    if (updateModalProgressFill) {
+      updateModalProgressFill.style.width = '0%';
+    }
+    if (updateModalProgressPercent) {
+      updateModalProgressPercent.innerText = '0%';
+    }
+    if (updateModalProgressStatusText) {
+      updateModalProgressStatusText.innerText = getTranslation('update_modal_downloading', 'Descargando actualización...');
+    }
+    updateModal.classList.remove('hidden');
+  }
+
+  function hideUpdateModal() {
+    if (updateModal && !isUpdateDownloading) {
+      updateModal.classList.add('hidden');
+    }
+  }
+
+  if (btnCloseUpdateModal) {
+    btnCloseUpdateModal.addEventListener('click', hideUpdateModal);
+  }
+  if (btnUpdateLater) {
+    btnUpdateLater.addEventListener('click', hideUpdateModal);
+  }
+
+  const updater = window.electronAPI && window.electronAPI.updater;
+  if (!updater) {
+    console.warn('[AutoUpdater] electronAPI.updater is not available');
+    return;
+  }
+
+  if (btnUpdateNow) {
+    btnUpdateNow.addEventListener('click', async () => {
+      if (isUpdateDownloading) return;
+      isUpdateDownloading = true;
+      if (btnUpdateLater) btnUpdateLater.disabled = true;
+      btnUpdateNow.disabled = true;
+      if (updateModalProgressSection) {
+        updateModalProgressSection.style.display = 'flex';
+      }
+      btnUpdateNow.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> <span>${getTranslation('update_modal_downloading', 'Descargando actualización...')}</span>`;
+      setButtonState('DOWNLOADING', { percent: 0 });
+
+      try {
+        if (typeof updater.startDownload === 'function') {
+          await updater.startDownload();
+        } else {
+          await updater.downloadUpdate();
+        }
+      } catch (err) {
+        console.error('[AutoUpdater] download error from modal:', err);
+        isUpdateDownloading = false;
+        if (btnUpdateLater) btnUpdateLater.disabled = false;
+        btnUpdateNow.disabled = false;
+        btnUpdateNow.innerHTML = `<i class="fa-solid fa-bolt"></i> <span id="btn-update-now-text" data-i18n="update_modal_btn_update">${getTranslation('update_modal_btn_update', 'Actualizar y reiniciar')}</span>`;
+        if (updateModalProgressSection) {
+          updateModalProgressSection.style.display = 'none';
+        }
+        setButtonState('ERROR');
+      }
+    });
+  }
+
+  // Update States: 'IDLE' | 'CHECKING' | 'UP_TO_DATE' | 'AVAILABLE' | 'DOWNLOADING' | 'DOWNLOADED' | 'ERROR'
+  let currentState = 'IDLE';
+  let revertTimer = null;
+
   function setButtonState(state, payload) {
     if (revertTimer) {
       clearTimeout(revertTimer);
@@ -2916,6 +3005,7 @@ function initAutoUpdater() {
     }
     currentState = state;
 
+    if (!btnUpdate) return;
     btnUpdate.classList.remove('update-available', 'update-ready');
 
     switch (state) {
@@ -2974,34 +3064,39 @@ function initAutoUpdater() {
     }
   }
 
-  btnUpdate.addEventListener('click', async () => {
-    if (currentState === 'IDLE') {
-      setButtonState('CHECKING');
-      try {
-        await updater.checkForUpdates();
-      } catch (err) {
-        console.error('[AutoUpdater] checkForUpdates error:', err);
-        setButtonState('ERROR');
+  if (btnUpdate) {
+    btnUpdate.addEventListener('click', async () => {
+      if (currentState === 'IDLE') {
+        setButtonState('CHECKING');
+        try {
+          if (typeof updater.check === 'function') {
+            await updater.check();
+          } else {
+            await updater.checkForUpdates();
+          }
+        } catch (err) {
+          console.error('[AutoUpdater] checkForUpdates error:', err);
+          setButtonState('ERROR');
+        }
+      } else if (currentState === 'AVAILABLE') {
+        showUpdateModal();
+      } else if (currentState === 'DOWNLOADED') {
+        try {
+          if (typeof updater.installAndRestart === 'function') {
+            updater.installAndRestart();
+          } else {
+            updater.installUpdate();
+          }
+        } catch (err) {
+          console.error('[AutoUpdater] installUpdate error:', err);
+        }
       }
-    } else if (currentState === 'AVAILABLE') {
-      setButtonState('DOWNLOADING', { percent: 0 });
-      try {
-        await updater.downloadUpdate();
-      } catch (err) {
-        console.error('[AutoUpdater] downloadUpdate error:', err);
-        setButtonState('ERROR');
-      }
-    } else if (currentState === 'DOWNLOADED') {
-      try {
-        updater.installUpdate();
-      } catch (err) {
-        console.error('[AutoUpdater] installUpdate error:', err);
-      }
-    }
-  });
+    });
+  }
 
   updater.onUpdateAvailable((info) => {
     setButtonState('AVAILABLE', info);
+    showUpdateModal(info);
   });
 
   updater.onUpdateNotAvailable((info) => {
@@ -3010,14 +3105,53 @@ function initAutoUpdater() {
 
   updater.onDownloadProgress((progressObj) => {
     setButtonState('DOWNLOADING', progressObj);
+    const percent = (progressObj && typeof progressObj.percent === 'number') ? Math.round(progressObj.percent) : 0;
+    if (updateModalProgressFill) {
+      updateModalProgressFill.style.width = `${percent}%`;
+    }
+    if (updateModalProgressPercent) {
+      updateModalProgressPercent.innerText = `${percent}%`;
+    }
   });
 
   updater.onUpdateDownloaded((info) => {
     setButtonState('DOWNLOADED', info);
+    if (updateModalProgressFill) {
+      updateModalProgressFill.style.width = '100%';
+    }
+    if (updateModalProgressPercent) {
+      updateModalProgressPercent.innerText = '100%';
+    }
+    if (updateModalProgressStatusText) {
+      updateModalProgressStatusText.innerText = getTranslation('update_modal_ready', 'Actualización lista. Reiniciando...');
+    }
+    if (btnUpdateNow) {
+      btnUpdateNow.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> <span>${getTranslation('update_modal_ready', 'Actualización lista. Reiniciando...')}</span>`;
+    }
+    setTimeout(() => {
+      try {
+        if (typeof updater.installAndRestart === 'function') {
+          updater.installAndRestart();
+        } else {
+          updater.installUpdate();
+        }
+      } catch (err) {
+        console.error('[AutoUpdater] install error:', err);
+      }
+    }, 800);
   });
 
   updater.onError((err) => {
     setButtonState('ERROR', err);
+    isUpdateDownloading = false;
+    if (btnUpdateLater) btnUpdateLater.disabled = false;
+    if (btnUpdateNow) {
+      btnUpdateNow.disabled = false;
+      btnUpdateNow.innerHTML = `<i class="fa-solid fa-bolt"></i> <span id="btn-update-now-text" data-i18n="update_modal_btn_update">${getTranslation('update_modal_btn_update', 'Actualizar y reiniciar')}</span>`;
+    }
+    if (updateModalProgressSection) {
+      updateModalProgressSection.style.display = 'none';
+    }
   });
 }
 

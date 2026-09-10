@@ -357,5 +357,11 @@
   "time_seconds": "Segundos",
   "time_minutes": "Minutos",
   "time_hours": "Horas",
-  "time_days": "Días"
+  "time_days": "Días",
+  "update_modal_title": "Nueva versión disponible",
+  "update_modal_desc": "Hay una nueva versión de WhatsNexus disponible. El proceso de actualización y reinicio tardará menos de 20 segundos.",
+  "update_modal_btn_update": "Actualizar y reiniciar",
+  "update_modal_btn_later": "Recordar más tarde",
+  "update_modal_downloading": "Descargando actualización...",
+  "update_modal_ready": "Actualización lista. Reiniciando..."
 }

@@ -357,5 +357,11 @@
   "time_seconds": "Saniye",
   "time_minutes": "Dakika",
   "time_hours": "Saat",
-  "time_days": "Gün"
+  "time_days": "Gün",
+  "update_modal_title": "Yeni sürüm mevcut",
+  "update_modal_desc": "WhatsNexus'un yeni bir sürümü mevcut. Güncelleme ve yeniden başlatma 20 saniyeden kısa sürecektir.",
+  "update_modal_btn_update": "Güncelle ve yeniden başlat",
+  "update_modal_btn_later": "Daha sonra hatırlat",
+  "update_modal_downloading": "Güncelleme indiriliyor...",
+  "update_modal_ready": "Güncelleme hazır. Yeniden başlatılıyor..."
 }

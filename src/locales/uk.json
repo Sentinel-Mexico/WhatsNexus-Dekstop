@@ -357,5 +357,11 @@
   "time_seconds": "Секунд",
   "time_minutes": "Хвилин",
   "time_hours": "Годин",
-  "time_days": "Днів"
+  "time_days": "Днів",
+  "update_modal_title": "Доступна нова версія",
+  "update_modal_desc": "Доступна нова версія WhatsNexus. Оновлення та перезапуск триватимуть менше 20 секунд.",
+  "update_modal_btn_update": "Оновити та перезапустити",
+  "update_modal_btn_later": "Нагадати пізніше",
+  "update_modal_downloading": "Завантаження оновлення...",
+  "update_modal_ready": "Оновлення готове. Перезапуск..."
 }

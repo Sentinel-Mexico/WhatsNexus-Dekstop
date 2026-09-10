@@ -357,5 +357,11 @@
   "time_seconds": "Detik",
   "time_minutes": "Menit",
   "time_hours": "Jam",
-  "time_days": "Hari"
+  "time_days": "Hari",
+  "update_modal_title": "Versi baru tersedia",
+  "update_modal_desc": "Versi baru WhatsNexus telah tersedia. Proses pembaruan dan mulai ulang membutuhkan waktu kurang dari 20 detik.",
+  "update_modal_btn_update": "Perbarui dan mulai ulang",
+  "update_modal_btn_later": "Ingatkan nanti",
+  "update_modal_downloading": "Mengunduh pembaruan...",
+  "update_modal_ready": "Pembaruan siap. Memulai ulang..."
 }

@@ -357,5 +357,11 @@
   "time_seconds": "秒",
   "time_minutes": "分",
   "time_hours": "時間",
-  "time_days": "日"
+  "time_days": "日",
+  "update_modal_title": "新しいバージョンが利用可能です",
+  "update_modal_desc": "WhatsNexus の新しいバージョンが利用可能です。アップデートと再起動は20秒以内に完了します。",
+  "update_modal_btn_update": "更新して再起動",
+  "update_modal_btn_later": "後で通知",
+  "update_modal_downloading": "アップデートをダウンロード中...",
+  "update_modal_ready": "アップデート準備完了。再起動しています..."
 }

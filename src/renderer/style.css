@@ -2353,6 +2353,93 @@ body.theme-light .permissions-notice-box {
   transform: translateY(0);
 }
 
+/* Modal Popup de Notificación de Actualización */
+.update-modal-card {
+  max-width: 500px;
+}
+
+.update-icon-wrapper {
+  background: rgba(0, 168, 132, 0.15) !important;
+  color: var(--bg-active, #00a884) !important;
+  box-shadow: 0 0 16px rgba(0, 168, 132, 0.2);
+}
+
+.update-modal-desc {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--text-primary);
+  margin: 0;
+  background-color: var(--bg-hover);
+  padding: 16px 18px;
+  border-radius: var(--shape-md, 12px);
+  border: 1px solid var(--border-color);
+}
+
+.update-modal-progress-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background-color: var(--bg-hover);
+  padding: 14px 18px;
+  border-radius: var(--shape-md, 12px);
+  border: 1px solid var(--border-color);
+}
+
+.update-modal-progress-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.88rem;
+  color: var(--text-primary);
+}
+
+.update-modal-progress-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.update-modal-progress-status i {
+  color: var(--bg-active, #00a884);
+}
+
+.update-modal-progress-percent {
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--bg-active, #00a884);
+}
+
+.update-modal-progress-track {
+  width: 100%;
+  height: 8px;
+  background-color: rgba(255, 255, 255, 0.08);
+  border-radius: 4px;
+  overflow: hidden;
+  position: relative;
+}
+
+.update-modal-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--bg-active, #00a884), var(--accent-hover, #02c39a));
+  border-radius: 4px;
+  transition: width 0.2s cubic-bezier(0.2, 0, 0, 1);
+}
+
+.update-modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 4px;
+}
+
+.update-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
 /* Leyenda de Exención de Responsabilidad (Disclaimer) */
 .about-disclaimer-box {
   margin-top: 24px;

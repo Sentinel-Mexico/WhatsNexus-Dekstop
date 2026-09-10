@@ -357,5 +357,11 @@
   "time_seconds": "ሰከንዶች",
   "time_minutes": "ደቂቃዎች",
   "time_hours": "ሰዓታት",
-  "time_days": "ቀናት"
+  "time_days": "ቀናት",
+  "update_modal_title": "አዲስ ስሪት ይገኛል",
+  "update_modal_desc": "አዲስ የ WhatsNexus ስሪት ይገኛል። የማዘመን እና እንደገና የማስጀመር ሂደቱ ከ20 ሰከንዶች ያነሰ ጊዜ ይወስዳል።",
+  "update_modal_btn_update": "አዘምን እና እንደገና አስጀምር",
+  "update_modal_btn_later": "በኋላ አስታውሰኝ",
+  "update_modal_downloading": "ዝማኔ በማውረድ ላይ...",
+  "update_modal_ready": "ዝማኔ ዝግጁ ነው። እንደገና በመጀመር ላይ..."
 }

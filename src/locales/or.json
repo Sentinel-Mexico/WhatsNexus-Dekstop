@@ -357,5 +357,11 @@
   "time_seconds": "ସେକେଣ୍ଡ",
   "time_minutes": "ମିନିଟ୍",
   "time_hours": "ଘଣ୍ଟା",
-  "time_days": "ଦିନ"
+  "time_days": "ଦିନ",
+  "update_modal_title": "ନୂତନ ସଂସ୍କରଣ ଉପଲବ୍ଧ",
+  "update_modal_desc": "WhatsNexus ର ଏକ ନୂତନ ସଂସ୍କରଣ ଉପଲବ୍ଧ। ଅପଡେଟ୍ ଏବଂ ପୁନଃଆରମ୍ଭ ପ୍ରକ୍ରିୟା ୨୦ ସେକେଣ୍ଡରୁ କମ୍ ସମୟ ନେବ।",
+  "update_modal_btn_update": "ଅପଡେଟ୍ କରନ୍ତୁ ଏବଂ ପୁନଃଆରମ୍ଭ କରନ୍ତୁ",
+  "update_modal_btn_later": "ପରେ ମନେ ପକାନ୍ତୁ",
+  "update_modal_downloading": "ଅପଡେଟ୍ ଡାଉନଲୋଡ୍ ହେଉଛି...",
+  "update_modal_ready": "ଅପଡେଟ୍ ପ୍ରସ୍ତୁତ। ପୁନଃଆରମ୍ଭ ହେଉଛି..."
 }

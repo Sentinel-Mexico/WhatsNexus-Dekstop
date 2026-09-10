@@ -357,5 +357,11 @@
   "time_seconds": "Iṣẹju-aaya",
   "time_minutes": "Iṣẹju",
   "time_hours": "Wakati",
-  "time_days": "Ọjọ"
+  "time_days": "Ọjọ",
+  "update_modal_title": "Ẹ̀yà tuntun wà",
+  "update_modal_desc": "Ẹ̀yà tuntun ti WhatsNexus wà. Ilana imudojuiwọn ati atunbere yoo gba kere ju iṣẹju-aaya 20 lọ.",
+  "update_modal_btn_update": "Ṣe imudojuiwọn ki o tun bẹrẹ",
+  "update_modal_btn_later": "Ranti mi nigbamii",
+  "update_modal_downloading": "N ṣe igbasilẹ imudojuiwọn...",
+  "update_modal_ready": "Imudojuiwọn ti ṣetan. N tun bẹrẹ..."
 }

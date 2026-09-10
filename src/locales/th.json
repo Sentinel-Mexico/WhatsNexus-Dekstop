@@ -357,5 +357,11 @@
   "time_seconds": "วินาที",
   "time_minutes": "นาที",
   "time_hours": "ชั่วโมง",
-  "time_days": "วัน"
+  "time_days": "วัน",
+  "update_modal_title": "มีเวอร์ชันใหม่พร้อมใช้งาน",
+  "update_modal_desc": "มี WhatsNexus เวอร์ชันใหม่พร้อมใช้งาน ขั้นตอนการอัปเดตและเริ่มระบบใหม่จะใช้เวลาน้อยกว่า 20 วินาที",
+  "update_modal_btn_update": "อัปเดตและเริ่มระบบใหม่",
+  "update_modal_btn_later": "เตือนฉันภายหลัง",
+  "update_modal_downloading": "กำลังดาวน์โหลดการอัปเดต...",
+  "update_modal_ready": "การอัปเดตพร้อมแล้ว กำลังเริ่มระบบใหม่..."
 }

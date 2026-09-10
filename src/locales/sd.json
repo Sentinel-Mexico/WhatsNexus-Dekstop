@@ -357,5 +357,11 @@
   "time_seconds": "سيڪنڊ",
   "time_minutes": "منٽ",
   "time_hours": "ڪلاڪ",
-  "time_days": "ڏينهن"
+  "time_days": "ڏينهن",
+  "update_modal_title": "نئون ورزن دستياب آهي",
+  "update_modal_desc": "WhatsNexus جو نئون ورزن دستياب آهي. اپڊيٽ ۽ ٻيهر شروع ٿيڻ ۾ 20 سيڪنڊن کان گھٽ وقت لڳندو.",
+  "update_modal_btn_update": "اپڊيٽ ڪريو ۽ ٻيهر شروع ڪريو",
+  "update_modal_btn_later": "پوءِ ياد ڏياريو",
+  "update_modal_downloading": "اپڊيٽ ڊائون لوڊ ٿي رهيو آهي...",
+  "update_modal_ready": "اپڊيٽ تيار آهي. ٻيهر شروع ٿي رهيو آهي..."
 }

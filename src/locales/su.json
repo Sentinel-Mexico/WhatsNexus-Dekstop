@@ -357,5 +357,11 @@
   "time_seconds": "Detik",
   "time_minutes": "Menit",
   "time_hours": "Jam",
-  "time_days": "Poé"
+  "time_days": "Poé",
+  "update_modal_title": "Versi anyar sayogi",
+  "update_modal_desc": "Versi anyar WhatsNexus parantos sayogi. Prosés ngapdet sareng ngamimitian deui bakal nyandak kirang ti 20 detik.",
+  "update_modal_btn_update": "Apdet sareng mimitian deui",
+  "update_modal_btn_later": "Élingkeun engké",
+  "update_modal_downloading": "Ngundeur apdet...",
+  "update_modal_ready": "Apdet siap. Nuju ngamimitian deui..."
 }

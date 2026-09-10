@@ -2,6 +2,23 @@
 
 This changelog records all granular updates, bug fixes, refactorings, and feature iterations developed on the `Dev` branch. Each version bump in `package.json` is documented here as it happens.
 
+## [2.3.0] - 2026-09-10
+### Features
+- **Automatic & Non-Intrusive Background Update Workflow:**
+  - Configured silent background update verification at application launch, triggered 1.5s after the splash window transition completes (6.5s post-boot) to ensure zero latency during WhatsApp `<webview>` initialization and account mounting.
+  - Implemented dual update resolution pipeline supporting both `electron-updater` and a lightweight HTTP fallback against GitHub Releases API (`api.github.com/repos/Sentinel-Mexico/WhatsNexus-Dekstop/releases/latest`) with SemVer version comparison.
+  - Handled network errors, offline states, and GitHub API rate limits defensively with silent failure suppression in background mode.
+  - Configured full IPC channel suite with primary and alias routes (`updater:check` / `check-for-updates`, `updater:start-download` / `download-update`, `updater:install-and-restart` / `install-update`).
+  - Exposed complete updater lifecycle methods and subscription handlers in `src/preload-main.js` under `window.electronAPI.updater`.
+- **Interactive Themed Update Notification Modal:**
+  - Added `#update-notification-modal` component in `src/renderer/index.html` strictly managed with `.app-modal-backdrop.hidden` (`display: none !important`, `pointer-events: none !important`, `z-index: -1 !important`) to eliminate phantom click interception.
+  - Styled with application theme design tokens (`--bg-modal`, `--border-color`, `--bg-active`, `--text-primary`, `--text-secondary`).
+  - Implemented 20-second upgrade window advisory message with dual actions:
+    - Primary: `"Actualizar y reiniciar"` triggering download state, disabling buttons to prevent double-clicks, and displaying a live progress bar with percentage.
+    - Secondary: `"Recordar más tarde"` dismissing the modal without disrupting ongoing communications.
+  - Synchronized real-time state with the existing manual `"Buscar actualizaciones"` button in the About tab.
+  - Enforced 100% internationalization coverage (365 keys) across all 55 supported languages for all modal labels and status indicators.
+
 ## [2.2.9] - 2026-09-06
 ### Fixes
 - **100% Internationalization (i18n) Coverage for Customization Subsystem:**

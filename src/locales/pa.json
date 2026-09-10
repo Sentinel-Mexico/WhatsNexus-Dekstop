@@ -357,5 +357,11 @@
   "time_seconds": "ਸਕਿੰਟ",
   "time_minutes": "ਮਿੰਟ",
   "time_hours": "ਘੰਟੇ",
-  "time_days": "ਦਿਨ"
+  "time_days": "ਦਿਨ",
+  "update_modal_title": "ਨਵਾਂ ਸੰਸਕਰਣ ਉਪਲਬਧ ਹੈ",
+  "update_modal_desc": "WhatsNexus ਦਾ ਨਵਾਂ ਸੰਸਕਰਣ ਉਪਲਬਧ ਹੈ। ਅੱਪਡੇਟ ਅਤੇ ਮੁੜ ਚਾਲੂ ਹੋਣ ਵਿੱਚ 20 ਸਕਿੰਟਾਂ ਤੋਂ ਵੀ ਘੱਟ ਸਮਾਂ ਲੱਗੇਗਾ।",
+  "update_modal_btn_update": "ਅੱਪਡੇਟ ਕਰੋ ਅਤੇ ਮੁੜ ਚਾਲੂ ਕਰੋ",
+  "update_modal_btn_later": "ਬਾਅਦ ਵਿੱਚ ਯਾਦ ਦਿਵਾਓ",
+  "update_modal_downloading": "ਅੱਪਡੇਟ ਡਾਊਨਲੋਡ ਹੋ ਰਿਹਾ ਹੈ...",
+  "update_modal_ready": "ਅੱਪਡੇਟ ਤਿਆਰ ਹੈ। ਮੁੜ ਚਾਲੂ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ..."
 }

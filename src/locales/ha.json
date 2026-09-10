@@ -357,5 +357,11 @@
   "time_seconds": "Daƙiƙa",
   "time_minutes": "Minti",
   "time_hours": "Sa'o'i",
-  "time_days": "Kwanaki"
+  "time_days": "Kwanaki",
+  "update_modal_title": "Sabon salo yana nan",
+  "update_modal_desc": "Akwai sabon salon WhatsNexus. Tsarin sabuntawa da sake kunnawa zai dauki kasa da dakika 20.",
+  "update_modal_btn_update": "Sabunta kuma sake kunnawa",
+  "update_modal_btn_later": "Tuna min daga baya",
+  "update_modal_downloading": "Ana sauke sabuntawa...",
+  "update_modal_ready": "Sabuntawa a shirye. Ana sake kunnawa..."
 }

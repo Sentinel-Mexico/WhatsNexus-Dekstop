@@ -357,5 +357,11 @@
   "time_seconds": "စက္ကန့်",
   "time_minutes": "မိနစ်",
   "time_hours": "နာရီ",
-  "time_days": "ရက်"
+  "time_days": "ရက်",
+  "update_modal_title": "ဗားရှင်းအသစ် ရရှိနိုင်ပါပြီ",
+  "update_modal_desc": "WhatsNexus ဗားရှင်းအသစ် ရရှိနိုင်ပါပြီ။ အပ်ဒိတ်လုပ်ပြီး ပြန်လည်စတင်ရန် စက္ကန့် ၂၀ ထက်မပိုပါ။",
+  "update_modal_btn_update": "အပ်ဒိတ်လုပ်ပြီး ပြန်လည်စတင်ရန်",
+  "update_modal_btn_later": "နောက်မှ သတိပေးရန်",
+  "update_modal_downloading": "အပ်ဒိတ် ဒေါင်းလုဒ်လုပ်နေသည်...",
+  "update_modal_ready": "အပ်ဒိတ် အဆင်သင့်ဖြစ်ပါပြီ။ ပြန်လည်စတင်နေသည်..."
 }

@@ -357,5 +357,11 @@
   "time_seconds": "Giây",
   "time_minutes": "Phút",
   "time_hours": "Giờ",
-  "time_days": "Ngày"
+  "time_days": "Ngày",
+  "update_modal_title": "Có phiên bản mới",
+  "update_modal_desc": "Đã có phiên bản mới của WhatsNexus. Quá trình cập nhật và khởi động lại sẽ mất chưa đầy 20 giây.",
+  "update_modal_btn_update": "Cập nhật và khởi động lại",
+  "update_modal_btn_later": "Nhắc tôi sau",
+  "update_modal_downloading": "Đang tải bản cập nhật...",
+  "update_modal_ready": "Bản cập nhật đã sẵn sàng. Đang khởi động lại..."
 }

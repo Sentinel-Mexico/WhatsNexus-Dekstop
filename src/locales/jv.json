@@ -357,5 +357,11 @@
   "time_seconds": "Detik",
   "time_minutes": "Menit",
   "time_hours": "Jam",
-  "time_days": "Dina"
+  "time_days": "Dina",
+  "update_modal_title": "Versi anyar kasedhiya",
+  "update_modal_desc": "Versi anyar WhatsNexus wis kasedhiya. Proses nganyari lan miwiti maneh bakal kurang saka 20 detik.",
+  "update_modal_btn_update": "Anyari lan miwiti maneh",
+  "update_modal_btn_later": "Elingake mengko",
+  "update_modal_downloading": "Ngundhuh anyaran...",
+  "update_modal_ready": "Anyaran wis siyap. Miwiti maneh..."
 }
