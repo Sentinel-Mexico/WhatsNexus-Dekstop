@@ -2,6 +2,25 @@
 
 This changelog records all granular updates, bug fixes, refactorings, and feature iterations developed on the `Dev` branch. Each version bump in `package.json` is documented here as it happens.
 
+## [2.3.2] - 2026-09-10
+### Performance & Optimization
+- **Chromium Efficiency Switches & Tab Throttling:**
+  - Configured switches before `app.whenReady()` in `src/main.js`: enabled background timer throttling (`disable-background-timer-throttling=false`) and activated performance feature flags `CalculateNativeWinOcclusion`, `IntensiveWakeUpThrottling`, and `ThrottleDisplayNoneAndVisibilityHiddenCrossOriginIframes` to allow Chromium to freeze timers and throttle background tasks in non-visible contexts.
+  - Implemented background tab throttling and visibility toggling upon account switching in `src/renderer/renderer.js`: inactive `<webview>` tags are marked `visibility: hidden` and dispatched a `set-tab-active: false` signal, reducing background rendering overhead. Active accounts receive `visibility: visible` and `set-tab-active: true`.
+- **Clean Memory Management & Explicit WebContents Destruction:**
+  - Added explicit `webContents.stop()` and `webContents.destroy()` invocations in `src/main.js` for all partition-bound WebContents during account deletion (`delete-account-data`) and added a new IPC channel `destroy-webview-contents`.
+  - Updated `hibernateWebview(id)` and `executeDeleteAccount(id)` in `src/renderer/renderer.js` to call `webview.stop()` and invoke `electronAPI.destroyWebviewContents(partition)` before DOM removal, eliminating dangling Chromium renderer processes.
+  - Exposed `destroyWebviewContents` in `src/preload-main.js` under `window.electronAPI`.
+- **Adaptive Network Polling (Smart Polling) & Power-Saving Pausing:**
+  - Replaced linear interval polling in `startOfflinePolling()` with an adaptive stepped schedule (`[5000, 10000, 30000, 60000]` ms) that backs off gracefully during extended outages.
+  - Paused offline polling probes and duration timer DOM ticks when the application window is minimized or hidden (`document.hidden`). Automatically resumes polling and synchronizes duration on window `visibilitychange` and `focus`.
+- **DinoGame & Overlay Dormancy:**
+  - Added `visibilitychange` and `blur` event listeners to `DinoGame` in `src/renderer/dino-game.js` to cancel active `requestAnimationFrame` render loops via `pausar()` when the window loses focus or visibility.
+  - Updated `destruir()` to cleanly deregister all event listeners (`blur`, `visibilitychange`, `resize`, `keydown`, `keyup`, `click`).
+- **Guest Preload DOM Observer Optimization:**
+  - In `src/preload.js`, bound `set-tab-active` IPC listener to track tab focus state; bypassed DOM scanning and interval execution when tab is inactive.
+  - Narrowed `MutationObserver` scope from unbounded `document.body` to `#app` / `#side` containers, increased debounce interval to 2500ms, and implemented a hard 60-second self-termination timer to free observer resources once profile data is acquired.
+
 ## [2.3.1] - 2026-09-10
 ### Fixes
 - **External Web Link Interception & System Browser Delegation:**

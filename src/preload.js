@@ -457,12 +457,19 @@ function cleanupObservers() {
   }
 }
 
+let isTabActive = true;
+ipcRenderer.on('set-tab-active', (event, active) => {
+  isTabActive = !!active;
+});
+
 window.addEventListener('load', () => {
   checkProfileInfo();
 
   let debounceTimer = null;
   observer = new MutationObserver(() => {
-    // Stop the fallback polling interval immediately as MutationObserver has taken over
+    // If tab is inactive in background, suppress DOM profile parsing to save CPU
+    if (!isTabActive) return;
+
     if (intervalId) {
       clearInterval(intervalId);
       intervalId = null;
@@ -471,14 +478,25 @@ window.addEventListener('load', () => {
     debounceTimer = setTimeout(() => {
       debounceTimer = null;
       checkProfileInfo();
-    }, 1500);
+    }, 2500);
   });
 
-  observer.observe(document.body, { childList: true, subtree: true });
+  // Observe specific container rather than unbounded body mutations
+  const targetNode = document.querySelector('#app') || document.querySelector('#side') || document.body;
+  if (targetNode) {
+    observer.observe(targetNode, { childList: true, subtree: true });
+  }
+
+  // Hard cap observer lifespan to 60 seconds to release memory and DOM hooks
+  setTimeout(() => {
+    cleanupObservers();
+  }, 60000);
 
   intervalId = setInterval(() => {
-    attempts++;
-    checkProfileInfo();
+    if (isTabActive) {
+      attempts++;
+      checkProfileInfo();
+    }
     if (attempts >= MAX_ATTEMPTS) {
       cleanupObservers();
     }

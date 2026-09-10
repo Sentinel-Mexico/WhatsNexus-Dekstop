@@ -54,11 +54,18 @@ class DinoGame {
     this._boundKeyup = (e) => this.handleKeyup(e);
     this._boundClick = (e) => this.handleClick(e);
     this._boundResize = () => this.resize();
+    this._boundVisibility = () => {
+      if (document.hidden) {
+        this.pausar();
+      }
+    };
 
     this.resize();
     window.addEventListener('resize', this._boundResize);
     window.addEventListener('keydown', this._boundKeydown);
     window.addEventListener('keyup', this._boundKeyup);
+    window.addEventListener('blur', this._boundVisibility);
+    document.addEventListener('visibilitychange', this._boundVisibility);
     this.canvas.addEventListener('click', this._boundClick);
 
     // Dynamic theme reactivity: redraw on theme mutation
@@ -253,6 +260,8 @@ class DinoGame {
     window.removeEventListener('resize', this._boundResize);
     window.removeEventListener('keydown', this._boundKeydown);
     window.removeEventListener('keyup', this._boundKeyup);
+    window.removeEventListener('blur', this._boundVisibility);
+    document.removeEventListener('visibilitychange', this._boundVisibility);
     if (this.canvas) {
       this.canvas.removeEventListener('click', this._boundClick);
     }

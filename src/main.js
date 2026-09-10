@@ -12,7 +12,9 @@ if (autoUpdater.logger.transports && autoUpdater.logger.transports.file) {
 }
 autoUpdater.autoDownload = false;
 
-// 3. Flags de optimización de Chromium
+// Hardware Resource & Chromium Efficiency Optimization Flags
+app.commandLine.appendSwitch('disable-background-timer-throttling', 'false');
+app.commandLine.appendSwitch('enable-features', 'CalculateNativeWinOcclusion,IntensiveWakeUpThrottling,ThrottleDisplayNoneAndVisibilityHiddenCrossOriginIframes');
 app.commandLine.appendSwitch('disable-features', 'HardwareMediaKeyHandling,MediaSessionService,WaylandWpColorManagerV1');
 app.commandLine.appendSwitch('autoplay-policy', 'no-user-gesture-required');
 
@@ -482,6 +484,16 @@ ipcMain.handle('delete-account-data', async (_event, accountId) => {
     const partition = accountId.startsWith('persist:') ? accountId : `persist:${accountId}`;
     const ses = session.fromPartition(partition);
     if (ses) {
+      // Explicitly stop and destroy any active WebContents belonging to this session partition
+      const allWcs = webContents.getAllWebContents();
+      for (const wc of allWcs) {
+        if (wc.session === ses && (!mainWindow || wc !== mainWindow.webContents)) {
+          try {
+            wc.stop();
+            wc.destroy();
+          } catch (_) {}
+        }
+      }
       await ses.clearStorageData();
       await ses.clearCache();
     }
@@ -490,6 +502,24 @@ ipcMain.handle('delete-account-data', async (_event, accountId) => {
     console.error('Error deleting account data:', err);
     return { success: false, error: err.message };
   }
+});
+
+ipcMain.on('destroy-webview-contents', (_event, partition) => {
+  if (!partition) return;
+  try {
+    const ses = session.fromPartition(partition);
+    if (ses) {
+      const allWcs = webContents.getAllWebContents();
+      for (const wc of allWcs) {
+        if (wc.session === ses && (!mainWindow || wc !== mainWindow.webContents)) {
+          try {
+            wc.stop();
+            wc.destroy();
+          } catch (_) {}
+        }
+      }
+    }
+  } catch (_) {}
 });
 
 ipcMain.handle('clear-account-cache', async (_event, accountId) => {

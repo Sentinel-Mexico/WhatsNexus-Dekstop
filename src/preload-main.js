@@ -57,6 +57,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   saveAccounts: (accounts) => ipcRenderer.invoke('save-accounts', accounts),
   deleteAccountData: (accountId) => ipcRenderer.invoke('delete-account-data', accountId),
   clearAccountCache: (accountId) => ipcRenderer.invoke('clear-account-cache', accountId),
+  destroyWebviewContents: (partition) => ipcRenderer.send('destroy-webview-contents', partition),
   onSelectAccount: (callback) => {
     if (typeof callback !== 'function') return;
     const handler = (_event, accountId) => callback(accountId);

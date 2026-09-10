@@ -1788,7 +1788,15 @@ function hibernateWebview(id) {
   
   const webview = document.getElementById(`webview_${id}`);
   if (webview) {
+    try {
+      webview.stop();
+    } catch (_) {}
     webview.remove(); // DESTRUCCIÓN TOTAL: Libera RAM.
+  }
+  if (acc.partition && window.electronAPI && typeof electronAPI.destroyWebviewContents === 'function') {
+    try {
+      electronAPI.destroyWebviewContents(acc.partition);
+    } catch (_) {}
   }
   accountUnreadCounts[id] = 0;
   updateTotalUnread();
@@ -1948,14 +1956,25 @@ function activateAccount(id) {
   }
 
   document.querySelectorAll('.account-container').forEach(c => {
+    const wv = c.querySelector('webview');
     if (c.id === `container_${id}`) {
       c.classList.remove('hidden');
-      const wv = c.querySelector('webview');
       if (wv && !activeNetworkScenario) {
         wv.style.visibility = 'visible';
       }
+      if (wv) {
+        try {
+          wv.send('set-tab-active', true);
+        } catch (_) {}
+      }
     } else {
       c.classList.add('hidden');
+      if (wv) {
+        wv.style.visibility = 'hidden';
+        try {
+          wv.send('set-tab-active', false);
+        } catch (_) {}
+      }
     }
   });
   
@@ -2002,7 +2021,15 @@ function executeDeleteAccount(id) {
   }
   
   const container = document.getElementById(`container_${id}`);
-  if (container) container.remove();
+  if (container) {
+    const wv = container.querySelector('webview');
+    if (wv) {
+      try {
+        wv.stop();
+      } catch (_) {}
+    }
+    container.remove();
+  }
   
   renderAllSidebarAccounts();
   
@@ -3192,6 +3219,9 @@ let offlinePollTimer = null;
 let offlineStartTime = null;
 let offlineDurationTimer = null;
 let isTestingConnection = false;
+const ADAPTIVE_POLL_INTERVALS = [5000, 10000, 30000, 60000];
+let pollAttemptIndex = 0;
+let isPollingActive = false;
 
 function getLocaleString(key, fallback) {
   if (typeof currentTranslations !== 'undefined' && currentTranslations && currentTranslations[key]) {
@@ -3258,6 +3288,13 @@ function startOfflineTimer() {
   }
 
   offlineDurationTimer = setInterval(() => {
+    const overlay = document.getElementById('network-offline-overlay');
+    if (!overlay || overlay.classList.contains('hidden')) {
+      stopOfflineTimer();
+      return;
+    }
+    // Prevent needless DOM reflows when application is minimized or hidden
+    if (document.hidden) return;
     const el = document.getElementById('offline-timer-text');
     if (el && offlineStartTime) {
       el.textContent = formatOfflineDuration(Date.now() - offlineStartTime);
@@ -3417,38 +3454,111 @@ function hideOfflineOverlay() {
   }
 }
 
-function startOfflinePolling() {
-  stopOfflinePolling();
-  // Validación activa en segundo plano cada 6 segundos (rango 5 a 8s)
-  offlinePollTimer = setInterval(async () => {
-    const overlay = document.getElementById('network-offline-overlay');
-    if (!overlay || overlay.classList.contains('hidden')) {
+function scheduleNextPoll(immediate = false) {
+  if (offlinePollTimer) {
+    clearTimeout(offlinePollTimer);
+    offlinePollTimer = null;
+  }
+
+  if (!isPollingActive) return;
+
+  const overlay = document.getElementById('network-offline-overlay');
+  if (!overlay || overlay.classList.contains('hidden')) {
+    stopOfflinePolling();
+    return;
+  }
+
+  // Smart Polling: Pause requests when window is minimized or hidden
+  if (document.hidden) {
+    return;
+  }
+
+  const delay = immediate ? 0 : ADAPTIVE_POLL_INTERVALS[Math.min(pollAttemptIndex, ADAPTIVE_POLL_INTERVALS.length - 1)];
+
+  offlinePollTimer = setTimeout(async () => {
+    offlinePollTimer = null;
+    const currentOverlay = document.getElementById('network-offline-overlay');
+    if (!currentOverlay || currentOverlay.classList.contains('hidden') || !isPollingActive) {
       stopOfflinePolling();
       return;
     }
 
-    const isOnline = await checkConnectivity('https://web.whatsapp.com');
-    if (isOnline) {
-      console.log('[Network] Hot reconnection detected via background polling.');
-      hasEverLoadedSuccessfully = true;
-      const currentScenario = activeNetworkScenario;
-      stopOfflinePolling();
-      hideOfflineOverlay();
-      if (currentScenario === 'scenario-b') {
-        accounts.forEach(acc => {
-          retryLoadAccount(acc.id);
-        });
-      }
+    if (document.hidden) {
+      return;
     }
-  }, 6000);
+
+    try {
+      const isOnline = await checkConnectivity('https://web.whatsapp.com');
+      if (isOnline) {
+        console.log('[Network] Hot reconnection detected via adaptive background polling.');
+        hasEverLoadedSuccessfully = true;
+        const currentScenario = activeNetworkScenario;
+        stopOfflinePolling();
+        hideOfflineOverlay();
+        if (currentScenario === 'scenario-b') {
+          accounts.forEach(acc => {
+            retryLoadAccount(acc.id);
+          });
+        }
+        return;
+      }
+    } catch (err) {
+      console.warn('[Network] Adaptive polling probe failed:', err);
+    }
+
+    // Adaptive backoff: advance to next tier (5s -> 10s -> 30s -> 60s max)
+    pollAttemptIndex++;
+    scheduleNextPoll(false);
+  }, delay);
+}
+
+function startOfflinePolling() {
+  stopOfflinePolling();
+  isPollingActive = true;
+  pollAttemptIndex = 0;
+  scheduleNextPoll(false);
 }
 
 function stopOfflinePolling() {
+  isPollingActive = false;
+  pollAttemptIndex = 0;
   if (offlinePollTimer) {
-    clearInterval(offlinePollTimer);
+    clearTimeout(offlinePollTimer);
     offlinePollTimer = null;
   }
 }
+
+// Adaptive power management: pause polling and timer ticks when window loses visibility
+document.addEventListener('visibilitychange', () => {
+  const overlay = document.getElementById('network-offline-overlay');
+  const isOverlayVisible = overlay && !overlay.classList.contains('hidden');
+
+  if (document.hidden) {
+    if (offlinePollTimer) {
+      clearTimeout(offlinePollTimer);
+      offlinePollTimer = null;
+    }
+  } else {
+    if (isOverlayVisible) {
+      if (offlineStartTime) {
+        const el = document.getElementById('offline-timer-text');
+        if (el) {
+          el.textContent = formatOfflineDuration(Date.now() - offlineStartTime);
+        }
+      }
+      if (isPollingActive) {
+        scheduleNextPoll(true);
+      }
+    }
+  }
+});
+
+window.addEventListener('focus', () => {
+  const overlay = document.getElementById('network-offline-overlay');
+  if (overlay && !overlay.classList.contains('hidden') && isPollingActive && !offlinePollTimer) {
+    scheduleNextPoll(true);
+  }
+});
 
 async function handleRescanClick() {
   const btn = document.getElementById('offline-rescan-btn');
