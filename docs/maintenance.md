@@ -37,7 +37,7 @@ WhatsNexus includes a fully automated build pipeline defined in `.github/workflo
 - **Windows (x64)**: NSIS installer `.exe`.
 
 ### 2.2 Local Manual Packaging
-For local testing or standalone compilation, `electron-packager` can be used:
+For local testing or standalone compilation, `@electron/packager` can be used:
 
 ```bash
 # Linux

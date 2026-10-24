@@ -2,6 +2,17 @@
 
 This changelog records all granular updates, bug fixes, refactorings, and feature iterations developed on the `Dev` branch. Each version bump in `package.json` is documented here as it happens.
 
+## [2.3.3] - 2026-10-24
+### Security & Fixes
+- **Vulnerability Remediation & Dependency Hardening:**
+  - Upgraded `electron` from `43.6.0` to `43.8.3` to remediate high-severity advisories GHSA-fw47-9c62-h3vw (HID and USB permission check attribution), GHSA-2p8c-gr87-2676 (SameSite cookie restrictions on windows opened from links), GHSA-x562-297c-g43g (pointer lock permission frame attribution), GHSA-3qxv-5xgr-q7w9 (GPU-supplied frame geometry verification), and GHSA-997q-gvvc-jwmx (`openExternal` permission request origin attribution).
+  - Migrated from deprecated `electron-packager` (`17.1.2`) to modern `@electron/packager` (`^20.3.0`), completely eliminating vulnerable `extract-zip` dependency tree (GHSA-jmr9-qjv8-65gv, GHSA-7pqw-9j4j-h8q3 symlink path traversal and arbitrary file write).
+  - Patched `brace-expansion` high-severity denial-of-service vulnerabilities (GHSA-q2hr-2g5m-vwhr, GHSA-qhr7-859c-m2p7, GHSA-6j4f-fj2g-mc7p) via lockfile resolution across `app-builder-lib`, `minimatch`, and `filelist`.
+  - Enforced dependency overrides for `undici` (`^7.30.1`), `http-cache-semantics` (`^4.3.0`), and `fast-uri` (`^3.1.9`) in `package.json`, completely mitigating unbounded memory DoS in EventSource / SRI bypass (GHSA-4qv8-2p9j-2685, GHSA-f72v-6w45-q472, GHSA-xjj6-f33q-929c), cross-user cached response disclosure (GHSA-ch52-4w7c-c8xp), and host case normalization / URI scheme spoofing (GHSA-hrr3-gc8f-f4qj).
+  - Re-audited dependency tree achieving 0 active vulnerabilities across all direct and transitive dependencies.
+- **Documentation & Packaging Sync:**
+  - Updated `docs/maintenance.md` to reference `@electron/packager`.
+
 ## [2.3.2] - 2026-09-10
 ### Performance & Optimization
 - **Chromium Efficiency Switches & Tab Throttling:**
