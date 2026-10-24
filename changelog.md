@@ -6,6 +6,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ---
 
+## [2.3.3] - 2026-10-24
+### Security
+- **Comprehensive Vulnerability Remediation & Hardening:**
+  - Upgraded `electron` to `43.8.3` resolving high-severity advisories (GHSA-fw47-9c62-h3vw, GHSA-2p8c-gr87-2676, GHSA-x562-297c-g43g, GHSA-3qxv-5xgr-q7w9, GHSA-997q-gvvc-jwmx).
+  - Migrated from deprecated `electron-packager` to `@electron/packager` (`^20.3.0`), eliminating vulnerable `extract-zip` dependency tree (GHSA-jmr9-qjv8-65gv, GHSA-7pqw-9j4j-h8q3).
+  - Patched `brace-expansion` high-severity DoS vulnerabilities (GHSA-q2hr-2g5m-vwhr, GHSA-qhr7-859c-m2p7, GHSA-6j4f-fj2g-mc7p) across dependencies.
+  - Enforced dependency overrides for `undici` (`^7.30.1`), `http-cache-semantics` (`^4.3.0`), and `fast-uri` (`^3.1.9`), resolving EventSource memory exhaustion, cached response disclosure, and URI parsing anomalies.
+  - Re-audited project dependency tree achieving 0 active vulnerabilities in `npm audit`.
+
 ## [2.3.2] - 2026-09-10
 ### Added
 - **Automatic & Non-Intrusive Background Update Workflow:**
